@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <Optimize>true</Optimize>
+    <Configuration>Release</Configuration>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Version>0.1.0</Version>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <ApplicationIcon>Images/icon.ico</ApplicationIcon>
+    <FileVersion>0.1.0.0</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\paypal.png" />
+    <Resource Include="Images\github.png" />
+    <Resource Include="Images\coffee.png" />
+    <Resource Include="Images\telegram.png" />
+    <Resource Include="Images\logo.png" />
+  </ItemGroup>
+</Project>
+

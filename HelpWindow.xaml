@@ -1,0 +1,431 @@
+<Window x:Class="SonicsElixir.HelpWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Sonic's Elixir Guide" Height="800" Width="600"
+        Background="#2B2B2B"
+        Foreground="White">
+  <FlowDocumentScrollViewer>
+    <FlowDocument>
+      <!-- Titolo principale -->
+      <Paragraph FontSize="26" FontWeight="Bold" TextAlignment="Center" Margin="0,0,0,20">
+        🚀 Sonic's Elixir: Your Ultimate Android Optimization Guide
+      </Paragraph>
+      
+      <!-- Introduzione iniziale -->
+      <Paragraph TextAlignment="Center" FontStyle="Italic" Margin="0,0,0,10">
+        Welcome to Sonic's Elixir v0.1.0 Beta!
+      </Paragraph>
+      <Paragraph Margin="0,0,0,20">
+        I've created this comprehensive guide to help you get the most out of your Android device optimization experience. Let's make your device as fast as Sonic!
+      </Paragraph>
+      
+      <!-- Table of Contents -->
+      <Section>
+        <Paragraph FontSize="20" FontWeight="Bold" Margin="0,0,0,10">
+          📚 Table of Contents
+        </Paragraph>
+        <List MarkerStyle="Decimal">
+          <ListItem><Paragraph>Introduction</Paragraph></ListItem>
+          <ListItem><Paragraph>Getting Started</Paragraph></ListItem>
+          <ListItem><Paragraph>Features Overview</Paragraph></ListItem>
+          <ListItem><Paragraph>Optimization Process</Paragraph></ListItem>
+          <ListItem><Paragraph>Troubleshooting</Paragraph></ListItem>
+          <ListItem><Paragraph>Frequently Asked Questions</Paragraph></ListItem>
+          <ListItem><Paragraph>Tips for Maintaining Performance</Paragraph></ListItem>
+          <ListItem><Paragraph>Contact &amp; Support</Paragraph></ListItem>
+        </List>
+      </Section>
+      
+      <!-- Section: Introduction -->
+      <Section>
+        <Paragraph FontSize="20" FontWeight="Bold" Margin="0,20,0,10">
+          🌟 Introduction
+        </Paragraph>
+        <Paragraph>
+          Sonic's Elixir is my passion project aimed at helping Android users achieve optimal device performance. Using advanced techniques like cache cleaning, package compilation, and dex optimization, I've designed this tool to make your device run at peak efficiency.
+        </Paragraph>
+        <Paragraph Background="#FFD700" Padding="5" Margin="10,5,0,5">
+          <Bold>💡 Pro Tip:</Bold> Regular optimization with Sonic's Elixir can significantly improve your device's responsiveness and battery life!
+        </Paragraph>
+      </Section>
+      
+      <!-- Section: Getting Started -->
+      <Section>
+        <Paragraph FontSize="20" FontWeight="Bold" Margin="0,20,0,10">
+          🚦 Getting Started
+        </Paragraph>
+        <Paragraph>
+          Before diving into optimization, ensure you have everything set up correctly:
+        </Paragraph>
+        <List MarkerStyle="Decimal">
+          <ListItem>
+            <Paragraph>
+              <Bold>Connect Your Device</Bold>:
+            </Paragraph>
+            <List MarkerStyle="Disc" Margin="20,0,0,0">
+              <ListItem><Paragraph>Use a high-quality USB cable to connect your Android device to your computer</Paragraph></ListItem>
+              <ListItem><Paragraph>Ensure the cable supports data transfer (not just charging)</Paragraph></ListItem>
+            </List>
+          </ListItem>
+          <ListItem>
+            <Paragraph>
+              <Bold>Enable USB Debugging</Bold>:
+            </Paragraph>
+            <List MarkerStyle="Disc" Margin="20,0,0,0">
+              <ListItem>
+                <Paragraph>
+                  Go to <Run FontFamily="Consolas">Settings</Run> &gt; <Run FontFamily="Consolas">About Phone</Run>
+                </Paragraph>
+              </ListItem>
+              <ListItem>
+                <Paragraph>
+                  Tap <Run FontFamily="Consolas">Build Number</Run> 7 times to enable Developer Options
+                </Paragraph>
+              </ListItem>
+              <ListItem>
+                <Paragraph>
+                  Navigate to <Run FontFamily="Consolas">Settings</Run> &gt; <Run FontFamily="Consolas">Developer Options</Run>
+                </Paragraph>
+              </ListItem>
+              <ListItem>
+                <Paragraph>
+                  Enable <Run FontFamily="Consolas">USB Debugging</Run>
+                </Paragraph>
+              </ListItem>
+              <ListItem>
+                <Paragraph>
+                  Accept the debugging authorization prompt on your device
+                </Paragraph>
+              </ListItem>
+            </List>
+          </ListItem>
+          <ListItem>
+            <Paragraph>
+              <Bold>Install Drivers</Bold>:
+            </Paragraph>
+            <List MarkerStyle="Disc" Margin="20,0,0,0">
+              <ListItem><Paragraph>Ensure you have the correct USB drivers for your device</Paragraph></ListItem>
+              <ListItem><Paragraph>Windows usually installs these automatically</Paragraph></ListItem>
+              <ListItem><Paragraph>For manual installation, visit your device manufacturer's website</Paragraph></ListItem>
+            </List>
+          </ListItem>
+          <ListItem>
+            <Paragraph>
+              <Bold>Launch Sonic's Elixir</Bold>:
+            </Paragraph>
+            <List MarkerStyle="Disc" Margin="20,0,0,0">
+              <ListItem><Paragraph>Start the application</Paragraph></ListItem>
+              <ListItem><Paragraph>Wait for device detection</Paragraph></ListItem>
+              <ListItem><Paragraph>The status indicator will show when your device is properly connected</Paragraph></ListItem>
+            </List>
+          </ListItem>
+        </List>
+        <Paragraph Background="#FFD700" Padding="5" Margin="10,5,0,5">
+          <Bold>⚠️ Caution:</Bold> Always back up your important data before performing any optimization!
+        </Paragraph>
+      </Section>
+      
+      <!-- Section: Features Overview -->
+      <Section>
+        <Paragraph FontSize="20" FontWeight="Bold" Margin="0,20,0,10">
+          🛠 Features Overview
+        </Paragraph>
+        <Paragraph>Here's what I've implemented in version 0.1.0:</Paragraph>
+        <Table CellSpacing="0" BorderThickness="1" BorderBrush="Black" Margin="0,10,0,0">
+          <Table.Columns>
+            <TableColumn Width="*" />
+            <TableColumn Width="2*" />
+            <TableColumn Width="*" />
+          </Table.Columns>
+          <TableRowGroup>
+            <TableRow>
+              <TableCell BorderThickness="0,0,1,1">
+                <Paragraph FontWeight="Bold">Feature</Paragraph>
+              </TableCell>
+              <TableCell BorderThickness="0,0,1,1">
+                <Paragraph FontWeight="Bold">Description</Paragraph>
+              </TableCell>
+              <TableCell BorderThickness="0,0,0,1">
+                <Paragraph FontWeight="Bold">Benefit</Paragraph>
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell BorderThickness="0,0,1,0">
+                <Paragraph>Cache Cleaning</Paragraph>
+              </TableCell>
+              <TableCell BorderThickness="0,0,1,0">
+                <Paragraph>Removes unnecessary cached data</Paragraph>
+              </TableCell>
+              <TableCell>
+                <Paragraph>Frees up storage space</Paragraph>
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell BorderThickness="0,0,1,0">
+                <Paragraph>Package Compilation</Paragraph>
+              </TableCell>
+              <TableCell BorderThickness="0,0,1,0">
+                <Paragraph>Optimizes app packages</Paragraph>
+              </TableCell>
+              <TableCell>
+                <Paragraph>Improves app launch times</Paragraph>
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell BorderThickness="0,0,1,0">
+                <Paragraph>Dex Optimization</Paragraph>
+              </TableCell>
+              <TableCell BorderThickness="0,0,1,0">
+                <Paragraph>Enhances Dalvik Executable files</Paragraph>
+              </TableCell>
+              <TableCell>
+                <Paragraph>Boosts overall system performance</Paragraph>
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell BorderThickness="0,0,1,0">
+                <Paragraph>Performance Boost</Paragraph>
+              </TableCell>
+              <TableCell BorderThickness="0,0,1,0">
+                <Paragraph>Fine-tunes system settings</Paragraph>
+              </TableCell>
+              <TableCell>
+                <Paragraph>Enhances device responsiveness</Paragraph>
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell BorderThickness="0,0,1,0">
+                <Paragraph>Real-time Monitoring</Paragraph>
+              </TableCell>
+              <TableCell BorderThickness="0,0,1,0">
+                <Paragraph>Tracks optimization progress</Paragraph>
+              </TableCell>
+              <TableCell>
+                <Paragraph>Keeps you informed</Paragraph>
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell BorderThickness="0,0,1,0">
+                <Paragraph>System Notifications</Paragraph>
+              </TableCell>
+              <TableCell BorderThickness="0,0,1,0">
+                <Paragraph>Updates on optimization status</Paragraph>
+              </TableCell>
+              <TableCell>
+                <Paragraph>Never miss important events</Paragraph>
+              </TableCell>
+            </TableRow>
+          </TableRowGroup>
+        </Table>
+      </Section>
+      
+      <!-- Section: Optimization Process -->
+      <Section>
+        <Paragraph FontSize="20" FontWeight="Bold" Margin="0,20,0,10">
+          🏃‍♂️ Optimization Process
+        </Paragraph>
+        <List MarkerStyle="Decimal">
+          <ListItem>
+            <Paragraph>
+              <Bold>Prepare Your Device</Bold>:
+            </Paragraph>
+            <List MarkerStyle="Disc" Margin="20,0,0,0">
+              <ListItem><Paragraph>Ensure battery level is above 50%</Paragraph></ListItem>
+              <ListItem><Paragraph>Close all background apps</Paragraph></ListItem>
+              <ListItem><Paragraph>Connect to a stable power source</Paragraph></ListItem>
+            </List>
+          </ListItem>
+          <ListItem>
+            <Paragraph>
+              <Bold>Start Optimization</Bold>:
+            </Paragraph>
+            <List MarkerStyle="Disc" Margin="20,0,0,0">
+              <ListItem><Paragraph>Click the "Run Optimization" button</Paragraph></ListItem>
+              <ListItem><Paragraph>Review and accept the optimization prompt</Paragraph></ListItem>
+              <ListItem><Paragraph>Monitor the progress bar and console output</Paragraph></ListItem>
+            </List>
+          </ListItem>
+          <ListItem>
+            <Paragraph>
+              <Bold>During Optimization</Bold>:
+            </Paragraph>
+            <List MarkerStyle="Disc" Margin="20,0,0,0">
+              <ListItem><Paragraph>Keep your device connected</Paragraph></ListItem>
+              <ListItem><Paragraph>Don't use the device during the process</Paragraph></ListItem>
+              <ListItem><Paragraph>Watch for progress updates in the application</Paragraph></ListItem>
+            </List>
+          </ListItem>
+          <ListItem>
+            <Paragraph>
+              <Bold>Completion</Bold>:
+            </Paragraph>
+            <List MarkerStyle="Disc" Margin="20,0,0,0">
+              <ListItem><Paragraph>Wait for the success message</Paragraph></ListItem>
+              <ListItem><Paragraph>Review the optimization report</Paragraph></ListItem>
+              <ListItem><Paragraph>Safely disconnect your device</Paragraph></ListItem>
+            </List>
+          </ListItem>
+        </List>
+        <Paragraph Background="LightGreen" Padding="5" Margin="10,5,0,5">
+          <Bold>🎉 Success:</Bold> After optimization, you should notice improved performance immediately!
+        </Paragraph>
+      </Section>
+      
+      <!-- Section: Troubleshooting -->
+      <Section>
+        <Paragraph FontSize="20" FontWeight="Bold" Margin="0,20,0,10">
+          🔧 Troubleshooting
+        </Paragraph>
+        <List MarkerStyle="Decimal">
+          <ListItem>
+            <Paragraph>
+              <Bold>Device Not Detected</Bold>:
+            </Paragraph>
+            <List MarkerStyle="Disc" Margin="20,0,0,0">
+              <ListItem><Paragraph>Verify USB debugging is enabled</Paragraph></ListItem>
+              <ListItem><Paragraph>Try a different USB cable or port</Paragraph></ListItem>
+              <ListItem><Paragraph>Restart both your device and computer</Paragraph></ListItem>
+              <ListItem><Paragraph>Reinstall USB drivers if needed</Paragraph></ListItem>
+            </List>
+          </ListItem>
+          <ListItem>
+            <Paragraph>
+              <Bold>Optimization Fails</Bold>:
+            </Paragraph>
+            <List MarkerStyle="Disc" Margin="20,0,0,0">
+              <ListItem><Paragraph>Ensure sufficient storage space (at least 1GB free)</Paragraph></ListItem>
+              <ListItem><Paragraph>Temporarily disable antivirus software</Paragraph></ListItem>
+              <ListItem><Paragraph>Check device battery level (should be &gt;50%)</Paragraph></ListItem>
+              <ListItem><Paragraph>Make sure device screen is unlocked</Paragraph></ListItem>
+            </List>
+          </ListItem>
+          <ListItem>
+            <Paragraph>
+              <Bold>Application Crashes</Bold>:
+            </Paragraph>
+            <List MarkerStyle="Disc" Margin="20,0,0,0">
+              <ListItem><Paragraph>Update to the latest version</Paragraph></ListItem>
+              <ListItem><Paragraph>Check compatibility with your Android version</Paragraph></ListItem>
+              <ListItem><Paragraph>Run the application as administrator</Paragraph></ListItem>
+            </List>
+          </ListItem>
+        </List>
+      </Section>
+      
+      <!-- Section: Frequently Asked Questions -->
+      <Section>
+        <Paragraph FontSize="20" FontWeight="Bold" Margin="0,20,0,10">
+          ❓ Frequently Asked Questions
+        </Paragraph>
+        <Paragraph>
+          <Bold>Q: Is Sonic's Elixir safe to use?</Bold>
+        </Paragraph>
+        <Paragraph>
+          A: Yes! I've designed Sonic's Elixir to use official Android optimization techniques without modifying system files. However, I always recommend backing up your data before any optimization.
+        </Paragraph>
+        <Paragraph>
+          <Bold>Q: How often should I run Sonic's Elixir?</Bold>
+        </Paragraph>
+        <Paragraph>
+          A: For best results, I recommend running it once a week or whenever you notice performance decline.
+        </Paragraph>
+        <Paragraph>
+          <Bold>Q: Will Sonic's Elixir delete my personal data?</Bold>
+        </Paragraph>
+        <Paragraph>
+          A: No, it only removes unnecessary cache files and optimizes system components. Your personal files and app data remain untouched.
+        </Paragraph>
+        <Paragraph>
+          <Bold>Q: Can I use my device during optimization?</Bold>
+        </Paragraph>
+        <Paragraph>
+          A: While possible, I recommend not using your device during optimization to ensure the best results and prevent any issues.
+        </Paragraph>
+      </Section>
+      
+      <!-- Section: Tips for Maintaining Performance -->
+      <Section>
+        <Paragraph FontSize="20" FontWeight="Bold" Margin="0,20,0,10">
+          💪 Tips for Maintaining Performance
+        </Paragraph>
+        <List MarkerStyle="Decimal">
+          <ListItem>
+            <Paragraph>
+              <Bold>Regular Updates</Bold>:
+            </Paragraph>
+            <List MarkerStyle="Disc" Margin="20,0,0,0">
+              <ListItem><Paragraph>Keep your device's OS up to date</Paragraph></ListItem>
+              <ListItem><Paragraph>Update apps through the Play Store</Paragraph></ListItem>
+              <ListItem><Paragraph>Check for Sonic's Elixir updates</Paragraph></ListItem>
+            </List>
+          </ListItem>
+          <ListItem>
+            <Paragraph>
+              <Bold>Storage Management</Bold>:
+            </Paragraph>
+            <List MarkerStyle="Disc" Margin="20,0,0,0">
+              <ListItem><Paragraph>Maintain at least 20% free storage</Paragraph></ListItem>
+              <ListItem><Paragraph>Uninstall unused apps</Paragraph></ListItem>
+              <ListItem><Paragraph>Use cloud storage for large files</Paragraph></ListItem>
+            </List>
+          </ListItem>
+          <ListItem>
+            <Paragraph>
+              <Bold>Battery Care</Bold>:
+            </Paragraph>
+            <List MarkerStyle="Disc" Margin="20,0,0,0">
+              <ListItem><Paragraph>Avoid extreme temperatures</Paragraph></ListItem>
+              <ListItem><Paragraph>Don't let battery drain completely</Paragraph></ListItem>
+              <ListItem><Paragraph>Use original charging accessories</Paragraph></ListItem>
+            </List>
+          </ListItem>
+          <ListItem>
+            <Paragraph>
+              <Bold>System Maintenance</Bold>:
+            </Paragraph>
+            <List MarkerStyle="Disc" Margin="20,0,0,0">
+              <ListItem><Paragraph>Restart weekly</Paragraph></ListItem>
+              <ListItem><Paragraph>Limit background processes</Paragraph></ListItem>
+              <ListItem><Paragraph>Keep notifications under control</Paragraph></ListItem>
+            </List>
+          </ListItem>
+        </List>
+      </Section>
+      
+      <!-- Section: Contact & Support -->
+      <Section>
+        <Paragraph FontSize="20" FontWeight="Bold" Margin="0,20,0,10">
+          📞 Contact &amp; Support
+        </Paragraph>
+        <Paragraph>
+          Need help or want to share feedback? I'm here to help!
+        </Paragraph>
+        <List MarkerStyle="None">
+          <ListItem>
+            <Paragraph>📧 Email: N.D. actually</Paragraph>
+          </ListItem>
+          <ListItem>
+            <Paragraph>
+              💬 Telegram:
+              <Hyperlink NavigateUri="https://t.me/sonicselixir"> @sonicselixir</Hyperlink>
+            </Paragraph>
+          </ListItem>
+          <ListItem>
+            <Paragraph>🐙 GitHub: Sonic's Elixir Repository 
+              <Hyperlink NavigateUri="https://github.com/blast752/sonic-s-elixir"> https://github.com/blast752/sonic-s-elixir</Hyperlink>
+            </Paragraph>
+          </ListItem>
+        </List>
+        <Paragraph Background="LightBlue" Padding="5" Margin="10,5,0,5">
+          <Bold>🌟 Your Feedback Matters!</Bold> I value your input and use it to improve Sonic's Elixir. Don't hesitate to reach out with your thoughts and experiences.
+        </Paragraph>
+      </Section>
+      
+      <!-- Conclusione -->
+      <Paragraph TextAlignment="Center" Margin="20,30,20,0">
+        Thank you for choosing Sonic's Elixir to optimize your Android experience. Get ready to enjoy your device at the speed of sound! 🎮🚀
+      </Paragraph>
+      
+    </FlowDocument>
+  </FlowDocumentScrollViewer>
+</Window>
