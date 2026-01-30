@@ -1,0 +1,649 @@
+<Window x:Class="ZephyrsElixir.WirelessConnectionDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:h="clr-namespace:ZephyrsElixir.UI.Helpers"
+        Title="Wireless ADB Connection"
+        Width="520" Height="580"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent">
+
+    <Window.Effect>
+        <DropShadowEffect BlurRadius="25" ShadowDepth="0" Color="Black" Opacity="0.4"/>
+    </Window.Effect>
+
+    <Border CornerRadius="16" 
+            Background="#FF0E1A33"
+            BorderBrush="{DynamicResource App.Brush.Gold}" 
+            BorderThickness="1.5"
+            Effect="{DynamicResource App.Effect.PageShadow}">
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0" 
+                    Background="{DynamicResource App.Brush.Glass.Background}"
+                    CornerRadius="16,16,0,0" 
+                    Padding="24,18"
+                    h:WindowDrag.Enabled="True">
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Width="44" Height="44" 
+                            CornerRadius="12" 
+                            Background="{DynamicResource App.Brush.IconCircle}"
+                            Margin="0,0,16,0">
+                        <Viewbox Width="20" Height="20" Margin="0,-5,0,0">
+                            <TextBlock x:Name="WifiIcon"
+                                    Text="&#xE701;" 
+                                    FontFamily="Segoe MDL2 Assets" 
+                                    FontSize="20" 
+                                    Foreground="{DynamicResource App.Brush.CheckedForeground}"
+                                    RenderTransformOrigin="0.5,0.5">
+                                <TextBlock.RenderTransform>
+                                    <ScaleTransform x:Name="WifiIconScale"/>
+                                </TextBlock.RenderTransform>
+                            </TextBlock>
+                        </Viewbox>
+                    </Border>
+
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock Text="Wireless ADB Connection" 
+                                   FontSize="20" 
+                                   FontWeight="SemiBold" 
+                                   Foreground="{DynamicResource App.Brush.CheckedForeground}"/>
+                        <TextBlock x:Name="StepIndicator" 
+                                   Text="Select your Android version" 
+                                   FontSize="12" 
+                                   Foreground="{DynamicResource App.Brush.NavButtonForeground}" 
+                                   Margin="0,2,0,0"/>
+                    </StackPanel>
+
+                    <Button Grid.Column="2" 
+                            HorizontalAlignment="Right" 
+                            VerticalAlignment="Top" 
+                            Width="32" Height="32" 
+                            Cursor="Hand" 
+                            h:WindowClose.Result="False"
+                            ToolTip="Close dialog">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="bg" Background="Transparent" CornerRadius="8">
+                                    <TextBlock Text="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                                               Foreground="{DynamicResource App.Brush.NavButtonForeground}" 
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="bg" Property="Background" 
+                                                Value="{DynamicResource App.Brush.Idle}"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <ScrollViewer Grid.Row="1" 
+                          VerticalScrollBarVisibility="Auto" 
+                          PanningMode="VerticalOnly">
+                <StackPanel Margin="24,20,24,20">
+
+                    <ProgressBar x:Name="ConnectionProgress" 
+                                 Style="{StaticResource App.Style.ProgressBar}"
+                                 Height="15" 
+                                 Margin="0,0,0,24"
+                                 Value="0"/>
+
+                    <TextBlock Text="Select your Android version to proceed with the appropriate connection method:"
+                               FontSize="13" 
+                               Foreground="{DynamicResource App.Brush.NavButtonForeground}"
+                               TextWrapping="Wrap"
+                               TextAlignment="Center"
+                               Margin="0,0,0,20"
+                               LineHeight="20"/>
+
+                    <Border Style="{StaticResource App.Style.SegmentedContainer}" 
+                            HorizontalAlignment="Center"
+                            Width="340"
+                            Margin="0,0,0,16">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <RadioButton x:Name="Android10Radio" 
+                                         Content="Android 10 &amp; below" 
+                                         GroupName="AndroidVersion"
+                                         IsChecked="True"
+                                         Style="{StaticResource App.Style.SegmentedRadioButton}"
+                                         Checked="OnVersionChanged"/>
+                            <RadioButton x:Name="Android11Radio" 
+                                         Content="Android 11+" 
+                                         Grid.Column="1"
+                                         GroupName="AndroidVersion"
+                                         Style="{StaticResource App.Style.SegmentedRadioButton}"
+                                         Checked="OnVersionChanged"/>
+                        </Grid>
+                    </Border>
+
+                    <Border Background="{DynamicResource App.Brush.Glass.Background}" 
+                            BorderBrush="{DynamicResource App.Brush.Glass.Border}" 
+                            BorderThickness="1" 
+                            CornerRadius="10" 
+                            Padding="16,12"
+                            Margin="0,0,0,24">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE946;" 
+                                       FontFamily="Segoe MDL2 Assets" 
+                                       FontSize="16" 
+                                       Foreground="{DynamicResource App.Brush.DeepSkyBlue}"
+                                       VerticalAlignment="Top"
+                                       Margin="0,2,12,0"/>
+                            <StackPanel>
+                                <TextBlock Text="How to check your Android version:" 
+                                           FontSize="13" 
+                                           FontWeight="SemiBold" 
+                                           Foreground="{DynamicResource App.Brush.DeepSkyBlue}"/>
+                                <TextBlock Text="Settings → About Phone → Android Version" 
+                                           FontSize="12" 
+                                           Foreground="{DynamicResource App.Brush.NavButtonForeground}" 
+                                           Opacity="0.8"
+                                           Margin="0,4,0,0"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <StackPanel x:Name="Android10Panel" Visibility="Collapsed">
+                        <TextBlock Text="Simple Connection Mode" 
+                                   FontSize="16" 
+                                   FontWeight="SemiBold" 
+                                   Foreground="{DynamicResource App.Brush.DeepSkyBlue}"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,0,0,16"/>
+
+                        <Border Background="{DynamicResource App.Brush.Glass.Background}" 
+                                BorderBrush="{DynamicResource App.Brush.Glass.Border}" 
+                                BorderThickness="1" 
+                                CornerRadius="8" 
+                                Padding="14,10"
+                                Margin="0,0,0,20">
+                            <StackPanel>
+                                <TextBlock Text="📱 Enable Developer Options → Wireless Debugging" 
+                                           FontSize="13" 
+                                           FontWeight="SemiBold" 
+                                           Foreground="{DynamicResource App.Brush.DeepSkyBlue}"/>
+                                <TextBlock Text="Make sure your device and PC are on the same network" 
+                                           FontSize="12" 
+                                           Foreground="{DynamicResource App.Brush.NavButtonForeground}" 
+                                           Opacity="0.7"
+                                           Margin="0,4,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <StackPanel Margin="0,0,0,16">
+                            <TextBlock Text="Device IP Address" 
+                                       FontSize="13" 
+                                       Foreground="{DynamicResource App.Brush.CheckedForeground}" 
+                                       Margin="0,0,0,8"/>
+                            
+                            <Border Background="{DynamicResource App.Brush.Glass.Background}" 
+                                    BorderBrush="{DynamicResource App.Brush.Glass.Border}" 
+                                    BorderThickness="1" 
+                                    CornerRadius="10" 
+                                    Height="42">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <Border Background="{DynamicResource App.Brush.Idle}" 
+                                            CornerRadius="10,0,0,10" 
+                                            Padding="14,0">
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock Text="&#xE839;" 
+                                                       FontFamily="Segoe MDL2 Assets" 
+                                                       FontSize="14" 
+                                                       Foreground="{DynamicResource App.Brush.DeepSkyBlue}"
+                                                       VerticalAlignment="Center"
+                                                       Margin="0,0,8,0"/>
+                                            <TextBlock x:Name="IpPrefixText"
+                                                       Text="192.168.1." 
+                                                       FontSize="15" 
+                                                       FontWeight="SemiBold"
+                                                       Foreground="{DynamicResource App.Brush.DeepSkyBlue}"
+                                                       VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Border>
+                                    
+                                    <TextBox x:Name="IpLastOctetTextBox"
+                                             Grid.Column="1"
+                                             MaxLength="3"
+                                             Width="80"
+                                             Height="40"
+                                             FontSize="16"
+                                             FontWeight="SemiBold"
+                                             Foreground="{DynamicResource App.Brush.CheckedForeground}"
+                                             Background="Transparent"
+                                             BorderThickness="0"
+                                             HorizontalAlignment="Left"
+                                             Margin="5,0,0,0"
+                                             CaretBrush="{DynamicResource App.Brush.DeepSkyBlue}"
+                                             VerticalContentAlignment="Center"
+                                             PreviewTextInput="OnOctetPreviewInput"
+                                             KeyDown="OnEnterKeyDown"
+                                             ToolTip="Enter the last number (1-254)"/>
+                                </Grid>
+                            </Border>
+                            
+                            <TextBlock Text="Your network prefix is auto-detected. Just enter the device's last number."
+                                       FontSize="11"
+                                       Foreground="{DynamicResource App.Brush.NavButtonForeground}"
+                                       Opacity="0.6"
+                                       Margin="4,6,0,0"/>
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,0,16">
+                            <TextBlock Text="Port" 
+                                       FontSize="13" 
+                                       Foreground="{DynamicResource App.Brush.CheckedForeground}" 
+                                       Margin="0,0,0,8"/>
+                            
+                            <Border Background="{DynamicResource App.Brush.Glass.Background}" 
+                                    BorderBrush="{DynamicResource App.Brush.Glass.Border}" 
+                                    BorderThickness="1" 
+                                    CornerRadius="10" 
+                                    Height="42"
+                                    Width="140"
+                                    HorizontalAlignment="Left">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <Border Background="{DynamicResource App.Brush.Idle}" 
+                                            CornerRadius="10,0,0,10" 
+                                            Padding="12,0">
+                                        <TextBlock Text="&#xE968;" 
+                                                   FontFamily="Segoe MDL2 Assets" 
+                                                   FontSize="14" 
+                                                   Foreground="{DynamicResource App.Brush.DeepSkyBlue}"
+                                                   VerticalAlignment="Center"/>
+                                    </Border>
+                                    
+                                    <TextBlock Grid.Column="1"
+                                               Text="5555"
+                                               FontSize="15"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource App.Brush.NavButtonForeground}"
+                                               VerticalAlignment="Center"
+                                               HorizontalAlignment="Center"
+                                               Margin="8,0"/>
+                                </Grid>
+                            </Border>
+                            
+                            <TextBlock Text="Default ADB port (automatically configured)"
+                                       FontSize="11"
+                                       Foreground="{DynamicResource App.Brush.NavButtonForeground}"
+                                       Opacity="0.6"
+                                       Margin="4,6,0,0"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel x:Name="Android11Panel" Visibility="Collapsed">
+                        <TextBlock Text="Pairing Mode (More Secure)" 
+                                   FontSize="16" 
+                                   FontWeight="SemiBold" 
+                                   Foreground="{DynamicResource App.Brush.DeepSkyBlue}"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,0,0,16"/>
+
+                        <Border Background="{DynamicResource App.Brush.Glass.Background}" 
+                                BorderBrush="{DynamicResource App.Brush.Glass.Border}" 
+                                BorderThickness="1" 
+                                CornerRadius="8" 
+                                Padding="14,10"
+                                Margin="0,0,0,20">
+                            <StackPanel>
+                                <TextBlock Text="📱 Settings → Developer Options → Wireless Debugging → Pair Device" 
+                                           FontSize="13" 
+                                           FontWeight="SemiBold" 
+                                           Foreground="{DynamicResource App.Brush.DeepSkyBlue}"
+                                           TextWrapping="Wrap"/>
+                                <TextBlock Text="Copy the IP address, port, and pairing code from your device" 
+                                           FontSize="12" 
+                                           Foreground="{DynamicResource App.Brush.NavButtonForeground}" 
+                                           Opacity="0.7"
+                                           Margin="0,4,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <StackPanel Margin="0,0,0,16">
+                            <TextBlock Text="Device IP Address" 
+                                       FontSize="13" 
+                                       Foreground="{DynamicResource App.Brush.CheckedForeground}" 
+                                       Margin="0,0,0,8"/>
+                            
+                            <Border Background="{DynamicResource App.Brush.Glass.Background}" 
+                                    BorderBrush="{DynamicResource App.Brush.Glass.Border}" 
+                                    BorderThickness="1" 
+                                    CornerRadius="10" 
+                                    Height="42">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <Border Background="{DynamicResource App.Brush.Idle}" 
+                                            CornerRadius="10,0,0,10" 
+                                            Padding="14,0">
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock Text="&#xE839;" 
+                                                       FontFamily="Segoe MDL2 Assets" 
+                                                       FontSize="14" 
+                                                       Foreground="{DynamicResource App.Brush.DeepSkyBlue}"
+                                                       VerticalAlignment="Center"
+                                                       Margin="0,0,8,0"/>
+                                            <TextBlock x:Name="PairIpPrefixText"
+                                                       Text="192.168.1." 
+                                                       FontSize="15" 
+                                                       FontWeight="SemiBold"
+                                                       Foreground="{DynamicResource App.Brush.DeepSkyBlue}"
+                                                       VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Border>
+                                    
+                                    <TextBox x:Name="PairIpLastOctetTextBox"
+                                             Grid.Column="1"
+                                             MaxLength="3"
+                                             Width="80"
+                                             Height="40"
+                                             FontSize="16"
+                                             FontWeight="SemiBold"
+                                             Foreground="{DynamicResource App.Brush.CheckedForeground}"
+                                             Background="Transparent"
+                                             BorderThickness="0"
+                                             CaretBrush="{DynamicResource App.Brush.DeepSkyBlue}"
+                                             HorizontalAlignment="Left"
+                                             VerticalContentAlignment="Center"
+                                             Margin="5,0,0,0"
+                                             PreviewTextInput="OnOctetPreviewInput"
+                                             KeyDown="OnEnterKeyDown"
+                                             ToolTip="Enter the last number (1-254)"/>
+                                </Grid>
+                            </Border>
+                            
+                            <TextBlock Text="Your network prefix is auto-detected. Enter the device's last number from the pairing dialog."
+                                       FontSize="11"
+                                       Foreground="{DynamicResource App.Brush.NavButtonForeground}"
+                                       Opacity="0.6"
+                                       TextWrapping="Wrap"
+                                       Margin="4,6,0,0"/>
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,0,16">
+                            <TextBlock Text="Pairing Port" 
+                                       FontSize="13" 
+                                       Foreground="{DynamicResource App.Brush.CheckedForeground}" 
+                                       Margin="0,0,0,8"/>
+                            
+                            <Border Background="{DynamicResource App.Brush.Glass.Background}" 
+                                    BorderBrush="{DynamicResource App.Brush.Glass.Border}" 
+                                    BorderThickness="1" 
+                                    CornerRadius="10" 
+                                    Height="42"
+                                    Width="160"
+                                    HorizontalAlignment="Left">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <Border Background="{DynamicResource App.Brush.Idle}" 
+                                            CornerRadius="10,0,0,10" 
+                                            Padding="12,0">
+                                        <TextBlock Text="&#xE968;" 
+                                                   FontFamily="Segoe MDL2 Assets" 
+                                                   FontSize="14" 
+                                                   Foreground="{DynamicResource App.Brush.DeepSkyBlue}"
+                                                   VerticalAlignment="Center"/>
+                                    </Border>
+                                    
+                                    <TextBox x:Name="PairPortTextBox"
+                                             Grid.Column="1"
+                                             MaxLength="5"
+                                             FontSize="15"
+                                             FontWeight="SemiBold"
+                                             Foreground="{DynamicResource App.Brush.CheckedForeground}"
+                                             Background="Transparent"
+                                             BorderThickness="0"
+                                             CaretBrush="{DynamicResource App.Brush.DeepSkyBlue}"
+                                             VerticalContentAlignment="Center"
+                                             HorizontalContentAlignment="Center"
+                                             Margin="8,0,8,0"
+                                             PreviewTextInput="OnPortPreviewInput"
+                                             KeyDown="OnEnterKeyDown"
+                                             ToolTip="Enter the port from pairing dialog"/>
+                                </Grid>
+                            </Border>
+                            
+                            <TextBlock Text="Copy the port number from your device's pairing dialog"
+                                       FontSize="11"
+                                       Foreground="{DynamicResource App.Brush.NavButtonForeground}"
+                                       Opacity="0.6"
+                                       Margin="4,6,0,0"/>
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,0,16">
+                            <TextBlock Text="6-Digit Pairing Code" 
+                                       FontSize="13" 
+                                       Foreground="{DynamicResource App.Brush.CheckedForeground}" 
+                                       Margin="0,0,0,8"/>
+                            
+                            <Border Background="{DynamicResource App.Brush.Glass.Background}" 
+                                    BorderBrush="{DynamicResource App.Brush.Glass.Border}" 
+                                    BorderThickness="1" 
+                                    CornerRadius="10" 
+                                    Height="48"
+                                    Width="180"
+                                    HorizontalAlignment="Left">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <Border Background="{DynamicResource App.Brush.Idle}" 
+                                            CornerRadius="10,0,0,10" 
+                                            Padding="12,0">
+                                        <TextBlock Text="&#xE8D7;" 
+                                                   FontFamily="Segoe MDL2 Assets" 
+                                                   FontSize="16" 
+                                                   Foreground="{DynamicResource App.Brush.DeepSkyBlue}"
+                                                   VerticalAlignment="Center"/>
+                                    </Border>
+                                    
+                                    <TextBox x:Name="PairCodeTextBox"
+                                             Grid.Column="1"
+                                             MaxLength="6"
+                                             FontSize="20"
+                                             FontWeight="Bold"
+                                             Foreground="{DynamicResource App.Brush.CheckedForeground}"
+                                             Background="Transparent"
+                                             BorderThickness="0"
+                                             VerticalContentAlignment="Center"
+                                             CaretBrush="{DynamicResource App.Brush.DeepSkyBlue}"
+                                             HorizontalContentAlignment="Center"
+                                             FontStretch="Expanded"
+                                             Margin="8,0,8,0"
+                                             PreviewTextInput="OnPairCodePreviewInput"
+                                             KeyDown="OnEnterKeyDown"
+                                             ToolTip="Enter the 6-digit code"/>
+                                </Grid>
+                            </Border>
+                            
+                            <TextBlock Text="Enter the 6-digit code shown on your device"
+                                       FontSize="11"
+                                       Foreground="{DynamicResource App.Brush.NavButtonForeground}"
+                                       Opacity="0.6"
+                                       Margin="4,6,0,0"/>
+                        </StackPanel>
+
+                        <Border x:Name="SuccessMessage"
+                                Background="#0A4ADE80" 
+                                BorderThickness="1" 
+                                CornerRadius="8" 
+                                Padding="14,10"
+                                Visibility="Collapsed">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{DynamicResource App.Color.Success}" Opacity="0.2"/>
+                            </Border.BorderBrush>
+                            <StackPanel>
+                                <TextBlock Text="✓ Pairing completed successfully!" 
+                                           FontSize="13" 
+                                           FontWeight="SemiBold" 
+                                           Foreground="{DynamicResource App.Brush.Success}"/>
+                                <TextBlock Text="The device is now connected. You can close this dialog." 
+                                           FontSize="12" 
+                                           Foreground="{DynamicResource App.Brush.NavButtonForeground}" 
+                                           Opacity="0.7"
+                                           Margin="0,4,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <TextBlock x:Name="StatusText" 
+                               FontSize="13" 
+                               TextAlignment="Center"
+                               TextWrapping="Wrap"
+                               Margin="0,16,0,0"
+                               Visibility="Collapsed"/>
+
+                    <Border x:Name="LoadingIndicator" 
+                            Width="40" Height="40" 
+                            Margin="0,16,0,0"
+                            Visibility="Collapsed"
+                            HorizontalAlignment="Center">
+                        <Canvas Width="40" Height="40" x:Name="LoadingCanvas"/>
+                    </Border>
+
+                </StackPanel>
+            </ScrollViewer>
+
+            <Border Grid.Row="2" 
+                    Padding="24,16"
+                    Background="{DynamicResource App.Brush.Glass.Background}"
+                    CornerRadius="0,0,16,16">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="12"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button x:Name="CancelButton" 
+                            Grid.Column="1"
+                            Content="Cancel"
+                            Height="42" 
+                            Width="110"
+                            FontSize="13" 
+                            FontWeight="Medium" 
+                            Cursor="Hand"
+                            Foreground="{DynamicResource App.Brush.NavButtonForeground}"
+                            h:WindowClose.Result="False">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="bg" Background="{DynamicResource App.Brush.Idle}" 
+                                        BorderBrush="{DynamicResource App.Brush.Glass.Border}" 
+                                        BorderThickness="1" CornerRadius="10">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="bg" Property="Background" 
+                                                Value="{DynamicResource App.Brush.Hover}"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
+                    <Button x:Name="ActionButton" 
+                            Grid.Column="3"
+                            Content="Connect"
+                            Height="42" 
+                            Width="110"
+                            FontSize="13" 
+                            FontWeight="SemiBold" 
+                            Cursor="Hand"
+                            Foreground="{DynamicResource App.Brush.CheckedForeground}"
+                            Click="OnActionClick">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="bg" Background="{DynamicResource App.Brush.IconCircle}" CornerRadius="10">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="bg" Property="Opacity" Value="0.9"/>
+                                    </Trigger>
+                                    <Trigger Property="IsEnabled" Value="False">
+                                        <Setter TargetName="bg" Property="Opacity" Value="0.5"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </Grid>
+            </Border>
+
+        </Grid>
+    </Border>
+
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="Loaded">
+            <BeginStoryboard>
+                <Storyboard>
+                    <DoubleAnimation Storyboard.TargetName="WifiIconScale"
+                                     Storyboard.TargetProperty="ScaleX"
+                                     From="1" To="1.15"
+                                     Duration="0:0:1"
+                                     AutoReverse="True"
+                                     RepeatBehavior="Forever">
+                        <DoubleAnimation.EasingFunction>
+                            <SineEase EasingMode="EaseInOut"/>
+                        </DoubleAnimation.EasingFunction>
+                    </DoubleAnimation>
+                    <DoubleAnimation Storyboard.TargetName="WifiIconScale"
+                                     Storyboard.TargetProperty="ScaleY"
+                                     From="1" To="1.15"
+                                     Duration="0:0:1"
+                                     AutoReverse="True"
+                                     RepeatBehavior="Forever">
+                        <DoubleAnimation.EasingFunction>
+                            <SineEase EasingMode="EaseInOut"/>
+                        </DoubleAnimation.EasingFunction>
+                    </DoubleAnimation>
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </Window.Triggers>
+
+</Window>

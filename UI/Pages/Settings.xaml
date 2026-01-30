@@ -1,0 +1,144 @@
+<UserControl x:Class="ZephyrsElixir.UI.Pages.Settings"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:h="clr-namespace:ZephyrsElixir.UI.Helpers"
+             xmlns:localization="clr-namespace:ZephyrsElixir.Localization"
+             mc:Ignorable="d" 
+             d:DesignHeight="860" d:DesignWidth="1120"
+             Background="Transparent"
+             Loaded="OnSettingsLoaded">
+
+    <UserControl.Resources>
+        <h:CapitalizeConverter x:Key="CapitalizeConverter"/>
+    </UserControl.Resources>
+
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <RowDefinition Height="24"/>   <RowDefinition Height="*"/>    </Grid.RowDefinitions>
+
+        <h:PageHeader Grid.Row="0"
+                    Icon="&#xE713;"
+                    Title="{h:Translate Settings_Header}"
+                    Subtitle="{h:Translate Settings_Subtitle_New}"/>
+
+        <ScrollViewer Grid.Row="2" 
+                      VerticalScrollBarVisibility="Auto" 
+                      HorizontalScrollBarVisibility="Disabled" 
+                      Padding="0,0,10,0">
+            
+            <StackPanel x:Name="MainContainer">
+
+                <h:SettingsSection Icon="&#xE713;"
+                                         Header="{h:Translate Settings_General_Header}" 
+                                         AnimationDelay="100">
+                    <StackPanel>
+                        <h:SettingItem Title="{h:Translate Settings_Language_Title}" 
+                                             Description="{h:Translate Settings_Language_Description}">
+                            <ComboBox x:Name="LanguageComboBox" 
+                                    Style="{StaticResource App.Style.ComboBox.Slim}"
+                                    MinWidth="180"
+                                    HorizontalAlignment="Right"
+                                    ItemsSource="{Binding Source={x:Static localization:TranslationManager.Instance}, Path=AvailableCultures}"
+                                    SelectedItem="{Binding Source={x:Static localization:TranslationManager.Instance}, Path=CurrentCulture}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Parent.NativeName, Converter={StaticResource CapitalizeConverter}}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </h:SettingItem>
+
+                        <h:SettingItem Title="{h:Translate Settings_Updates_Title}" 
+                                             Description="{h:Translate Settings_Updates_Description}">
+                            <Border Style="{StaticResource App.Style.StatusTag.Good}" 
+                                    HorizontalAlignment="Right" 
+                                    MinWidth="140" 
+                                    Height="40">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <TextBlock Text="&#xE930;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#90EE90" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <TextBlock Text="{h:Translate Settings_Updates_Status_AlwaysOn}" FontSize="14" FontWeight="SemiBold" Foreground="White" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+                        </h:SettingItem>
+
+                        <h:SettingItem Title="{h:Translate Settings_Adb_Title}" 
+                                             Description="{h:Translate Settings_Adb_Description}" 
+                                             Margin="0"> <Border x:Name="AdbStatusContainer" 
+                                    Style="{StaticResource App.Style.StatusTag.Info}"
+                                    HorizontalAlignment="Right" 
+                                    MinWidth="140"
+                                    Height="40">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <TextBlock Text="&#xE756;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#87CEFA" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <TextBlock x:Name="AdbVersionText" FontSize="14" FontWeight="SemiBold" Foreground="White" VerticalAlignment="Center" Text="{h:Translate Settings_Adb_Status_Checking}"/>
+                                </StackPanel>
+                            </Border>
+                        </h:SettingItem>
+                    </StackPanel>
+                </h:SettingsSection>
+                
+                <h:SettingsSection Icon="&#xE71D;"
+                                         Header="{h:Translate Settings_App_Header}" 
+                                         AnimationDelay="200">
+                    <StackPanel>
+                        <h:SettingItem Title="{h:Translate Settings_Export_Title}" 
+                                             Description="{h:Translate Settings_Export_Description}">
+                            <Button Content="{h:Translate Settings_Export_Button}" 
+                                    Tag="&#xE8A1;"
+                                    Style="{StaticResource App.Style.SettingsControl}"
+                                    Click="OnExportLogsClick"/>
+                        </h:SettingItem>
+
+                        <h:SettingItem Title="{h:Translate Settings_Reset_Title}" 
+                                             Description="{h:Translate Settings_Reset_Description}" 
+                                             Margin="0">
+                            <Button Content="{h:Translate Settings_Reset_Button}" 
+                                    Tag="&#xE777;"
+                                    Style="{StaticResource App.Style.SettingsControl}"
+                                    BorderBrush="{StaticResource App.Brush.Destructive.IconCircle}"
+                                    Foreground="#FFC0C0"
+                                    Click="OnResetToDefaultsClick">
+                                <Button.Background>
+                                    <SolidColorBrush Color="#15FF2A2A"/>
+                                </Button.Background>
+                            </Button>
+                        </h:SettingItem>
+                        <h:SettingItem Title="{h:Translate Settings_ProLicense_Title}" 
+                                       Description="{h:Translate Settings_ProLicense_Description}">
+                            <Button Content="{h:Translate Settings_ProLicense_Button}" 
+                                    Tag="&#xE8D7;"
+                                    Style="{StaticResource App.Style.SettingsControl}"
+                                    Click="OnProLicenseClick"/>
+                        </h:SettingItem>
+                    </StackPanel>
+                </h:SettingsSection>
+
+                <h:SettingsSection Icon="&#xE897;"
+                                         Header="{h:Translate Settings_About_Header}" 
+                                         AnimationDelay="300">
+                    <StackPanel>
+                        <h:SettingItem Title="{h:Translate Settings_License_Title}" 
+                                             Description="{h:Translate Settings_License_Description}">
+                            <Button Content="{h:Translate Settings_License_Button}" 
+                                    Tag="&#xE8B7;"
+                                    Style="{StaticResource App.Style.SettingsControl}"
+                                    Click="OnLicenseClick"/>
+                        </h:SettingItem>
+
+                        <h:SettingItem Title="{h:Translate Settings_Privacy_Title}" 
+                                             Description="{h:Translate Settings_Privacy_Description}" 
+                                             Margin="0">
+                            <Button Content="{h:Translate Settings_Privacy_Button}" 
+                                    Tag="&#xE72E;"
+                                    Style="{StaticResource App.Style.SettingsControl}"
+                                    Click="OnPrivacyClick"/>
+                        </h:SettingItem>
+                    </StackPanel>
+                </h:SettingsSection>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

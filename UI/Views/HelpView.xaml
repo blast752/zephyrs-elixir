@@ -1,0 +1,1869 @@
+<UserControl x:Class="ZephyrsElixir.HelpView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:ZephyrsElixir.ViewModels"
+             xmlns:helpers="clr-namespace:ZephyrsElixir.UI.Helpers"
+             mc:Ignorable="d">
+
+    <UserControl.DataContext>
+        <vm:HelpViewModel/>
+    </UserControl.DataContext>
+
+    <UserControl.Resources>
+        <DropShadowEffect x:Key="GlowEffect" Color="#00BFFF" BlurRadius="24" ShadowDepth="0" Opacity="0.8"/>
+        <DropShadowEffect x:Key="SoftGlow" Color="#7FD4FF" BlurRadius="16" ShadowDepth="0" Opacity="0.6"/>
+        <helpers:EqualityToVisibilityConverter x:Key="EqToVisibility"/>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+
+        <Style x:Key="SlideFadeOnVisible" TargetType="StackPanel">
+            <Setter Property="Opacity" Value="1"/>
+            <Style.Triggers>
+                <Trigger Property="Visibility" Value="Visible">
+                    <Trigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="Opacity" 
+                                            From="0" To="1" Duration="0:0:0.3"/>
+                                <ThicknessAnimation Storyboard.TargetProperty="Margin"
+                                                From="0,20,0,0" To="0,0,0,0" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.EnterActions>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <LinearGradientBrush x:Key="HeadingGradientBrush" StartPoint="0,0.5" EndPoint="1,0.5">
+            <GradientStop Color="White" Offset="0.0"/>
+            <GradientStop Color="#FFFFD700" Offset="0.7"/>
+            <GradientStop Color="#FF00BFFF" Offset="1.0"/>
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="AccentGradientBrush" StartPoint="0,0" EndPoint="1,0">
+            <GradientStop Color="#FFD700" Offset="0.0"/>
+            <GradientStop Color="#00BFFF" Offset="1.0"/>
+        </LinearGradientBrush>
+
+        <Style x:Key="CardContainer" TargetType="Border">
+            <Setter Property="CornerRadius" Value="20"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Padding" Value="26"/>
+            <Setter Property="Margin" Value="0,0,0,20"/>
+            <Setter Property="Background" Value="#32007FFF"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="30" ShadowDepth="0" Color="#FF007FFF" Opacity="0.40"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="BorderBrush">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#B3FFD700" Offset="0.0"/>
+                        <GradientStop Color="#8000BFFF" Offset="1.0"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="HighlightBox" TargetType="Border">
+            <Setter Property="CornerRadius" Value="14"/>
+            <Setter Property="Background" Value="#19FFFFFF"/>
+            <Setter Property="BorderBrush" Value="#40FFFFFF"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="14"/>
+            <Setter Property="Margin" Value="0,12,0,12"/>
+        </Style>
+
+        <Style x:Key="HintBox" TargetType="Border">
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                        <GradientStop Color="#28FFD700" Offset="0.0"/>
+                        <GradientStop Color="#1400BFFF" Offset="1.0"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="BorderBrush" Value="#50FFD700"/>
+            <Setter Property="BorderThickness" Value="1.5"/>
+            <Setter Property="Padding" Value="14"/>
+            <Setter Property="Margin" Value="0,12,0,0"/>
+            <Setter Property="Effect" Value="{StaticResource SoftGlow}"/>
+        </Style>
+
+        <Style x:Key="H1" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="42"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{StaticResource HeadingGradientBrush}"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="Black" BlurRadius="6" ShadowDepth="2" Opacity="0.4"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="H2" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="Margin" Value="0,20,0,8"/>
+        </Style>
+
+        <Style x:Key="H3" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#FFDCDCFF"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="Margin" Value="0,14,0,6"/>
+        </Style>
+
+        <Style x:Key="Body" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Foreground" Value="#FFC8D8FF"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="Margin" Value="0,6,0,0"/>
+            <Setter Property="LineHeight" Value="24"/>
+        </Style>
+
+        <Style x:Key="BodyLarge" TargetType="TextBlock" BasedOn="{StaticResource Body}">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="LineHeight" Value="26"/>
+        </Style>
+
+        <Style x:Key="Caption" TargetType="TextBlock" BasedOn="{StaticResource Body}">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Opacity" Value="0.75"/>
+            <Setter Property="FontStyle" Value="Italic"/>
+        </Style>
+
+        <Style x:Key="Emphasis" TargetType="Run">
+            <Setter Property="Foreground" Value="#FFFFD700"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+
+        <Style TargetType="{x:Type Hyperlink}">
+            <Setter Property="Foreground" Value="#FF7FD4FF"/>
+            <Setter Property="TextDecorations" Value="{x:Null}"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="TextDecorations" Value="Underline"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="NavListBox" TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled"/>
+            <Setter Property="ItemContainerStyle">
+                <Setter.Value>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Padding" Value="0"/>
+                        <Setter Property="Margin" Value="0,0,0,6"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <Border x:Name="Border" 
+                                           Background="{TemplateBinding Background}"
+                                           BorderThickness="0"
+                                           CornerRadius="12"
+                                           Padding="14,10,14,10">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            
+                                            <TextBlock Grid.Column="0"
+                                                      Text="{Binding Icon}"
+                                                      FontFamily="Segoe MDL2 Assets"
+                                                      FontSize="16"
+                                                      Foreground="#FFC8D8FF"
+                                                      VerticalAlignment="Center"
+                                                      Margin="0,0,12,0"/>
+                                            
+                                            <TextBlock Grid.Column="1"
+                                                      Text="{Binding Title}"
+                                                      FontSize="14"
+                                                      FontWeight="Medium"
+                                                      Foreground="White"
+                                                      VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="Border" Property="Background" Value="#26FFFFFF"/>
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="Border" Property="Background">
+                                                <Setter.Value>
+                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                                        <GradientStop Color="#50FFD700" Offset="0.0"/>
+                                                        <GradientStop Color="#5000BFFF" Offset="1.0"/>
+                                                    </LinearGradientBrush>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <DataTemplate x:Key="PageTemplate_Welcome">
+            <StackPanel Style="{StaticResource SlideFadeOnVisible}">
+                <Border Style="{StaticResource CardContainer}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource H1}">
+                            Welcome to Zephyr's Elixir
+                        </TextBlock>
+                        
+                        <TextBlock Style="{StaticResource BodyLarge}" Margin="0,10,0,0">
+                            <Run Text="I'm thrilled to have you here. Zephyr's Elixir is my answer to a simple question: "/><Run Style="{StaticResource Emphasis}" Text="Why can't Android optimization be both powerful and beautiful?"/>
+                        </TextBlock>
+                        
+                        <TextBlock Style="{StaticResource Body}">
+                            After countless hours of development, I've crafted an application that combines the deep customization capabilities of Android with an interface that rivals the elegance of iOS. This isn't just another ADB tool—it's a complete optimization ecosystem designed with care, precision, and respect for your device.
+                        </TextBlock>
+
+                        <TextBlock Style="{StaticResource H2}">
+                            What Makes Zephyr's Elixir Special?
+                        </TextBlock>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    <Run Text="&#xE946;" FontFamily="Segoe MDL2 Assets"/><Run Text="  Effortless Power"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    One button. That's all it takes. Behind that simple "Start Optimization" button lies a carefully orchestrated sequence of 105+ optimization steps that transform your device's performance.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    <Run Text="&#xE7C3;" FontFamily="Segoe MDL2 Assets"/><Run Text="  Complete Transparency"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    Every action is logged in real-time through the Optimization Console. You're never left wondering "what's happening?" — you see exactly what I'm doing to your device, command by command.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    <Run Text="&#xE72C;" FontFamily="Segoe MDL2 Assets"/><Run Text="  Total Reversibility"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    Nothing is permanent unless you want it to be. The Advanced section tracks every change I make during your session, and you can undo everything with a single "Reset All" button.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    <Run Text="&#xEA8F;" FontFamily="Segoe MDL2 Assets"/><Run Text="  No Root Required"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    I use ADB (Android Debug Bridge) exclusively, which means you don't need to unlock your bootloader or void your warranty. Just enable USB debugging and you're ready to go.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    <Run Text="&#xE8D7;" FontFamily="Segoe MDL2 Assets"/><Run Text="  Privacy First"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    Zephyr's Elixir is completely offline. No telemetry, no analytics, no data collection. What happens on your device stays on your device.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <TextBlock Style="{StaticResource H2}">
+                            The Philosophy
+                        </TextBlock>
+                        
+                        <TextBlock Style="{StaticResource Body}">
+                            I believe optimization shouldn't feel like work. It shouldn't require you to memorize ADB commands or spend hours researching what's safe to disable. Instead, it should feel like magic—intuitive, beautiful, and rewarding.
+                        </TextBlock>
+                        
+                        <TextBlock Style="{StaticResource Body}">
+                            That's why every element of this interface is carefully designed. From the animated particle effects to the real-time battery monitoring in the sidebar, every detail serves a purpose: to make your experience as smooth and delightful as the optimizations themselves.
+                        </TextBlock>
+
+                        <Border Style="{StaticResource HintBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource Body}" FontWeight="SemiBold" Foreground="White">
+                                    Ready to begin?
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    Start with the "First Steps" section to set up your device, or jump straight to "Quick Guide" if you're eager to optimize. I'm here to guide you every step of the way.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="PageTemplate_FirstSteps">
+            <StackPanel Style="{StaticResource SlideFadeOnVisible}">
+                <Border Style="{StaticResource CardContainer}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource H1}">
+                            First Steps
+                        </TextBlock>
+                        
+                        <TextBlock Style="{StaticResource BodyLarge}" Margin="0,10,0,0">
+                            Let's get your device ready for optimization. This process is straightforward and takes just a few minutes.
+                        </TextBlock>
+
+                        <TextBlock Style="{StaticResource H2}">
+                            1. Enable USB Debugging
+                        </TextBlock>
+
+                        <TextBlock Style="{StaticResource Body}">
+                            USB Debugging is the gateway that allows Zephyr's Elixir to communicate with your Android device. Here's how to enable it:
+                        </TextBlock>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    <Run Text="&#xE7C3;" FontFamily="Segoe MDL2 Assets"/><Run Text="  Step-by-Step Process"/>
+                                </TextBlock>
+                                
+                                <TextBlock Style="{StaticResource Body}" Margin="0,8,0,4">
+                                    <Run Style="{StaticResource Emphasis}" Text="1."/>
+                                    <Run Text=" Open your device's "/>
+                                    <Run Style="{StaticResource Emphasis}" Text="Settings"/>
+                                </TextBlock>
+                                
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Style="{StaticResource Emphasis}" Text="2."/>
+                                    <Run Text=" Navigate to "/>
+                                    <Run Style="{StaticResource Emphasis}" Text="About Phone"/>
+                                    <Run Text=" (usually at the bottom)"/>
+                                </TextBlock>
+                                
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Style="{StaticResource Emphasis}" Text="3."/>
+                                    <Run Text=" Find "/>
+                                    <Run Style="{StaticResource Emphasis}" Text="Build Number"/>
+                                    <Run Text=" and tap it "/>
+                                    <Run Style="{StaticResource Emphasis}" Text="7 times"/>
+                                </TextBlock>
+                                
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Style="{StaticResource Emphasis}" Text="4."/>
+                                    <Run Text=" You'll see a message saying "/>
+                                    <Run Style="{StaticResource Emphasis}" Text='"You are now a developer!"'/>
+                                </TextBlock>
+                                
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Style="{StaticResource Emphasis}" Text="5."/>
+                                    <Run Text=" Go back to Settings and find "/>
+                                    <Run Style="{StaticResource Emphasis}" Text="Developer Options"/>
+                                </TextBlock>
+                                
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Style="{StaticResource Emphasis}" Text="6."/>
+                                    <Run Text=" Enable "/>
+                                    <Run Style="{StaticResource Emphasis}" Text="USB Debugging"/>
+                                </TextBlock>
+                                
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,0">
+                                    <Run Style="{StaticResource Emphasis}" Text="7."/>
+                                    <Run Text=" Confirm the security prompt"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <TextBlock Style="{StaticResource H2}">
+                            2. Connect Your Device
+                        </TextBlock>
+
+                        <TextBlock Style="{StaticResource Body}">
+                            Now that USB Debugging is enabled, connect your device to your computer using a USB cable.
+                        </TextBlock>
+
+                        <Border Style="{StaticResource HintBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource Body}" FontWeight="SemiBold" Foreground="White">
+                                    <Run Text="&#xE946;" FontFamily="Segoe MDL2 Assets"/><Run Text="  Important: Use a Data Cable"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    Not all USB cables support data transfer. If your device isn't being detected, try a different cable. The cable that came with your phone usually works best.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <TextBlock Style="{StaticResource Body}" Margin="0,12,0,0">
+                            When you first connect:
+                        </TextBlock>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Text="• A popup will appear on your device asking "/>
+                                    <Run Style="{StaticResource Emphasis}" Text='"Allow USB debugging?"'/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Text="• Check "/>
+                                    <Run Style="{StaticResource Emphasis}" Text='"Always allow from this computer"'/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    <Run Text="• Tap "/>
+                                    <Run Style="{StaticResource Emphasis}" Text="OK"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <TextBlock Style="{StaticResource H2}">
+                            3. Verify Connection
+                        </TextBlock>
+
+                        <TextBlock Style="{StaticResource Body}">
+                            Look at the left sidebar in Zephyr's Elixir. At the bottom, you'll see the device status panel. Once your device is properly connected, you should see:
+                        </TextBlock>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Text="• Your device name (e.g., "/>
+                                    <Run Style="{StaticResource Emphasis}" Text='"Samsung Galaxy S23"'/>
+                                    <Run Text=")"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    <Run Text="• A battery indicator showing your current charge level"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <TextBlock Style="{StaticResource Body}" Margin="0,12,0,0">
+                            All navigation buttons (Optimize, Debloat, Advanced) will become enabled when a device is detected.
+                        </TextBlock>
+
+                        <TextBlock Style="{StaticResource H2}">
+                            4. Optional: Set Up Wireless Connection
+                        </TextBlock>
+
+                        <TextBlock Style="{StaticResource Body}">
+                            Once you've connected via USB at least once, you can set up wireless ADB. This lets you use Zephyr's Elixir without keeping your phone plugged in.
+                        </TextBlock>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    <Run Text="&#xE839;" FontFamily="Segoe MDL2 Assets"/><Run Text="  Setting Up Wireless Mode"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,8,0,4">
+                                    <Run Style="{StaticResource Emphasis}" Text="1."/>
+                                    <Run Text=" Make sure your device is connected via USB"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Style="{StaticResource Emphasis}" Text="2."/>
+                                    <Run Text=" Go to the Home screen"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Style="{StaticResource Emphasis}" Text="3."/>
+                                    <Run Text=" Click "/>
+                                    <Run Style="{StaticResource Emphasis}" Text="Wireless Connection"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Style="{StaticResource Emphasis}" Text="4."/>
+                                    <Run Text=" The wizard will guide you through enabling ADB over Wi-Fi"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    <Run Style="{StaticResource Emphasis}" Text="5."/>
+                                    <Run Text=" Once configured, you can unplug your USB cable and continue wirelessly"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HintBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource Body}" FontWeight="SemiBold" Foreground="White">
+                                    <Run Text="&#xE73E;" FontFamily="Segoe MDL2 Assets"/><Run Text="  You're All Set!"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    Now that your device is connected, you're ready to explore Zephyr's Elixir's powerful features. Head to the Quick Guide to start optimizing!
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="PageTemplate_Basics">
+            <StackPanel Style="{StaticResource SlideFadeOnVisible}">
+                <Border Style="{StaticResource CardContainer}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource H1}">
+                            The Basics
+                        </TextBlock>
+                        
+                        <TextBlock Style="{StaticResource BodyLarge}" Margin="0,10,0,0">
+                            Before diving into optimization, let's understand what Zephyr's Elixir does and how it works.
+                        </TextBlock>
+
+                        <TextBlock Style="{StaticResource H2}">
+                            What is ADB?
+                        </TextBlock>
+
+                        <TextBlock Style="{StaticResource Body}">
+                            ADB (Android Debug Bridge) is a powerful command-line tool that comes with the Android SDK. It allows communication between your computer and your Android device. Zephyr's Elixir uses ADB to safely apply optimizations without requiring root access.
+                        </TextBlock>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,8">
+                                    <Run Style="{StaticResource Emphasis}" Text="Why ADB is Safe:"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Text="• "/>
+                                    <Run Text="All changes are made through official Android APIs"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Text="• "/>
+                                    <Run Text="No system file modifications"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Text="• "/>
+                                    <Run Text="Everything can be reversed"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    <Run Text="• "/>
+                                    <Run Text="Doesn't void your warranty"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <TextBlock Style="{StaticResource H2}">
+                            Understanding the Interface
+                        </TextBlock>
+
+                        <TextBlock Style="{StaticResource H3}">
+                            <Run Text="&#xE8EA;" FontFamily="Segoe MDL2 Assets"/><Run Text="  The Sidebar"/>
+                        </TextBlock>
+
+                        <TextBlock Style="{StaticResource Body}">
+                            The left sidebar is your navigation hub. It contains:
+                        </TextBlock>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,6">
+                                    <Run Style="{StaticResource Emphasis}" Text="Home:"/>
+                                    <Run Text=" Your starting point with quick access to optimization and wireless setup"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,6">
+                                    <Run Style="{StaticResource Emphasis}" Text="Optimize:"/>
+                                    <Run Text=" The main automated optimization process"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,6">
+                                    <Run Style="{StaticResource Emphasis}" Text="Debloat:"/>
+                                    <Run Text=" Remove or disable unwanted system and user apps"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,6">
+                                    <Run Style="{StaticResource Emphasis}" Text="Advanced:"/>
+                                    <Run Text=" Granular control over DNS, animations, battery, and more"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,6">
+                                    <Run Style="{StaticResource Emphasis}" Text="Settings:"/>
+                                    <Run Text=" Application configuration, logs, and legal information"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    <Run Style="{StaticResource Emphasis}" Text="Help &amp; Info:"/>
+                                    <Run Text=" Where you are now—comprehensive documentation"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <TextBlock Style="{StaticResource Body}" Margin="0,12,0,0">
+                            At the bottom of the sidebar, you'll find the device status panel showing your connected device name and battery level in real-time.
+                        </TextBlock>
+
+                        <TextBlock Style="{StaticResource H3}">
+                            <Run Text="&#xE756;" FontFamily="Segoe MDL2 Assets"/><Run Text="  The Console"/>
+                        </TextBlock>
+
+                        <TextBlock Style="{StaticResource Body}">
+                            The Optimization Console appears at the bottom of the Optimize screen. This terminal-style interface shows you exactly what's happening during optimization. Every ADB command, every status update, every change—it's all logged here in real-time.
+                        </TextBlock>
+
+                        <Border Style="{StaticResource HintBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource Body}" FontWeight="SemiBold" Foreground="White">
+                                    <Run Text="&#xE946;" FontFamily="Segoe MDL2 Assets"/><Run Text="  Pro Tip"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    You can export the entire console log from Settings → Application → Export Logs. This is useful for troubleshooting or sharing diagnostic information.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <TextBlock Style="{StaticResource H2}">
+                            How Optimizations Work
+                        </TextBlock>
+
+                        <TextBlock Style="{StaticResource Body}">
+                            When you click "Start Optimization," Zephyr's Elixir executes a carefully orchestrated sequence of 105+ optimization steps. These fall into several categories:
+                        </TextBlock>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    <Run Text="&#xE945;" FontFamily="Segoe MDL2 Assets"/><Run Text="  Performance Optimizations"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    Tweaking system parameters to improve responsiveness, reduce latency, and enhance overall smoothness.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    <Run Text="&#xE83F;" FontFamily="Segoe MDL2 Assets"/><Run Text="  Battery Optimizations"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    Reducing unnecessary background processes and optimizing power management to extend battery life.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    <Run Text="&#xE8A0;" FontFamily="Segoe MDL2 Assets"/><Run Text="  Network Optimizations"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    Improving connectivity and reducing latency for faster browsing and downloads.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    <Run Text="&#xE8D7;" FontFamily="Segoe MDL2 Assets"/><Run Text="  Privacy Enhancements"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    Disabling telemetry and limiting data collection where possible.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <TextBlock Style="{StaticResource H2}">
+                            Extreme Mode
+                        </TextBlock>
+
+                        <TextBlock Style="{StaticResource Body}">
+                            On the Optimize screen, you'll find the Extreme Mode toggle. This mode applies more aggressive optimizations that may affect some device features. I've designed it for users who want maximum performance and are willing to trade certain conveniences.
+                        </TextBlock>
+
+                        <Border Style="{StaticResource HintBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource Body}" FontWeight="SemiBold" Foreground="White">
+                                    <Run Text="&#xE7BA;" FontFamily="Segoe MDL2 Assets"/><Run Text="  Start with Standard Mode"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    I recommend running optimization in standard mode first. You can always come back and try Extreme Mode later if you want even more performance.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <TextBlock Style="{StaticResource H2}">
+                            Safety and Reversibility
+                        </TextBlock>
+
+                        <TextBlock Style="{StaticResource Body}">
+                            Every change made by Zephyr's Elixir can be undone. The Advanced section tracks all modifications made during your session and provides a "Reset All" button to revert everything at once.
+                        </TextBlock>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,8">
+                                    <Run Style="{StaticResource Emphasis}" Text="If Something Goes Wrong:"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Text="1. Navigate to Advanced"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Text="2. Click Reset All at the bottom"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    <Run Text="3. Your device will be restored to its pre-optimization state"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <TextBlock Style="{StaticResource Body}" Margin="0,12,0,0">
+                            Additionally, you can restore system defaults from Settings → Device → Restore Defaults.
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="PageTemplate_QuickGuide">
+            <StackPanel Style="{StaticResource SlideFadeOnVisible}">
+                <Border Style="{StaticResource CardContainer}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource H1}">
+                            Quick Guide
+                        </TextBlock>
+                        
+                        <TextBlock Style="{StaticResource BodyLarge}" Margin="0,10,0,0">
+                            <Run Text="Ready to optimize? Follow these four simple steps to transform your device's performance."/>
+                        </TextBlock>
+
+                        <Border Style="{StaticResource HighlightBox}" Margin="0,20,0,0">
+                            <StackPanel>
+                                <Grid Margin="0,0,0,12">
+                                    <Border CornerRadius="20" Width="40" Height="40" HorizontalAlignment="Left"
+                                           Background="{StaticResource AccentGradientBrush}"
+                                           Effect="{StaticResource SoftGlow}">
+                                        <TextBlock Text="&#xE839;" FontFamily="Segoe MDL2 Assets" FontSize="20" 
+                                                  Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <TextBlock Style="{StaticResource H3}" Margin="50,0,0,0" VerticalAlignment="Center">
+                                        Step 1: Connect Your Device
+                                    </TextBlock>
+                                </Grid>
+                                <TextBlock Style="{StaticResource Body}">
+                                    Connect your Android device to your computer using a USB cable. Make sure USB debugging is enabled (see First Steps if you haven't done this yet). 
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    Look at the sidebar—once connected, you'll see your device name and battery level displayed at the bottom.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <Grid Margin="0,0,0,12">
+                                    <Border CornerRadius="20" Width="40" Height="40" HorizontalAlignment="Left"
+                                           Background="{StaticResource AccentGradientBrush}"
+                                           Effect="{StaticResource SoftGlow}">
+                                        <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="20" 
+                                                  Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <TextBlock Style="{StaticResource H3}" Margin="50,0,0,0" VerticalAlignment="Center">
+                                        Step 2: Navigate to Optimize
+                                    </TextBlock>
+                                </Grid>
+                                <TextBlock Style="{StaticResource Body}">
+                                    Click the "Optimize" button in the sidebar (it's the second option with a lightning bolt icon).
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    You'll see a central card with the optimization button and an Extreme Mode toggle. For your first optimization, I recommend keeping Extreme Mode off.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <Grid Margin="0,0,0,12">
+                                    <Border CornerRadius="20" Width="40" Height="40" HorizontalAlignment="Left"
+                                           Background="{StaticResource AccentGradientBrush}"
+                                           Effect="{StaticResource SoftGlow}">
+                                        <TextBlock Text="&#xE8AB;" FontFamily="Segoe MDL2 Assets" FontSize="20" 
+                                                  Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <TextBlock Style="{StaticResource H3}" Margin="50,0,0,0" VerticalAlignment="Center">
+                                        Step 3: Start Optimization
+                                    </TextBlock>
+                                </Grid>
+                                <TextBlock Style="{StaticResource Body}">
+                                    Click the big "Start Optimization" button. The optimization process will begin immediately.
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    Watch the progress bar and the Optimization Console below. You'll see exactly what's being optimized in real-time. The process typically takes 3-5 minutes.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <Grid Margin="0,0,0,12">
+                                    <Border CornerRadius="20" Width="40" Height="40" HorizontalAlignment="Left"
+                                           Background="{StaticResource AccentGradientBrush}"
+                                           Effect="{StaticResource SoftGlow}">
+                                        <TextBlock Text="&#xE7BA;" FontFamily="Segoe MDL2 Assets" FontSize="20" 
+                                                  Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <TextBlock Style="{StaticResource H3}" Margin="50,0,0,0" VerticalAlignment="Center">
+                                        Step 4: Restart and Enjoy
+                                    </TextBlock>
+                                </Grid>
+                                <TextBlock Style="{StaticResource Body}">
+                                    When optimization completes, restart your device to apply all changes. You can do this manually through your device's power menu.
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    After restarting, you should notice improved responsiveness, smoother animations, and better battery life. Enjoy your optimized device!
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HintBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource Body}" FontWeight="SemiBold" Foreground="White">
+                                    <Run Text="&#xEA80;" FontFamily="Segoe MDL2 Assets"/><Run Text="  What's Next?"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,8,0,0">
+                                    After optimization, explore the Debloat section to remove unwanted apps, or visit Advanced for fine-tuned control over DNS, animations, and more.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="PageTemplate_CompleteGuide">
+            <StackPanel Style="{StaticResource SlideFadeOnVisible}">
+                <Border Style="{StaticResource CardContainer}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource H1}">
+                            Complete Feature Guide
+                        </TextBlock>
+                        
+                        <TextBlock Style="{StaticResource BodyLarge}" Margin="0,10,0,0">
+                            A comprehensive walkthrough of every feature in Zephyr's Elixir, from basic optimization to advanced customization.
+                        </TextBlock>
+
+                        <TextBlock Style="{StaticResource H2}">
+                            <Run Text="&#xE80F;" FontFamily="Segoe MDL2 Assets"/><Run Text="  Home"/>
+                        </TextBlock>
+
+                        <TextBlock Style="{StaticResource Body}">
+                            The Home screen is your welcome mat—a beautiful introduction to what Zephyr's Elixir can do.
+                        </TextBlock>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    Start Optimization
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    The prominent button on the Home screen is a quick shortcut to the Optimize page. Click it when you're ready to begin the automated optimization process.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    Wireless Connection
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    This button opens a wizard that helps you set up ADB over Wi-Fi. Once configured, you can use Zephyr's Elixir wirelessly without keeping your phone plugged in.
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,8,0,0">
+                                    <Run Style="{StaticResource Emphasis}" Text="Requirements:"/>
+                                    <Run Text=" Your device must be connected via USB at least once, and both your computer and device must be on the same Wi-Fi network."/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    Changelog
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    View the application's version history and recent updates. I keep this updated with each release to show you what's new and what's been improved.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <TextBlock Style="{StaticResource H2}">
+                            <Run Text="&#xE777;" FontFamily="Segoe MDL2 Assets"/><Run Text="  Optimize"/>
+                        </TextBlock>
+
+                        <TextBlock Style="{StaticResource Body}">
+                            The heart of Zephyr's Elixir. This is where the magic happens.
+                        </TextBlock>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    The Optimization Process
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    When you click "Start Optimization," Zephyr's Elixir executes a meticulously crafted sequence of 105+ optimization steps. These include:
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,8,0,4">
+                                    <Run Text="• "/>
+                                    <Run Text="System performance tweaks"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Text="• "/>
+                                    <Run Text="Battery life improvements"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Text="• "/>
+                                    <Run Text="Network optimization"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Text="• "/>
+                                    <Run Text="Privacy enhancements"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    <Run Text="• "/>
+                                    <Run Text="UI smoothness improvements"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    Extreme Mode
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    Toggle this golden switch before starting optimization to enable more aggressive optimizations. Extreme Mode may disable some Google services and telemetry features to maximize performance and privacy.
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,8,0,0">
+                                    <Run Style="{StaticResource Emphasis}" Text="Note:"/>
+                                    <Run Text=" Extreme Mode is optional. Most users will be satisfied with standard optimization."/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    Real-Time Monitoring
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    During optimization, you'll see:
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,8,0,4">
+                                    <Run Text="• "/>
+                                    <Run Style="{StaticResource Emphasis}" Text="Progress Bar:"/>
+                                    <Run Text=" Visual indication of optimization progress"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Text="• "/>
+                                    <Run Style="{StaticResource Emphasis}" Text="Timer:"/>
+                                    <Run Text=" Elapsed time since optimization started"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Text="• "/>
+                                    <Run Style="{StaticResource Emphasis}" Text="Console Output:"/>
+                                    <Run Text=" Real-time command execution and status updates"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    <Run Text="• "/>
+                                    <Run Style="{StaticResource Emphasis}" Text="Device Info:"/>
+                                    <Run Text=" Your device name and battery level (updated live)"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HintBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource Body}" FontWeight="SemiBold" Foreground="White">
+                                    <Run Text="&#xE946;" FontFamily="Segoe MDL2 Assets"/><Run Text="  First-Time Users"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    Run optimization once after setting up Zephyr's Elixir. You typically only need to optimize again after major Android updates or if you notice performance degradation.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <TextBlock Style="{StaticResource H2}">
+                            <Run Text="&#xE74D;" FontFamily="Segoe MDL2 Assets"/><Run Text="  Debloat"/>
+                        </TextBlock>
+
+                        <TextBlock Style="{StaticResource Body}">
+                            Take full control over the apps installed on your device. Debloat lets you see every app—system and user—and gives you the power to remove or disable what you don't need.
+                        </TextBlock>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    Loading Your App List
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    Click "Load Apps" to fetch a complete list of all installed applications. This process may take 30-60 seconds as Zephyr's Elixir retrieves app information and downloads icons for display.
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,8,0,0">
+                                    Behind the scenes, I use a local HTTP agent to extract app icons directly from your device, ensuring accurate visual identification.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    Filtering and Searching
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    Use the filter buttons to view:
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,8,0,4">
+                                    <Run Text="• "/>
+                                    <Run Style="{StaticResource Emphasis}" Text="All:"/>
+                                    <Run Text=" Every app on your device"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Text="• "/>
+                                    <Run Style="{StaticResource Emphasis}" Text="User:"/>
+                                    <Run Text=" Apps you've installed from Play Store or sideloaded"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Text="• "/>
+                                    <Run Style="{StaticResource Emphasis}" Text="System:"/>
+                                    <Run Text=" Pre-installed apps that came with your device"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    <Run Text="• "/>
+                                    <Run Style="{StaticResource Emphasis}" Text="Disabled:"/>
+                                    <Run Text=" Apps that are currently disabled"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,8,0,0">
+                                    The search box lets you quickly find apps by name or package name. As you type, the list updates instantly.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    Selecting Apps
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    Click the checkbox next to any app to select it. You can select multiple apps for batch actions. Use "Select All" to quickly select every app in the current filtered view.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    Available Actions
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,8">
+                                    <Run Style="{StaticResource Emphasis}" Text="Disable:"/>
+                                    <Run Text=" Temporarily disables selected apps. They remain on your device but won't run or appear in your app drawer. This is safer than uninstalling and can be reversed."/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    <Run Style="{StaticResource Emphasis}" Text="Uninstall:"/>
+                                    <Run Text=" Removes selected apps from your device. For system apps, this only uninstalls updates and disables them (the original app remains in system partition). User apps are fully removed."/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HintBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource Body}" FontWeight="SemiBold" Foreground="White">
+                                    <Run Text="&#xE7BA;" FontFamily="Segoe MDL2 Assets"/><Run Text="  Debloating Best Practices"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    Start by disabling apps rather than uninstalling. If something breaks, you can easily re-enable. Research what system apps do before removing them—some are essential for device functionality.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <TextBlock Style="{StaticResource H2}">
+                            <Run Text="&#xE74D;" FontFamily="Segoe MDL2 Assets"/><Run Text="  Advanced"/>
+                        </TextBlock>
+
+                        <TextBlock Style="{StaticResource Body}">
+                            For power users who want granular control. The Advanced section provides fine-tuned adjustments that go beyond automated optimization.
+                        </TextBlock>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    <Run Text="&#xE8A0;" FontFamily="Segoe MDL2 Assets"/><Run Text="  DNS Configuration"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    Choose from multiple DNS providers to improve privacy and performance:
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,8,0,4">
+                                    <Run Text="• "/>
+                                    <Run Style="{StaticResource Emphasis}" Text="NextDNS:"/>
+                                    <Run Text=" Privacy-focused with customizable filtering"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Text="• "/>
+                                    <Run Style="{StaticResource Emphasis}" Text="AdGuard:"/>
+                                    <Run Text=" Built-in ad and tracker blocking"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Text="• "/>
+                                    <Run Style="{StaticResource Emphasis}" Text="Cloudflare:"/>
+                                    <Run Text=" Fast and privacy-respecting"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Text="• "/>
+                                    <Run Style="{StaticResource Emphasis}" Text="Google:"/>
+                                    <Run Text=" Reliable and widely supported"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    <Run Text="• "/>
+                                    <Run Style="{StaticResource Emphasis}" Text="Quad9:"/>
+                                    <Run Text=" Security and privacy focused"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,8,0,0">
+                                    When you open the dropdown, Zephyr's Elixir automatically pings each provider and displays real-time latency. The fastest one for your network gets a lightning bolt ⚡ indicator.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    <Run Text="&#xE7C3;" FontFamily="Segoe MDL2 Assets"/><Run Text="  Animation Speed Control"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    Adjust your device's animation speed with precision. Slide left to speed up animations (making your device feel snappier), or slide right to slow them down (if you prefer a more relaxed experience).
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,8,0,0">
+                                    The value updates in real-time on your device as you move the slider. I've built automatic synchronization—if you change animation speed on your device directly, the slider updates here to match.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    <Run Text="&#xE8D7;" FontFamily="Segoe MDL2 Assets"/><Run Text="  Safety Core Control"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    Safety Core is a Google security feature that performs device scans and collects diagnostic data. Disabling it can improve privacy and reduce background activity, but some security features may be affected.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    <Run Text="&#xE946;" FontFamily="Segoe MDL2 Assets"/><Run Text="  Troubleshooting Tools"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    The Advanced section includes several troubleshooting utilities:
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,8,0,4">
+                                    <Run Text="• "/>
+                                    <Run Style="{StaticResource Emphasis}" Text="Reset Compilation:"/>
+                                    <Run Text=" Clears optimized app compilation cache"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Text="• "/>
+                                    <Run Style="{StaticResource Emphasis}" Text="Reset Battery Spoofing:"/>
+                                    <Run Text=" Restores normal battery reporting"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    <Run Text="• "/>
+                                    <Run Style="{StaticResource Emphasis}" Text="Reset Ad ID:"/>
+                                    <Run Text=" Regenerates your advertising identifier"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    <Run Text="&#xE72C;" FontFamily="Segoe MDL2 Assets"/><Run Text="  Session Tracking and Reset All"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    Every change you make in the Advanced section is tracked. At the bottom, you'll see a "Reset All" button that shows how many operations are recorded for the current session.
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,8,0,0">
+                                    Clicking Reset All will systematically undo every change you've made, returning your device to its state before you opened Advanced. This is your safety net.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <TextBlock Style="{StaticResource H2}">
+                            <Run Text="&#xE713;" FontFamily="Segoe MDL2 Assets"/><Run Text="  Settings"/>
+                        </TextBlock>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    Application Settings
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,8">
+                                    <Run Style="{StaticResource Emphasis}" Text="ADB Status:"/>
+                                    <Run Text=" Check whether ADB is properly installed and which version you're running"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,8">
+                                    <Run Style="{StaticResource Emphasis}" Text="Export Logs:"/>
+                                    <Run Text=" Save the entire Optimization Console output to a text file for troubleshooting or sharing"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    <Run Style="{StaticResource Emphasis}" Text="Language:"/>
+                                    <Run Text=" Change the application's display language"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    Device Settings
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    <Run Style="{StaticResource Emphasis}" Text="Restore Defaults:"/>
+                                    <Run Text=" Revert all device optimizations to stock Android settings. This is a comprehensive reset that affects all changes made through Zephyr's Elixir, not just the current session."/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    Legal Information
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,8">
+                                    <Run Style="{StaticResource Emphasis}" Text="License:"/>
+                                    <Run Text=" View the MIT License under which Zephyr's Elixir is released"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    <Run Style="{StaticResource Emphasis}" Text="Privacy Policy:"/>
+                                    <Run Text=" Read about my commitment to your privacy (spoiler: I don't collect any data)"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HintBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource Body}" FontWeight="SemiBold" Foreground="White">
+                                    <Run Text="&#xEA80;" FontFamily="Segoe MDL2 Assets"/><Run Text="  Keep Exploring"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    This guide covers the essentials, but there's more to discover. Don't be afraid to experiment—remember, almost everything can be undone with Reset All or Restore Defaults.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="PageTemplate_Troubleshooting">
+            <StackPanel Style="{StaticResource SlideFadeOnVisible}">
+                <Border Style="{StaticResource CardContainer}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource H1}">
+                            Troubleshooting
+                        </TextBlock>
+                        
+                        <TextBlock Style="{StaticResource BodyLarge}" Margin="0,10,0,0">
+                            Running into issues? Here are solutions to common problems and how to get back on track.
+                        </TextBlock>
+
+                        <TextBlock Style="{StaticResource H2}">
+                            Connection Issues
+                        </TextBlock>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    Device Not Detected
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,8">
+                                    <Run Style="{StaticResource Emphasis}" Text="Symptoms:"/>
+                                    <Run Text=" The sidebar shows 'No device connected' even though your phone is plugged in."/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,8">
+                                    <Run Style="{StaticResource Emphasis}" Text="Solutions:"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Text="1. "/>
+                                    <Run Style="{StaticResource Emphasis}" Text="Verify USB Debugging:"/>
+                                    <Run Text=" Go to Developer Options on your device and ensure USB Debugging is enabled"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Text="2. "/>
+                                    <Run Style="{StaticResource Emphasis}" Text="Check the Cable:"/>
+                                    <Run Text=" Not all cables support data transfer. Try the cable that came with your phone"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Text="3. "/>
+                                    <Run Style="{StaticResource Emphasis}" Text="Try Different USB Ports:"/>
+                                    <Run Text=" USB 3.0 ports (usually blue) tend to work best"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Text="4. "/>
+                                    <Run Style="{StaticResource Emphasis}" Text="Check Phone Notification:"/>
+                                    <Run Text=" Look for a USB debugging permission popup on your device"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    <Run Text="5. "/>
+                                    <Run Style="{StaticResource Emphasis}" Text="Restart ADB:"/>
+                                    <Run Text=" Open Command Prompt and run 'adb kill-server' then 'adb start-server'"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    Wireless Connection Fails
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,8">
+                                    <Run Style="{StaticResource Emphasis}" Text="Solutions:"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Text="• Ensure both devices are on the "/>
+                                    <Run Style="{StaticResource Emphasis}" Text="same Wi-Fi network"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Text="• Check that your router doesn't have "/>
+                                    <Run Style="{StaticResource Emphasis}" Text="client isolation"/>
+                                    <Run Text=" (AP isolation) enabled"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Text="• Make sure your device's IP address hasn't changed (reconnect via USB and reconfigure)"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    <Run Text="• Some corporate or public Wi-Fi networks block ADB over Wi-Fi for security"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <TextBlock Style="{StaticResource H2}">
+                            Optimization Problems
+                        </TextBlock>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    Optimization Stuck or Frozen
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,8">
+                                    <Run Style="{StaticResource Emphasis}" Text="What to do:"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Text="• Wait 2-3 minutes—some steps take longer than others"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Text="• Check the Console output for error messages"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Text="• Verify your device is still connected (check the sidebar)"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    <Run Text="• If truly frozen, restart Zephyr's Elixir and try again"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    Device Acting Strange After Optimization
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,8">
+                                    <Run Style="{StaticResource Emphasis}" Text="Quick Fix:"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Text="1. Go to "/>
+                                    <Run Style="{StaticResource Emphasis}" Text="Advanced"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Text="2. Scroll to the bottom"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Text="3. Click "/>
+                                    <Run Style="{StaticResource Emphasis}" Text="Reset All"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    <Run Text="4. Restart your device"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,12,0,0">
+                                    If that doesn't help, use Settings → Device → Restore Defaults for a complete system restore.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <TextBlock Style="{StaticResource H2}">
+                            Debloat Issues
+                        </TextBlock>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    Apps Not Loading or List Empty
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,8">
+                                    <Run Style="{StaticResource Emphasis}" Text="Possible causes:"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Text="• Device disconnected during loading—check the sidebar"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Text="• The agent couldn't start—look for error messages in the status text"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    <Run Text="• Network permissions blocked on device—check ADB permissions"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    Disabled Critical App by Mistake
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,8">
+                                    <Run Style="{StaticResource Emphasis}" Text="To re-enable:"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Text="1. Go to Debloat and load apps"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Text="2. Filter by "/>
+                                    <Run Style="{StaticResource Emphasis}" Text="Disabled"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Text="3. Find the app you disabled"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    <Run Text="4. Open Command Prompt and run: "/>
+                                    <Run Style="{StaticResource Emphasis}" Text="adb shell pm enable [package-name]"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,12,0,0">
+                                    Alternatively, Settings → Device → Restore Defaults will re-enable all apps.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <TextBlock Style="{StaticResource H2}">
+                            Advanced Section Issues
+                        </TextBlock>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    DNS Change Not Working
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    Some Android versions or custom ROMs may not support DNS override via ADB. This is a limitation of the device, not Zephyr's Elixir. You can still configure DNS through your device's Settings → Network → Private DNS.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    Animation Speed Not Updating on Slider
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    If the slider doesn't respond, your device might be disconnected. Check the sidebar status. The animation slider auto-syncs with your device every few seconds, so changes you make directly on the device will update in Zephyr's Elixir automatically.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <TextBlock Style="{StaticResource H2}">
+                            General Tips
+                        </TextBlock>
+
+                        <Border Style="{StaticResource HintBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource Body}" FontWeight="SemiBold" Foreground="White">
+                                    <Run Text="&#xE946;" FontFamily="Segoe MDL2 Assets"/><Run Text="  Export Logs for Support"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    If you encounter persistent issues, go to Settings → Application → Export Logs. This saves the console output to a file you can share when seeking help.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    When in Doubt, Reset
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    Remember, every change is reversible:
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,8,0,4">
+                                    <Run Text="• "/>
+                                    <Run Style="{StaticResource Emphasis}" Text="Reset All"/>
+                                    <Run Text=" (Advanced section): Undoes changes from the current session"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    <Run Text="• "/>
+                                    <Run Style="{StaticResource Emphasis}" Text="Restore Defaults"/>
+                                    <Run Text=" (Settings): Complete system restore to stock behavior"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HintBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource Body}" FontWeight="SemiBold" Foreground="White">
+                                    <Run Text="&#xE8AB;" FontFamily="Segoe MDL2 Assets"/><Run Text="  Still Need Help?"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    Check the FAQ section for more common questions, or visit the About section for links to community support and documentation.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="PageTemplate_Tips">
+            <StackPanel Style="{StaticResource SlideFadeOnVisible}">
+                <Border Style="{StaticResource CardContainer}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource H1}">
+                            Tips &amp; Tricks
+                        </TextBlock>
+                        
+                        <TextBlock Style="{StaticResource BodyLarge}" Margin="0,10,0,0">
+                            Here are some pro tips and hidden features to help you get the most out of Zephyr's Elixir.
+                        </TextBlock>
+
+                        <ItemsControl ItemsSource="{Binding DataContext.Tips, RelativeSource={RelativeSource AncestorType=UserControl}}" Margin="0,20,0,0">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Style="{StaticResource HighlightBox}">
+                                        <StackPanel>
+                                            <Grid Margin="0,0,0,10">
+                                                <Border CornerRadius="16" Width="32" Height="32" HorizontalAlignment="Left"
+                                                       Background="{StaticResource AccentGradientBrush}"
+                                                       Effect="{StaticResource SoftGlow}">
+                                                    <TextBlock Text="{Binding Icon}" FontFamily="Segoe MDL2 Assets" FontSize="16" 
+                                                              Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                                <TextBlock Text="{Binding Title}" Style="{StaticResource H3}" 
+                                                          Margin="42,0,0,0" VerticalAlignment="Center"/>
+                                            </Grid>
+                                            <TextBlock Text="{Binding Description}" Style="{StaticResource Body}"/>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <Border Style="{StaticResource HintBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource Body}" FontWeight="SemiBold" Foreground="White">
+                                    <Run Text="&#xEA80;" FontFamily="Segoe MDL2 Assets"/><Run Text="  Keyboard Shortcuts"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,8,0,0">
+                                    <Run Style="{StaticResource Emphasis}" Text="F1:"/>
+                                    <Run Text=" Open Help from anywhere in the application"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="PageTemplate_Faq">
+            <StackPanel Style="{StaticResource SlideFadeOnVisible}">
+                <Border Style="{StaticResource CardContainer}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource H1}">
+                            Frequently Asked Questions
+                        </TextBlock>
+                        
+                        <TextBlock Style="{StaticResource BodyLarge}" Margin="0,10,0,0">
+                            Quick answers to common questions about Zephyr's Elixir.
+                        </TextBlock>
+
+                        <TextBox Style="{StaticResource App.Style.TextBox.Glass}"
+                                 Tag="Search FAQ..."
+                                 Text="{Binding DataContext.SearchQuery, RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=PropertyChanged}"
+                                 Margin="0,20,0,16"
+                                 Height="42"
+                                 FontSize="14"/>
+
+                        <ItemsControl ItemsSource="{Binding DataContext.FilteredFaqView, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Style="{StaticResource HighlightBox}">
+                                        <StackPanel>
+                                            <TextBlock Style="{StaticResource H3}">
+                                                <Run Text="&#xE11B;" FontFamily="Segoe MDL2 Assets"/><Run Text="  "/>
+                                                <Run Text="{Binding Question}"/>
+                                            </TextBlock>
+                                            <TextBlock Text="{Binding Answer}" Style="{StaticResource Body}" Margin="0,8,0,0"/>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="PageTemplate_About">
+            <StackPanel Style="{StaticResource SlideFadeOnVisible}">
+                <Border Style="{StaticResource CardContainer}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource H1}">
+                            About Zephyr's Elixir
+                        </TextBlock>
+                        
+                        <TextBlock Style="{StaticResource BodyLarge}" Margin="0,10,0,0">
+                            Behind the scenes of this passion project.
+                        </TextBlock>
+
+                        <TextBlock Style="{StaticResource H2}">
+                            The Story
+                        </TextBlock>
+
+                        <TextBlock Style="{StaticResource Body}">
+                            Zephyr's Elixir began as a personal challenge: could I create an Android optimization tool that feels as polished as iOS while leveraging Android's incredible customization capabilities?
+                        </TextBlock>
+
+                        <TextBlock Style="{StaticResource Body}">
+                            After hundreds of hours of development, iteration, and refinement, the answer is yes. This application represents my vision of what system utilities should be—powerful, beautiful, and respectful of your device and your time.
+                        </TextBlock>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    <Run Text="&#xE946;" FontFamily="Segoe MDL2 Assets"/><Run Text="  Technical Details"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,8,0,4">
+                                    <Run Style="{StaticResource Emphasis}" Text="Built with:"/>
+                                    <Run Text=" C# 10, .NET 6, WPF"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Style="{StaticResource Emphasis}" Text="Architecture:"/>
+                                    <Run Text=" MVVM pattern with INotifyPropertyChanged for reactive UI"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4">
+                                    <Run Style="{StaticResource Emphasis}" Text="UI Framework:"/>
+                                    <Run Text=" Custom-designed WPF controls with hardware-accelerated animations"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    <Run Style="{StaticResource Emphasis}" Text="Backend:"/>
+                                    <Run Text=" ADB integration with custom HTTP agent for advanced operations"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <TextBlock Style="{StaticResource H2}">
+                            Philosophy
+                        </TextBlock>
+
+                        <TextBlock Style="{StaticResource Body}">
+                            I believe software should be:
+                        </TextBlock>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,8">
+                                    <Run Style="{StaticResource Emphasis}" Text="Transparent:"/>
+                                    <Run Text=" You should always know what's happening"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,8">
+                                    <Run Style="{StaticResource Emphasis}" Text="Respectful:"/>
+                                    <Run Text=" Your privacy matters, your data stays yours"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,8">
+                                    <Run Style="{StaticResource Emphasis}" Text="Beautiful:"/>
+                                    <Run Text=" Great design isn't just aesthetics—it's about making complex tasks feel effortless"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    <Run Style="{StaticResource Emphasis}" Text="Empowering:"/>
+                                    <Run Text=" You should have full control without needing a computer science degree"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <TextBlock Style="{StaticResource H2}">
+                            Open Source
+                        </TextBlock>
+
+                        <TextBlock Style="{StaticResource Body}">
+                            Zephyr's Elixir is released under the MIT License, meaning you're free to use, modify, and distribute it. The source code is available for anyone who wants to learn, contribute, or audit what the application does.
+                        </TextBlock>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource Body}">
+                                    <Run Text="Website: "/>
+                                    <Hyperlink NavigateUri="https://www.zephyrselixir.com" 
+                                             helpers:HyperlinkExtensions.OpenInBrowser="True">
+                                        www.zephyrselixir.com
+                                    </Hyperlink>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}">
+                                    <Run Text="GitHub: "/>
+                                    <Hyperlink NavigateUri="https://github.com/zephyrs-elixir" 
+                                             helpers:HyperlinkExtensions.OpenInBrowser="True">
+                                        github.com/zephyrs-elixir
+                                    </Hyperlink>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <TextBlock Style="{StaticResource H2}">
+                            License
+                        </TextBlock>
+                        <TextBlock Style="{StaticResource Body}">
+                            <Run Text="Zephyr's Elixir is licensed under the MIT License. See Settings → License for full details. This software is provided 'as is' without warranty of any kind."/>
+                        </TextBlock>
+
+                        <Border Style="{StaticResource HintBox}" Margin="0,20,0,0">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource Body}" 
+                                         TextAlignment="Center"
+                                         FontSize="16"
+                                         Margin="0,0,0,8">
+                                    <Run Text="Made with ♥ for the Android community" FontWeight="SemiBold" Foreground="White"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Caption}" 
+                                         TextAlignment="Center">
+                                    <Run Text="© 2024 Zephyr's Elixir. All rights reserved."/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </DataTemplate>
+
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#14234359" Offset="0.0"/>
+                <GradientStop Color="#193C5A8E" Offset="0.5"/>
+                <GradientStop Color="#1428476B" Offset="1.0"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="280"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Row="0" 
+                    Grid.Column="0" 
+                    Grid.ColumnSpan="2" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Center" 
+                    Margin="0,35,0,45">
+            <TextBlock Text="&#xE897;" 
+                     FontFamily="Segoe MDL2 Assets" 
+                     FontSize="36" 
+                     Foreground="White" 
+                     Effect="{StaticResource GlowEffect}" 
+                     VerticalAlignment="Center"/>
+            <TextBlock Text="Help &amp; Guide" 
+                     Margin="14,0,0,0" 
+                     Style="{StaticResource H1}" 
+                     FontSize="50" 
+                     VerticalAlignment="Center"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" 
+                    Grid.Column="0" 
+                    Margin="24,0,20,24">
+            <Border Style="{StaticResource CardContainer}" 
+                    Padding="10">
+                <ListBox ItemsSource="{Binding NavItems}" 
+                         SelectedItem="{Binding SelectedNav}" 
+                         Style="{StaticResource NavListBox}"/>
+            </Border>
+
+            <Border CornerRadius="14" 
+                    Background="#1EFFFFFF" 
+                    Padding="14">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                        <TextBlock Text="&#xE946;" 
+                                 FontFamily="Segoe MDL2 Assets" 
+                                 FontSize="14"
+                                 Foreground="#FFD700"
+                                 VerticalAlignment="Center"
+                                 Margin="0,0,8,0"/>
+                        <TextBlock Text="Quick Tip" 
+                                 FontSize="13"
+                                 FontWeight="SemiBold"
+                                 Foreground="White"
+                                 VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <TextBlock Text="Press F1 anywhere in the app to quickly access this Help section." 
+                               Style="{StaticResource Caption}"/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+        
+        <ScrollViewer Grid.Row="1" 
+                      Grid.Column="1" 
+                      VerticalScrollBarVisibility="Auto" 
+                      Padding="10,0,30,24">
+            
+            <ContentControl Content="{Binding SelectedNav}" Margin="10,0,30,0">
+                <ContentControl.Style>
+                    <Style TargetType="ContentControl">
+                        <Setter Property="ContentTemplate" Value="{StaticResource PageTemplate_Welcome}"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SelectedNav.Key}" Value="welcome">
+                                <Setter Property="ContentTemplate" Value="{StaticResource PageTemplate_Welcome}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding SelectedNav.Key}" Value="first-steps">
+                                <Setter Property="ContentTemplate" Value="{StaticResource PageTemplate_FirstSteps}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding SelectedNav.Key}" Value="basics">
+                                <Setter Property="ContentTemplate" Value="{StaticResource PageTemplate_Basics}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding SelectedNav.Key}" Value="quick-guide">
+                                <Setter Property="ContentTemplate" Value="{StaticResource PageTemplate_QuickGuide}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding SelectedNav.Key}" Value="complete-guide">
+                                <Setter Property="ContentTemplate" Value="{StaticResource PageTemplate_CompleteGuide}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding SelectedNav.Key}" Value="troubleshooting">
+                                <Setter Property="ContentTemplate" Value="{StaticResource PageTemplate_Troubleshooting}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding SelectedNav.Key}" Value="tips">
+                                <Setter Property="ContentTemplate" Value="{StaticResource PageTemplate_Tips}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding SelectedNav.Key}" Value="faq">
+                                <Setter Property="ContentTemplate" Value="{StaticResource PageTemplate_Faq}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding SelectedNav.Key}" Value="about">
+                                <Setter Property="ContentTemplate" Value="{StaticResource PageTemplate_About}"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ContentControl.Style>
+            </ContentControl>
+            
+        </ScrollViewer>
+    </Grid>
+</UserControl>
