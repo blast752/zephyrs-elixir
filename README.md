@@ -1,1 +1,1 @@
-# sonics-elixir
+# Zephyr's Elixir
