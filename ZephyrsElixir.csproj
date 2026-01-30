@@ -1,0 +1,52 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <Version>0.6.0</Version>
+    <AssemblyVersion>0.6.0.0</AssemblyVersion>
+    <FileVersion>0.6.0</FileVersion>
+    <ApplicationIcon>Assets/Icons/icon.ico</ApplicationIcon>
+    
+    <!-- Embed the manifest for proper DPI awareness -->
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    
+    <!-- Optimize release builds -->
+    <Optimize Condition="'$(Configuration)' == 'Release'">true</Optimize>
+    
+    <!-- Use UTF-8 -->
+    <ImplicitUsings>disable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="Emoji.Wpf" Version="0.3.4" />
+    <PackageReference Include="SkiaSharp" Version="3.119.0" />
+    <PackageReference Include="System.Drawing.Common" Version="9.0.8" />
+    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\Images\batteryguru.png" />
+    <Resource Include="Assets\Images\coffee.png" />
+    <Resource Include="Assets\Images\github.png" />
+    <Resource Include="Assets\Images\logo.png" />
+    <Resource Include="Assets\Images\mascotte.png" />
+    <Resource Include="Assets\Images\paypal.png" />
+    <Resource Include="Assets\Images\telegram.png" />
+    <Resource Include="Assets\Images\Wizardslogo.bmp" />
+    <Resource Include="Assets\Images\WizardSmallslogo.bmp" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Content Include="Tools\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\Fonts\*.ttf" />
+  </ItemGroup>
+</Project>
