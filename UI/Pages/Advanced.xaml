@@ -1,0 +1,745 @@
+<UserControl x:Class="ZephyrsElixir.UI.Pages.Advanced"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:h="clr-namespace:ZephyrsElixir.UI.Helpers"
+             Background="Transparent">
+
+    <UserControl.Resources>
+        <Style x:Key="AnimationSliderStyle" TargetType="Slider">
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Minimum" Value="0"/>
+            <Setter Property="Maximum" Value="2"/>
+            <Setter Property="TickFrequency" Value="0.25"/>
+            <Setter Property="IsSnapToTickEnabled" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Slider">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto" MinHeight="{TemplateBinding MinHeight}"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            
+                            <Border x:Name="TrackBackground" 
+                                   Grid.Row="1"
+                                   Height="8" 
+                                   CornerRadius="4"
+                                   Background="#1AFFFFFF"
+                                   BorderBrush="#3AFFFFFF"
+                                   BorderThickness="1"
+                                   Margin="12,0"/>
+                            
+                            <Grid Grid.Row="1" Margin="12,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <Ellipse Grid.Column="0" Width="4" Height="4" Fill="#6AFFFFFF" 
+                                         HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                <Ellipse Grid.Column="1" Width="4" Height="4" Fill="#6AFFFFFF" 
+                                        HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                <Ellipse Grid.Column="2" Width="4" Height="4" Fill="#6AFFFFFF" 
+                                        HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                <Ellipse Grid.Column="3" Width="4" Height="4" Fill="#6AFFFFFF" 
+                                        HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                <Ellipse Grid.Column="3" Width="4" Height="4" Fill="#6AFFFFFF" 
+                                        HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                            </Grid>
+                            
+                            <Border x:Name="ProgressFill"
+                                   Grid.Row="1"
+                                   Height="6"
+                                   CornerRadius="3"
+                                   Margin="13,0"
+                                   HorizontalAlignment="Left"
+                                   Background="{StaticResource App.Brush.IconCircle}"
+                                   Width="{Binding Value, RelativeSource={RelativeSource TemplatedParent}, 
+                                          Converter={StaticResource App.Converter.PercentageToScale}, 
+                                          ConverterParameter=ActualWidth}">
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#00BFFF" BlurRadius="12" ShadowDepth="0" Opacity="0.6"/>
+                                </Border.Effect>
+                            </Border>
+                            
+                            <Track x:Name="PART_Track" Grid.Row="1">
+                                <Track.Thumb>
+                                    <Thumb>
+                                        <Thumb.Template>
+                                            <ControlTemplate TargetType="Thumb">
+                                                <Grid>
+                                                    <Ellipse x:Name="GlowCircle" 
+                                                            Width="32" Height="32" 
+                                                            Fill="#4A00BFFF"
+                                                            Opacity="0">
+                                                        <Ellipse.Effect>
+                                                            <BlurEffect Radius="12"/>
+                                                        </Ellipse.Effect>
+                                                    </Ellipse>
+                                                    
+                                                    <Ellipse x:Name="ThumbCircle"
+                                                             Width="24" Height="24">
+                                                        <Ellipse.Fill>
+                                                            <RadialGradientBrush>
+                                                                <GradientStop Color="#FFFFFF" Offset="0"/>
+                                                                <GradientStop Color="#E0E7FF" Offset="1"/>
+                                                            </RadialGradientBrush>
+                                                        </Ellipse.Fill>
+                                                        <Ellipse.Effect>
+                                                            <DropShadowEffect Color="Black" BlurRadius="8" ShadowDepth="2" Opacity="0.3"/>
+                                                        </Ellipse.Effect>
+                                                    </Ellipse>
+                                                </Grid>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="GlowCircle" Property="Opacity" Value="0.6"/>
+                                                        <Setter TargetName="ThumbCircle" Property="Width" Value="26"/>
+                                                        <Setter TargetName="ThumbCircle" Property="Height" Value="26"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsDragging" Value="True">
+                                                        <Setter TargetName="GlowCircle" Property="Opacity" Value="1"/>
+                                                        <Setter TargetName="ThumbCircle" Property="Width" Value="28"/>
+                                                        <Setter TargetName="ThumbCircle" Property="Height" Value="28"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Thumb.Template>
+                                    </Thumb>
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <RowDefinition Height="24"/>   <RowDefinition Height="*"/>    </Grid.RowDefinitions>
+        
+        <h:PageHeader Grid.Row="0"
+                    Icon="&#xE90F;" 
+                    Title="{h:Translate Advanced_Header}"
+                    Subtitle="{h:Translate Advanced_Subtitle}"/>
+
+        <ScrollViewer Grid.Row="2"
+                      VerticalScrollBarVisibility="Auto" 
+                      HorizontalScrollBarVisibility="Disabled" 
+                      Padding="0,0,10,0">
+            <StackPanel>
+                
+                <Border Style="{StaticResource App.Style.GlassCard}"
+                        Margin="0,0,0,0"
+                        Padding="24"
+                        Effect="{StaticResource App.Effect.PageShadow}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE72E;"
+                                      FontFamily="Segoe MDL2 Assets"
+                                      FontSize="24"
+                                      Foreground="{StaticResource App.Brush.DeepSkyBlue}"
+                                      VerticalAlignment="Center"/>
+                            <TextBlock Text="{h:Translate Advanced_Privacy_Header}"
+                                      FontSize="22" 
+                                      FontWeight="SemiBold"
+                                      Foreground="White" 
+                                      VerticalAlignment="Center"
+                                      Margin="15,0,0,0"/>
+                        </StackPanel>
+                        
+                        <Border Grid.Row="1" 
+                               Background="{StaticResource App.Brush.Glass.Border}" 
+                               Height="1" 
+                               VerticalAlignment="Center"/>
+                        
+                        <StackPanel Grid.Row="2" Margin="0,15,0,0">
+                            
+                            <Border Background="#1AFFFFFF" 
+                                   CornerRadius="12" 
+                                   Padding="20"
+                                   Margin="0,0,0,15">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="{h:Translate Advanced_SafetyCore_Title}"
+                                                  FontSize="16" 
+                                                  FontWeight="SemiBold"
+                                                  Foreground="White"/>
+                                        <TextBlock Text="{h:Translate Advanced_SafetyCore_Description}"
+                                                  FontSize="13"
+                                                  Foreground="#B0B8C8"
+                                                  TextWrapping="Wrap" 
+                                                  Margin="0,4,20,0"/>
+                                    </StackPanel>
+                                    
+                                    <Button x:Name="SafetyCoreButton" 
+                                           Grid.Column="1"
+                                           Style="{StaticResource App.Style.Button}"
+                                           Content="{h:Translate Advanced_Button_Disable}"
+                                           Tag="&#xE72E;"
+                                           Click="OnSafetyCoreClick"
+                                           MinWidth="160"
+                                           VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+
+                            <Border Background="#1AFFFFFF" 
+                                   CornerRadius="12" 
+                                   Padding="20"
+                                   Margin="0,0,0,15">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="15"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    
+                                    <StackPanel Grid.Row="0" VerticalAlignment="Center">
+                                        <TextBlock Text="{h:Translate Advanced_DNS_Title}"
+                                                  FontSize="16" 
+                                                  FontWeight="SemiBold"
+                                                  Foreground="White"/>
+                                        <TextBlock Text="{h:Translate Advanced_DNS_Description}"
+                                                  FontSize="13"
+                                                  Foreground="#B0B8C8"
+                                                  TextWrapping="Wrap" 
+                                                  Margin="0,4,0,0"/>
+                                    </StackPanel>
+                                    
+                                    <Grid Grid.Row="2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="15"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        
+                                        <ComboBox x:Name="DnsProviderComboBox"
+                                                Grid.Column="0"
+                                                Style="{StaticResource App.Style.ComboBox}"
+                                                MinHeight="48"
+                                                VerticalAlignment="Center"
+                                                DropDownOpened="OnDnsComboBoxDropDownOpened"
+                                                DropDownClosed="OnDnsComboBoxDropDownClosed">
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        
+                                                        <TextBlock Grid.Column="0"
+                                                                Text="{Binding Name}"
+                                                                FontSize="14"
+                                                                FontWeight="SemiBold"
+                                                                Foreground="White"
+                                                                VerticalAlignment="Center"/>
+                                                        
+                                                        <TextBlock Grid.Column="1"
+                                                                Text="{Binding PingDisplay}"
+                                                                FontSize="12"
+                                                                FontWeight="Normal"
+                                                                Foreground="#00BFFF"
+                                                                Margin="15,0,0,0"
+                                                                VerticalAlignment="Center"
+                                                                MinWidth="60"
+                                                                TextAlignment="Right">
+                                                            <TextBlock.Style>
+                                                                <Style TargetType="TextBlock">
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding PingDisplay}" Value="">
+                                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </TextBlock.Style>
+                                                        </TextBlock>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+                                        
+                                        <Button x:Name="ApplyDnsButton" 
+                                               Grid.Column="2"
+                                               Style="{StaticResource App.Style.Button}"
+                                               Content="{h:Translate Advanced_Button_Apply}"
+                                               Tag="&#xE774;"
+                                               Click="OnApplyDnsClick"
+                                               MinWidth="160"
+                                               VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Grid>
+                            </Border>
+
+                            <Border Background="#1AFFFFFF" 
+                                   CornerRadius="12" 
+                                   Padding="20"
+                                   Margin="0,0,0,15">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="{h:Translate Advanced_ResetAdId_Title}"
+                                                  FontSize="16" 
+                                                  FontWeight="SemiBold"
+                                                  Foreground="White"/>
+                                        <TextBlock Text="{h:Translate Advanced_ResetAdId_Description}"
+                                                  FontSize="13"
+                                                  Foreground="#B0B8C8"
+                                                  TextWrapping="Wrap" 
+                                                  Margin="0,4,20,0"/>
+                                    </StackPanel>
+                                    
+                                    <Button x:Name="ResetAdIdButton" 
+                                           Grid.Column="1"
+                                           Style="{StaticResource App.Style.Button}"
+                                           Content="{h:Translate Advanced_Button_Reset}"
+                                           Tag="&#xE8D7;"
+                                           Click="OnResetAdIdClick"
+                                           MinWidth="160"
+                                           VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+
+                            <Border Background="#1AFFFFFF" 
+                                CornerRadius="12" 
+                                Padding="20"
+                                Margin="0,0,0,15">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="{h:Translate Advanced_CaptivePortal_Title}"
+                                                FontSize="16" 
+                                                FontWeight="SemiBold"
+                                                Foreground="White"/>
+                                        <TextBlock Text="{h:Translate Advanced_CaptivePortal_Description}"
+                                                FontSize="13"
+                                                Foreground="#B0B8C8"
+                                                TextWrapping="Wrap" 
+                                                Margin="0,4,20,0"/>
+                                    </StackPanel>
+                                    
+                                    <Button x:Name="CaptivePortalButton" 
+                                        Grid.Column="1"
+                                        Style="{StaticResource App.Style.Button}"
+                                        Content="{h:Translate Advanced_Button_Disable}"
+                                        Tag="&#xE774;"
+                                        Click="OnCaptivePortalClick"
+                                        MinWidth="160"
+                                        VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+
+                            <Border Background="#1AFFFFFF" 
+                                CornerRadius="12" 
+                                Padding="20"
+                                Margin="0,0,0,15">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="{h:Translate Advanced_GoogleCoreControl_Title}"
+                                                FontSize="16" 
+                                                FontWeight="SemiBold"
+                                                Foreground="White"/>
+                                        <TextBlock Text="{h:Translate Advanced_GoogleCoreControl_Description}"
+                                                FontSize="13"
+                                                Foreground="#B0B8C8"
+                                                TextWrapping="Wrap" 
+                                                Margin="0,4,20,0"/>
+                                    </StackPanel>
+                                    
+                                    <Button x:Name="GoogleCoreControlButton" 
+                                        Grid.Column="1"
+                                        Style="{StaticResource App.Style.Button}"
+                                        Content="{h:Translate Advanced_Button_Disable}"
+                                        Tag="&#xE72E;"
+                                        Click="OnGoogleCoreControlClick"
+                                        MinWidth="160"
+                                        VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+
+                            <Border x:Name="RamExpansionBorder"
+                                Background="#1AFFFFFF" 
+                                CornerRadius="12" 
+                                Padding="20"
+                                Margin="0,0,0,15">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="{h:Translate Advanced_RamExpansion_Title}"
+                                                FontSize="16" 
+                                                FontWeight="SemiBold"
+                                                Foreground="White"/>
+                                        <TextBlock x:Name="RamExpansionDescription"
+                                                Text="{h:Translate Advanced_RamExpansion_Description}"
+                                                FontSize="13"
+                                                Foreground="#B0B8C8"
+                                                TextWrapping="Wrap" 
+                                                Margin="0,4,20,0"/>
+                                    </StackPanel>
+                                    
+                                    <Button x:Name="RamExpansionButton" 
+                                        Grid.Column="1"
+                                        Style="{StaticResource App.Style.Button}"
+                                        Content="{h:Translate Advanced_Button_Disable}"
+                                        Tag="&#xECAD;"
+                                        Click="OnRamExpansionClick"
+                                        MinWidth="160"
+                                        VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                            
+                            <Border x:Name="PrivacyStatusBorder" 
+                                   Background="#2A1E3A5F" 
+                                   CornerRadius="12" 
+                                   Padding="16"
+                                   Visibility="Collapsed">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE946;" 
+                                              FontFamily="Segoe MDL2 Assets"
+                                              FontSize="18"
+                                              Foreground="{StaticResource App.Brush.DeepSkyBlue}"
+                                              VerticalAlignment="Center"
+                                              Margin="0,0,12,0"/>
+                                    <TextBlock x:Name="PrivacyStatusText"
+                                              FontSize="14"
+                                              Foreground="White"
+                                              TextWrapping="Wrap"
+                                              VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+                            
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <Border Style="{StaticResource App.Style.GlassCard}"
+                        Margin="0,20,0,0"
+                        Padding="24"
+                        Effect="{StaticResource App.Effect.PageShadow}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE945;"
+                                      FontFamily="Segoe MDL2 Assets"
+                                      FontSize="24"
+                                      Foreground="#FFD000"
+                                      VerticalAlignment="Center"/>
+                            <TextBlock Text="{h:Translate Advanced_Animations_Header}"
+                                      FontSize="22" 
+                                      FontWeight="SemiBold"
+                                      Foreground="White" 
+                                      VerticalAlignment="Center"
+                                      Margin="15,0,0,0"/>
+                        </StackPanel>
+                        
+                        <Border Grid.Row="1" 
+                               Background="{StaticResource App.Brush.Glass.Border}" 
+                               Height="1" 
+                               VerticalAlignment="Center"/>
+                        
+                        <StackPanel Grid.Row="2" Margin="0,15,0,0">
+                            
+                            <Border Background="#1AFFFFFF" 
+                                   CornerRadius="12" 
+                                   Padding="24">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="30"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="20"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    
+                                    <Grid Grid.Row="0">
+                                        <StackPanel VerticalAlignment="Center">
+                                            <TextBlock Text="{h:Translate Advanced_AnimationSpeed_Title}"
+                                                      FontSize="16" 
+                                                      FontWeight="SemiBold"
+                                                      Foreground="White"/>
+                                            <TextBlock Text="{h:Translate Advanced_AnimationSpeed_Description}"
+                                                      FontSize="13"
+                                                      Foreground="#B0B8C8"
+                                                      TextWrapping="Wrap" 
+                                                      Margin="0,4,0,0"/>
+                                        </StackPanel>
+                                        
+                                        <Button x:Name="ResetAnimationsButton" 
+                                               HorizontalAlignment="Right"
+                                               Style="{StaticResource App.Style.Button}"
+                                               Content="{h:Translate Advanced_Button_Reset}"
+                                               Tag="&#xE72C;"
+                                               Click="OnResetAnimationsClick"
+                                               MinWidth="130"
+                                               VerticalAlignment="Top"/>
+                                    </Grid>
+                                    
+                                    <Grid Grid.Row="2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="100"/>
+                                        </Grid.ColumnDefinitions>
+                                        
+                                        <Slider x:Name="AnimationSlider"
+                                               Grid.Column="0"
+                                               Style="{StaticResource AnimationSliderStyle}"
+                                               Value="1.0"
+                                               ValueChanged="OnAnimationSliderChanged"
+                                               PreviewMouseDown="OnSliderMouseDown"
+                                               PreviewMouseUp="OnSliderMouseUp"
+                                               Margin="0,0,20,0"/>
+                                        
+                                        <Border Grid.Column="1"
+                                               Background="#2A00BFFF"
+                                               BorderBrush="#4A00BFFF"
+                                               BorderThickness="1"
+                                               CornerRadius="8"
+                                               Padding="12,8">
+                                            <TextBlock x:Name="AnimationValueText"
+                                                      Text="1.0x"
+                                                      FontSize="18"
+                                                      FontWeight="Bold"
+                                                      Foreground="White"
+                                                      HorizontalAlignment="Center"
+                                                      VerticalAlignment="Center"/>
+                                        </Border>
+                                    </Grid>
+                                    
+                                    <Grid Grid.Row="4" Margin="0,0,120,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        
+                                        <TextBlock Grid.Column="0" 
+                                                  Text="{h:Translate Advanced_Animation_Off}"
+                                                  FontSize="12" 
+                                                  Foreground="#80FFFFFF"
+                                                  HorizontalAlignment="Left"/>
+                                        <TextBlock Grid.Column="1" 
+                                                  Text="{h:Translate Advanced_Animation_Default}"
+                                                  FontSize="12" 
+                                                  Foreground="#80FFFFFF"
+                                                  HorizontalAlignment="Center"/>
+                                        <TextBlock Grid.Column="2" 
+                                                  Text="{h:Translate Advanced_Animation_Slow}"
+                                                  FontSize="12" 
+                                                  Foreground="#80FFFFFF"
+                                                  HorizontalAlignment="Right"/>
+                                    </Grid>
+                                </Grid>
+                            </Border>
+                            
+                            <Button x:Name="ApplyAnimationsButton" 
+                                   Style="{StaticResource App.Style.Button}"
+                                   Content="{h:Translate Advanced_Button_ApplyAnimations}"
+                                   Tag="&#xE73E;"
+                                   Click="OnApplyAnimationsClick"
+                                   Margin="0,15,0,0"
+                                   HorizontalAlignment="Right"
+                                   MinWidth="200"/>
+                            
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <Border Style="{StaticResource App.Style.GlassCard}"
+                        Margin="0,20,0,30"
+                        Padding="24"
+                        Effect="{StaticResource App.Effect.PageShadow}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE90F;"
+                                      FontFamily="Segoe MDL2 Assets"
+                                      FontSize="24"
+                                      Foreground="#FF6B6B"
+                                      VerticalAlignment="Center"/>
+                            <TextBlock Text="{h:Translate Advanced_Troubleshooting_Header}"
+                                      FontSize="22" 
+                                      FontWeight="SemiBold"
+                                      Foreground="White" 
+                                      VerticalAlignment="Center"
+                                      Margin="15,0,0,0"/>
+                        </StackPanel>
+                        
+                        <Border Grid.Row="1" 
+                               Background="{StaticResource App.Brush.Glass.Border}" 
+                               Height="1" 
+                               VerticalAlignment="Center"/>
+                        
+                        <StackPanel Grid.Row="2" Margin="0,15,0,0">
+                            
+                            <Border Background="#1AFFFFFF" 
+                                   CornerRadius="12" 
+                                   Padding="20"
+                                   Margin="0,0,0,15">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="{h:Translate Advanced_ResetBattery_Title}"
+                                                  FontSize="16" 
+                                                  FontWeight="SemiBold"
+                                                  Foreground="White"/>
+                                        <TextBlock Text="{h:Translate Advanced_ResetBattery_Description}"
+                                                  FontSize="13"
+                                                  Foreground="#B0B8C8"
+                                                  TextWrapping="Wrap" 
+                                                  Margin="0,4,20,0"/>
+                                    </StackPanel>
+                                    
+                                    <Button x:Name="ResetBatteryButton" 
+                                           Grid.Column="1"
+                                           Style="{StaticResource App.Style.Button}"
+                                           Content="{h:Translate Advanced_Button_Reset}"
+                                           Tag="&#xE8C8;"
+                                           Click="OnResetBatteryClick"
+                                           MinWidth="160"
+                                           VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+
+                            <Border Background="#1AFFFFFF" 
+                                   CornerRadius="12" 
+                                   Padding="20"
+                                   Margin="0,0,0,15">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="{h:Translate Advanced_ResetCompilation_Title}"
+                                                  FontSize="16" 
+                                                  FontWeight="SemiBold"
+                                                  Foreground="White"/>
+                                        <TextBlock Text="{h:Translate Advanced_ResetCompilation_Description}"
+                                                  FontSize="13"
+                                                  Foreground="#B0B8C8"
+                                                  TextWrapping="Wrap" 
+                                                  Margin="0,4,20,0"/>
+                                    </StackPanel>
+                                    
+                                    <Button x:Name="ResetCompilationButton" 
+                                           Grid.Column="1"
+                                           Style="{StaticResource App.Style.Button.Destructive}"
+                                           Content="{h:Translate Advanced_Button_Reset}"
+                                           Tag="&#xE74D;"
+                                           Click="OnResetCompilationClick"
+                                           MinWidth="160"
+                                           VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+
+                            <Border Background="#2A3D0000" 
+                                   BorderBrush="#6AEF4444"
+                                   BorderThickness="1"
+                                   CornerRadius="12" 
+                                   Padding="20">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="{h:Translate Advanced_ResetAll_Title}"
+                                                  FontSize="16" 
+                                                  FontWeight="SemiBold"
+                                                  Foreground="#FFC0C0"/>
+                                        <TextBlock x:Name="SessionOperationsText"
+                                                  Text="{h:Translate Advanced_ResetAll_Description}"
+                                                  FontSize="13"
+                                                  Foreground="#B0B8C8"
+                                                  TextWrapping="Wrap" 
+                                                  Margin="0,4,20,0"/>
+                                    </StackPanel>
+                                    
+                                    <Button x:Name="ResetAllButton" 
+                                           Grid.Column="1"
+                                           Style="{StaticResource App.Style.Button.Destructive}"
+                                           Content="{h:Translate Advanced_Button_ResetAll}"
+                                           Tag="&#xE74D;"
+                                           Click="OnResetAllClick"
+                                           MinWidth="160"
+                                           VerticalAlignment="Center"
+                                           IsEnabled="False"/>
+                                </Grid>
+                            </Border>
+
+                            <Border x:Name="TroubleshootingStatusBorder" 
+                                   Background="#2A1E3A5F" 
+                                   CornerRadius="12" 
+                                   Padding="16"
+                                   Margin="0,15,0,0"
+                                   Visibility="Collapsed">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE946;"
+                                              FontFamily="Segoe MDL2 Assets"
+                                              FontSize="18"
+                                              Foreground="{StaticResource App.Brush.DeepSkyBlue}"
+                                              VerticalAlignment="Center"
+                                              Margin="0,0,12,0"/>
+                                    <TextBlock x:Name="TroubleshootingStatusText"
+                                              FontSize="14"
+                                              Foreground="White"
+                                              TextWrapping="Wrap"
+                                              VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+                            
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

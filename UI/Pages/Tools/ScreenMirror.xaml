@@ -1,0 +1,558 @@
+<UserControl x:Class="ZephyrsElixir.UI.Pages.ScreenMirror"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:h="clr-namespace:ZephyrsElixir.UI.Helpers"
+             Background="Transparent">
+
+    <UserControl.Resources>
+        <LinearGradientBrush x:Key="Mirror.Brush.Accent" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#7D64FF" Offset="0"/>
+            <GradientStop Color="#5A3FD9" Offset="1"/>
+        </LinearGradientBrush>
+        
+        <DropShadowEffect x:Key="Mirror.Effect.Glow" Color="#7D64FF" BlurRadius="20" ShadowDepth="0" Opacity="0.6"/>
+        
+        <Style x:Key="Mirror.Style.OptionCard" TargetType="Border">
+            <Setter Property="Background" Value="#12FFFFFF"/>
+            <Setter Property="BorderBrush" Value="#25FFFFFF"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="16,12"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+        </Style>
+
+        <Style x:Key="Mirror.Style.Slider" TargetType="Slider">
+            <Setter Property="Height" Value="24"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Slider">
+                        <Grid>
+                            <Border Height="6" CornerRadius="3" Background="#25FFFFFF" VerticalAlignment="Center"/>
+                            <Track x:Name="PART_Track">
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton Command="Slider.DecreaseLarge">
+                                        <RepeatButton.Template>
+                                            <ControlTemplate TargetType="RepeatButton">
+                                                <Border Height="6" CornerRadius="3" VerticalAlignment="Center">
+                                                    <Border.Background>
+                                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                                            <GradientStop Color="#7D64FF" Offset="0"/>
+                                                            <GradientStop Color="#5A3FD9" Offset="1"/>
+                                                        </LinearGradientBrush>
+                                                    </Border.Background>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </RepeatButton.Template>
+                                    </RepeatButton>
+                                </Track.DecreaseRepeatButton>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton Command="Slider.IncreaseLarge">
+                                        <RepeatButton.Template>
+                                            <ControlTemplate TargetType="RepeatButton">
+                                                <Border Background="Transparent"/>
+                                            </ControlTemplate>
+                                        </RepeatButton.Template>
+                                    </RepeatButton>
+                                </Track.IncreaseRepeatButton>
+                                <Track.Thumb>
+                                    <Thumb Cursor="Hand">
+                                        <Thumb.Template>
+                                            <ControlTemplate TargetType="Thumb">
+                                                <Ellipse Width="18" Height="18" Fill="White">
+                                                    <Ellipse.Effect>
+                                                        <DropShadowEffect BlurRadius="8" ShadowDepth="1" Opacity="0.4"/>
+                                                    </Ellipse.Effect>
+                                                </Ellipse>
+                                            </ControlTemplate>
+                                        </Thumb.Template>
+                                    </Thumb>
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Storyboard x:Key="RecordingPulse" RepeatBehavior="Forever">
+            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="1" To="0.3" Duration="0:0:0.8" AutoReverse="True"/>
+        </Storyboard>
+    </UserControl.Resources>
+
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Style="{StaticResource App.Style.GlassCard}" Padding="24" Effect="{StaticResource App.Effect.PageShadow}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal">
+                    <Border Width="48" Height="48" CornerRadius="24" Background="{StaticResource Mirror.Brush.Accent}" Effect="{StaticResource Mirror.Effect.Glow}">
+                        <TextBlock Text="&#xE7F4;" FontFamily="Segoe MDL2 Assets" FontSize="22" Foreground="White" 
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <StackPanel Margin="16,0,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="Screen Mirror" FontSize="24" FontWeight="Bold" Foreground="White"/>
+                        <TextBlock Text="Mirror and control your device screen in real-time" Foreground="#B0B8C8" FontSize="13" Margin="0,2,0,0"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <Button Grid.Column="2" Style="{StaticResource App.Style.WindowControl.Close}" Click="OnCloseClick" ToolTip="Close"/>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="2" Style="{StaticResource App.Style.GlassCard}" Padding="0" Effect="{StaticResource App.Effect.PageShadow}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" MinWidth="400"/>
+                    <ColumnDefinition Width="320"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid Margin="28">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0" Style="{StaticResource Mirror.Style.OptionCard}" Padding="20">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Width="52" Height="52" CornerRadius="12" Background="#18FFFFFF">
+                                <TextBlock x:Name="DeviceIcon" Text="&#xE8EA;" FontFamily="Segoe MDL2 Assets" FontSize="24" 
+                                           Foreground="#7D64FF" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+
+                            <StackPanel Grid.Column="1" Margin="16,0" VerticalAlignment="Center">
+                                <TextBlock x:Name="DeviceNameText" Text="No device connected" FontSize="16" FontWeight="SemiBold" Foreground="White"/>
+                                <TextBlock x:Name="DeviceDetailsText" Text="Connect a device via USB or WiFi" FontSize="12" Foreground="#80FFFFFF" Margin="0,4,0,0"/>
+                            </StackPanel>
+
+                            <Border x:Name="StatusBadge" Grid.Column="2" Padding="12,6" CornerRadius="14" VerticalAlignment="Center">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Background" Value="#25FF6B6B"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                                <Setter Property="Background" Value="#2532CD32"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <StackPanel Orientation="Horizontal">
+                                    <Ellipse x:Name="StatusDot" Width="8" Height="8" Margin="0,0,8,0">
+                                        <Ellipse.Style>
+                                            <Style TargetType="Ellipse">
+                                                <Setter Property="Fill" Value="#FF6B6B"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                                        <Setter Property="Fill" Value="#32CD32"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Ellipse.Style>
+                                    </Ellipse>
+                                    <TextBlock x:Name="StatusText" FontSize="12" FontWeight="SemiBold">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Text" Value="Disconnected"/>
+                                                <Setter Property="Foreground" Value="#FF6B6B"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                                        <Setter Property="Text" Value="Connected"/>
+                                                        <Setter Property="Foreground" Value="#32CD32"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <Grid Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <StackPanel x:Name="IdlePanel" HorizontalAlignment="Center">
+                            <Button x:Name="StartMirrorButton" Click="OnStartMirrorClick" Cursor="Hand" Width="200" Height="200">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Grid>
+                                            <Ellipse x:Name="GlowRing" Width="200" Height="200" Opacity="0.3">
+                                                <Ellipse.Fill>
+                                                    <RadialGradientBrush>
+                                                        <GradientStop Color="#7D64FF" Offset="0.5"/>
+                                                        <GradientStop Color="Transparent" Offset="1"/>
+                                                    </RadialGradientBrush>
+                                                </Ellipse.Fill>
+                                            </Ellipse>
+                                            <Ellipse x:Name="MainCircle" Width="160" Height="160" Fill="{StaticResource Mirror.Brush.Accent}">
+                                                <Ellipse.Effect>
+                                                    <DropShadowEffect Color="#7D64FF" BlurRadius="30" ShadowDepth="0" Opacity="0.7"/>
+                                                </Ellipse.Effect>
+                                            </Ellipse>
+                                            <Ellipse Width="140" Height="140" Opacity="0.15">
+                                                <Ellipse.Fill>
+                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                        <GradientStop Color="White" Offset="0"/>
+                                                        <GradientStop Color="Transparent" Offset="0.5"/>
+                                                    </LinearGradientBrush>
+                                                </Ellipse.Fill>
+                                            </Ellipse>
+                                            <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="56" 
+                                                       Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="MainCircle" Property="Effect">
+                                                    <Setter.Value>
+                                                        <DropShadowEffect Color="#7D64FF" BlurRadius="50" ShadowDepth="0" Opacity="0.9"/>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Setter TargetName="GlowRing" Property="Opacity" Value="0.5"/>
+                                            </Trigger>
+                                            <Trigger Property="IsPressed" Value="True">
+                                                <Setter TargetName="MainCircle" Property="RenderTransform">
+                                                    <Setter.Value>
+                                                        <ScaleTransform ScaleX="0.95" ScaleY="0.95" CenterX="80" CenterY="80"/>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter TargetName="MainCircle" Property="Fill" Value="#40FFFFFF"/>
+                                                <Setter TargetName="MainCircle" Property="Effect" Value="{x:Null}"/>
+                                                <Setter TargetName="GlowRing" Property="Opacity" Value="0"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+
+                            <TextBlock Text="Start Mirroring" FontSize="18" FontWeight="SemiBold" Foreground="White" 
+                                       HorizontalAlignment="Center" Margin="0,24,0,0"/>
+                            <TextBlock Text="Click to begin screen mirroring" FontSize="13" Foreground="#70FFFFFF" 
+                                       HorizontalAlignment="Center" Margin="0,6,0,0"/>
+                        </StackPanel>
+
+                        <StackPanel x:Name="ActivePanel" Visibility="Collapsed" HorizontalAlignment="Center">
+                            <Border Background="#15FFFFFF" CornerRadius="16" Padding="24,20">
+                                <StackPanel>
+                                    <Grid>
+                                        <TextBlock Text="MIRRORING ACTIVE" FontSize="11" FontWeight="Bold" Foreground="#7D64FF" 
+                                                   HorizontalAlignment="Center"/>
+                                        
+                                        <StackPanel x:Name="RecordingIndicator" Orientation="Horizontal" HorizontalAlignment="Right"
+                                                    Visibility="{Binding IsRecording, Converter={StaticResource App.Converter.BooleanToVisibility}}">
+                                            <Ellipse x:Name="RecordingDot" Width="10" Height="10" Fill="#FF4444" Margin="0,0,6,0">
+                                                <Ellipse.Style>
+                                                    <Style TargetType="Ellipse">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsRecording}" Value="True">
+                                                                <DataTrigger.EnterActions>
+                                                                    <BeginStoryboard>
+                                                                        <Storyboard RepeatBehavior="Forever">
+                                                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" 
+                                                                                           From="1" To="0.3" Duration="0:0:0.8" AutoReverse="True"/>
+                                                                        </Storyboard>
+                                                                    </BeginStoryboard>
+                                                                </DataTrigger.EnterActions>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Ellipse.Style>
+                                            </Ellipse>
+                                            <TextBlock Text="REC" FontSize="10" FontWeight="Bold" Foreground="#FF4444"/>
+                                        </StackPanel>
+                                    </Grid>
+                                    
+                                    <UniformGrid Columns="3" Margin="0,20,0,0" Width="300">
+                                        <StackPanel HorizontalAlignment="Center">
+                                            <TextBlock x:Name="FpsText" Text="60" FontSize="28" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="FPS" FontSize="11" Foreground="#70FFFFFF" HorizontalAlignment="Center"/>
+                                        </StackPanel>
+                                        <StackPanel HorizontalAlignment="Center">
+                                            <TextBlock x:Name="BitrateText" Text="8.0" FontSize="28" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="Mbps" FontSize="11" Foreground="#70FFFFFF" HorizontalAlignment="Center"/>
+                                        </StackPanel>
+                                        <StackPanel HorizontalAlignment="Center">
+                                            <TextBlock x:Name="LatencyText" Text="12" FontSize="28" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="ms" FontSize="11" Foreground="#70FFFFFF" HorizontalAlignment="Center"/>
+                                        </StackPanel>
+                                    </UniformGrid>
+                                    
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,16,0,0">
+                                        <TextBlock Text="&#xE916;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#70FFFFFF" VerticalAlignment="Center"/>
+                                        <TextBlock x:Name="DurationText" Text="00:00:00" FontSize="14" Foreground="#B0FFFFFF" Margin="8,0,0,0" FontFamily="Consolas"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
+                                <Button x:Name="StopButton" Click="OnStopMirrorClick" Cursor="Hand" ToolTip="Stop Mirroring" Margin="0,0,12,0">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="Bd" Width="56" Height="56" CornerRadius="28" Background="#30FF6B6B">
+                                                <TextBlock Text="&#xE71A;" FontFamily="Segoe MDL2 Assets" FontSize="22" 
+                                                           Foreground="#FF6B6B" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="Bd" Property="Background" Value="#50FF6B6B"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+
+                                <ToggleButton x:Name="RecordToggle" Click="OnRecordToggleClick" Cursor="Hand" ToolTip="Avvia/Ferma Registrazione">
+                                    <ToggleButton.Template>
+                                        <ControlTemplate TargetType="ToggleButton">
+                                            <Border x:Name="Bd" Width="56" Height="56" CornerRadius="28" Background="#25FFFFFF">
+                                                <Grid>
+                                                    <Ellipse x:Name="RecDot" Width="20" Height="20" Fill="#FF4444" Visibility="Collapsed"/>
+                                                    <TextBlock x:Name="RecIcon" Text="&#xE7C8;" FontFamily="Segoe MDL2 Assets" FontSize="22" 
+                                                               Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Grid>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsChecked" Value="True">
+                                                    <Setter TargetName="Bd" Property="Background" Value="#40FF4444"/>
+                                                    <Setter TargetName="RecIcon" Property="Visibility" Value="Collapsed"/>
+                                                    <Setter TargetName="RecDot" Property="Visibility" Value="Visible"/>
+                                                </Trigger>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="Bd" Property="Background" Value="#35FFFFFF"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </ToggleButton.Template>
+                                </ToggleButton>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <Border x:Name="SetupPanel" Visibility="Collapsed" Background="#15FFFFFF" CornerRadius="16" Padding="40,30">
+                            <StackPanel HorizontalAlignment="Center">
+                                <Border Width="80" Height="80" CornerRadius="40" Background="#25FFD000" Margin="0,0,0,20">
+                                    <TextBlock Text="&#xE946;" FontFamily="Segoe MDL2 Assets" FontSize="36" 
+                                               Foreground="#FFD000" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <TextBlock Text="Setup Required" FontSize="20" FontWeight="SemiBold" Foreground="White" HorizontalAlignment="Center"/>
+                                <TextBlock Text="scrcpy is needed for screen mirroring" FontSize="13" Foreground="#80FFFFFF" 
+                                           HorizontalAlignment="Center" Margin="0,8,0,24" TextAlignment="Center"/>
+                                <Button x:Name="SetupButton" Content="Download &amp; Setup" Tag="&#xE896;" 
+                                        Style="{StaticResource App.Style.Button}" Click="OnSetupClick"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <Border Grid.Row="2" Background="#10FFFFFF" CornerRadius="12" Padding="16,12">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="&#xE765;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#60FFFFFF" VerticalAlignment="Center"/>
+                                <TextBlock Text="Shortcuts: " FontSize="12" Foreground="#60FFFFFF" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                                <Border Background="#18FFFFFF" CornerRadius="4" Padding="6,2" Margin="4,0">
+                                    <TextBlock Text="Ctrl+H" FontSize="11" Foreground="#90FFFFFF" FontFamily="Consolas"/>
+                                </Border>
+                                <TextBlock Text="Home" FontSize="11" Foreground="#60FFFFFF" Margin="4,0,12,0" VerticalAlignment="Center"/>
+                                <Border Background="#18FFFFFF" CornerRadius="4" Padding="6,2" Margin="4,0">
+                                    <TextBlock Text="Ctrl+B" FontSize="11" Foreground="#90FFFFFF" FontFamily="Consolas"/>
+                                </Border>
+                                <TextBlock Text="Back" FontSize="11" Foreground="#60FFFFFF" Margin="4,0,12,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+
+                            <Button Grid.Column="1" x:Name="ScreenshotButton" Click="OnScreenshotClick" 
+                                    Style="{StaticResource App.Style.Button.Inline}" Tag="&#xE722;" Content="Screenshot"
+                                    ToolTip="Cattura screenshot dal dispositivo"/>
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <Border Grid.Column="1" Background="#0AFFFFFF" BorderBrush="#15FFFFFF" BorderThickness="1,0,0,0">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="20">
+                        <StackPanel>
+                            <TextBlock Text="SETTINGS" FontSize="11" FontWeight="Bold" Foreground="#60FFFFFF" Margin="0,0,0,16"/>
+
+                            <Border Style="{StaticResource Mirror.Style.OptionCard}">
+                                <StackPanel>
+                                    <Grid>
+                                        <TextBlock Text="Quality Preset" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
+                                        <TextBlock x:Name="QualityLabel" Text="Balanced" FontSize="12" Foreground="#7D64FF" 
+                                                   HorizontalAlignment="Right"/>
+                                    </Grid>
+                                    <ComboBox x:Name="QualityCombo" Style="{StaticResource App.Style.ComboBox.Slim}" 
+                                              Margin="0,10,0,0" SelectionChanged="OnQualityChanged">
+                                        <ComboBoxItem Content="Performance" Tag="perf"/>
+                                        <ComboBoxItem Content="Balanced" Tag="balanced" IsSelected="True"/>
+                                        <ComboBoxItem Content="Quality" Tag="quality"/>
+                                        <ComboBoxItem Content="Maximum" Tag="max"/>
+                                    </ComboBox>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Style="{StaticResource Mirror.Style.OptionCard}">
+                                <StackPanel>
+                                    <Grid>
+                                        <TextBlock Text="Max Resolution" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
+                                        <TextBlock x:Name="ResolutionLabel" Text="1280p" FontSize="12" Foreground="#7D64FF" 
+                                                   HorizontalAlignment="Right"/>
+                                    </Grid>
+                                    <ComboBox x:Name="ResolutionCombo" Style="{StaticResource App.Style.ComboBox.Slim}" 
+                                              Margin="0,10,0,0" SelectionChanged="OnResolutionChanged">
+                                        <ComboBoxItem Content="720p (HD)" Tag="720"/>
+                                        <ComboBoxItem Content="1080p (Full HD)" Tag="1080"/>
+                                        <ComboBoxItem Content="1280p" Tag="1280" IsSelected="True"/>
+                                        <ComboBoxItem Content="1440p (2K)" Tag="1440"/>
+                                        <ComboBoxItem Content="Native" Tag="0"/>
+                                    </ComboBox>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Style="{StaticResource Mirror.Style.OptionCard}">
+                                <StackPanel>
+                                    <Grid>
+                                        <TextBlock Text="Bitrate" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
+                                        <TextBlock x:Name="BitrateLabelValue" Text="8 Mbps" FontSize="12" Foreground="#7D64FF" 
+                                                   HorizontalAlignment="Right"/>
+                                    </Grid>
+                                    <Slider x:Name="BitrateSlider" Minimum="2" Maximum="32" Value="8" 
+                                            Style="{StaticResource Mirror.Style.Slider}" Margin="0,12,0,0"
+                                            ValueChanged="OnBitrateChanged"/>
+                                    <Grid Margin="0,6,0,0">
+                                        <TextBlock Text="2 Mbps" FontSize="10" Foreground="#50FFFFFF"/>
+                                        <TextBlock Text="32 Mbps" FontSize="10" Foreground="#50FFFFFF" HorizontalAlignment="Right"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Style="{StaticResource Mirror.Style.OptionCard}">
+                                <StackPanel>
+                                    <Grid>
+                                        <TextBlock Text="Frame Rate" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
+                                        <TextBlock x:Name="FpsLabelValue" Text="60 FPS" FontSize="12" Foreground="#7D64FF" 
+                                                   HorizontalAlignment="Right"/>
+                                    </Grid>
+                                    <ComboBox x:Name="FpsCombo" Style="{StaticResource App.Style.ComboBox.Slim}" 
+                                              Margin="0,10,0,0" SelectionChanged="OnFpsChanged">
+                                        <ComboBoxItem Content="30 FPS" Tag="30"/>
+                                        <ComboBoxItem Content="60 FPS" Tag="60" IsSelected="True"/>
+                                        <ComboBoxItem Content="90 FPS" Tag="90"/>
+                                        <ComboBoxItem Content="120 FPS" Tag="120"/>
+                                    </ComboBox>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Height="1" Background="#15FFFFFF" Margin="0,8,0,18"/>
+
+                            <TextBlock Text="OPTIONS" FontSize="11" FontWeight="Bold" Foreground="#60FFFFFF" Margin="0,0,0,16"/>
+
+                            <CheckBox x:Name="ShowTouchesCheck" Style="{StaticResource App.Style.ToggleSwitch}" Margin="0,0,0,14">
+                                <StackPanel>
+                                    <TextBlock Text="Show Touches" FontSize="13" Foreground="White"/>
+                                    <TextBlock Text="Display touch points on screen" FontSize="11" Foreground="#60FFFFFF" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </CheckBox>
+
+                            <CheckBox x:Name="StayAwakeCheck" Style="{StaticResource App.Style.ToggleSwitch}" IsChecked="True" Margin="0,0,0,14">
+                                <StackPanel>
+                                    <TextBlock Text="Stay Awake" FontSize="13" Foreground="White"/>
+                                    <TextBlock Text="Prevent device from sleeping" FontSize="11" Foreground="#60FFFFFF" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </CheckBox>
+
+                            <CheckBox x:Name="TurnOffScreenCheck" Style="{StaticResource App.Style.ToggleSwitch}" Margin="0,0,0,14">
+                                <StackPanel>
+                                    <TextBlock Text="Turn Off Screen" FontSize="13" Foreground="White"/>
+                                    <TextBlock Text="Keep device screen off while mirroring" FontSize="11" Foreground="#60FFFFFF" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </CheckBox>
+
+                            <CheckBox x:Name="AlwaysOnTopCheck" Style="{StaticResource App.Style.ToggleSwitch}" Margin="0,0,0,14">
+                                <StackPanel>
+                                    <TextBlock Text="Always On Top" FontSize="13" Foreground="White"/>
+                                    <TextBlock Text="Keep mirror window above others" FontSize="11" Foreground="#60FFFFFF" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </CheckBox>
+
+                            <CheckBox x:Name="BorderlessCheck" Style="{StaticResource App.Style.ToggleSwitch}" Margin="0,0,0,14">
+                                <StackPanel>
+                                    <TextBlock Text="Borderless Window" FontSize="13" Foreground="White"/>
+                                    <TextBlock Text="Remove window decorations" FontSize="11" Foreground="#60FFFFFF" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </CheckBox>
+
+                            <Border Height="1" Background="#15FFFFFF" Margin="0,8,0,18"/>
+
+                            <TextBlock Text="RECORDING &amp; SCREENSHOTS" FontSize="11" FontWeight="Bold" Foreground="#60FFFFFF" Margin="0,0,0,16"/>
+
+                            <Border Style="{StaticResource Mirror.Style.OptionCard}">
+                                <StackPanel>
+                                    <Grid>
+                                        <TextBlock Text="Recording Folder" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
+                                    </Grid>
+                                    <Grid Margin="0,10,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox x:Name="RecordPathText" Style="{StaticResource App.Style.TextBox.Glass}" 
+                                                 IsReadOnly="True" Height="36" FontSize="12"
+                                                 Text="{Binding RecordingPath, Mode=OneWay}"/>
+                                        <Button Grid.Column="1" Content="Browse" Style="{StaticResource App.Style.Button.Inline}" 
+                                                Click="OnBrowseRecordPathClick" Margin="8,0,0,0" Tag="&#xED25;"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Style="{StaticResource Mirror.Style.OptionCard}">
+                                <StackPanel>
+                                    <TextBlock Text="Screenshot Folder" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
+                                    <TextBlock Text="{Binding ScreenshotPath, Mode=OneWay}" FontSize="11" Foreground="#70FFFFFF" 
+                                               Margin="0,8,0,0" TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Style="{StaticResource Mirror.Style.OptionCard}">
+                                <StackPanel>
+                                    <TextBlock Text="Recording Format" FontSize="13" FontWeight="SemiBold" Foreground="White"/>
+                                    <ComboBox x:Name="RecordFormatCombo" Style="{StaticResource App.Style.ComboBox.Slim}" Margin="0,10,0,0">
+                                        <ComboBoxItem Content="MP4 (H.264)" Tag="mp4" IsSelected="True"/>
+                                        <ComboBoxItem Content="MKV (H.264)" Tag="mkv"/>
+                                    </ComboBox>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Style="{StaticResource Mirror.Style.OptionCard}" Background="#15FFD000" BorderBrush="#40FFD000">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE946;" FontFamily="Segoe MDL2 Assets" FontSize="16" 
+                                               Foreground="#FFD000" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                    <TextBlock Text="Le impostazioni possono essere modificate durante lo streaming. Ti verrà chiesto se vuoi riavviare." 
+                                               FontSize="11" Foreground="#D0D0D0" TextWrapping="Wrap" Width="200"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Button Content="Reset to Defaults" Tag="&#xE72C;" Style="{StaticResource App.Style.Button.Inline}" 
+                                    Click="OnResetSettingsClick" HorizontalAlignment="Stretch" Margin="0,16,0,0"/>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

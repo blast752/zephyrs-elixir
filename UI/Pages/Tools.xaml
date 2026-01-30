@@ -1,0 +1,148 @@
+<UserControl x:Class="ZephyrsElixir.UI.Pages.Tools"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:h="clr-namespace:ZephyrsElixir.UI.Helpers"
+             Background="Transparent">
+
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <h:PageHeader Grid.Row="0"
+                            Icon="&#xE90F;"
+                            Title="{h:Translate Tools_Header}"
+                            Subtitle="{h:Translate Tools_Subtitle}"/>
+
+        <Border Grid.Row="2"
+                Style="{StaticResource App.Style.GlassCard}"
+                Padding="24"
+                Effect="{StaticResource App.Effect.PageShadow}">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <ItemsControl x:Name="ToolsGrid" ItemsSource="{Binding ToolItems}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="4" HorizontalAlignment="Stretch"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Margin="8" 
+                                    MinHeight="140"
+                                    Cursor="Hand"
+                                    Click="OnToolClick"
+                                    Tag="{Binding Key}"
+                                    IsEnabled="{Binding IsEnabled}">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border x:Name="container" 
+                                                            Background="#1AFFFFFF" 
+                                                            BorderBrush="#3AFFFFFF" 
+                                                            BorderThickness="1" 
+                                                            CornerRadius="16"
+                                                            Padding="20"
+                                                            RenderTransformOrigin="0.5,0.5">
+                                                        <Border.RenderTransform>
+                                                            <ScaleTransform x:Name="CardScale" ScaleX="1" ScaleY="1"/>
+                                                        </Border.RenderTransform>
+                                                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                            <Border Width="56" Height="56" CornerRadius="28" 
+                                                                    Background="{Binding IconBrush}" 
+                                                                    HorizontalAlignment="Center"
+                                                                    Margin="0,0,0,14">
+                                                                <Border.Effect>
+                                                                    <DropShadowEffect BlurRadius="12" ShadowDepth="0" 
+                                                                                      Color="{Binding GlowColor}" Opacity="0.5"/>
+                                                                </Border.Effect>
+                                                                <TextBlock Text="{Binding Icon}" 
+                                                                           FontFamily="Segoe MDL2 Assets" 
+                                                                           FontSize="24" 
+                                                                           Foreground="White"
+                                                                           HorizontalAlignment="Center" 
+                                                                           VerticalAlignment="Center"/>
+                                                            </Border>
+                                                            <TextBlock Text="{Binding Title}" 
+                                                                       FontSize="14" 
+                                                                       FontWeight="SemiBold" 
+                                                                       Foreground="White"
+                                                                       TextAlignment="Center"
+                                                                       TextWrapping="Wrap"
+                                                                       MaxWidth="140"/>
+                                                            <TextBlock Text="{Binding Description}" 
+                                                                       FontSize="11" 
+                                                                       Foreground="#90FFFFFF"
+                                                                       TextAlignment="Center"
+                                                                       TextWrapping="Wrap"
+                                                                       MaxWidth="140"
+                                                                       Margin="0,6,0,0"/>
+                                                        </StackPanel>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="container" Property="Background" Value="#28FFFFFF"/>
+                                                            <Setter TargetName="container" Property="BorderBrush" Value="#5AFFFFFF"/>
+                                                            <Trigger.EnterActions>
+                                                                <BeginStoryboard>
+                                                                    <Storyboard>
+                                                                        <DoubleAnimation Storyboard.TargetName="CardScale"
+                                                                                         Storyboard.TargetProperty="ScaleX"
+                                                                                         To="1.03" Duration="0:0:0.15">
+                                                                            <DoubleAnimation.EasingFunction>
+                                                                                <CubicEase EasingMode="EaseOut"/>
+                                                                            </DoubleAnimation.EasingFunction>
+                                                                        </DoubleAnimation>
+                                                                        <DoubleAnimation Storyboard.TargetName="CardScale"
+                                                                                         Storyboard.TargetProperty="ScaleY"
+                                                                                         To="1.03" Duration="0:0:0.15">
+                                                                            <DoubleAnimation.EasingFunction>
+                                                                                <CubicEase EasingMode="EaseOut"/>
+                                                                            </DoubleAnimation.EasingFunction>
+                                                                        </DoubleAnimation>
+                                                                    </Storyboard>
+                                                                </BeginStoryboard>
+                                                            </Trigger.EnterActions>
+                                                            <Trigger.ExitActions>
+                                                                <BeginStoryboard>
+                                                                    <Storyboard>
+                                                                        <DoubleAnimation Storyboard.TargetName="CardScale"
+                                                                                         Storyboard.TargetProperty="ScaleX"
+                                                                                         To="1" Duration="0:0:0.15"/>
+                                                                        <DoubleAnimation Storyboard.TargetName="CardScale"
+                                                                                         Storyboard.TargetProperty="ScaleY"
+                                                                                         To="1" Duration="0:0:0.15"/>
+                                                                    </Storyboard>
+                                                                </BeginStoryboard>
+                                                            </Trigger.ExitActions>
+                                                        </Trigger>
+                                                        <Trigger Property="IsPressed" Value="True">
+                                                            <Setter TargetName="container" Property="Background" Value="#35FFFFFF"/>
+                                                        </Trigger>
+                                                        <Trigger Property="IsEnabled" Value="False">
+                                                            <Setter TargetName="container" Property="Opacity" Value="0.5"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Border>
+
+        <Border x:Name="SubPageHost" 
+                Grid.Row="0" Grid.RowSpan="3"
+                Visibility="Collapsed"
+                Background="#FF0E1A33">
+            <ContentControl x:Name="SubPageContent"/>
+        </Border>
+    </Grid>
+</UserControl>

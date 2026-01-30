@@ -1,0 +1,364 @@
+<UserControl x:Class="ZephyrsElixir.UI.Pages.ApkInstaller"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:h="clr-namespace:ZephyrsElixir.UI.Helpers"
+             Background="#FF0E1A33"
+             AllowDrop="True"
+             Drop="OnDrop"
+             DragOver="OnDragOver"
+             DragLeave="OnDragLeave">
+
+    <UserControl.Resources>
+        <h:InverseBoolToVisibilityConverter x:Key="InverseBoolToVis"/>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+        <h:SmartTruncateConverter x:Key="SmartTruncate"/>
+        
+        <Style x:Key="StatusIndicator" TargetType="Ellipse">
+            <Setter Property="Width" Value="8"/>
+            <Setter Property="Height" Value="8"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Status}" Value="Pending">
+                    <Setter Property="Fill" Value="#60FFFFFF"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Status}" Value="Installing">
+                    <Setter Property="Fill" Value="#FFD000"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Status}" Value="Success">
+                    <Setter Property="Fill" Value="#00D68F"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Status}" Value="Failed">
+                    <Setter Property="Fill" Value="#FF6B6B"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Status}" Value="Updated">
+                    <Setter Property="Fill" Value="#00BFFF"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        
+        <Style x:Key="TypeBadge" TargetType="Border">
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="8,3"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Border Style="{StaticResource App.Style.GlassCard}"
+                Padding="24"
+                Effect="{StaticResource App.Effect.PageShadow}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Button Style="{StaticResource App.Style.Button.Inline}"
+                        Content="Back" Tag="&#xE72B;"
+                        Click="OnBackClick"
+                        VerticalAlignment="Center"/>
+
+                <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                    <TextBlock Text="APK Installer" FontSize="26" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock x:Name="StatusText" 
+                               Text="Drag and drop APK files to install" 
+                               Foreground="#B0B8C8" FontSize="13" Margin="0,4,0,0"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button x:Name="BrowseButton"
+                            Style="{StaticResource App.Style.Button}"
+                            Content="Browse Files" Tag="&#xE8E5;"
+                            Click="OnBrowseClick"
+                            Margin="0,0,12,0"/>
+                    <Button x:Name="ClearButton"
+                            Style="{StaticResource App.Style.Button.Inline.Destructive}"
+                            Content="Clear All" Tag="&#xE74D;"
+                            Click="OnClearClick"
+                            Visibility="Collapsed"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="2"
+                Style="{StaticResource App.Style.GlassCard}"
+                Padding="0"
+                ClipToBounds="True"
+                Effect="{StaticResource App.Effect.PageShadow}">
+            <Grid>
+                <Border x:Name="DropZone"
+                        Margin="24"
+                        CornerRadius="16"
+                        BorderThickness="2"
+                        BorderBrush="#40FFFFFF"
+                        Background="#10FFFFFF"
+                        RenderTransformOrigin="0.5,0.5">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="BorderBrush" Value="#40FFFFFF"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsDragging}" Value="True">
+                                    <Setter Property="BorderBrush" Value="{StaticResource App.Brush.DeepSkyBlue}"/>
+                                    <Setter Property="Background" Value="#2000BFFF"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <Border.RenderTransform>
+                        <ScaleTransform x:Name="DropZoneScale" ScaleX="1" ScaleY="1"/>
+                    </Border.RenderTransform>
+
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <Border Width="80" Height="80" CornerRadius="40"
+                                Background="{StaticResource App.Brush.IconCircle}"
+                                HorizontalAlignment="Center" Margin="0,0,0,20">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="20" ShadowDepth="0" 
+                                                  Color="{StaticResource App.Color.DeepSkyBlue}" Opacity="0.4"/>
+                            </Border.Effect>
+                            <TextBlock Text="&#xE896;" FontFamily="Segoe MDL2 Assets" 
+                                       FontSize="36" Foreground="White"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        
+                        <TextBlock Text="Drop APK files here" 
+                                   FontSize="20" FontWeight="SemiBold" Foreground="White"
+                                   HorizontalAlignment="Center"/>
+                        <TextBlock Text="or click Browse Files to select" 
+                                   FontSize="13" Foreground="#90FFFFFF"
+                                   HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                        
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,24,0,0">
+                            <Border Background="#2000BFFF" CornerRadius="8" Padding="12,6" Margin="4,0">
+                                <TextBlock Text=".APK" FontSize="12" FontWeight="SemiBold" Foreground="#00BFFF"/>
+                            </Border>
+                            <Border Background="#2000D68F" CornerRadius="8" Padding="12,6" Margin="4,0">
+                                <TextBlock Text=".XAPK" FontSize="12" FontWeight="SemiBold" Foreground="#00D68F"/>
+                            </Border>
+                            <Border Background="#20FFD000" CornerRadius="8" Padding="12,6" Margin="4,0">
+                                <TextBlock Text=".APKS" FontSize="12" FontWeight="SemiBold" Foreground="#FFD000"/>
+                            </Border>
+                            <Border Background="#207D64FF" CornerRadius="8" Padding="12,6" Margin="4,0">
+                                <TextBlock Text=".APKM" FontSize="12" FontWeight="SemiBold" Foreground="#7D64FF"/>
+                            </Border>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <Grid x:Name="FileListPanel" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Background="#20000000" Padding="20,14" 
+                            BorderBrush="{StaticResource App.Brush.Glass.Border}" BorderThickness="0,0,0,1">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="44"/>
+                                <ColumnDefinition Width="*" MinWidth="200"/>
+                                <ColumnDefinition Width="90"/>
+                                <ColumnDefinition Width="75"/>
+                                <ColumnDefinition Width="110"/>
+                                <ColumnDefinition Width="44"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="1" Text="Package" Foreground="#90FFFFFF" FontSize="12" FontWeight="SemiBold"/>
+                            <TextBlock Grid.Column="2" Text="Version" Foreground="#90FFFFFF" FontSize="12" FontWeight="SemiBold"/>
+                            <TextBlock Grid.Column="3" Text="Size" Foreground="#90FFFFFF" FontSize="12" FontWeight="SemiBold"/>
+                            <TextBlock Grid.Column="4" Text="Status" Foreground="#90FFFFFF" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="8">
+                        <ItemsControl x:Name="FileList" ItemsSource="{Binding Packages}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Margin="4" CornerRadius="12" Background="#15FFFFFF" 
+                                            BorderBrush="#25FFFFFF" BorderThickness="1" Padding="12">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="44"/>
+                                                <ColumnDefinition Width="*" MinWidth="200"/>
+                                                <ColumnDefinition Width="90"/>
+                                                <ColumnDefinition Width="75"/>
+                                                <ColumnDefinition Width="110"/>
+                                                <ColumnDefinition Width="44"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <Grid>
+                                                <Border Width="36" Height="36" CornerRadius="10" Background="{Binding TypeBrush}">
+                                                    <TextBlock Text="{Binding TypeIcon}" FontFamily="Segoe MDL2 Assets" 
+                                                               FontSize="16" Foreground="White"
+                                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                                <Border Width="14" Height="14" CornerRadius="7" 
+                                                        Background="{Binding TypeBrush}"
+                                                        BorderBrush="#FF0E1A33" BorderThickness="2"
+                                                        HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                                                        Margin="0,0,-2,-2">
+                                                    <TextBlock Text="{Binding TypeLetter}" FontSize="8" FontWeight="Bold"
+                                                               Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                            </Grid>
+
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="8,0,12,0">
+                                                <TextBlock FontSize="13" FontWeight="SemiBold" Foreground="White"
+                                                           Text="{Binding DisplayName, Converter={StaticResource SmartTruncate}, ConverterParameter=45}"
+                                                           TextTrimming="None"
+                                                           ToolTipService.InitialShowDelay="300">
+                                                    <TextBlock.ToolTip>
+                                                        <ToolTip Style="{StaticResource App.Style.Tooltip}">
+                                                            <StackPanel MaxWidth="400">
+                                                                <TextBlock Text="{Binding DisplayName}" TextWrapping="Wrap" FontWeight="SemiBold"/>
+                                                                <TextBlock Text="{Binding FilePath}" TextWrapping="Wrap" 
+                                                                           Foreground="#80FFFFFF" FontSize="11" Margin="0,4,0,0"/>
+                                                            </StackPanel>
+                                                        </ToolTip>
+                                                    </TextBlock.ToolTip>
+                                                </TextBlock>
+                                                <TextBlock FontSize="11" Foreground="#70FFFFFF"
+                                                           Text="{Binding PackageName, Converter={StaticResource SmartTruncate}, ConverterParameter=50}"
+                                                           TextTrimming="None"
+                                                           ToolTipService.InitialShowDelay="300">
+                                                    <TextBlock.ToolTip>
+                                                        <ToolTip Style="{StaticResource App.Style.Tooltip}">
+                                                            <TextBlock Text="{Binding PackageName}" MaxWidth="350" TextWrapping="Wrap"/>
+                                                        </ToolTip>
+                                                    </TextBlock.ToolTip>
+                                                </TextBlock>
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding VersionName}" FontSize="12" Foreground="#D0FFFFFF"
+                                                           TextTrimming="CharacterEllipsis" MaxWidth="80"/>
+                                                <TextBlock Text="{Binding VersionCode, StringFormat='({0})'}" 
+                                                           FontSize="10" Foreground="#60FFFFFF"
+                                                           Visibility="{Binding HasVersionCode, Converter={StaticResource BoolToVis}}"/>
+                                            </StackPanel>
+
+                                            <TextBlock Grid.Column="3" Text="{Binding SizeDisplay}" 
+                                                       FontSize="12" Foreground="#B0FFFFFF" VerticalAlignment="Center"/>
+
+                                            <Grid Grid.Column="4" VerticalAlignment="Center">
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                    <Ellipse Style="{StaticResource StatusIndicator}" Margin="0,0,8,0"/>
+                                                    <TextBlock Text="{Binding StatusText}" FontSize="12" 
+                                                               Foreground="{Binding StatusBrush}" FontWeight="SemiBold"
+                                                               MaxWidth="85" TextTrimming="CharacterEllipsis"
+                                                               ToolTip="{Binding ErrorMessage}"
+                                                               ToolTipService.IsEnabled="{Binding HasError}"/>
+                                                </StackPanel>
+                                                
+                                                <ProgressBar VerticalAlignment="Bottom" Margin="0,0,0,-6"
+                                                             Height="3" Background="#20FFFFFF"
+                                                             Foreground="{StaticResource App.Brush.DeepSkyBlue}"
+                                                             Value="{Binding Progress}" Maximum="100"
+                                                             Visibility="{Binding IsInstalling, Converter={StaticResource BoolToVis}}"/>
+                                            </Grid>
+
+                                            <Button Grid.Column="5" 
+                                                    Style="{StaticResource App.Style.Button.Inline.Destructive}"
+                                                    Content="" Tag="&#xE74D;"
+                                                    Width="32" Height="32" MinWidth="32"
+                                                    Click="OnRemovePackage"
+                                                    ToolTip="Remove from list"
+                                                    Visibility="{Binding CanRemove, Converter={StaticResource BoolToVis}}"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
+
+                <Border x:Name="DragOverlay" 
+                        Background="#E0101828" 
+                        Visibility="Collapsed"
+                        IsHitTestVisible="False">
+                    <Border Margin="40" CornerRadius="20" 
+                            BorderThickness="3" BorderBrush="{StaticResource App.Brush.DeepSkyBlue}"
+                            Background="#3000BFFF">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="30" ShadowDepth="0" 
+                                              Color="{StaticResource App.Color.DeepSkyBlue}" Opacity="0.5"/>
+                        </Border.Effect>
+                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <TextBlock Text="&#xE896;" FontFamily="Segoe MDL2 Assets" 
+                                       FontSize="64" Foreground="{StaticResource App.Brush.DeepSkyBlue}"
+                                       HorizontalAlignment="Center">
+                                <TextBlock.Effect>
+                                    <DropShadowEffect BlurRadius="20" ShadowDepth="0" 
+                                                      Color="{StaticResource App.Color.DeepSkyBlue}" Opacity="0.6"/>
+                                </TextBlock.Effect>
+                            </TextBlock>
+                            <TextBlock Text="Release to add files" 
+                                       FontSize="24" FontWeight="Bold" Foreground="White"
+                                       HorizontalAlignment="Center" Margin="0,16,0,0"/>
+                        </StackPanel>
+                    </Border>
+                </Border>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="4"
+                Style="{StaticResource App.Style.GlassCard}"
+                Padding="20,16"
+                Effect="{StaticResource App.Effect.PageShadow}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="24"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="&#xE8F1;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                               Foreground="#70B0B8C8" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                    <TextBlock x:Name="SummaryText" 
+                               Text="No packages selected" 
+                               FontSize="13" Foreground="#B0B8C8" VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,24,0">
+                        <CheckBox x:Name="BypassSecurityCheck" 
+                                  Style="{StaticResource App.Style.GlassCheckBox}"
+                                  IsChecked="True"
+                                  VerticalAlignment="Center"/>
+                        <TextBlock Text="Bypass security" FontSize="12" Foreground="#D0D8E8" 
+                                   VerticalAlignment="Center" Margin="8,0,0,0"
+                                   ToolTip="Skip verification checks during installation"/>
+                    </StackPanel>
+                    
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox x:Name="AllowDowngradeCheck" 
+                                  Style="{StaticResource App.Style.GlassCheckBox}"
+                                  VerticalAlignment="Center"/>
+                        <TextBlock Text="Allow downgrade" FontSize="12" Foreground="#D0D8E8" 
+                                   VerticalAlignment="Center" Margin="8,0,0,0"
+                                   ToolTip="Allow installing older versions over newer ones"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <Button x:Name="InstallButton" Grid.Column="3"
+                        Style="{StaticResource App.Style.Button}"
+                        Content="Install All" Tag="&#xE896;"
+                        MinWidth="150"
+                        Click="OnInstallClick"
+                        IsEnabled="False"/>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>
