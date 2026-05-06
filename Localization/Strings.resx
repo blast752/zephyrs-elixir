@@ -1,0 +1,3065 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- COMMON                                                             -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+
+  <data name="Common_Button_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Common_Button_OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Common_Button_Yes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="Common_Button_No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="Common_Status_Success" xml:space="preserve">
+    <value>Done successfully.</value>
+  </data>
+  <data name="Common_Status_Error" xml:space="preserve">
+    <value>Something went wrong: {0}</value>
+  </data>
+  <data name="Common_Confirm_Title" xml:space="preserve">
+    <value>Confirm</value>
+  </data>
+  <data name="Common_Warning_Title" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- DIALOG                                                             -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+
+  <data name="Dialog_Title_Info" xml:space="preserve">
+    <value>Info</value>
+  </data>
+  <data name="Dialog_Title_Success" xml:space="preserve">
+    <value>Success</value>
+  </data>
+  <data name="Dialog_Title_Warning" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="Dialog_Title_Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Dialog_Button_Upgrade" xml:space="preserve">
+    <value>Go Pro</value>
+  </data>
+  <data name="Dialog_Button_GotIt" xml:space="preserve">
+    <value>Got it</value>
+  </data>
+  <data name="App_Error_Continue" xml:space="preserve">
+    <value>An unexpected error occurred. Do you want to continue?</value>
+  </data>
+  <data name="App_Error_Fatal" xml:space="preserve">
+    <value>A fatal error has occurred and the application will close.</value>
+  </data>
+  <data name="Dialog_StopOptimization_Title" xml:space="preserve">
+    <value>Stop optimization?</value>
+  </data>
+  <data name="Dialog_StopOptimization_Description" xml:space="preserve">
+    <value>The process will be interrupted and your device will remain only partially optimized. You can restart it anytime.</value>
+  </data>
+  <data name="Dialog_StopOptimization_ContinueButton" xml:space="preserve">
+    <value>Keep going</value>
+  </data>
+  <data name="Dialog_StopOptimization_StopButton" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- MESSAGEBOX                                                         -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+
+  <data name="MessageBox_ConfirmAction_Title" xml:space="preserve">
+    <value>Confirm action</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- DEVICE STATUS                                                      -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+
+  <data name="DeviceStatus_NoDevice" xml:space="preserve">
+    <value>No device connected</value>
+  </data>
+  <data name="DeviceStatus_ConnectionStatus_Tooltip" xml:space="preserve">
+    <value>Connection status</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- SIDEBAR                                                            -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+
+  <data name="Sidebar_Title" xml:space="preserve">
+    <value>Zephyr's Elixir</value>
+  </data>
+  <data name="Sidebar_Subtitle" xml:space="preserve">
+    <value>Unleash your device's true potential.</value>
+  </data>
+  <data name="Sidebar_Nav_Home" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="Sidebar_Nav_Optimize" xml:space="preserve">
+    <value>Optimize</value>
+  </data>
+  <data name="Sidebar_Nav_Debloat" xml:space="preserve">
+    <value>Debloat</value>
+  </data>
+  <data name="Sidebar_Nav_Tools" xml:space="preserve">
+    <value>Tools</value>
+  </data>
+  <data name="Sidebar_Nav_Advanced" xml:space="preserve">
+    <value>Advanced</value>
+  </data>
+  <data name="Sidebar_Nav_Settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="Sidebar_Nav_Help" xml:space="preserve">
+    <value>Help &amp; Info</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- HOME                                                               -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+
+  <data name="Home_Title" xml:space="preserve">
+    <value>Welcome to Zephyr's Elixir</value>
+  </data>
+  <data name="Home_Subtitle" xml:space="preserve">
+    <value>Unleash your device's true potential.</value>
+  </data>
+  <data name="Home_Version" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="Home_Changelog" xml:space="preserve">
+    <value>What's new</value>
+  </data>
+  <data name="Home_Button_StartOptimization" xml:space="preserve">
+    <value>Start optimization</value>
+  </data>
+  <data name="Home_Button_StartOptimization_Tooltip" xml:space="preserve">
+    <value>Connect a device to get started</value>
+  </data>
+  <data name="Home_Button_WirelessConnection" xml:space="preserve">
+    <value>Wireless connection</value>
+  </data>
+  <data name="Home_Button_WirelessConnection_Tooltip" xml:space="preserve">
+    <value>Connect your device wirelessly</value>
+  </data>
+  <data name="WirelessConnection_Log_Title" xml:space="preserve">
+    <value>Wireless connection log</value>
+  </data>
+  <data name="Home_Banner_RecommendedPartner" xml:space="preserve">
+    <value>RECOMMENDED</value>
+  </data>
+  <data name="Home_Banner_BatteryGuru" xml:space="preserve">
+    <value>Extend your battery life with Battery Guru</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- OPTIMIZE                                                           -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+
+  <data name="Optimize_Header" xml:space="preserve">
+    <value>Performance Optimizer</value>
+  </data>
+  <data name="Optimize_Subtitle" xml:space="preserve">
+    <value>Clears cache, tunes apps and sharpens responsiveness</value>
+  </data>
+  <data name="Optimize_Button_DeviceInfo" xml:space="preserve">
+    <value>Device info</value>
+  </data>
+  <data name="Optimize_Button_DeviceInfo_Tooltip" xml:space="preserve">
+    <value>View device specs and system details</value>
+  </data>
+  <data name="Optimize_Battery_Label" xml:space="preserve">
+    <value>Battery</value>
+  </data>
+  <data name="Optimize_Battery_Tooltip" xml:space="preserve">
+    <value>Current battery level</value>
+  </data>
+  <data name="Optimize_Timer_Tooltip" xml:space="preserve">
+    <value>Elapsed time</value>
+  </data>
+  <data name="Optimize_Status_Ready" xml:space="preserve">
+    <value>Ready to optimize</value>
+  </data>
+  <data name="Optimize_ExtremeMode_Label" xml:space="preserve">
+    <value>EXTREME MODE</value>
+  </data>
+  <data name="Optimize_ExtremeMode_Title" xml:space="preserve">
+    <value>Extreme Mode</value>
+  </data>
+  <data name="Optimize_ExtremeMode_Description" xml:space="preserve">
+    <value>Deep-compiles every app on the device. Takes longer, delivers maximum performance gains.</value>
+  </data>
+  <data name="Optimize_Button_Start" xml:space="preserve">
+    <value>Start optimization</value>
+  </data>
+  <data name="Optimize_Button_Start_Tooltip" xml:space="preserve">
+    <value>Begin optimizing your connected device</value>
+  </data>
+  <data name="Optimize_Console_Header" xml:space="preserve">
+    <value>Console output</value>
+  </data>
+  <data name="Optimize_Console_Status_Idle" xml:space="preserve">
+    <value>Idle</value>
+  </data>
+  <data name="Optimize_Console_Status_Running" xml:space="preserve">
+    <value>Running</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- DEBLOAT                                                            -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+
+  <data name="Debloat_Header" xml:space="preserve">
+    <value>App Manager</value>
+  </data>
+  <data name="Debloat_ViewMode_InstalledApps" xml:space="preserve">
+    <value>Installed</value>
+  </data>
+  <data name="Debloat_ViewMode_History" xml:space="preserve">
+    <value>History</value>
+  </data>
+  <data name="Debloat_Button_LoadApps" xml:space="preserve">
+    <value>Load apps</value>
+  </data>
+  <data name="Debloat_Button_DisableSelected" xml:space="preserve">
+    <value>Disable selected</value>
+  </data>
+  <data name="Debloat_Button_UninstallSelected" xml:space="preserve">
+    <value>Uninstall selected</value>
+  </data>
+  <data name="Debloat_Button_ManageApp" xml:space="preserve">
+    <value>Manage</value>
+  </data>
+  <data name="Debloat_Button_Restore" xml:space="preserve">
+    <value>Restore</value>
+  </data>
+  <data name="Debloat_Button_Forget" xml:space="preserve">
+    <value>Forget</value>
+  </data>
+  <data name="Debloat_Search_Placeholder" xml:space="preserve">
+    <value>Search by name or package...</value>
+  </data>
+  <data name="Debloat_Filter_All" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="Debloat_Filter_User" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="Debloat_Filter_System" xml:space="preserve">
+    <value>System</value>
+  </data>
+  <data name="Debloat_Filter_Disabled" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="Debloat_SelectAll" xml:space="preserve">
+    <value>Select / Deselect all</value>
+  </data>
+  <data name="Debloat_Status_ConnectAndLoad" xml:space="preserve">
+    <value>Connect your device and tap "Load apps" to begin.</value>
+  </data>
+  <data name="Debloat_Status_Connected" xml:space="preserve">
+    <value>Device connected — ready to load apps.</value>
+  </data>
+  <data name="Debloat_Status_Disconnected" xml:space="preserve">
+    <value>No device connected. Plug in a device to continue.</value>
+  </data>
+  <data name="Debloat_Status_Loading" xml:space="preserve">
+    <value>Loading apps from device...</value>
+  </data>
+  <data name="Debloat_Loading" xml:space="preserve">
+    <value>Loading...</value>
+  </data>
+  <data name="Debloat_Status_Success" xml:space="preserve">
+    <value>{0} of {1} apps {2} successfully.</value>
+  </data>
+  <data name="Debloat_Status_Revoked" xml:space="preserve">
+    <value>Revoked {0} permission(s) for {1}</value>
+  </data>
+  <data name="Debloat_Action_Uninstall_Past" xml:space="preserve">
+    <value>uninstalled</value>
+  </data>
+  <data name="Debloat_Action_Processing" xml:space="preserve">
+    <value>Processing {0}...</value>
+  </data>
+  <data name="Debloat_Action_Done" xml:space="preserve">
+    <value>Done — {0} apps processed.</value>
+  </data>
+  <data name="Debloat_Action_PerformConfirm" xml:space="preserve">
+    <value>Proceed with {0} apps?</value>
+  </data>
+  <data name="Debloat_AppDetails_SafetyScore" xml:space="preserve">
+    <value>Community Safety Score</value>
+  </data>
+  <data name="Debloat_AppDetails_PerformanceProfile" xml:space="preserve">
+    <value>Performance Profile</value>
+  </data>
+  <data name="Debloat_AppDetails_PerformanceProfile_Description" xml:space="preserve">
+    <value>Controls background activity restrictions</value>
+  </data>
+  <data name="Debloat_AppDetails_Permissions" xml:space="preserve">
+    <value>Permissions</value>
+  </data>
+  <data name="Debloat_AppDetails_RevokeAll" xml:space="preserve">
+    <value>Revoke all</value>
+  </data>
+  <data name="Debloat_AppDetails_RevokeAll_Tooltip" xml:space="preserve">
+    <value>Revoke every granted permission</value>
+  </data>
+  <data name="Debloat_AppDetails_AnalyzingManifest" xml:space="preserve">
+    <value>Analyzing app manifest...</value>
+  </data>
+  <data name="Debloat_Detail_AiInsight" xml:space="preserve">
+    <value>AI Insight</value>
+  </data>
+  <data name="Debloat_Overlay_RevokeQuestion" xml:space="preserve">
+    <value>Revoke all {0} permission(s) for {1}?</value>
+  </data>
+  <data name="Debloat_History_ApkSaved" xml:space="preserve">
+    <value>APK saved</value>
+  </data>
+  <data name="Debloat_History_Status_Backup" xml:space="preserve">
+    <value>Backup available</value>
+  </data>
+  <data name="Debloat_History_Status_Uninstalled" xml:space="preserve">
+    <value>Uninstalled</value>
+  </data>
+  <data name="Debloat_Restored_Success" xml:space="preserve">
+    <value>{0} restored.</value>
+  </data>
+  <data name="Debloat_Restored_Failed" xml:space="preserve">
+    <value>Could not restore {0}.</value>
+  </data>
+  <data name="Debloat_History_RemoveQuestion" xml:space="preserve">
+    <value>Remove {0} from history?</value>
+  </data>
+  <data name="Debloat_Uninstall_ConfirmTitle" xml:space="preserve">
+    <value>Confirm uninstall</value>
+  </data>
+  <data name="Debloat_Uninstall_ConfirmText" xml:space="preserve">
+    <value>You're about to uninstall {0} app(s).</value>
+  </data>
+  <data name="Debloat_Uninstall_SafeguardTitle" xml:space="preserve">
+    <value>Recommended safeguard</value>
+  </data>
+  <data name="Debloat_Uninstall_SafeguardText" xml:space="preserve">
+    <value>Save a local APK backup before uninstalling? You can restore them from the History tab later if needed.</value>
+  </data>
+  <data name="Debloat_Uninstall_BackupAndUninstall" xml:space="preserve">
+    <value>Uninstall &amp; keep backup</value>
+  </data>
+  <data name="Debloat_Uninstall_UninstallOnly" xml:space="preserve">
+    <value>Uninstall only</value>
+  </data>
+  <data name="Debloat_Uninstall_WarningCritical" xml:space="preserve">
+    <value>WARNING: {0} CRITICAL app(s) selected!</value>
+  </data>
+  <data name="Debloat_Uninstall_Question" xml:space="preserve">
+    <value>Uninstall {0} app(s)?</value>
+  </data>
+  <data name="Debloat_Risk_Safe" xml:space="preserve">
+    <value>SAFE TO REMOVE</value>
+  </data>
+  <data name="Debloat_Risk_Caution" xml:space="preserve">
+    <value>USE CAUTION</value>
+  </data>
+  <data name="Debloat_Risk_Critical" xml:space="preserve">
+    <value>DO NOT REMOVE</value>
+  </data>
+  <data name="Debloat_Risk_Analyzing" xml:space="preserve">
+    <value>ANALYZING...</value>
+  </data>
+  <data name="Debloat_Bucket_Active" xml:space="preserve">
+    <value>Unrestricted</value>
+  </data>
+  <data name="Debloat_Bucket_WorkingSet" xml:space="preserve">
+    <value>Balanced</value>
+  </data>
+  <data name="Debloat_Bucket_Frequent" xml:space="preserve">
+    <value>Light Saver</value>
+  </data>
+  <data name="Debloat_Bucket_Rare" xml:space="preserve">
+    <value>Deep Saver</value>
+  </data>
+  <data name="Debloat_Bucket_Restricted" xml:space="preserve">
+    <value>Frozen</value>
+  </data>
+  <data name="Debloat_AI_QuotaExhausted" xml:space="preserve">
+    <value>Daily limit reached</value>
+  </data>
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- TOOLS                                                              -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+
+  <data name="Tools_Header" xml:space="preserve">
+    <value>Tools</value>
+  </data>
+  <data name="Tools_Subtitle" xml:space="preserve">
+    <value>Powerful utilities at your fingertips</value>
+  </data>
+  <data name="Tools_ApkInstaller_Title" xml:space="preserve">
+    <value>APK Installer</value>
+  </data>
+  <data name="Tools_ApkInstaller_Description" xml:space="preserve">
+    <value>Install APK, XAPK, APKS &amp; APKM files</value>
+  </data>
+  <data name="Tools_ScreenMirror_Title" xml:space="preserve">
+    <value>Screen Mirror</value>
+  </data>
+  <data name="Tools_ScreenMirror_Description" xml:space="preserve">
+    <value>Mirror your device screen to PC</value>
+  </data>
+  <data name="Tools_Reboot_Title" xml:space="preserve">
+    <value>Power Options</value>
+  </data>
+  <data name="Tools_Reboot_Description" xml:space="preserve">
+    <value>Reboot, recovery, bootloader</value>
+  </data>
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- APK INSTALLER                                                      -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+
+  <data name="ApkInstaller_Browse_Title" xml:space="preserve">
+    <value>Select APK files to install</value>
+  </data>
+  <data name="ApkInstaller_DragDrop" xml:space="preserve">
+    <value>Drag and drop APK files here to install</value>
+  </data>
+  <data name="ApkInstaller_NoPackages" xml:space="preserve">
+    <value>No packages selected</value>
+  </data>
+  <data name="ApkInstaller_Ready" xml:space="preserve">
+    <value>{0} package(s) ready to install</value>
+  </data>
+  <data name="ApkInstaller_Installing" xml:space="preserve">
+    <value>Installing...</value>
+  </data>
+  <data name="ApkInstaller_InstallAll" xml:space="preserve">
+    <value>Install all</value>
+  </data>
+  <data name="ApkInstaller_Free_Limit" xml:space="preserve">
+    <value>Free plan: one APK at a time. Go Pro for batch install.</value>
+  </data>
+  <data name="ApkInstaller_Free_SingleOnly" xml:space="preserve">
+    <value>Single APK only</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- ADVANCED                                                           -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+
+  <data name="Advanced_Header" xml:space="preserve">
+    <value>Advanced</value>
+  </data>
+  <data name="Advanced_Subtitle" xml:space="preserve">
+    <value>Privacy tweaks, system tuning and troubleshooting</value>
+  </data>
+  <data name="Advanced_Privacy_Header" xml:space="preserve">
+    <value>Privacy &amp; Security</value>
+  </data>
+  <data name="Advanced_Animations_Header" xml:space="preserve">
+    <value>Animation Control</value>
+  </data>
+  <data name="Advanced_Troubleshooting_Header" xml:space="preserve">
+    <value>Troubleshooting &amp; Reset</value>
+  </data>
+  <data name="Advanced_Button_Disable" xml:space="preserve">
+    <value>Disable</value>
+  </data>
+  <data name="Advanced_Button_Apply" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="Advanced_Button_Reset" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="Advanced_Button_ResetAll" xml:space="preserve">
+    <value>Undo all session changes</value>
+  </data>
+  <data name="Advanced_Button_ApplyAnimations" xml:space="preserve">
+    <value>Apply to device</value>
+  </data>
+  <data name="Advanced_Confirm_Title" xml:space="preserve">
+    <value>Confirmation required</value>
+  </data>
+  <data name="Advanced_Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Advanced_Status_Processing" xml:space="preserve">
+    <value>Processing...</value>
+  </data>
+  <data name="Advanced_Status_ResettingAll" xml:space="preserve">
+    <value>Reverting all session changes...</value>
+  </data>
+  <data name="Advanced_SafetyCore_Title" xml:space="preserve">
+    <value>Disable Google SafetyCore</value>
+  </data>
+  <data name="Advanced_SafetyCore_Description" xml:space="preserve">
+    <value>Stops Google's SafetyCore service to improve privacy. Prevents certain telemetry and background safety checks.</value>
+  </data>
+  <data name="Advanced_SafetyCore_Confirm" xml:space="preserve">
+    <value>Disable Google SafetyCore? Some security features and Google services may be affected.</value>
+  </data>
+  <data name="Advanced_SafetyCore_Success" xml:space="preserve">
+    <value>Google SafetyCore disabled.</value>
+  </data>
+  <data name="Advanced_SafetyCore_NotInstalled" xml:space="preserve">
+    <value>Google SafetyCore is not installed on this device.</value>
+  </data>
+  <data name="Advanced_Status_ReenableSafetyCore" xml:space="preserve">
+    <value>Re-enabling Google SafetyCore...</value>
+  </data>
+  <data name="Advanced_DNS_Title" xml:space="preserve">
+    <value>Private DNS</value>
+  </data>
+  <data name="Advanced_DNS_Description" xml:space="preserve">
+    <value>Choose a private DNS provider for encrypted queries and DNS-level ad blocking.</value>
+  </data>
+  <data name="Advanced_DNS_Confirm" xml:space="preserve">
+    <value>Set {0} as your private DNS? All DNS queries will be encrypted.</value>
+  </data>
+  <data name="Advanced_DNS_Success" xml:space="preserve">
+    <value>{0} configured as private DNS.</value>
+  </data>
+  <data name="Advanced_DNS_Ping_Timeout" xml:space="preserve">
+    <value>Timeout</value>
+  </data>
+  <data name="Advanced_Status_ResetDNS" xml:space="preserve">
+    <value>Resetting DNS configuration...</value>
+  </data>
+  <data name="Advanced_ResetAdId_Title" xml:space="preserve">
+    <value>Reset Advertising ID</value>
+  </data>
+  <data name="Advanced_ResetAdId_Description" xml:space="preserve">
+    <value>Zeroes out your advertising ID, effectively disabling ad tracking and personalization across all apps.</value>
+  </data>
+  <data name="Advanced_ResetAdId_Confirm" xml:space="preserve">
+    <value>Reset your advertising ID to zero? Personalized ads will stop, but some apps may behave differently.</value>
+  </data>
+  <data name="Advanced_ResetAdId_Success" xml:space="preserve">
+    <value>Advertising ID reset — ad tracking is now off system-wide.</value>
+  </data>
+  <data name="Advanced_Status_ResetAdId" xml:space="preserve">
+    <value>Re-enabling advertising ID...</value>
+  </data>
+  <data name="Advanced_CaptivePortal_Title" xml:space="preserve">
+    <value>Disable Captive Portal</value>
+  </data>
+  <data name="Advanced_CaptivePortal_Description" xml:space="preserve">
+    <value>Blocks Google connectivity checks. Stops pings to Google servers on every connection, improving privacy and Wi-Fi speed. Requires reboot.</value>
+  </data>
+  <data name="Advanced_CaptivePortal_Confirm" xml:space="preserve">
+    <value>Disable Captive Portal? Auto-detection of Wi-Fi login pages (hotels, airports) will stop working.</value>
+  </data>
+  <data name="Advanced_CaptivePortal_Success" xml:space="preserve">
+    <value>Captive Portal disabled.</value>
+  </data>
+  <data name="Advanced_Status_ReenableCaptivePortal" xml:space="preserve">
+    <value>Re-enabling Captive Portal...</value>
+  </data>
+  <data name="Advanced_GoogleCoreControl_Title" xml:space="preserve">
+    <value>Disable Google Core Control</value>
+  </data>
+  <data name="Advanced_GoogleCoreControl_Description" xml:space="preserve">
+    <value>Disables Google's centralized control over system services. Reduces telemetry and background traffic to Google servers.</value>
+  </data>
+  <data name="Advanced_GoogleCoreControl_Confirm" xml:space="preserve">
+    <value>This may affect some Google features. Continue?</value>
+  </data>
+  <data name="Advanced_GoogleCoreControl_Success" xml:space="preserve">
+    <value>Google Core Control disabled.</value>
+  </data>
+  <data name="Advanced_Status_ReenableGoogleCoreControl" xml:space="preserve">
+    <value>Re-enabling Google Core Control...</value>
+  </data>
+  <data name="Advanced_RamExpansion_Title" xml:space="preserve">
+    <value>Disable Virtual RAM</value>
+  </data>
+  <data name="Advanced_RamExpansion_Description" xml:space="preserve">
+    <value>Turns off virtual RAM expansion (RAM Plus, Memory Extension). This feature uses storage as extra RAM, causing flash wear and potential slowdowns.</value>
+  </data>
+  <data name="Advanced_RamExpansion_Description_WithRam" xml:space="preserve">
+    <value>Device has {0:F1} GB RAM. Virtual RAM expansion is unnecessary with this much memory — it only wears out storage and may cause micro-stutters.</value>
+  </data>
+  <data name="Advanced_RamExpansion_Description_LowRam" xml:space="preserve">
+    <value>Not enough RAM. This option requires at least 5 GB of RAM.</value>
+  </data>
+  <data name="Advanced_RamExpansion_Confirm" xml:space="preserve">
+    <value>Disable virtual RAM? Affects vendor-specific features (Samsung RAM Plus, Xiaomi Memory Extension, etc.). Requires reboot.</value>
+  </data>
+  <data name="Advanced_RamExpansion_Success_Brand" xml:space="preserve">
+    <value>Virtual RAM disabled for {0}.</value>
+  </data>
+  <data name="Advanced_Status_ReenableRamExpansion" xml:space="preserve">
+    <value>Re-enabling Virtual RAM...</value>
+  </data>
+  <data name="Advanced_AnimationSpeed_Title" xml:space="preserve">
+    <value>System Animation Speed</value>
+  </data>
+  <data name="Advanced_AnimationSpeed_Description" xml:space="preserve">
+    <value>Adjust all system animations at once — windows, transitions and animators.</value>
+  </data>
+  <data name="Advanced_Animation_Off" xml:space="preserve">
+    <value>Off (0.0x)</value>
+  </data>
+  <data name="Advanced_Animation_Default" xml:space="preserve">
+    <value>Default (1.0x)</value>
+  </data>
+  <data name="Advanced_Animation_Slow" xml:space="preserve">
+    <value>Slow (2.0x)</value>
+  </data>
+  <data name="Advanced_Animation_Value_Off" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="Advanced_ApplyAnimations_Success" xml:space="preserve">
+    <value>Animation speed applied to device.</value>
+  </data>
+  <data name="Advanced_ResetAnimations_Success" xml:space="preserve">
+    <value>Animations reset to default (1.0x).</value>
+  </data>
+  <data name="Advanced_Status_ResetAnimations" xml:space="preserve">
+    <value>Resetting animations...</value>
+  </data>
+  <data name="Advanced_ResetBattery_Title" xml:space="preserve">
+    <value>Reset Battery Simulation</value>
+  </data>
+  <data name="Advanced_ResetBattery_Description" xml:space="preserve">
+    <value>Restores the real battery level if it was altered during optimization or testing.</value>
+  </data>
+  <data name="Advanced_ResetBattery_Confirm" xml:space="preserve">
+    <value>Reset battery reading to actual hardware level?</value>
+  </data>
+  <data name="Advanced_ResetBattery_Success" xml:space="preserve">
+    <value>Battery simulation reset — showing real level now.</value>
+  </data>
+  <data name="Advanced_Status_ResetBattery" xml:space="preserve">
+    <value>Resetting battery simulation...</value>
+  </data>
+  <data name="Advanced_ResetCompilation_Title" xml:space="preserve">
+    <value>Reset Package Compilation</value>
+  </data>
+  <data name="Advanced_ResetCompilation_Description" xml:space="preserve">
+    <value>Removes all compiled optimizations and reverts packages to stock. The device may feel slower until apps are naturally recompiled.</value>
+  </data>
+  <data name="Advanced_ResetCompilation_Confirm" xml:space="preserve">
+    <value>Reset all compilations? Performance may drop temporarily until apps recompile on their own.</value>
+  </data>
+  <data name="Advanced_ResetCompilation_Success" xml:space="preserve">
+    <value>Compilation reset. Apps will recompile automatically.</value>
+  </data>
+  <data name="Advanced_Status_ResetCompilation" xml:space="preserve">
+    <value>Resetting compilation...</value>
+  </data>
+  <data name="Advanced_ResetAll_Title" xml:space="preserve">
+    <value>Undo All Session Changes</value>
+  </data>
+  <data name="Advanced_ResetAll_Description" xml:space="preserve">
+    <value>No changes made this session.</value>
+  </data>
+  <data name="Advanced_ResetAll_Description_WithCount" xml:space="preserve">
+    <value>{0} change(s) made this session.</value>
+  </data>
+  <data name="Advanced_ResetAll_Confirm" xml:space="preserve">
+    <value>Undo ALL changes from this session? DNS, animations, privacy settings — everything will be reverted.</value>
+  </data>
+  <data name="Advanced_ResetAll_Success" xml:space="preserve">
+    <value>All session changes reverted. Device restored to its previous state.</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- SETTINGS                                                           -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+
+  <data name="Settings_Header" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="Settings_Subtitle_New" xml:space="preserve">
+    <value>Preferences, updates and account</value>
+  </data>
+  <data name="Settings_General_Header" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="Settings_App_Header" xml:space="preserve">
+    <value>Application</value>
+  </data>
+  <data name="Settings_About_Header" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="Settings_Language_Title" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="Settings_Language_Description" xml:space="preserve">
+    <value>Pick your preferred language. A restart is needed to apply the change.</value>
+  </data>
+  <data name="Settings_Updates_Title" xml:space="preserve">
+    <value>Automatic Updates</value>
+  </data>
+  <data name="Settings_Updates_Description" xml:space="preserve">
+    <value>Zephyr's Elixir checks for updates automatically so you always have the latest features and fixes.</value>
+  </data>
+  <data name="Settings_Updates_Status_AlwaysOn" xml:space="preserve">
+    <value>Always on</value>
+  </data>
+  <data name="Settings_Adb_Title" xml:space="preserve">
+    <value>ADB Version</value>
+  </data>
+  <data name="Settings_Adb_Description" xml:space="preserve">
+    <value>The version of Android Debug Bridge used to communicate with your device.</value>
+  </data>
+  <data name="Settings_Adb_Status_Checking" xml:space="preserve">
+    <value>Checking...</value>
+  </data>
+  <data name="Settings_Adb_Status_InvalidOutput" xml:space="preserve">
+    <value>Invalid output</value>
+  </data>
+  <data name="Settings_Adb_Status_NotFound" xml:space="preserve">
+    <value>ADB not found</value>
+  </data>
+  <data name="Settings_Adb_Status_Error" xml:space="preserve">
+    <value>Version check failed</value>
+  </data>
+  <data name="Settings_Adb_Status_Unknown" xml:space="preserve">
+    <value>Unknown version</value>
+  </data>
+  <data name="Settings_Export_Title" xml:space="preserve">
+    <value>Export Logs</value>
+  </data>
+  <data name="Settings_Export_Description" xml:space="preserve">
+    <value>Save console output to a text file for debugging or sharing with support.</value>
+  </data>
+  <data name="Settings_Export_Button" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="Settings_Reset_Title" xml:space="preserve">
+    <value>Reset Settings</value>
+  </data>
+  <data name="Settings_Reset_Description" xml:space="preserve">
+    <value>Restore all app settings to defaults. This won't affect device optimizations.</value>
+  </data>
+  <data name="Settings_Reset_Button" xml:space="preserve">
+    <value>Reset to defaults</value>
+  </data>
+  <data name="Settings_ProLicense_Title" xml:space="preserve">
+    <value>Pro License</value>
+  </data>
+  <data name="Settings_ProLicense_Description" xml:space="preserve">
+    <value>Activate your Pro license to unlock the full experience</value>
+  </data>
+  <data name="Settings_ProLicense_Button" xml:space="preserve">
+    <value>Manage license</value>
+  </data>
+  <data name="Settings_License_Title" xml:space="preserve">
+    <value>License Agreement</value>
+  </data>
+  <data name="Settings_License_Description" xml:space="preserve">
+    <value>Read the End-User License Agreement (EULA) and terms of use.</value>
+  </data>
+  <data name="Settings_License_Button" xml:space="preserve">
+    <value>View license</value>
+  </data>
+  <data name="Settings_Privacy_Title" xml:space="preserve">
+    <value>Privacy Policy</value>
+  </data>
+  <data name="Settings_Privacy_Description" xml:space="preserve">
+    <value>Learn how we handle your data and protect your privacy.</value>
+  </data>
+  <data name="Settings_Privacy_Button" xml:space="preserve">
+    <value>View policy</value>
+  </data>
+  <data name="Settings_MessageBox_ExportError_Title" xml:space="preserve">
+    <value>Export failed</value>
+  </data>
+  <data name="Settings_MessageBox_ExportError_Message" xml:space="preserve">
+    <value>Could not export logs: {0}</value>
+  </data>
+  <data name="Settings_Export_NoLogs" xml:space="preserve">
+    <value>Nothing to export yet. Run some operations first.</value>
+  </data>
+  <data name="Settings_MessageBox_ExportDialog_Title" xml:space="preserve">
+    <value>Export diagnostic log</value>
+  </data>
+  <data name="Settings_MessageBox_ExportDialog_Filter" xml:space="preserve">
+    <value>Text Files (*.txt)|*.txt|All Files (*.*)|*.*</value>
+  </data>
+  <data name="Settings_MessageBox_ExportComplete_Title" xml:space="preserve">
+    <value>Export complete</value>
+  </data>
+  <data name="Settings_MessageBox_ExportComplete_Message" xml:space="preserve">
+    <value>Log saved to:
+{0}</value>
+  </data>
+  <data name="Settings_MessageBox_ResetInfo_Title" xml:space="preserve">
+    <value>Settings reset</value>
+  </data>
+  <data name="Settings_MessageBox_ResetInfo_Message" xml:space="preserve">
+    <value>Settings restored to defaults. Restart the app to apply.</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- LICENSE / PRO                                                      -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+
+  <data name="License_Feature_ExtremeMode" xml:space="preserve">
+    <value>Extreme Optimization</value>
+  </data>
+  <data name="License_Feature_ExtremeMode_Desc" xml:space="preserve">
+    <value>Deep compilation for peak performance</value>
+  </data>
+  <data name="License_Feature_ScreenMirror" xml:space="preserve">
+    <value>Screen Mirror &amp; Recording</value>
+  </data>
+  <data name="License_Feature_ScreenMirror_Desc" xml:space="preserve">
+    <value>Mirror, record and capture your screen</value>
+  </data>
+  <data name="License_Feature_AIAnalysis" xml:space="preserve">
+    <value>AI-Powered App Analysis</value>
+  </data>
+  <data name="License_Feature_AIAnalysis_Desc" xml:space="preserve">
+    <value>Smart risk assessment for safe debloating</value>
+  </data>
+  <data name="License_Feature_PrivacySuite" xml:space="preserve">
+    <value>Full Privacy Suite</value>
+  </data>
+  <data name="License_Feature_PrivacySuite_Desc" xml:space="preserve">
+    <value>Private DNS, ad tracking, SafetyCore &amp; more</value>
+  </data>
+  <data name="License_Feature_BackupAPK" xml:space="preserve">
+    <value>APK Backup on Uninstall</value>
+  </data>
+  <data name="License_Feature_BackupAPK_Desc" xml:space="preserve">
+    <value>Auto-save APKs before removal</value>
+  </data>
+  <data name="License_Feature_PrioritySupport" xml:space="preserve">
+    <value>Priority Support</value>
+  </data>
+  <data name="License_Feature_PrioritySupport_Desc" xml:space="preserve">
+    <value>Fast, dedicated help when you need it</value>
+  </data>
+  <data name="License_Feature_ComingSoon" xml:space="preserve">
+    <value>+ More on the way</value>
+  </data>
+  <data name="Pro_Required_Title" xml:space="preserve">
+    <value>Pro Feature</value>
+  </data>
+  <data name="Pro_Required_ScreenMirror" xml:space="preserve">
+    <value>Screen Mirror is available with Pro.</value>
+  </data>
+  <data name="Pro_Required_MultiApk" xml:space="preserve">
+    <value>Batch APK installation is a Pro feature.
+
+Free plan allows one APK at a time.</value>
+  </data>
+  <data name="Pro_Required_Upgrade_Question" xml:space="preserve">
+    <value>Upgrade to Pro?</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- UPDATE                                                             -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+
+  <data name="Update_Title" xml:space="preserve">
+    <value>Zephyr's Elixir Update</value>
+  </data>
+  <data name="Update_NewVersion" xml:space="preserve">
+    <value>New version available: {0}</value>
+  </data>
+  <data name="Update_ReleaseNotes" xml:space="preserve">
+    <value>Release notes:</value>
+  </data>
+  <data name="Update_Button_Skip" xml:space="preserve">
+    <value>Skip</value>
+  </data>
+  <data name="Update_Button_UpdateNow" xml:space="preserve">
+    <value>Update now</value>
+  </data>
+  <data name="Update_DownloadFailed" xml:space="preserve">
+    <value>Update download failed: {0}</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- WINDOW CONTROLS                                                    -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+
+  <data name="Window_Tooltip_Minimize" xml:space="preserve">
+    <value>Minimize</value>
+  </data>
+  <data name="Window_Tooltip_Maximize" xml:space="preserve">
+    <value>Maximize</value>
+  </data>
+  <data name="Window_Tooltip_Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- OPTIMIZATION REPORT                                                -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+
+  <data name="Report_Title" xml:space="preserve">
+    <value>Optimization Report</value>
+  </data>
+  <data name="Report_TotalFreed" xml:space="preserve">
+    <value>TOTAL FREED</value>
+  </data>
+  <data name="Report_StepsDone" xml:space="preserve">
+    <value>STEPS DONE</value>
+  </data>
+  <data name="Report_Memory_Title" xml:space="preserve">
+    <value>Memory Management</value>
+  </data>
+  <data name="Report_Memory_RamFreed" xml:space="preserve">
+    <value>RAM freed:</value>
+  </data>
+  <data name="Report_Memory_AppsCount" xml:space="preserve">
+    <value>{0} apps</value>
+  </data>
+  <data name="Report_Storage_Title" xml:space="preserve">
+    <value>Storage Deep Clean</value>
+  </data>
+  <data name="Report_Storage_SpaceFreed" xml:space="preserve">
+    <value>Space freed:</value>
+  </data>
+  <data name="Report_Storage_Trim" xml:space="preserve">
+    <value>SSD/UFS TRIM:</value>
+  </data>
+  <data name="Report_Network_Title" xml:space="preserve">
+    <value>Network Optimization</value>
+  </data>
+  <data name="Report_Network_ScansDisabled" xml:space="preserve">
+    <value>Background scans disabled</value>
+  </data>
+  <data name="Report_Compilation_Title" xml:space="preserve">
+    <value>Package Compilation</value>
+  </data>
+  <data name="Report_Compilation_Mode" xml:space="preserve">
+    <value>Mode:</value>
+  </data>
+  <data name="Report_Compilation_Dex" xml:space="preserve">
+    <value>DEX optimization:</value>
+  </data>
+  <data name="Report_Button_Done" xml:space="preserve">
+    <value>Done</value>
+  </data>
+  <data name="Report_Status_Completed" xml:space="preserve">
+    <value>Completed</value>
+  </data>
+  <data name="Report_Status_Skipped" xml:space="preserve">
+    <value>Skipped</value>
+  </data>
+  <data name="Report_Outcome_Success_Title" xml:space="preserve">
+    <value>Optimization Complete!</value>
+  </data>
+  <data name="Report_Outcome_Success_Subtitle" xml:space="preserve">
+    <value>All tasks finished successfully. Your device is now running at peak performance.</value>
+  </data>
+  <data name="Report_Outcome_Partial_Title" xml:space="preserve">
+    <value>Partial Optimization</value>
+  </data>
+  <data name="Report_Outcome_Partial_Subtitle" xml:space="preserve">
+    <value>The process was interrupted after {0} of {1} steps. Results achieved so far have been applied.</value>
+  </data>
+  <data name="Report_Outcome_Error_Title" xml:space="preserve">
+    <value>Optimization Failed</value>
+  </data>
+  <data name="Report_Outcome_Error_Subtitle" xml:space="preserve">
+    <value>An error occurred during optimization. Any completed steps were still applied to your device.</value>
+  </data>
+  <data name="Report_MoreApps" xml:space="preserve">
+    <value>+{0} more…</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- WIRELESS CONNECTION                                                -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+
+  <data name="Wireless_Title" xml:space="preserve">
+    <value>Wireless ADB Connection</value>
+  </data>
+  <data name="Wireless_SelectVersion" xml:space="preserve">
+    <value>Select your Android version to proceed with the appropriate connection method:</value>
+  </data>
+  <data name="Wireless_Android10" xml:space="preserve">
+    <value>Android 10 &amp; below</value>
+  </data>
+  <data name="Wireless_Android11" xml:space="preserve">
+    <value>Android 11+</value>
+  </data>
+  <data name="Wireless_CheckVersion_Title" xml:space="preserve">
+    <value>How to check your Android version:</value>
+  </data>
+  <data name="Wireless_CheckVersion_Path" xml:space="preserve">
+    <value>Settings → About Phone → Android Version</value>
+  </data>
+  <data name="Wireless_SimpleMode" xml:space="preserve">
+    <value>Simple Connection Mode</value>
+  </data>
+  <data name="Wireless_SimpleMode_Step" xml:space="preserve">
+    <value>Enable Developer Options → Wireless Debugging</value>
+  </data>
+  <data name="Wireless_SimpleMode_SameNetwork" xml:space="preserve">
+    <value>Make sure your device and PC are on the same network</value>
+  </data>
+  <data name="Wireless_DeviceIP" xml:space="preserve">
+    <value>Device IP Address</value>
+  </data>
+  <data name="Wireless_IpAutoDetected" xml:space="preserve">
+    <value>Your network prefix is auto-detected. Just enter the device's last number.</value>
+  </data>
+  <data name="Wireless_Port" xml:space="preserve">
+    <value>Port</value>
+  </data>
+  <data name="Wireless_PortDefault" xml:space="preserve">
+    <value>Default ADB port (automatically configured)</value>
+  </data>
+  <data name="Wireless_PairingMode" xml:space="preserve">
+    <value>Pairing Mode (More Secure)</value>
+  </data>
+  <data name="Wireless_PairingMode_Step" xml:space="preserve">
+    <value>Settings → Developer Options → Wireless Debugging → Pair Device</value>
+  </data>
+  <data name="Wireless_PairingMode_CopyInfo" xml:space="preserve">
+    <value>Copy the IP address, port, and pairing code from your device</value>
+  </data>
+  <data name="Wireless_IpAutoDetected_Pairing" xml:space="preserve">
+    <value>Your network prefix is auto-detected. Enter the device's last number from the pairing dialog.</value>
+  </data>
+  <data name="Wireless_PairingPort" xml:space="preserve">
+    <value>Pairing Port</value>
+  </data>
+  <data name="Wireless_PairingPort_Help" xml:space="preserve">
+    <value>Copy the port number from your device's pairing dialog</value>
+  </data>
+  <data name="Wireless_PairingCode" xml:space="preserve">
+    <value>6-Digit Pairing Code</value>
+  </data>
+  <data name="Wireless_PairingCode_Help" xml:space="preserve">
+    <value>Enter the 6-digit code shown on your device</value>
+  </data>
+  <data name="Wireless_PairingSuccess" xml:space="preserve">
+    <value>Pairing completed successfully!</value>
+  </data>
+  <data name="Wireless_PairingSuccess_Detail" xml:space="preserve">
+    <value>The device is now connected. You can close this dialog.</value>
+  </data>
+  <data name="Wireless_Button_Connect" xml:space="preserve">
+    <value>Connect</value>
+  </data>
+  <data name="Wireless_Button_Pair" xml:space="preserve">
+    <value>Pair</value>
+  </data>
+  <data name="Wireless_Tooltip_Close" xml:space="preserve">
+    <value>Close dialog</value>
+  </data>
+  <data name="Wireless_Tooltip_IpOctet" xml:space="preserve">
+    <value>Enter the last number (1-254)</value>
+  </data>
+  <data name="Wireless_Tooltip_PairingPort" xml:space="preserve">
+    <value>Enter the port from pairing dialog</value>
+  </data>
+  <data name="Wireless_Tooltip_PairingCode" xml:space="preserve">
+    <value>Enter the 6-digit code</value>
+  </data>
+  <data name="Wireless_Status_EnterIP" xml:space="preserve">
+    <value>Enter device's last IP number</value>
+  </data>
+  <data name="Wireless_Status_EnterPairing" xml:space="preserve">
+    <value>Enter pairing details from device</value>
+  </data>
+  <data name="Wireless_Status_Connecting" xml:space="preserve">
+    <value>Connecting to device...</value>
+  </data>
+  <data name="Wireless_Status_Pairing" xml:space="preserve">
+    <value>Pairing with device...</value>
+  </data>
+  <data name="Wireless_Status_ConnectionInitiated" xml:space="preserve">
+    <value>Connection initiated to {0}. Verify on main window.</value>
+  </data>
+  <data name="Wireless_Status_PairingComplete" xml:space="preserve">
+    <value>Pairing completed! Device should now be connected.</value>
+  </data>
+  <data name="Wireless_Status_OperationFailed" xml:space="preserve">
+    <value>Operation failed: {0}</value>
+  </data>
+  <data name="Wireless_Validation_EnterLastIP" xml:space="preserve">
+    <value>Please enter the device's last IP number.</value>
+  </data>
+  <data name="Wireless_Validation_InvalidNumber" xml:space="preserve">
+    <value>Please enter a valid number.</value>
+  </data>
+  <data name="Wireless_Validation_OctetRange" xml:space="preserve">
+    <value>Please enter a number between {0} and {1}.</value>
+  </data>
+  <data name="Wireless_Validation_EnterPort" xml:space="preserve">
+    <value>Please enter the port from the pairing dialog.</value>
+  </data>
+  <data name="Wireless_Validation_InvalidPort" xml:space="preserve">
+    <value>Please enter a valid port number.</value>
+  </data>
+  <data name="Wireless_Validation_PortRange" xml:space="preserve">
+    <value>Please enter a valid port number (1-{0}).</value>
+  </data>
+  <data name="Wireless_Validation_PairingCode" xml:space="preserve">
+    <value>Please enter the {0}-digit pairing code.</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- LICENSE DIALOG                                                     -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+
+  <data name="License_Dialog_Title" xml:space="preserve">
+    <value>License</value>
+  </data>
+  <data name="License_Dialog_ProActive" xml:space="preserve">
+    <value>Pro License Active</value>
+  </data>
+  <data name="License_Dialog_Deactivate" xml:space="preserve">
+    <value>Deactivate License</value>
+  </data>
+  <data name="License_Dialog_UnlockTitle" xml:space="preserve">
+    <value>Unlock Pro Features</value>
+  </data>
+  <data name="License_Dialog_KeyLabel" xml:space="preserve">
+    <value>LICENSE KEY</value>
+  </data>
+  <data name="License_Dialog_GetLicense" xml:space="preserve">
+    <value>Get License</value>
+  </data>
+  <data name="License_Dialog_Activate" xml:space="preserve">
+    <value>Activate</value>
+  </data>
+  <data name="License_Dialog_Activating" xml:space="preserve">
+    <value>Activating...</value>
+  </data>
+  <data name="License_Dialog_PrivacyNote" xml:space="preserve">
+    <value>We send only a pseudonymous device hash for license validation.</value>
+  </data>
+  <data name="License_Dialog_DeviceId" xml:space="preserve">
+    <value>Your Device ID:</value>
+  </data>
+  <data name="License_Dialog_PleaseWait" xml:space="preserve">
+    <value>Please wait...</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- LICENSE STATUS & MESSAGES                                          -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+
+  <data name="License_Status_PastDue" xml:space="preserve">
+    <value>Payment past due</value>
+  </data>
+  <data name="License_Status_Suspended" xml:space="preserve">
+    <value>License suspended</value>
+  </data>
+  <data name="License_Status_Expired" xml:space="preserve">
+    <value>License expired</value>
+  </data>
+  <data name="License_Status_Canceled" xml:space="preserve">
+    <value>Subscription canceled</value>
+  </data>
+  <data name="License_Status_Free" xml:space="preserve">
+    <value>Free</value>
+  </data>
+  <data name="License_Status_SubscriptionActive" xml:space="preserve">
+    <value>Subscription active</value>
+  </data>
+  <data name="License_Status_Renews" xml:space="preserve">
+    <value>Renews {0}</value>
+  </data>
+  <data name="License_Status_Validated" xml:space="preserve">
+    <value>License validated</value>
+  </data>
+  <data name="License_Status_Refreshed" xml:space="preserve">
+    <value>License status refreshed.</value>
+  </data>
+  <data name="License_Status_OfflineTooLong" xml:space="preserve">
+    <value>Offline too long — please reconnect to validate</value>
+  </data>
+  <data name="License_Status_OfflineMode" xml:space="preserve">
+    <value>Offline mode ({0} days remaining)</value>
+  </data>
+  <data name="License_Status_Changed" xml:space="preserve">
+    <value>License status changed</value>
+  </data>
+  <data name="License_Deactivated" xml:space="preserve">
+    <value>License deactivated. You can now use it on another device.</value>
+  </data>
+  <data name="License_Deactivated_Success" xml:space="preserve">
+    <value>License deactivated successfully.</value>
+  </data>
+  <data name="License_Deactivated_Failed" xml:space="preserve">
+    <value>Deactivation failed.</value>
+  </data>
+  <data name="License_Activation_Failed" xml:space="preserve">
+    <value>Activation failed. Please check your key.</value>
+  </data>
+  <data name="License_Revoked" xml:space="preserve">
+    <value>License revoked: {0}</value>
+  </data>
+  <data name="License_Revoked_ContactSupport" xml:space="preserve">
+    <value>Contact support for details</value>
+  </data>
+  <data name="License_Expired_Renew" xml:space="preserve">
+    <value>Your license has expired. Please renew to continue using Pro features.</value>
+  </data>
+  <data name="License_RefreshFailed" xml:space="preserve">
+    <value>Could not refresh license status</value>
+  </data>
+  <data name="License_DeviceIdCopied" xml:space="preserve">
+    <value>Device ID copied to clipboard</value>
+  </data>
+  <data name="License_Error_ServerUnavailable" xml:space="preserve">
+    <value>Server unavailable. Please check your connection and try again.</value>
+  </data>
+  <data name="License_Error_InvalidResponse" xml:space="preserve">
+    <value>Invalid server response. Please try again.</value>
+  </data>
+  <data name="License_Error_Timeout" xml:space="preserve">
+    <value>Request timed out. Please try again.</value>
+  </data>
+  <data name="License_Error_Connection" xml:space="preserve">
+    <value>Connection error: {0}</value>
+  </data>
+  <data name="License_Error_PaymentPastDue" xml:space="preserve">
+    <value>Payment past due — please update your payment method</value>
+  </data>
+  <data name="License_Error_ServerUnreachable" xml:space="preserve">
+    <value>Unable to reach license server</value>
+  </data>
+  <data name="License_Error_DownloadExpired" xml:space="preserve">
+    <value>Download link expired. Please retry activation.</value>
+  </data>
+  <data name="License_Error_InvalidSource" xml:space="preserve">
+    <value>Invalid download source.</value>
+  </data>
+  <data name="License_Error_DownloadFailed" xml:space="preserve">
+    <value>Download failed: {0}</value>
+  </data>
+  <data name="License_Error_FileTooSmall" xml:space="preserve">
+    <value>Downloaded file is too small — possibly corrupted.</value>
+  </data>
+  <data name="License_Error_IntegrityFailed" xml:space="preserve">
+    <value>File integrity check failed. Please retry.</value>
+  </data>
+  <data name="License_Error_SecureFailed" xml:space="preserve">
+    <value>Failed to secure Pro module.</value>
+  </data>
+  <data name="License_Error_PermissionDenied" xml:space="preserve">
+    <value>Cannot save Pro module — check folder permissions or antivirus settings.</value>
+  </data>
+  <data name="License_Error_FileLocked" xml:space="preserve">
+    <value>Pro module file is locked. Close other instances or check your antivirus.</value>
+  </data>
+  <data name="License_Error_Unexpected" xml:space="preserve">
+    <value>An unexpected error occurred during download.</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- PRO MODULE ACTIVATION &amp; DOWNLOAD                                   -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+
+  <data name="License_Progress_Contacting" xml:space="preserve">
+    <value>Connecting to Zephyr's Elixir…</value>
+  </data>
+  <data name="License_Progress_Downloading" xml:space="preserve">
+    <value>Downloading Pro features…</value>
+  </data>
+  <data name="License_Progress_Installing" xml:space="preserve">
+    <value>Setting up your Pro experience…</value>
+  </data>
+  <data name="License_Progress_Complete" xml:space="preserve">
+    <value>All set — welcome to Pro!</value>
+  </data>
+  <data name="License_Dll_Downloading" xml:space="preserve">
+    <value>Downloading Pro features in the background…</value>
+  </data>
+  <data name="License_Dll_DownloadFailed" xml:space="preserve">
+    <value>Couldn't download Pro features. Tap Retry when you're back online.</value>
+  </data>
+  <data name="License_Dll_Corrupted" xml:space="preserve">
+    <value>Pro features need a fresh download — we'll fix this automatically.</value>
+  </data>
+  <data name="License_Dll_UpdateAvailable" xml:space="preserve">
+    <value>A Pro update is being installed…</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- POWER MENU (extended)                                              -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+
+  <data name="PowerMenu_Header" xml:space="preserve">
+    <value>Power Options</value>
+  </data>
+  <data name="PowerMenu_Subtitle" xml:space="preserve">
+    <value>Restart your device in different modes</value>
+  </data>
+  <data name="PowerMenu_Category_Standard" xml:space="preserve">
+    <value>STANDARD OPTIONS</value>
+  </data>
+  <data name="PowerMenu_Category_Advanced" xml:space="preserve">
+    <value>ADVANCED OPTIONS</value>
+  </data>
+  <data name="PowerMenu_Category_Power" xml:space="preserve">
+    <value>POWER OPTIONS</value>
+  </data>
+  <data name="PowerMenu_DeviceStatus" xml:space="preserve">
+    <value>DEVICE STATUS</value>
+  </data>
+  <data name="PowerMenu_OperationStatus" xml:space="preserve">
+    <value>OPERATION STATUS</value>
+  </data>
+  <data name="PowerMenu_Sending" xml:space="preserve">
+    <value>Sending command...</value>
+  </data>
+  <data name="PowerMenu_SendingAdb" xml:space="preserve">
+    <value>Sending ADB command to device</value>
+  </data>
+  <data name="PowerMenu_Information" xml:space="preserve">
+    <value>INFORMATION</value>
+  </data>
+  <data name="PowerMenu_Info_Compatibility" xml:space="preserve">
+    <value>Some options may not be available on all devices. Older devices don't support fastbootd mode.</value>
+  </data>
+  <data name="PowerMenu_QuickTips" xml:space="preserve">
+    <value>Quick Tips</value>
+  </data>
+  <data name="PowerMenu_Tip_Recovery" xml:space="preserve">
+    <value>Install updates, factory reset</value>
+  </data>
+  <data name="PowerMenu_Tip_Bootloader" xml:space="preserve">
+    <value>Flash firmware, unlock</value>
+  </data>
+  <data name="PowerMenu_Tip_Fastbootd" xml:space="preserve">
+    <value>Dynamic partitions (A/B)</value>
+  </data>
+  <data name="PowerMenu_Tip_Sideload" xml:space="preserve">
+    <value>ADB OTA installation</value>
+  </data>
+  <data name="PowerMenu_Status_Connected" xml:space="preserve">
+    <value>Connected</value>
+  </data>
+  <data name="PowerMenu_Status_Disconnected" xml:space="preserve">
+    <value>Disconnected</value>
+  </data>
+  <data name="PowerMenu_Confirm_Reboot" xml:space="preserve">
+    <value>Reboot the device now? Any unsaved work will be lost.</value>
+  </data>
+  <data name="PowerMenu_Confirm_Recovery" xml:space="preserve">
+    <value>Boot the device into recovery mode?</value>
+  </data>
+  <data name="PowerMenu_Confirm_Bootloader" xml:space="preserve">
+    <value>Boot into the bootloader? Used for flashing and unlocking — only proceed if you know what you're doing.</value>
+  </data>
+  <data name="PowerMenu_Confirm_Fastboot" xml:space="preserve">
+    <value>Boot into Fastbootd (userspace fastboot)? Required to operate on dynamic partitions.</value>
+  </data>
+  <data name="PowerMenu_Confirm_Sideload" xml:space="preserve">
+    <value>Boot into sideload mode to install an ADB OTA package?</value>
+  </data>
+  <data name="PowerMenu_Confirm_SideloadAuto" xml:space="preserve">
+    <value>Boot into sideload mode with automatic reboot once the installation completes?</value>
+  </data>
+  <data name="PowerMenu_Confirm_Download" xml:space="preserve">
+    <value>Boot into download/Odin mode? Used for low-level flashing on Samsung devices.</value>
+  </data>
+  <data name="PowerMenu_Confirm_PowerOff" xml:space="preserve">
+    <value>Power off the device now? You will need to turn it back on manually.</value>
+  </data>
+  <data name="PowerMenu_Option_Reboot" xml:space="preserve">
+    <value>Reboot</value>
+  </data>
+  <data name="PowerMenu_Option_Reboot_Desc" xml:space="preserve">
+    <value>Restart your device normally</value>
+  </data>
+  <data name="PowerMenu_Option_Recovery" xml:space="preserve">
+    <value>Recovery Mode</value>
+  </data>
+  <data name="PowerMenu_Option_Recovery_Desc" xml:space="preserve">
+    <value>Boot into recovery for system updates and factory reset</value>
+  </data>
+  <data name="PowerMenu_Option_Bootloader" xml:space="preserve">
+    <value>Bootloader / Fastboot</value>
+  </data>
+  <data name="PowerMenu_Option_Bootloader_Desc" xml:space="preserve">
+    <value>Boot into bootloader for flashing and unlocking</value>
+  </data>
+  <data name="PowerMenu_Option_Fastbootd" xml:space="preserve">
+    <value>Fastbootd (Userspace)</value>
+  </data>
+  <data name="PowerMenu_Option_Fastbootd_Desc" xml:space="preserve">
+    <value>Boot into userspace fastboot for dynamic partitions (Android 10+)</value>
+  </data>
+  <data name="PowerMenu_Option_Sideload" xml:space="preserve">
+    <value>Sideload Mode</value>
+  </data>
+  <data name="PowerMenu_Option_Sideload_Desc" xml:space="preserve">
+    <value>Boot into sideload for ADB OTA package installation</value>
+  </data>
+  <data name="PowerMenu_Option_SideloadAuto" xml:space="preserve">
+    <value>Sideload (Auto-reboot)</value>
+  </data>
+  <data name="PowerMenu_Option_SideloadAuto_Desc" xml:space="preserve">
+    <value>Sideload mode with automatic reboot after installation</value>
+  </data>
+  <data name="PowerMenu_Option_Download" xml:space="preserve">
+    <value>Download Mode</value>
+  </data>
+  <data name="PowerMenu_Option_Download_Desc" xml:space="preserve">
+    <value>Boot into download/Odin mode (Samsung devices)</value>
+  </data>
+  <data name="PowerMenu_Option_PowerOff" xml:space="preserve">
+    <value>Power Off</value>
+  </data>
+  <data name="PowerMenu_Option_PowerOff_Desc" xml:space="preserve">
+    <value>Shut down your device completely</value>
+  </data>
+  <data name="PowerMenu_Executing" xml:space="preserve">
+    <value>Executing {0}...</value>
+  </data>
+  <data name="PowerMenu_Success_Rebooting" xml:space="preserve">
+    <value>{0} sent. Rebooting...</value>
+  </data>
+  <data name="PowerMenu_NoDevice" xml:space="preserve">
+    <value>No device connected. Please connect a device first.</value>
+  </data>
+  <data name="PowerMenu_Error_DeviceNotFound" xml:space="preserve">
+    <value>Device not found. Please reconnect your device.</value>
+  </data>
+  <data name="PowerMenu_Error_Unauthorized" xml:space="preserve">
+    <value>USB debugging not authorized. Please accept the prompt on your device.</value>
+  </data>
+  <data name="PowerMenu_Error_Offline" xml:space="preserve">
+    <value>Device is offline. Try reconnecting the USB cable.</value>
+  </data>
+  <data name="PowerMenu_Error_FastbootNotSupported" xml:space="preserve">
+    <value>Fastbootd mode not supported. This feature requires Android 10 or newer with dynamic partitions.</value>
+  </data>
+  <data name="PowerMenu_Error_DownloadNotSupported" xml:space="preserve">
+    <value>Download mode not supported on this device. This is typically a Samsung-only feature.</value>
+  </data>
+  <data name="PowerMenu_Error_SideloadNotAvailable" xml:space="preserve">
+    <value>Sideload mode not available. Your device may not support direct sideload boot.</value>
+  </data>
+  <data name="PowerMenu_Error_PermissionDenied" xml:space="preserve">
+    <value>Permission denied. This operation may require root access.</value>
+  </data>
+  <data name="PowerMenu_Error_Communication" xml:space="preserve">
+    <value>Communication error. Please try again.</value>
+  </data>
+  <data name="PowerMenu_Error_CommandFailed" xml:space="preserve">
+    <value>Command failed: {0}</value>
+  </data>
+  <data name="PowerMenu_Error_Unknown" xml:space="preserve">
+    <value>Unknown command</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- APK INSTALLER (extended)                                           -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+
+  <data name="ApkInstaller_Button_Back" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="ApkInstaller_Button_Browse" xml:space="preserve">
+    <value>Browse Files</value>
+  </data>
+  <data name="ApkInstaller_Button_ClearAll" xml:space="preserve">
+    <value>Clear All</value>
+  </data>
+  <data name="ApkInstaller_DropHere" xml:space="preserve">
+    <value>Drop APK files here</value>
+  </data>
+  <data name="ApkInstaller_OrBrowse" xml:space="preserve">
+    <value>or click Browse Files to select</value>
+  </data>
+  <data name="ApkInstaller_ReleaseToAdd" xml:space="preserve">
+    <value>Release to add files</value>
+  </data>
+  <data name="ApkInstaller_Column_Package" xml:space="preserve">
+    <value>Package</value>
+  </data>
+  <data name="ApkInstaller_Column_Version" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="ApkInstaller_Column_Size" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="ApkInstaller_Column_Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="ApkInstaller_BypassSecurity" xml:space="preserve">
+    <value>Bypass security</value>
+  </data>
+  <data name="ApkInstaller_BypassSecurity_Tooltip" xml:space="preserve">
+    <value>Skip verification checks during installation</value>
+  </data>
+  <data name="ApkInstaller_AllowDowngrade" xml:space="preserve">
+    <value>Allow downgrade</value>
+  </data>
+  <data name="ApkInstaller_AllowDowngrade_Tooltip" xml:space="preserve">
+    <value>Allow installing older versions over newer ones</value>
+  </data>
+  <data name="ApkInstaller_Tooltip_Remove" xml:space="preserve">
+    <value>Remove from list</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- OPTIMIZE (extended)                                                -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+
+  <data name="Optimize_Stat_Memory" xml:space="preserve">
+    <value>Memory</value>
+  </data>
+  <data name="Optimize_Stat_Storage" xml:space="preserve">
+    <value>Storage</value>
+  </data>
+  <data name="Optimize_Stat_AppsStopped" xml:space="preserve">
+    <value>Apps Stopped</value>
+  </data>
+  <data name="Optimize_Stat_Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Optimize_LiveStatus_Running" xml:space="preserve">
+    <value>Running</value>
+  </data>
+  <data name="Optimize_LiveStatus_Completed" xml:space="preserve">
+    <value>Completed</value>
+  </data>
+  <data name="Optimize_LiveStatus_Interrupted" xml:space="preserve">
+    <value>Interrupted</value>
+  </data>
+  <data name="Optimize_LiveStatus_Failed" xml:space="preserve">
+    <value>Failed</value>
+  </data>
+  <data name="Optimize_Status_Initializing" xml:space="preserve">
+    <value>Initializing...</value>
+  </data>
+  <data name="Optimize_Status_ClearingCache" xml:space="preserve">
+    <value>Clearing cache ({0}/{1})</value>
+  </data>
+  <data name="Optimize_Status_AnalyzingMemory" xml:space="preserve">
+    <value>Analyzing memory...</value>
+  </data>
+  <data name="Optimize_Status_Stopping" xml:space="preserve">
+    <value>Stopping {0}...</value>
+  </data>
+  <data name="Optimize_Status_DeepCleaning" xml:space="preserve">
+    <value>Deep cleaning...</value>
+  </data>
+  <data name="Optimize_Status_Cleaning" xml:space="preserve">
+    <value>Cleaning: {0}</value>
+  </data>
+  <data name="Optimize_Status_RunningTrim" xml:space="preserve">
+    <value>Running TRIM...</value>
+  </data>
+  <data name="Optimize_Status_OptimizingNetwork" xml:space="preserve">
+    <value>Optimizing network...</value>
+  </data>
+  <data name="Optimize_Status_OptimizingSystem" xml:space="preserve">
+    <value>Optimizing system...</value>
+  </data>
+  <data name="Optimize_Status_CompilingPackages" xml:space="preserve">
+    <value>Compiling packages</value>
+  </data>
+  <data name="Optimize_Status_ExtremeCompilation" xml:space="preserve">
+    <value>Extreme compilation</value>
+  </data>
+  <data name="Optimize_Status_Compiling" xml:space="preserve">
+    <value>Compiling {0}...</value>
+  </data>
+  <data name="Optimize_Status_DexOptimization" xml:space="preserve">
+    <value>DEX optimization</value>
+  </data>
+  <data name="Optimize_Console_Starting" xml:space="preserve">
+    <value>Starting AIO optimization...</value>
+  </data>
+  <data name="Optimize_Console_Interrupted" xml:space="preserve">
+    <value>Interrupted.</value>
+  </data>
+  <data name="Optimize_Console_RetrievingInfo" xml:space="preserve">
+    <value>Retrieving device information...</value>
+  </data>
+  <data name="Optimize_Console_InfoRetrieved" xml:space="preserve">
+    <value>Device information retrieved.</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- OPTIMIZE — CONSOLE LOG                                             -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+
+  <data name="Optimize_Console_Stopping" xml:space="preserve">
+    <value>Stopping...</value>
+  </data>
+  <data name="Optimize_Console_CacheProgress" xml:space="preserve">
+    <value>Cache progress: {0}%</value>
+  </data>
+  <data name="Optimize_Console_CacheCleared" xml:space="preserve">
+    <value>Cache cleared.</value>
+  </data>
+  <data name="Optimize_Console_AnalyzingProcesses" xml:space="preserve">
+    <value>Analyzing background processes...</value>
+  </data>
+  <data name="Optimize_Console_ForceStoppingApp" xml:space="preserve">
+    <value>Force stopping {0} ({1} MB)...</value>
+  </data>
+  <data name="Optimize_Console_MemoryOptimized" xml:space="preserve">
+    <value>Memory optimized. ~{0} MB freed.</value>
+  </data>
+  <data name="Optimize_Console_CachedAppsFreezer" xml:space="preserve">
+    <value>Cached apps freezer enabled.</value>
+  </data>
+  <data name="Optimize_Console_StartingDeepClean" xml:space="preserve">
+    <value>Starting deep storage cleanup...</value>
+  </data>
+  <data name="Optimize_Console_StorageComplete" xml:space="preserve">
+    <value>Storage cleanup complete. ~{0} MB freed.</value>
+  </data>
+  <data name="Optimize_Console_ApplyingNetwork" xml:space="preserve">
+    <value>Applying network optimizations...</value>
+  </data>
+  <data name="Optimize_Console_NetworkComplete" xml:space="preserve">
+    <value>Network optimization complete.</value>
+  </data>
+  <data name="Optimize_Console_MulticoreScheduler" xml:space="preserve">
+    <value>Enabling multi-core packet scheduler...</value>
+  </data>
+  <data name="Optimize_Console_SettingAnimations" xml:space="preserve">
+    <value>Setting animations to 0.5x...</value>
+  </data>
+  <data name="Optimize_Console_SystemOptimized" xml:space="preserve">
+    <value>System optimized.</value>
+  </data>
+  <data name="Optimize_Console_CompilationStart" xml:space="preserve">
+    <value>Starting compilation ({0})...</value>
+  </data>
+  <data name="Optimize_Console_ExtremeCompilationStart" xml:space="preserve">
+    <value>Starting EXTREME compilation ({0})...</value>
+  </data>
+  <data name="Optimize_Console_SpoofingBattery" xml:space="preserve">
+    <value>Spoofing battery...</value>
+  </data>
+  <data name="Optimize_Console_RunningDex" xml:space="preserve">
+    <value>Running background DEX...</value>
+  </data>
+  <data name="Optimize_Console_ResettingBattery" xml:space="preserve">
+    <value>Resetting battery...</value>
+  </data>
+  <data name="Optimize_Console_BatteryReset" xml:space="preserve">
+    <value>Battery reset.</value>
+  </data>
+  <data name="Optimize_Console_DeviceDisconnected" xml:space="preserve">
+    <value>Device disconnected.</value>
+  </data>
+  <data name="Optimize_Clean_TempFiles" xml:space="preserve">
+    <value>Temp files</value>
+  </data>
+  <data name="Optimize_Clean_PackageCaches" xml:space="preserve">
+    <value>Package caches</value>
+  </data>
+  <data name="Optimize_Clean_AnrTraces" xml:space="preserve">
+    <value>ANR traces</value>
+  </data>
+  <data name="Optimize_Clean_CrashDumps" xml:space="preserve">
+    <value>Crash dumps</value>
+  </data>
+  <data name="Optimize_Clean_LogcatBuffer" xml:space="preserve">
+    <value>Logcat buffer</value>
+  </data>
+  <data name="Optimize_Clean_SystemDropbox" xml:space="preserve">
+    <value>System dropbox</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- SCREEN MIRROR                                                      -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+
+  <data name="ScreenMirror_Header" xml:space="preserve">
+    <value>Screen Mirror</value>
+  </data>
+  <data name="ScreenMirror_Subtitle" xml:space="preserve">
+    <value>Mirror and control your device screen in real-time</value>
+  </data>
+  <data name="ScreenMirror_NoDevice" xml:space="preserve">
+    <value>No device connected</value>
+  </data>
+  <data name="ScreenMirror_ConnectDevice" xml:space="preserve">
+    <value>Connect a device via USB or WiFi</value>
+  </data>
+  <data name="ScreenMirror_Status_Connected" xml:space="preserve">
+    <value>Connected</value>
+  </data>
+  <data name="ScreenMirror_Status_Disconnected" xml:space="preserve">
+    <value>Disconnected</value>
+  </data>
+  <data name="ScreenMirror_StartMirroring" xml:space="preserve">
+    <value>Start Mirroring</value>
+  </data>
+  <data name="ScreenMirror_StartMirroring_Hint" xml:space="preserve">
+    <value>Click to begin screen mirroring</value>
+  </data>
+  <data name="ScreenMirror_Active" xml:space="preserve">
+    <value>MIRRORING ACTIVE</value>
+  </data>
+  <data name="ScreenMirror_Tooltip_Stop" xml:space="preserve">
+    <value>Stop Mirroring</value>
+  </data>
+  <data name="ScreenMirror_Tooltip_Record" xml:space="preserve">
+    <value>Start/Stop Recording</value>
+  </data>
+  <data name="ScreenMirror_SetupRequired" xml:space="preserve">
+    <value>Setup Required</value>
+  </data>
+  <data name="ScreenMirror_SetupRequired_Desc" xml:space="preserve">
+    <value>scrcpy is needed for screen mirroring</value>
+  </data>
+  <data name="ScreenMirror_Button_Setup" xml:space="preserve">
+    <value>Download &amp; Setup</value>
+  </data>
+  <data name="ScreenMirror_Shortcuts" xml:space="preserve">
+    <value>Shortcuts:</value>
+  </data>
+  <data name="ScreenMirror_Shortcut_Home" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="ScreenMirror_Shortcut_Back" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="ScreenMirror_Button_Screenshot" xml:space="preserve">
+    <value>Screenshot</value>
+  </data>
+  <data name="ScreenMirror_Tooltip_Screenshot" xml:space="preserve">
+    <value>Capture a screenshot from the device</value>
+  </data>
+  <data name="ScreenMirror_Settings" xml:space="preserve">
+    <value>SETTINGS</value>
+  </data>
+  <data name="ScreenMirror_QualityPreset" xml:space="preserve">
+    <value>Quality Preset</value>
+  </data>
+  <data name="ScreenMirror_Quality_Performance" xml:space="preserve">
+    <value>Performance</value>
+  </data>
+  <data name="ScreenMirror_Quality_Balanced" xml:space="preserve">
+    <value>Balanced</value>
+  </data>
+  <data name="ScreenMirror_Quality_Quality" xml:space="preserve">
+    <value>Quality</value>
+  </data>
+  <data name="ScreenMirror_Quality_Maximum" xml:space="preserve">
+    <value>Maximum</value>
+  </data>
+  <data name="ScreenMirror_MaxResolution" xml:space="preserve">
+    <value>Max Resolution</value>
+  </data>
+  <data name="ScreenMirror_Resolution_Native" xml:space="preserve">
+    <value>Native</value>
+  </data>
+  <data name="ScreenMirror_Bitrate" xml:space="preserve">
+    <value>Bitrate</value>
+  </data>
+  <data name="ScreenMirror_FrameRate" xml:space="preserve">
+    <value>Frame Rate</value>
+  </data>
+  <data name="ScreenMirror_Options" xml:space="preserve">
+    <value>OPTIONS</value>
+  </data>
+  <data name="ScreenMirror_ShowTouches" xml:space="preserve">
+    <value>Show Touches</value>
+  </data>
+  <data name="ScreenMirror_ShowTouches_Desc" xml:space="preserve">
+    <value>Display touch points on screen</value>
+  </data>
+  <data name="ScreenMirror_StayAwake" xml:space="preserve">
+    <value>Stay Awake</value>
+  </data>
+  <data name="ScreenMirror_StayAwake_Desc" xml:space="preserve">
+    <value>Prevent device from sleeping</value>
+  </data>
+  <data name="ScreenMirror_TurnOffScreen" xml:space="preserve">
+    <value>Turn Off Screen</value>
+  </data>
+  <data name="ScreenMirror_TurnOffScreen_Desc" xml:space="preserve">
+    <value>Keep device screen off while mirroring</value>
+  </data>
+  <data name="ScreenMirror_AlwaysOnTop" xml:space="preserve">
+    <value>Always On Top</value>
+  </data>
+  <data name="ScreenMirror_AlwaysOnTop_Desc" xml:space="preserve">
+    <value>Keep mirror window above others</value>
+  </data>
+  <data name="ScreenMirror_Borderless" xml:space="preserve">
+    <value>Borderless Window</value>
+  </data>
+  <data name="ScreenMirror_Borderless_Desc" xml:space="preserve">
+    <value>Remove window decorations</value>
+  </data>
+  <data name="ScreenMirror_RecordingSection" xml:space="preserve">
+    <value>RECORDING &amp; SCREENSHOTS</value>
+  </data>
+  <data name="ScreenMirror_RecordingFolder" xml:space="preserve">
+    <value>Recording Folder</value>
+  </data>
+  <data name="ScreenMirror_Button_BrowseFolder" xml:space="preserve">
+    <value>Browse</value>
+  </data>
+  <data name="ScreenMirror_ScreenshotFolder" xml:space="preserve">
+    <value>Screenshot Folder</value>
+  </data>
+  <data name="ScreenMirror_RecordingFormat" xml:space="preserve">
+    <value>Recording Format</value>
+  </data>
+  <data name="ScreenMirror_SettingsNote" xml:space="preserve">
+    <value>Settings can be changed during streaming. You will be asked if you want to restart.</value>
+  </data>
+  <data name="ScreenMirror_ResetDefaults" xml:space="preserve">
+    <value>Reset to Defaults</value>
+  </data>
+  <data name="Help_PageTitle" xml:space="preserve">
+    <value>Help Center</value>
+  </data>
+  <data name="Help_Nav_Welcome" xml:space="preserve">
+    <value>Welcome</value>
+  </data>
+  <data name="Help_Nav_FirstSteps" xml:space="preserve">
+    <value>First Steps</value>
+  </data>
+  <data name="Help_Nav_Basics" xml:space="preserve">
+    <value>The Basics</value>
+  </data>
+  <data name="Help_Nav_QuickGuide" xml:space="preserve">
+    <value>Quick Guide</value>
+  </data>
+  <data name="Help_Nav_CompleteGuide" xml:space="preserve">
+    <value>Complete Guide</value>
+  </data>
+  <data name="Help_Nav_Troubleshooting" xml:space="preserve">
+    <value>Troubleshooting</value>
+  </data>
+  <data name="Help_Nav_Tips" xml:space="preserve">
+    <value>Tips &amp; Shortcuts</value>
+  </data>
+  <data name="Help_Nav_Faq" xml:space="preserve">
+    <value>FAQ</value>
+  </data>
+  <data name="Help_Nav_About" xml:space="preserve">
+    <value>About &amp; Credits</value>
+  </data>
+  <data name="Help_QuickTip_Title" xml:space="preserve">
+    <value>Quick tip</value>
+  </data>
+  <data name="Help_QuickTip_Body" xml:space="preserve">
+    <value>Press F1 anywhere in the app to open this Help Center instantly. Zephyr's Elixir is designed to be learned in minutes, not weeks — take your time.</value>
+  </data>
+  <data name="Help_Welcome_Title" xml:space="preserve">
+    <value>Welcome to Zephyr's Elixir</value>
+  </data>
+  <data name="Help_Welcome_Intro1" xml:space="preserve">
+    <value>It's good to have you here. Zephyr's Elixir was built around a simple question: </value>
+  </data>
+  <data name="Help_Welcome_Intro_Emphasis" xml:space="preserve">
+    <value>why can't Android optimization feel as refined as the devices it runs on?</value>
+  </data>
+  <data name="Help_Welcome_Intro2" xml:space="preserve">
+    <value>What you're looking at isn't another bare command-line frontend. It's a carefully crafted optimization suite that hides raw ADB power behind a calm, elegant interface — and treats your device with the respect it deserves.</value>
+  </data>
+  <data name="Help_Welcome_Special_Title" xml:space="preserve">
+    <value>What makes Zephyr's Elixir different</value>
+  </data>
+  <data name="Help_Welcome_Power_Title" xml:space="preserve">
+    <value>One-click depth</value>
+  </data>
+  <data name="Help_Welcome_Power_Body" xml:space="preserve">
+    <value>The main Optimize button runs a seven-stage pipeline — cache cleanup, memory triage, deep storage clean, network tuning, system tuning, package compilation, and DEX optimization — orchestrated through 120 tracked steps. You press one button; the app handles the rest.</value>
+  </data>
+  <data name="Help_Welcome_Transparency_Title" xml:space="preserve">
+    <value>Nothing hidden</value>
+  </data>
+  <data name="Help_Welcome_Transparency_Body" xml:space="preserve">
+    <value>Every ADB command is streamed live to the Optimization Console as it runs. No black box: you always see exactly what is being sent to your device, in the order it's being sent.</value>
+  </data>
+  <data name="Help_Welcome_Reversibility_Title" xml:space="preserve">
+    <value>Always reversible</value>
+  </data>
+  <data name="Help_Welcome_Reversibility_Body" xml:space="preserve">
+    <value>Changes made in the Advanced section are tracked individually. Animation scales, private DNS, compilation mode, spoofed battery level — each has a dedicated Reset button, and a single Reset All brings everything back to the factory defaults Android ships with.</value>
+  </data>
+  <data name="Help_Welcome_NoRoot_Title" xml:space="preserve">
+    <value>No root, no bootloader unlock</value>
+  </data>
+  <data name="Help_Welcome_NoRoot_Body" xml:space="preserve">
+    <value>Zephyr's Elixir speaks only through ADB (Android Debug Bridge). No magisk, no custom recovery, no tripped warranty. Enable USB debugging and you're ready — nothing else changes about how your device was sold to you.</value>
+  </data>
+  <data name="Help_Welcome_Privacy_Title" xml:space="preserve">
+    <value>Offline by design</value>
+  </data>
+  <data name="Help_Welcome_Privacy_Body" xml:space="preserve">
+    <value>The app works entirely on your machine. No account, no analytics, no background telemetry. The only network calls made are for license validation (if you activate Pro) and for optional cloud package intelligence when you open app details in the Debloat screen.</value>
+  </data>
+  <data name="Help_Welcome_Philosophy_Title" xml:space="preserve">
+    <value>The philosophy</value>
+  </data>
+  <data name="Help_Welcome_Philosophy1" xml:space="preserve">
+    <value>Optimization shouldn't feel like homework. You shouldn't need to memorize shell commands, chase outdated forum threads, or guess which package is safe to disable. Good software does the reading for you and shows its work.</value>
+  </data>
+  <data name="Help_Welcome_Philosophy2" xml:space="preserve">
+    <value>That's the promise behind every detail here — the live particle field on the Optimize page, the real-time battery readout in the sidebar, the soft glow behind each action card. Nothing is decorative for its own sake: each element exists to make the underlying engineering feel approachable.</value>
+  </data>
+  <data name="Help_Welcome_Ready_Title" xml:space="preserve">
+    <value>Ready to begin?</value>
+  </data>
+  <data name="Help_Welcome_Ready_Body" xml:space="preserve">
+    <value>Open First Steps if you've never enabled USB debugging before. Jump to Quick Guide if you just want to optimize and get on with your day. This guide stays one keystroke away — F1, whenever you need it.</value>
+  </data>
+  <data name="Help_FirstSteps_Title" xml:space="preserve">
+    <value>First Steps</value>
+  </data>
+  <data name="Help_FirstSteps_Intro" xml:space="preserve">
+    <value>Before Zephyr's Elixir can talk to your phone, your phone needs to know it's allowed to listen. This takes about two minutes and only has to be done once per device.</value>
+  </data>
+  <data name="Help_FirstSteps_USB_Title" xml:space="preserve">
+    <value>Enable USB debugging</value>
+  </data>
+  <data name="Help_FirstSteps_USB_Body" xml:space="preserve">
+    <value>USB debugging is a built-in developer mode that lets a trusted computer send ADB commands to the device. It's part of vanilla Android — no modification, no risk.</value>
+  </data>
+  <data name="Help_FirstSteps_StepByStep_Title" xml:space="preserve">
+    <value>Step by step</value>
+  </data>
+  <data name="Help_FirstSteps_Step1" xml:space="preserve">
+    <value>1. Open Settings on your phone.</value>
+  </data>
+  <data name="Help_FirstSteps_Step2" xml:space="preserve">
+    <value>2. Scroll down and tap About phone.</value>
+  </data>
+  <data name="Help_FirstSteps_Step3" xml:space="preserve">
+    <value>3. Find Build number. On some skins it's under Software information.</value>
+  </data>
+  <data name="Help_FirstSteps_Step4" xml:space="preserve">
+    <value>4. Tap Build number seven times. Enter your PIN if asked. You'll see "You are now a developer!".</value>
+  </data>
+  <data name="Help_FirstSteps_Step5" xml:space="preserve">
+    <value>5. Go back to Settings and open the new Developer options entry (usually under System).</value>
+  </data>
+  <data name="Help_FirstSteps_Step6" xml:space="preserve">
+    <value>6. Turn on USB debugging. Accept the warning dialog.</value>
+  </data>
+  <data name="Help_FirstSteps_Step7" xml:space="preserve">
+    <value>7. Optional but recommended: also turn on Stay awake, so the screen doesn't sleep while you're working.</value>
+  </data>
+  <data name="Help_FirstSteps_Connect_Title" xml:space="preserve">
+    <value>Connect the cable</value>
+  </data>
+  <data name="Help_FirstSteps_Connect_Body" xml:space="preserve">
+    <value>Plug your phone into the PC with the cable that came in the box, or any certified data cable. Cheap charge-only cables are the single most common reason the device doesn't show up.</value>
+  </data>
+  <data name="Help_FirstSteps_Cable_Title" xml:space="preserve">
+    <value>Cable matters</value>
+  </data>
+  <data name="Help_FirstSteps_Cable_Body" xml:space="preserve">
+    <value>If the device charges but Zephyr's Elixir can't see it, swap the cable before doing anything else. The cable that shipped with your phone always works; thin aftermarket cables often only carry power.</value>
+  </data>
+  <data name="Help_FirstSteps_FirstConnect" xml:space="preserve">
+    <value>The first time you connect, Android will ask you to confirm the pairing:</value>
+  </data>
+  <data name="Help_FirstSteps_Popup1" xml:space="preserve">
+    <value>• A dialog titled "Allow USB debugging?" appears on the phone.</value>
+  </data>
+  <data name="Help_FirstSteps_Popup2" xml:space="preserve">
+    <value>• Tick "Always allow from this computer" so you don't see it every time.</value>
+  </data>
+  <data name="Help_FirstSteps_Popup3" xml:space="preserve">
+    <value>• Tap Allow.</value>
+  </data>
+  <data name="Help_FirstSteps_Verify_Title" xml:space="preserve">
+    <value>Verify the connection</value>
+  </data>
+  <data name="Help_FirstSteps_Verify_Body" xml:space="preserve">
+    <value>Zephyr's Elixir constantly watches for devices in the background. The sidebar at the left is the source of truth:</value>
+  </data>
+  <data name="Help_FirstSteps_Verify1" xml:space="preserve">
+    <value>• Connected: the model name appears under the device icon, and a live battery bar fills up.</value>
+  </data>
+  <data name="Help_FirstSteps_Verify2" xml:space="preserve">
+    <value>• Not connected: you see a muted "No device connected" message and action buttons stay disabled.</value>
+  </data>
+  <data name="Help_FirstSteps_VerifyHint" xml:space="preserve">
+    <value>If the sidebar still says No device after a few seconds, open the Troubleshooting section — the first entry, Device not detected, covers every known cause.</value>
+  </data>
+  <data name="Help_FirstSteps_Wireless_Title" xml:space="preserve">
+    <value>Optional: go wireless</value>
+  </data>
+  <data name="Help_FirstSteps_Wireless_Body" xml:space="preserve">
+    <value>Once the first USB handshake is done, Android 11 and newer can keep the ADB session running over Wi-Fi. No cable required from then on.</value>
+  </data>
+  <data name="Help_FirstSteps_WirelessSetup_Title" xml:space="preserve">
+    <value>Wireless setup in 30 seconds</value>
+  </data>
+  <data name="Help_FirstSteps_WStep1" xml:space="preserve">
+    <value>1. Make sure the phone and PC are on the same Wi-Fi network.</value>
+  </data>
+  <data name="Help_FirstSteps_WStep2" xml:space="preserve">
+    <value>2. On the phone, open Developer options and enable Wireless debugging.</value>
+  </data>
+  <data name="Help_FirstSteps_WStep3" xml:space="preserve">
+    <value>3. Tap "Pair device with pairing code" — you'll see an IP address, a port, and a six-digit code.</value>
+  </data>
+  <data name="Help_FirstSteps_WStep4" xml:space="preserve">
+    <value>4. On Home in Zephyr's Elixir, click Wireless connection and paste the three values.</value>
+  </data>
+  <data name="Help_FirstSteps_WStep5" xml:space="preserve">
+    <value>5. The app handles pairing, connection, and verification. The cable becomes optional.</value>
+  </data>
+  <data name="Help_FirstSteps_AllSet_Title" xml:space="preserve">
+    <value>That's it — you're ready</value>
+  </data>
+  <data name="Help_FirstSteps_AllSet_Body" xml:space="preserve">
+    <value>Everything Zephyr's Elixir can do is now unlocked for this device. When you're ready for a guided first run, jump to the Quick Guide — four steps, under three minutes.</value>
+  </data>
+  <data name="Help_Basics_Title" xml:space="preserve">
+    <value>The Basics</value>
+  </data>
+  <data name="Help_Basics_Intro" xml:space="preserve">
+    <value>A quick orientation to what's running under the hood and how the interface maps to it. This section is worth reading once — everything else in the app will make more sense afterwards.</value>
+  </data>
+  <data name="Help_Basics_ADB_Title" xml:space="preserve">
+    <value>What ADB actually is</value>
+  </data>
+  <data name="Help_Basics_ADB_Body" xml:space="preserve">
+    <value>ADB stands for Android Debug Bridge. It's the official developer protocol Google ships inside Android itself — the same tool used by app developers, manufacturers, and Google's own engineering teams. Zephyr's Elixir bundles a signed copy of the ADB platform-tools and never touches system files directly.</value>
+  </data>
+  <data name="Help_Basics_ADB_SafeTitle" xml:space="preserve">
+    <value>Why this approach is safe</value>
+  </data>
+  <data name="Help_Basics_ADB_Safe1" xml:space="preserve">
+    <value>• It's Google's own protocol — not a hack, not a patched binary.</value>
+  </data>
+  <data name="Help_Basics_ADB_Safe2" xml:space="preserve">
+    <value>• It runs inside Android's existing permission sandbox. No root, no bootloader unlock, no warranty flag.</value>
+  </data>
+  <data name="Help_Basics_ADB_Safe3" xml:space="preserve">
+    <value>• Every command that reaches your device is shown in the Optimization Console first.</value>
+  </data>
+  <data name="Help_Basics_ADB_Safe4" xml:space="preserve">
+    <value>• Any setting the app changes can be reverted from the Advanced screen with one click.</value>
+  </data>
+  <data name="Help_Basics_Interface_Title" xml:space="preserve">
+    <value>The interface at a glance</value>
+  </data>
+  <data name="Help_Basics_Sidebar_Title" xml:space="preserve">
+    <value>The sidebar</value>
+  </data>
+  <data name="Help_Basics_Sidebar_Body" xml:space="preserve">
+    <value>The dark rail on the left is your navigation. Seven entries, always visible:</value>
+  </data>
+  <data name="Help_Basics_Sidebar_Home" xml:space="preserve">
+    <value>• Home — landing page, quick actions, device status.</value>
+  </data>
+  <data name="Help_Basics_Sidebar_Optimize" xml:space="preserve">
+    <value>• Optimize — the full seven-stage performance pipeline.</value>
+  </data>
+  <data name="Help_Basics_Sidebar_Debloat" xml:space="preserve">
+    <value>• Debloat — list, disable, uninstall and review user or system apps.</value>
+  </data>
+  <data name="Help_Basics_Sidebar_Advanced" xml:space="preserve">
+    <value>• Advanced — granular tuning: private DNS, animation scales, compilation mode, and more.</value>
+  </data>
+  <data name="Help_Basics_Sidebar_Settings" xml:space="preserve">
+    <value>• Settings — language, ADB status, diagnostic log export, license management.</value>
+  </data>
+  <data name="Help_Basics_Sidebar_Help" xml:space="preserve">
+    <value>• Help — where you are right now. F1 brings you back any time.</value>
+  </data>
+  <data name="Help_Basics_Sidebar_Device" xml:space="preserve">
+    <value>At the bottom of the sidebar sits the live device card: model name and battery level, updated in real time. It's the fastest way to confirm the connection without leaving the current page.</value>
+  </data>
+  <data name="Help_Basics_Console_Title" xml:space="preserve">
+    <value>The Optimization Console</value>
+  </data>
+  <data name="Help_Basics_Console_Body" xml:space="preserve">
+    <value>On the Optimize page, the dark panel at the right is the Console. Every ADB command Zephyr's Elixir sends is logged there, with timestamps and output. It's the same stream you'd see in a terminal — just prettier.</value>
+  </data>
+  <data name="Help_Basics_Console_Tip_Title" xml:space="preserve">
+    <value>Worth knowing</value>
+  </data>
+  <data name="Help_Basics_Console_Tip_Body" xml:space="preserve">
+    <value>If something ever behaves unexpectedly, the Console is always the first place to look. You can export the full diagnostic log from Settings → Export logs at any time.</value>
+  </data>
+  <data name="Help_Basics_HowOpt_Title" xml:space="preserve">
+    <value>How optimization actually works</value>
+  </data>
+  <data name="Help_Basics_HowOpt_Body" xml:space="preserve">
+    <value>A single Optimize run walks through seven real stages, each touching a different subsystem. You'll see the stage name update live as it progresses:</value>
+  </data>
+  <data name="Help_Basics_Cat_Performance_Title" xml:space="preserve">
+    <value>Performance</value>
+  </data>
+  <data name="Help_Basics_Cat_Performance_Body" xml:space="preserve">
+    <value>Clears app caches iteratively, trims memory pressure, frees storage, and force-compiles installed packages in speed mode so cold starts feel snappier.</value>
+  </data>
+  <data name="Help_Basics_Cat_Battery_Title" xml:space="preserve">
+    <value>Battery</value>
+  </data>
+  <data name="Help_Basics_Cat_Battery_Body" xml:space="preserve">
+    <value>Applies stricter standby bucket policies, enables adaptive battery management, and tones down window, transition and animator durations — small changes, real time-on-battery gains.</value>
+  </data>
+  <data name="Help_Basics_Cat_Network_Title" xml:space="preserve">
+    <value>Network</value>
+  </data>
+  <data name="Help_Basics_Cat_Network_Body" xml:space="preserve">
+    <value>Stops constant Wi-Fi and BLE background scans, tunes the DNS resolver, and primes the network stack so web pages and API calls resolve faster.</value>
+  </data>
+  <data name="Help_Basics_Cat_Privacy_Title" xml:space="preserve">
+    <value>Privacy</value>
+  </data>
+  <data name="Help_Basics_Cat_Privacy_Body" xml:space="preserve">
+    <value>Reduces background chatter from ad-tracking libraries, tightens captive portal probes, and — with the Pro module loaded — zeroes out the advertising ID and disables Android Safety Core scanning.</value>
+  </data>
+  <data name="Help_Basics_Extreme_Title" xml:space="preserve">
+    <value>Standard vs Extreme</value>
+  </data>
+  <data name="Help_Basics_Extreme_Body" xml:space="preserve">
+    <value>Standard optimization is what runs by default and is designed to be safe on every supported device. Extreme mode — exposed via the toggle on the Optimize page — goes further: it kill-alls background services, trims caches aggressively, force-compiles packages with the speed profile, and turns animations down to half speed. Extreme is a Pro-only feature and only activates when the Pro module is loaded.</value>
+  </data>
+  <data name="Help_Basics_Extreme_Hint_Title" xml:space="preserve">
+    <value>A gentle note about Extreme</value>
+  </data>
+  <data name="Help_Basics_Extreme_Hint_Body" xml:space="preserve">
+    <value>After an Extreme run, a full reboot is recommended so Android can rebuild its package caches cleanly. Everything is still fully reversible from the Advanced screen.</value>
+  </data>
+  <data name="Help_Basics_Safety_Title" xml:space="preserve">
+    <value>If something feels off</value>
+  </data>
+  <data name="Help_Basics_Safety_Body" xml:space="preserve">
+    <value>Android is resilient. Nothing Zephyr's Elixir does requires root, so there's no partition to brick and no bootloop risk. That said, if you ever feel an app is misbehaving after an optimization run:</value>
+  </data>
+  <data name="Help_Basics_Safety_IfWrong" xml:space="preserve">
+    <value>Recovery, in order of how much you want to undo:</value>
+  </data>
+  <data name="Help_Basics_Safety_Step1" xml:space="preserve">
+    <value>1. Reboot the device. Most of what Optimize touches settles cleanly after one restart.</value>
+  </data>
+  <data name="Help_Basics_Safety_Step2" xml:space="preserve">
+    <value>2. Open Advanced and press Reset on the specific setting that's bothering you (DNS, animations, compilation, etc).</value>
+  </data>
+  <data name="Help_Basics_Safety_Step3" xml:space="preserve">
+    <value>3. Still not right? Hit Reset All in Advanced — this walks back every change Zephyr's Elixir ever made to this device.</value>
+  </data>
+  <data name="Help_Basics_Safety_Restore" xml:space="preserve">
+    <value>For apps that were disabled in Debloat, the History tab keeps a record of every uninstall and lets you reinstall them at any time.</value>
+  </data>
+  <data name="Help_Quick_Title" xml:space="preserve">
+    <value>Quick Guide</value>
+  </data>
+  <data name="Help_Quick_Intro" xml:space="preserve">
+    <value>Four steps. Roughly three minutes. This is the shortest path from "just installed" to "noticeably faster device".</value>
+  </data>
+  <data name="Help_Quick_Step1_Title" xml:space="preserve">
+    <value>Step 1 — Connect the device</value>
+  </data>
+  <data name="Help_Quick_Step1_Body1" xml:space="preserve">
+    <value>Plug in the USB cable and confirm the Allow USB debugging prompt on the phone. If you prefer wireless, click Wireless connection on the Home page and follow the short pairing flow.</value>
+  </data>
+  <data name="Help_Quick_Step1_Body2" xml:space="preserve">
+    <value>Confirmation lives in the sidebar: when the model name replaces "No device connected" and the battery bar lights up, you're good to go.</value>
+  </data>
+  <data name="Help_Quick_Step2_Title" xml:space="preserve">
+    <value>Step 2 — Press Start Optimization</value>
+  </data>
+  <data name="Help_Quick_Step2_Body1" xml:space="preserve">
+    <value>From Home, click Start optimization — or open the Optimize screen directly from the sidebar and press the large button there.</value>
+  </data>
+  <data name="Help_Quick_Step2_Body2" xml:space="preserve">
+    <value>Have a Pro license? You can also flip the Extreme toggle before starting for a deeper pass.</value>
+  </data>
+  <data name="Help_Quick_Step3_Title" xml:space="preserve">
+    <value>Step 3 — Watch it work</value>
+  </data>
+  <data name="Help_Quick_Step3_Body1" xml:space="preserve">
+    <value>The progress ring climbs through 120 steps while the Console streams every command in real time. An on-screen timer tracks total run time.</value>
+  </data>
+  <data name="Help_Quick_Step3_Body2" xml:space="preserve">
+    <value>You can cancel at any point with Stop. Partial progress is already applied and always safe.</value>
+  </data>
+  <data name="Help_Quick_Step4_Title" xml:space="preserve">
+    <value>Step 4 — Reboot and enjoy</value>
+  </data>
+  <data name="Help_Quick_Step4_Body1" xml:space="preserve">
+    <value>When the run completes, the report card summarizes what changed. A reboot is optional for standard mode but recommended after Extreme, so the system can rebuild package caches.</value>
+  </data>
+  <data name="Help_Quick_Step4_Body2" xml:space="preserve">
+    <value>That's the whole loop. Come back and run it again whenever the device starts feeling sluggish — there's no harm in repeating.</value>
+  </data>
+  <data name="Help_Quick_Next_Title" xml:space="preserve">
+    <value>What to explore next</value>
+  </data>
+  <data name="Help_Quick_Next_Body" xml:space="preserve">
+    <value>Open Debloat to strip out apps you never use. Open Advanced to dial in private DNS, animation speed, or — on Pro — shut down the more opinionated parts of Google Play Services. The Complete Guide walks through every screen in detail.</value>
+  </data>
+  <data name="Help_Guide_Title" xml:space="preserve">
+    <value>Complete Guide</value>
+  </data>
+  <data name="Help_Guide_Intro" xml:space="preserve">
+    <value>A walkthrough of every screen in Zephyr's Elixir, in the order they appear in the sidebar. Read top to bottom, or jump to the section you care about.</value>
+  </data>
+  <data name="Help_Guide_Home_Title" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="Help_Guide_Home_Body" xml:space="preserve">
+    <value>Your landing page. Version number, app changelog shortcut, and the two primary actions every user needs.</value>
+  </data>
+  <data name="Help_Guide_Home_Optimize_Title" xml:space="preserve">
+    <value>Start optimization</value>
+  </data>
+  <data name="Help_Guide_Home_Optimize_Body" xml:space="preserve">
+    <value>Jumps straight to the Optimize screen and kicks off a full standard run. This button is disabled until a device is connected — the tooltip will tell you so.</value>
+  </data>
+  <data name="Help_Guide_Home_Wireless_Title" xml:space="preserve">
+    <value>Wireless connection</value>
+  </data>
+  <data name="Help_Guide_Home_Wireless_Body" xml:space="preserve">
+    <value>Opens the guided wireless ADB pairing dialog. Enter the IP, port, and six-digit code from Developer options → Wireless debugging and Zephyr's Elixir handles the rest.</value>
+  </data>
+  <data name="Help_Guide_Home_Wireless_Req" xml:space="preserve">
+    <value>Requires Android 11 or newer on the device and the PC to be on the same network.</value>
+  </data>
+  <data name="Help_Guide_Home_Changelog_Title" xml:space="preserve">
+    <value>What's new</value>
+  </data>
+  <data name="Help_Guide_Home_Changelog_Body" xml:space="preserve">
+    <value>A link under the version number opens the full changelog dialog with every change since the previous release.</value>
+  </data>
+  <data name="Help_Guide_Optimize_Title" xml:space="preserve">
+    <value>Optimize</value>
+  </data>
+  <data name="Help_Guide_Optimize_Body" xml:space="preserve">
+    <value>The main performance workshop. One primary action, a progress ring, a live timer, and the full Optimization Console.</value>
+  </data>
+  <data name="Help_Guide_Optimize_Process_Title" xml:space="preserve">
+    <value>The seven-stage pipeline</value>
+  </data>
+  <data name="Help_Guide_Optimize_Process_Body" xml:space="preserve">
+    <value>Every run walks through the same seven stages, in order, across 120 tracked steps:</value>
+  </data>
+  <data name="Help_Guide_Optimize_Cat1" xml:space="preserve">
+    <value>1. Cache cleanup — iterative clearing of app and system caches.</value>
+  </data>
+  <data name="Help_Guide_Optimize_Cat2" xml:space="preserve">
+    <value>2. Memory management — identifies heavy foreground apps and trims runaway memory.</value>
+  </data>
+  <data name="Help_Guide_Optimize_Cat3" xml:space="preserve">
+    <value>3. Deep storage clean — removes stale temporary files the OS normally hangs onto.</value>
+  </data>
+  <data name="Help_Guide_Optimize_Cat4" xml:space="preserve">
+    <value>4. Network tuning — DNS resolver warm-up and background scan throttling.</value>
+  </data>
+  <data name="Help_Guide_Optimize_Cat5" xml:space="preserve">
+    <value>5. System tuning, package compilation, and DEX optimization — the final three stages that re-tune scheduler hints and force-compile installed packages so cold starts feel faster.</value>
+  </data>
+  <data name="Help_Guide_Extreme_Title" xml:space="preserve">
+    <value>Extreme mode (Pro)</value>
+  </data>
+  <data name="Help_Guide_Extreme_Body" xml:space="preserve">
+    <value>The Extreme toggle unlocks a more aggressive pass: background services are killed outright, caches are trimmed up to 1 TB worth of slack space, system packages are force-compiled in speed profile, and animation scales are pushed to 0.5×. Cached apps freezer and multi-core packet scheduler are enabled where the hardware supports them.</value>
+  </data>
+  <data name="Help_Guide_Extreme_Note" xml:space="preserve">
+    <value>Extreme requires an active Pro license and the Pro module loaded. Without both, the toggle stays disabled and shows an upgrade hint on hover.</value>
+  </data>
+  <data name="Help_Guide_Monitoring_Title" xml:space="preserve">
+    <value>Watching the run</value>
+  </data>
+  <data name="Help_Guide_Monitoring_Body" xml:space="preserve">
+    <value>Four live indicators keep you informed while the pipeline runs:</value>
+  </data>
+  <data name="Help_Guide_Monitoring_Progress" xml:space="preserve">
+    <value>• A progress ring filling from 0 to 120 steps.</value>
+  </data>
+  <data name="Help_Guide_Monitoring_Timer" xml:space="preserve">
+    <value>• A total-elapsed timer, updated every second.</value>
+  </data>
+  <data name="Help_Guide_Monitoring_Console" xml:space="preserve">
+    <value>• The Console, streaming each ADB command and its output in real time.</value>
+  </data>
+  <data name="Help_Guide_Monitoring_Device" xml:space="preserve">
+    <value>• The sidebar device card, confirming the phone is still connected and reporting battery level.</value>
+  </data>
+  <data name="Help_Guide_Optimize_Hint_Title" xml:space="preserve">
+    <value>Pro tip</value>
+  </data>
+  <data name="Help_Guide_Optimize_Hint_Body" xml:space="preserve">
+    <value>If the device disconnects mid-run, Zephyr's Elixir cancels the pipeline automatically and keeps partial progress. You can safely re-run from scratch.</value>
+  </data>
+  <data name="Help_Guide_Debloat_Title" xml:space="preserve">
+    <value>Debloat</value>
+  </data>
+  <data name="Help_Guide_Debloat_Body" xml:space="preserve">
+    <value>Where you reclaim space and attention. Enumerates every package on the device, groups user vs system apps, and lets you disable or uninstall them cleanly.</value>
+  </data>
+  <data name="Help_Guide_Debloat_Load_Title" xml:space="preserve">
+    <value>Loading the app list</value>
+  </data>
+  <data name="Help_Guide_Debloat_Load_Body" xml:space="preserve">
+    <value>The Load apps button queries the device for installed packages, pulls each icon asynchronously, and sorts the list alphabetically. Icons stream in as they arrive — no need to wait for the whole list before scrolling.</value>
+  </data>
+  <data name="Help_Guide_Debloat_Filter_Title" xml:space="preserve">
+    <value>Filtering and search</value>
+  </data>
+  <data name="Help_Guide_Debloat_Filter_Body" xml:space="preserve">
+    <value>The filter tabs split apps by type: User, System, or Disabled. A free-text search bar narrows results by name or package. Tick the checkboxes to build a multi-selection — the count in the header updates live.</value>
+  </data>
+  <data name="Help_Guide_Debloat_Actions_Title" xml:space="preserve">
+    <value>Disable, uninstall, or inspect</value>
+  </data>
+  <data name="Help_Guide_Debloat_Actions_Body" xml:space="preserve">
+    <value>With apps selected, three actions are available: Disable (pm disable-user) keeps the APK on disk but stops the app from running, Uninstall (pm uninstall --user 0) removes it for the current user, and Manage opens a details panel with permissions, standby bucket, and cloud-powered safety analysis.</value>
+  </data>
+  <data name="Help_Guide_Debloat_Hint_Title" xml:space="preserve">
+    <value>The History tab</value>
+  </data>
+  <data name="Help_Guide_Debloat_Hint_Body" xml:space="preserve">
+    <value>Every uninstall is logged with its package name, version, icon, and timestamp. Reinstalling is one click — on Pro, APKs are backed up locally first, so you can reinstall later even if the device is offline.</value>
+  </data>
+  <data name="Help_Guide_Advanced_Title" xml:space="preserve">
+    <value>Advanced</value>
+  </data>
+  <data name="Help_Guide_Advanced_Body" xml:space="preserve">
+    <value>Individual, fine-grained knobs. Every setting here has its own Reset button, and there's a Reset All at the top that rewinds every change you've ever made through the app.</value>
+  </data>
+  <data name="Help_Guide_DNS_Title" xml:space="preserve">
+    <value>Private DNS</value>
+  </data>
+  <data name="Help_Guide_DNS_Body" xml:space="preserve">
+    <value>Pick from five curated providers — NextDNS, AdGuard, Cloudflare, Google, Quad9 — or type your own hostname. Zephyr's Elixir live-pings each choice in the dropdown so you can see real latency before you commit. Apply sets Android's private_dns_mode to hostname and writes the chosen provider.</value>
+  </data>
+  <data name="Help_Guide_Animation_Title" xml:space="preserve">
+    <value>Animation speed</value>
+  </data>
+  <data name="Help_Guide_Animation_Body" xml:space="preserve">
+    <value>A single slider drives all three global animation scales (window, transition, animator duration) in lockstep. Drag it toward 0 for a UI that feels instant, or back to 1.0 for the stock Android feel.</value>
+  </data>
+  <data name="Help_Guide_ResetAll_Title" xml:space="preserve">
+    <value>Reset all</value>
+  </data>
+  <data name="Help_Guide_ResetAll_Body" xml:space="preserve">
+    <value>One button, full rewind. Every DNS override, animation tweak, compilation setting, spoofed battery value, and Pro-only privacy change goes back to Android defaults. The app shows a confirmation dialog before doing anything destructive.</value>
+  </data>
+  <data name="Help_Guide_Settings_Title" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="Help_Guide_Settings_App_Title" xml:space="preserve">
+    <value>App settings</value>
+  </data>
+  <data name="Help_Guide_Settings_App_Body" xml:space="preserve">
+    <value>Language (English / Italian, switch live with no restart), automatic update checks, and the Reset to defaults helper.</value>
+  </data>
+  <data name="Help_Guide_Settings_Device_Title" xml:space="preserve">
+    <value>Device &amp; diagnostics</value>
+  </data>
+  <data name="Help_Guide_Settings_Device_Body" xml:space="preserve">
+    <value>The ADB status card confirms the bundled ADB executable is valid. Export logs writes the full diagnostic log to a file you choose — handy if you ever want to share a run with someone else.</value>
+  </data>
+  <data name="Help_Guide_Settings_Legal_Title" xml:space="preserve">
+    <value>License &amp; privacy</value>
+  </data>
+  <data name="Help_Guide_Settings_Legal_Body" xml:space="preserve">
+    <value>Opens the full license text, the privacy policy, and the Pro activation dialog. Activation uses a Z-prefixed key (format Z-XXXXXX-XXXXXXXX-XXXXXXX) purchased from the official store.</value>
+  </data>
+  <data name="Help_Guide_Explore_Title" xml:space="preserve">
+    <value>One more thing</value>
+  </data>
+  <data name="Help_Guide_Explore_Body" xml:space="preserve">
+    <value>Tools (the sidebar's fourth entry) hosts the APK Installer, the Power Menu for reboots and fastboot/recovery entry, and — on Pro — the low-latency Screen Mirror. It's worth a visit after you've gotten comfortable with the main screens.</value>
+  </data>
+  <data name="Help_Trouble_Title" xml:space="preserve">
+    <value>Troubleshooting</value>
+  </data>
+  <data name="Help_Trouble_Intro" xml:space="preserve">
+    <value>The short list of things that can go wrong, and the fixes that solve almost all of them. If your issue isn't covered here, the Settings → Export logs button turns your current session into a shareable text file.</value>
+  </data>
+  <data name="Help_Trouble_Connection_Title" xml:space="preserve">
+    <value>Connection issues</value>
+  </data>
+  <data name="Help_Trouble_NotDetected_Title" xml:space="preserve">
+    <value>Device not detected</value>
+  </data>
+  <data name="Help_Trouble_NotDetected_Body" xml:space="preserve">
+    <value>By far the most common issue, and almost always one of four causes. Work through them in order: 1) swap the USB cable — charge-only cables are the usual culprit. 2) re-check that USB debugging is still on under Developer options. 3) on the phone, accept the Allow USB debugging prompt and tick Always allow. 4) try a different USB port on the PC, preferably one directly on the motherboard rather than on a hub.</value>
+  </data>
+  <data name="Help_Trouble_WirelessFail_Title" xml:space="preserve">
+    <value>Wireless pairing won't complete</value>
+  </data>
+  <data name="Help_Trouble_WirelessFail_Body" xml:space="preserve">
+    <value>Confirm both devices are on the same Wi-Fi network (not a guest network or a VPN). The six-digit code expires after about a minute — generate a fresh one from the phone's Wireless debugging screen and try again. Corporate networks sometimes block the mDNS traffic ADB uses; a personal hotspot is a reliable fallback.</value>
+  </data>
+  <data name="Help_Trouble_Optimization_Title" xml:space="preserve">
+    <value>Optimization issues</value>
+  </data>
+  <data name="Help_Trouble_Stuck_Title" xml:space="preserve">
+    <value>Optimization feels stuck</value>
+  </data>
+  <data name="Help_Trouble_Stuck_Body" xml:space="preserve">
+    <value>Look at the Console: if it's still scrolling, the run is fine — some stages (like package compilation) simply take longer on devices with many installed apps. If the Console hasn't moved in more than a minute, press Stop, reboot the device, and start a fresh run.</value>
+  </data>
+  <data name="Help_Trouble_Strange_Title" xml:space="preserve">
+    <value>A specific app misbehaves afterwards</value>
+  </data>
+  <data name="Help_Trouble_Strange_Body" xml:space="preserve">
+    <value>Reboot first — Android often just needs to rebuild caches. If the issue persists, clear that single app's cache and storage from Android Settings → Apps. Nothing Zephyr's Elixir does damages the app itself; clearing its own cache will always recover it.</value>
+  </data>
+  <data name="Help_Trouble_Debloat_Title" xml:space="preserve">
+    <value>Debloat issues</value>
+  </data>
+  <data name="Help_Trouble_AppsEmpty_Title" xml:space="preserve">
+    <value>The app list is empty</value>
+  </data>
+  <data name="Help_Trouble_AppsEmpty_Body" xml:space="preserve">
+    <value>Press Load apps again. If the list still doesn't populate, the device is likely disconnected or sleeping — wake the screen and confirm the sidebar still shows the device name. A successful load always logs the package count in the console at the top of the panel.</value>
+  </data>
+  <data name="Help_Trouble_DisabledCritical_Title" xml:space="preserve">
+    <value>I disabled something I shouldn't have</value>
+  </data>
+  <data name="Help_Trouble_DisabledCritical_Body" xml:space="preserve">
+    <value>Open the History tab in Debloat and hit Reinstall on the affected package. Disabled apps are never actually removed — pm enable is one click away. The cloud safety analysis flags packages tagged as Critical up front, exactly to prevent this situation.</value>
+  </data>
+  <data name="Help_Trouble_Advanced_Title" xml:space="preserve">
+    <value>Advanced issues</value>
+  </data>
+  <data name="Help_Trouble_DNS_Title" xml:space="preserve">
+    <value>Private DNS won't apply</value>
+  </data>
+  <data name="Help_Trouble_DNS_Body" xml:space="preserve">
+    <value>Some carriers override DNS on mobile data — toggle Wi-Fi on to confirm the setting took effect. If a hostname won't resolve, Zephyr's Elixir will show the error inline. Press Reset on the DNS card to clear private_dns_mode and return to the carrier default.</value>
+  </data>
+  <data name="Help_Trouble_AnimSlider_Title" xml:space="preserve">
+    <value>The animation slider doesn't move</value>
+  </data>
+  <data name="Help_Trouble_AnimSlider_Body" xml:space="preserve">
+    <value>The slider is disabled whenever no device is connected — the sidebar will confirm this. Reconnect and it becomes interactive immediately; live sync runs automatically.</value>
+  </data>
+  <data name="Help_Trouble_General_Title" xml:space="preserve">
+    <value>Anything else</value>
+  </data>
+  <data name="Help_Trouble_ExportLogs_Title" xml:space="preserve">
+    <value>Export the diagnostic log</value>
+  </data>
+  <data name="Help_Trouble_ExportLogs_Body" xml:space="preserve">
+    <value>From Settings → Export logs, save the full session log to a text file. It contains every ADB command and response Zephyr's Elixir has issued — enough context to reproduce almost any issue.</value>
+  </data>
+  <data name="Help_Trouble_Reset_Title" xml:space="preserve">
+    <value>Reset everything</value>
+  </data>
+  <data name="Help_Trouble_Reset_Body" xml:space="preserve">
+    <value>Advanced → Reset All undoes every change Zephyr's Elixir has ever applied to this device. It's the nuclear option, and it's completely safe — all it does is restore Android's out-of-box defaults for the settings the app touches.</value>
+  </data>
+  <data name="Help_Trouble_StillNeed_Title" xml:space="preserve">
+    <value>Still need a hand?</value>
+  </data>
+  <data name="Help_Trouble_StillNeed_Body" xml:space="preserve">
+    <value>Open Settings → Export logs, attach the generated file, and reach out through the official website or GitHub issue tracker. Pro users get priority triage under the bundled support channel.</value>
+  </data>
+  <data name="Help_Tips_Title" xml:space="preserve">
+    <value>Tips &amp; Shortcuts</value>
+  </data>
+  <data name="Help_Tips_Intro" xml:space="preserve">
+    <value>Small details that make a big difference once you know them. Scan this page once — you'll recognize these moments later.</value>
+  </data>
+  <data name="Help_Tips_Shortcut_Title" xml:space="preserve">
+    <value>One shortcut to remember</value>
+  </data>
+  <data name="Help_Tips_Shortcut_Body" xml:space="preserve">
+    <value>F1 — anywhere, any screen, any moment. That's the only one you need.</value>
+  </data>
+  <data name="Help_Tip_Shortcut_Title" xml:space="preserve">
+    <value>F1 opens this guide</value>
+  </data>
+  <data name="Help_Tip_Shortcut_Body" xml:space="preserve">
+    <value>From anywhere in Zephyr's Elixir, a single F1 tap brings you back here. No menu diving, no context switching.</value>
+  </data>
+  <data name="Help_Tip_Performance_Title" xml:space="preserve">
+    <value>Run Optimize monthly</value>
+  </data>
+  <data name="Help_Tip_Performance_Body" xml:space="preserve">
+    <value>There's no harm in running the pipeline as often as you like, but once a month is enough for most people. Running it after large OS updates is especially worthwhile — the package compiler gets a fresh pass at the newly-installed binaries.</value>
+  </data>
+  <data name="Help_Tip_Battery_Title" xml:space="preserve">
+    <value>Battery tab in the sidebar</value>
+  </data>
+  <data name="Help_Tip_Battery_Body" xml:space="preserve">
+    <value>The sidebar battery indicator isn't decoration — it refreshes live from the device. Use it as a glanceable sanity check that the connection is still healthy, without leaving the current page.</value>
+  </data>
+  <data name="Help_Tip_Console_Title" xml:space="preserve">
+    <value>Read the Console</value>
+  </data>
+  <data name="Help_Tip_Console_Body" xml:space="preserve">
+    <value>Every command, every response, timestamped. The Console is both your live status display and your first debugging tool. When something feels wrong, look there before anywhere else.</value>
+  </data>
+  <data name="Help_Tip_Backup_Title" xml:space="preserve">
+    <value>History = undo</value>
+  </data>
+  <data name="Help_Tip_Backup_Body" xml:space="preserve">
+    <value>The History tab inside Debloat records every uninstall with its package name, version, icon, and timestamp. A single click reinstalls. Pro users also get the original APK backed up locally, so reinstallation works even when the Play Store doesn't.</value>
+  </data>
+  <data name="Help_Tip_Wireless_Title" xml:space="preserve">
+    <value>Go cable-free after day one</value>
+  </data>
+  <data name="Help_Tip_Wireless_Body" xml:space="preserve">
+    <value>Once the initial USB pairing is done, Wireless debugging means you never have to plug in again. The Wireless connection dialog on Home is the quickest way to pair.</value>
+  </data>
+  <data name="Help_Tip_Safety_Title" xml:space="preserve">
+    <value>Nothing here is destructive</value>
+  </data>
+  <data name="Help_Tip_Safety_Body" xml:space="preserve">
+    <value>Every operation Zephyr's Elixir performs is individually reversible. Worst case, Advanced → Reset All returns the device to defaults. You have room to experiment.</value>
+  </data>
+  <data name="Help_Tip_Pro_Title" xml:space="preserve">
+    <value>Pro is an unlock, not a rewrite</value>
+  </data>
+  <data name="Help_Tip_Pro_Body" xml:space="preserve">
+    <value>Free already ships the complete seven-stage Optimize pipeline, full Debloat, wireless ADB, private DNS, animation tuning, APK installer, and the power menu. Pro adds Extreme optimization, Screen Mirror, multi-APK install, APK local backup, unlimited cloud safety analysis, and the privacy pack (Safety Core, Ad ID reset, captive portal off, Google Core Control, virtual RAM off). Same app, deeper knobs.</value>
+  </data>
+  <data name="Help_Faq_Title" xml:space="preserve">
+    <value>Frequently Asked Questions</value>
+  </data>
+  <data name="Help_Faq_Intro" xml:space="preserve">
+    <value>Everything people usually ask before, during, and after their first run. Use the search box below to jump straight to a topic.</value>
+  </data>
+  <data name="Help_Faq_SearchPlaceholder" xml:space="preserve">
+    <value>Search questions…</value>
+  </data>
+  <data name="Help_Faq_Safe_Q" xml:space="preserve">
+    <value>Is Zephyr's Elixir safe to use?</value>
+  </data>
+  <data name="Help_Faq_Safe_A" xml:space="preserve">
+    <value>Yes. Every action runs through official ADB commands inside Android's own permission sandbox — no root, no bootloader unlock, no modifications to system partitions. Every change is tracked and can be reversed from the Advanced screen at any time.</value>
+  </data>
+  <data name="Help_Faq_Warranty_Q" xml:space="preserve">
+    <value>Will this void my warranty?</value>
+  </data>
+  <data name="Help_Faq_Warranty_A" xml:space="preserve">
+    <value>No. USB debugging and ADB are official Android features shipped by Google, enabled the same way any user would enable Developer options. Nothing Zephyr's Elixir does trips the factory reset counter or modifies bootloader state.</value>
+  </data>
+  <data name="Help_Faq_Root_Q" xml:space="preserve">
+    <value>Do I need root or an unlocked bootloader?</value>
+  </data>
+  <data name="Help_Faq_Root_A" xml:space="preserve">
+    <value>Neither. Zephyr's Elixir is designed precisely so you don't have to. If you already happen to be rooted, the app still works — it just doesn't need the extra privileges.</value>
+  </data>
+  <data name="Help_Faq_AndroidVersions_Q" xml:space="preserve">
+    <value>Which Android versions are supported?</value>
+  </data>
+  <data name="Help_Faq_AndroidVersions_A" xml:space="preserve">
+    <value>Android 8 (Oreo) and newer for USB connections. Wireless debugging requires Android 11 or newer, because that's when Google added the pairing-code flow the app uses. Everything in between is fully supported.</value>
+  </data>
+  <data name="Help_Faq_SystemReq_Q" xml:space="preserve">
+    <value>What do I need on the PC?</value>
+  </data>
+  <data name="Help_Faq_SystemReq_A" xml:space="preserve">
+    <value>Windows 10 (64-bit) or newer, around 200 MB of free disk space, and a free USB port. Zephyr's Elixir runs on .NET 8 and ships with its own signed ADB platform-tools — nothing extra to install.</value>
+  </data>
+  <data name="Help_Faq_Wireless_Q" xml:space="preserve">
+    <value>Can I use this wirelessly?</value>
+  </data>
+  <data name="Help_Faq_Wireless_A" xml:space="preserve">
+    <value>Yes, on Android 11 or newer. Open Wireless connection from the Home page, enter the IP, port, and six-digit pairing code shown on the phone, and the app handles the rest. Once paired, the cable becomes optional.</value>
+  </data>
+  <data name="Help_Faq_NotDetected_Q" xml:space="preserve">
+    <value>My device isn't detected — what now?</value>
+  </data>
+  <data name="Help_Faq_NotDetected_A" xml:space="preserve">
+    <value>In order: swap the cable (charge-only cables are the usual reason), confirm USB debugging is still enabled under Developer options, accept the Allow USB debugging prompt on the phone, and try a different USB port. If none of that helps, Troubleshooting → Device not detected has a deeper walkthrough.</value>
+  </data>
+  <data name="Help_Faq_WirelessFail_Q" xml:space="preserve">
+    <value>Wireless pairing won't complete. Why?</value>
+  </data>
+  <data name="Help_Faq_WirelessFail_A" xml:space="preserve">
+    <value>Make sure both devices are on the same Wi-Fi network (not a guest SSID) and that no active VPN is routing traffic off-network. The pairing code expires after roughly a minute — regenerate and try again. Corporate networks sometimes block the mDNS traffic ADB needs; a personal hotspot is a reliable fallback.</value>
+  </data>
+  <data name="Help_Faq_WhatHappens_Q" xml:space="preserve">
+    <value>What actually happens when I press Optimize?</value>
+  </data>
+  <data name="Help_Faq_WhatHappens_A" xml:space="preserve">
+    <value>A seven-stage pipeline of 120 tracked steps runs: cache cleanup, memory triage, deep storage clean, network tuning, system tuning, package compilation, and DEX optimization. Each stage sends a sequence of standard ADB shell commands, all visible in the Console as they execute.</value>
+  </data>
+  <data name="Help_Faq_HowOften_Q" xml:space="preserve">
+    <value>How often should I run it?</value>
+  </data>
+  <data name="Help_Faq_HowOften_A" xml:space="preserve">
+    <value>Once a month is plenty for most users. Running it after a major Android update or after installing many new apps gives the package compiler something to work with and tends to show a bigger improvement.</value>
+  </data>
+  <data name="Help_Faq_Customize_Q" xml:space="preserve">
+    <value>Can I pick which stages run?</value>
+  </data>
+  <data name="Help_Faq_Customize_A" xml:space="preserve">
+    <value>The one-button Optimize is intentionally fixed — it's designed to be safe on every device in that exact order. For granular control, Advanced lets you tweak DNS, animation speed, compilation mode, and battery level independently, with per-setting reset buttons.</value>
+  </data>
+  <data name="Help_Faq_ExtremeVsStandard_Q" xml:space="preserve">
+    <value>What's the difference between Standard and Extreme?</value>
+  </data>
+  <data name="Help_Faq_ExtremeVsStandard_A" xml:space="preserve">
+    <value>Standard is the default, designed to be safe on every supported device. Extreme — available with the Pro module — adds aggressive background kill, 1 TB cache trim, speed-profile force compile across all packages, half-speed animations, cached apps freezer, and multi-core packet scheduler. A reboot is recommended after Extreme runs.</value>
+  </data>
+  <data name="Help_Faq_SomethingWrong_Q" xml:space="preserve">
+    <value>An app misbehaves after a run. What do I do?</value>
+  </data>
+  <data name="Help_Faq_SomethingWrong_A" xml:space="preserve">
+    <value>Reboot first — Android typically just needs to rebuild package caches. If a single app is still acting up, clearing its cache from Android Settings → Apps usually resolves it. Nothing Zephyr's Elixir does damages application data.</value>
+  </data>
+  <data name="Help_Faq_Logs_Q" xml:space="preserve">
+    <value>Where are the logs and how do I share them?</value>
+  </data>
+  <data name="Help_Faq_Logs_A" xml:space="preserve">
+    <value>The live feed is in the Optimization Console on the Optimize page. Settings → Export logs writes the full diagnostic log — every command and response from the current session — to a text file you choose. Attach that file when asking for help.</value>
+  </data>
+  <data name="Help_Faq_DataCollection_Q" xml:space="preserve">
+    <value>Does Zephyr's Elixir collect any data?</value>
+  </data>
+  <data name="Help_Faq_DataCollection_A" xml:space="preserve">
+    <value>No analytics, no telemetry, no user tracking. The only network traffic the app generates is license validation (if Pro is activated) and optional cloud package safety analysis when you open app details in Debloat. Both flows are documented in the privacy policy under Settings.</value>
+  </data>
+  <data name="Help_Faq_ProFeatures_Q" xml:space="preserve">
+    <value>What does Pro actually unlock?</value>
+  </data>
+  <data name="Help_Faq_ProFeatures_A" xml:space="preserve">
+    <value>Extreme optimization with cached apps freezer and multi-core scheduler, Screen Mirror with low-latency streaming, multi-APK install, local APK backup on every uninstall, unlimited cloud safety analysis (Free is capped at 25 per day), and the privacy pack: Android Safety Core off, advertising ID reset, captive portal disabled, Google Core Control disabled, and per-vendor virtual-RAM disable (Samsung, Xiaomi, OnePlus, Oppo, Vivo, Huawei). Pro is a signed, separately downloaded module — the free app works unchanged without it.</value>
+  </data>
+  <data name="Help_Faq_ActivatePro_Q" xml:space="preserve">
+    <value>How do I activate a Pro license?</value>
+  </data>
+  <data name="Help_Faq_ActivatePro_A" xml:space="preserve">
+    <value>Open Settings → Pro license. Paste the key you received at purchase (format Z-XXXXXX-XXXXXXXX-XXXXXXX), click Activate, and Zephyr's Elixir downloads the signed Pro module and verifies its public-key token before loading. Activation binds to your device fingerprint and works offline for up to seven days between online re-validations.</value>
+  </data>
+  <data name="Help_Faq_ApkErrors_Q" xml:space="preserve">
+    <value>An APK won't install from the APK Installer — why?</value>
+  </data>
+  <data name="Help_Faq_ApkErrors_A" xml:space="preserve">
+    <value>Two common causes: the APK's signature conflicts with a version already on the device (uninstall the existing copy first) or the APK's minSdkVersion is higher than the device's Android version. The installer surfaces the exact error message returned by pm install — that message tells you which case you're in.</value>
+  </data>
+  <data name="Help_About_Title" xml:space="preserve">
+    <value>About Zephyr's Elixir</value>
+  </data>
+  <data name="Help_About_Intro" xml:space="preserve">
+    <value>The story behind the app, how it's built, what it stands for, and how to reach the people behind it.</value>
+  </data>
+  <data name="Help_About_Story_Title" xml:space="preserve">
+    <value>The story</value>
+  </data>
+  <data name="Help_About_Story1" xml:space="preserve">
+    <value>Zephyr's Elixir started as a personal itch. Android is a wonderful system buried under a mountain of defaults that rarely suit any given user — and the existing optimization tools either demanded a terminal or looked like they were built by someone who wished they were allowed to use one.</value>
+  </data>
+  <data name="Help_About_Story2" xml:space="preserve">
+    <value>The goal was simple: the depth of a shell session, the clarity of a modern design system, and a hard rule that nothing the app does can ever be unfixable. Everything you see here followed from that rule.</value>
+  </data>
+  <data name="Help_About_Tech_Title" xml:space="preserve">
+    <value>Under the hood</value>
+  </data>
+  <data name="Help_About_Tech_BuiltWith" xml:space="preserve">
+    <value>• Built on .NET 8 and WPF — native Windows, no web wrapper, no hidden Chromium.</value>
+  </data>
+  <data name="Help_About_Tech_Architecture" xml:space="preserve">
+    <value>• Open-core architecture: the free app is the whole product; Pro is a separate, strong-name-signed, AES-GCM-encrypted module loaded through an isolated AssemblyLoadContext.</value>
+  </data>
+  <data name="Help_About_Tech_UI" xml:space="preserve">
+    <value>• UI entirely hand-written in XAML with custom glass materials, live particle fields, and full ClearType text rendering — subpixel precision is preserved everywhere no DropShadowEffect sits above a text node.</value>
+  </data>
+  <data name="Help_About_Tech_Backend" xml:space="preserve">
+    <value>• Device I/O runs through the official Google ADB platform-tools, bundled and signed with the app. No forked binaries, no reverse-engineered protocols.</value>
+  </data>
+  <data name="Help_About_Philosophy_Title" xml:space="preserve">
+    <value>What we believe</value>
+  </data>
+  <data name="Help_About_Philosophy_Intro" xml:space="preserve">
+    <value>Four principles that shape every decision:</value>
+  </data>
+  <data name="Help_About_Phil_Transparent" xml:space="preserve">
+    <value>• Transparent — every command is visible, every change is logged, every log is exportable.</value>
+  </data>
+  <data name="Help_About_Phil_Respectful" xml:space="preserve">
+    <value>• Respectful — your device belongs to you. The app makes suggestions; it never assumes.</value>
+  </data>
+  <data name="Help_About_Phil_Beautiful" xml:space="preserve">
+    <value>• Beautiful — a tool you use often should feel good to use. Aesthetics are an engineering concern.</value>
+  </data>
+  <data name="Help_About_Phil_Empowering" xml:space="preserve">
+    <value>• Empowering — you should understand more about your device after using the app, not less.</value>
+  </data>
+  <data name="Help_About_OpenSource_Title" xml:space="preserve">
+    <value>Open core, signed Pro</value>
+  </data>
+  <data name="Help_About_OpenSource_Body" xml:space="preserve">
+    <value>The free app — the one you're looking at right now — is the complete product for most users. The Pro module is distributed as a separately signed DLL that the app downloads and verifies at runtime: public-key token match, AES-GCM-encrypted at rest, decrypted to a temp file only during load, and wiped afterwards. If the signature doesn't match the expected token, the module is rejected and the app falls back to free mode cleanly. You can inspect the bridge code in the Licensing folder of the project.</value>
+  </data>
+  <data name="Help_About_License_Title" xml:space="preserve">
+    <value>License</value>
+  </data>
+  <data name="Help_About_License_Body" xml:space="preserve">
+    <value>The full end-user license agreement and privacy policy are available from Settings → License and Settings → Privacy. Short version: the free tier is free forever, Pro is a paid unlock, and nothing about you is ever sold, profiled, or used for advertising. The technical traffic strictly necessary for license validation and optional cloud safety analysis is fully documented in the privacy policy.</value>
+  </data>
+  <data name="Help_About_MadeWith" xml:space="preserve">
+    <value>Made with care, for people who care about their devices.</value>
+  </data>
+  <data name="Help_About_Copyright" xml:space="preserve">
+    <value>© Zephyr's Elixir — Offline. Reversible. Yours.</value>
+  </data>
+  <data name="ScreenMirror_Stat_Frames" xml:space="preserve">
+    <value>Frames</value>
+  </data>
+  <data name="ScreenMirror_Stat_Codec" xml:space="preserve">
+    <value>Codec</value>
+  </data>
+  <data name="ScreenMirror_VideoCodec" xml:space="preserve">
+    <value>Video Codec</value>
+  </data>
+  <data name="ScreenMirror_AudioSection" xml:space="preserve">
+    <value>AUDIO</value>
+  </data>
+  <data name="ScreenMirror_AudioForward" xml:space="preserve">
+    <value>Audio Forwarding</value>
+  </data>
+  <data name="ScreenMirror_AudioForward_Desc" xml:space="preserve">
+    <value>Stream device audio to your PC</value>
+  </data>
+  <data name="ScreenMirror_AudioCodec" xml:space="preserve">
+    <value>Audio Codec</value>
+  </data>
+  <data name="ScreenMirror_AudioBitrate" xml:space="preserve">
+    <value>Audio Bitrate</value>
+  </data>
+  <data name="ScreenMirror_PowerOffOnClose" xml:space="preserve">
+    <value>Power Off on Close</value>
+  </data>
+  <data name="ScreenMirror_PowerOffOnClose_Desc" xml:space="preserve">
+    <value>Turn off device screen when session ends</value>
+  </data>
+  <data name="ScreenMirror_ClipboardSync" xml:space="preserve">
+    <value>Clipboard Sync</value>
+  </data>
+  <data name="ScreenMirror_ClipboardSync_Desc" xml:space="preserve">
+    <value>Share clipboard between PC and device</value>
+  </data>
+  <data name="ScreenMirror_NoControl" xml:space="preserve">
+    <value>View Only</value>
+  </data>
+  <data name="ScreenMirror_NoControl_Desc" xml:space="preserve">
+    <value>Disable keyboard and mouse input</value>
+  </data>
+  <data name="ScreenMirror_AdvancedSection" xml:space="preserve">
+    <value>ADVANCED</value>
+  </data>
+  <data name="ScreenMirror_KeyboardMode" xml:space="preserve">
+    <value>Keyboard Input Mode</value>
+  </data>
+  <data name="ScreenMirror_MouseMode" xml:space="preserve">
+    <value>Mouse Input Mode</value>
+  </data>
+  <data name="ScreenMirror_Disabled" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="ScreenMirror_Orientation" xml:space="preserve">
+    <value>Lock Orientation</value>
+  </data>
+  <data name="ScreenMirror_Orientation_Auto" xml:space="preserve">
+    <value>Auto</value>
+  </data>
+  <data name="ScreenMirror_Orientation_Portrait" xml:space="preserve">
+    <value>Portrait</value>
+  </data>
+  <data name="ScreenMirror_Orientation_Landscape" xml:space="preserve">
+    <value>Landscape</value>
+  </data>
+  <data name="ScreenMirror_Orientation_PortraitFlip" xml:space="preserve">
+    <value>Portrait (flipped)</value>
+  </data>
+  <data name="ScreenMirror_Orientation_LandscapeFlip" xml:space="preserve">
+    <value>Landscape (flipped)</value>
+  </data>
+  <data name="ScreenMirror_DisplayBuffer" xml:space="preserve">
+    <value>Display Buffer</value>
+  </data>
+  <data name="ScreenMirror_Button_OpenFolder" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="ScreenMirror_Shortcut_AppSwitch" xml:space="preserve">
+    <value>App Switch</value>
+  </data>
+  <data name="ScreenMirror_Tooltip_Rotate" xml:space="preserve">
+    <value>Rotate screen</value>
+  </data>
+  <data name="ScreenMirror_Tooltip_VolumeUp" xml:space="preserve">
+    <value>Volume up</value>
+  </data>
+  <data name="ScreenMirror_Tooltip_VolumeDown" xml:space="preserve">
+    <value>Volume down</value>
+  </data>
+  <data name="ScreenMirror_Tooltip_Power" xml:space="preserve">
+    <value>Power button</value>
+  </data>
+  <data name="ScreenMirror_RotationChanged" xml:space="preserve">
+    <value>Screen rotation changed</value>
+  </data>
+  <data name="ScreenMirror_UpdateFound" xml:space="preserve">
+    <value>scrcpy update found: {0}. Downloading...</value>
+  </data>
+  <data name="ScreenMirror_SetupSuccess" xml:space="preserve">
+    <value>scrcpy installed successfully. You can now start screen mirroring.</value>
+  </data>
+  <data name="ScreenMirror_Battery" xml:space="preserve">
+    <value>Battery: {0}%</value>
+  </data>
+  <data name="ScreenMirror_RecordingWillStart" xml:space="preserve">
+    <value>Recording will start automatically when mirroring begins.</value>
+  </data>
+  <data name="ScreenMirror_RecordingFailed" xml:space="preserve">
+    <value>Failed to start recording. Check the logs for details.</value>
+  </data>
+  <data name="ScreenMirror_RecordingStarted" xml:space="preserve">
+    <value>Recording started.</value>
+  </data>
+  <data name="ScreenMirror_RecordingError" xml:space="preserve">
+    <value>An error occurred while starting the recording.</value>
+  </data>
+  <data name="ScreenMirror_SettingsChanged_Message" xml:space="preserve">
+    <value>Screen mirror settings have changed. Restart mirroring to apply the new settings?</value>
+  </data>
+  <data name="ScreenMirror_SettingsChanged_Title" xml:space="preserve">
+    <value>Settings Changed</value>
+  </data>
+  <data name="ScreenMirror_SettingsDeferred" xml:space="preserve">
+    <value>Settings will be applied on the next mirroring session.</value>
+  </data>
+  <data name="ScreenMirror_Restarting" xml:space="preserve">
+    <value>Restarting mirroring with new settings...</value>
+  </data>
+  <data name="ScreenMirror_Restarted" xml:space="preserve">
+    <value>Mirroring restarted with the new settings.</value>
+  </data>
+  <data name="ScreenMirror_MirrorFailed" xml:space="preserve">
+    <value>Failed to start screen mirroring. Check the logs for details.</value>
+  </data>
+  <data name="ScreenMirror_MirrorStarted" xml:space="preserve">
+    <value>Screen mirroring started.</value>
+  </data>
+  <data name="ScreenMirror_VideoSaved" xml:space="preserve">
+    <value>Video saved: {0}</value>
+  </data>
+  <data name="ScreenMirror_CapturingScreenshot" xml:space="preserve">
+    <value>Capturing screenshot...</value>
+  </data>
+  <data name="ScreenMirror_ScreenshotCaptureError" xml:space="preserve">
+    <value>Failed to capture screenshot on the device.</value>
+  </data>
+  <data name="ScreenMirror_ScreenshotTransferError" xml:space="preserve">
+    <value>Failed to transfer screenshot from the device.</value>
+  </data>
+  <data name="ScreenMirror_ScreenshotSaved" xml:space="preserve">
+    <value>Screenshot saved: {0}</value>
+  </data>
+  <data name="ScreenMirror_ScreenshotNotFound" xml:space="preserve">
+    <value>Screenshot file not found after transfer.</value>
+  </data>
+  <data name="ScreenMirror_ScreenshotError" xml:space="preserve">
+    <value>An error occurred while taking the screenshot.</value>
+  </data>
+  <data name="ScreenMirror_Downloading" xml:space="preserve">
+    <value>Downloading scrcpy...</value>
+  </data>
+  <data name="ScreenMirror_SetupFailed" xml:space="preserve">
+    <value>Failed to download or install scrcpy. Check your internet connection and try again.</value>
+  </data>
+  <data name="ScreenMirror_SetupCancelled" xml:space="preserve">
+    <value>scrcpy setup was cancelled.</value>
+  </data>
+  <data name="ScreenMirror_BrowseRecordFolder" xml:space="preserve">
+    <value>Choose where to save the recording</value>
+  </data>
+  <data name="ScreenMirror_RecordFolderSet" xml:space="preserve">
+    <value>Recording folder set to: {0}</value>
+  </data>
+  <data name="ScreenMirror_SettingsReset" xml:space="preserve">
+    <value>All settings have been reset to their defaults.</value>
+  </data>
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- INFO DIALOGS — APP ABOUT                                           -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+
+  <data name="Info_License_Title" xml:space="preserve">
+    <value>Terms of Use</value>
+  </data>
+  <data name="Info_License_Copyright" xml:space="preserve">
+    <value>Copyright © 2024–2026 Zephyr's Elixir. All rights reserved. "Zephyr's Elixir" is a trademark of its respective owner; all other marks belong to their respective holders.</value>
+  </data>
+  <data name="Info_License_Permission" xml:space="preserve">
+    <value>You are granted a personal, non-exclusive, non-transferable and revocable license to install and run the software on devices you own, for personal use and within the limits of the activated edition. The Pro edition is bound to your PC's hardware identifier and requires a valid purchase from the authorized reseller (Whop). As the Pro edition is digital content delivered for immediate use, by starting the download you expressly acknowledge the loss of your right of withdrawal under Article 16(m) of Directive 2011/83/EU; refunds, if any, follow the reseller's terms and applicable consumer protection law.</value>
+  </data>
+  <data name="Info_License_Conditions" xml:space="preserve">
+    <value>You may not reverse engineer, decompile or disassemble the software, circumvent or tamper with the licensing mechanisms, redistribute keys or binaries, sublicense, resell, or use the software for unlawful purposes or in breach of third-party rights, except where mandatorily allowed by law. Use requires legal age and full legal capacity, and is permitted exclusively on devices you own or for which you are duly authorized.</value>
+  </data>
+  <data name="Info_License_Disclaimer" xml:space="preserve">
+    <value>The software performs potentially irreversible operations on Android devices (system changes, app uninstallation, boot into special modes) and is provided "as is" and "as available" without warranties of any kind. You are solely responsible for creating backups and assessing the risks before each operation. To the maximum extent permitted by law, the developer shall not be liable for damage to devices, loss of data, lost profits, or system instability arising from use of the software. Mandatory consumer rights under European Union law remain unaffected, including liability for wilful misconduct, gross negligence and damage to persons. These terms are governed by Italian law; EU-resident consumers additionally retain the protection of any mandatory rules of their country of residence, including their non-derogable forum.</value>
+  </data>
+  <data name="Info_License_MoreInfo" xml:space="preserve">
+    <value>For the full terms, purchase conditions and operator's identity visit: </value>
+  </data>
+  <data name="Info_Privacy_Title" xml:space="preserve">
+    <value>Privacy Notice — Short Version</value>
+  </data>
+  <data name="Info_Privacy_Point1" xml:space="preserve">
+    <value>The data controller is Zephyr's Elixir (full contact details and operator identity available at the link below). The software operates primarily on your computer: we do not collect behavioural telemetry, profiling analytics, advertising identifiers or your interaction patterns with the application.</value>
+  </data>
+  <data name="Info_Privacy_Point2" xml:space="preserve">
+    <value>When you activate or validate the Pro edition we send our license server a pseudonymous PC identifier — a SHA-256 hash derived from technical parameters (computer name, Windows username, OS version, architecture). We use it solely to bind the license to your device and prevent abuse, and we retain the binding only for the duration of the active license: deactivating the license releases it from the server. Legal basis: performance of a contract, GDPR Art. 6(1)(b).</value>
+  </data>
+  <data name="Info_Privacy_Point3" xml:space="preserve">
+    <value>When you analyse apps installed on a connected Android device (Debloat), the package names are forwarded in real time to a third-party AI provider (OpenAI, USA) for safety classification. We do not store, log or aggregate them on our infrastructure; per OpenAI's API terms data is processed and discarded and not used for model training. We never transmit messages, photos, files, contacts or app content. Legal basis: legitimate interest in providing accurate safety information, GDPR Art. 6(1)(f); you may avoid this processing by not opening cloud-AI app analysis.</value>
+  </data>
+  <data name="Info_Privacy_Point4" xml:space="preserve">
+    <value>The application's only outbound connections are: our license server (license binding), our safety analysis endpoint that forwards to OpenAI for AI classification (no storage on our side), our update server, GitHub (to download scrcpy for the Pro edition) and Whop (for Pro purchases). Several recipients are located in the United States; transfers are covered by the data-transfer mechanisms applicable to each service. IP addresses transit through standard server logs and are retained only as long as strictly necessary for security and accounting.</value>
+  </data>
+  <data name="Info_Privacy_Point5" xml:space="preserve">
+    <value>You have the right of access, rectification, erasure, restriction, objection and data portability under GDPR Art. 15–22, and the right to lodge a complaint with the Italian Data Protection Authority (Garante) or your local supervisory authority. To exercise your rights write to privacy@zephyrselixir.com. All locally stored data can be removed at any time by uninstalling the application.</value>
+  </data>
+  <data name="Info_Privacy_MoreInfo" xml:space="preserve">
+    <value>Read the full privacy policy, the controller's identity and the list of recipients at: </value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- INFO DIALOGS — CHANGELOG                                           -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+
+  <data name="Info_Changelog_Title" xml:space="preserve">
+    <value>What's New</value>
+  </data>
+  <data name="Info_Changelog_New" xml:space="preserve">
+    <value>New</value>
+  </data>
+  <data name="Info_Changelog_New_1" xml:space="preserve">
+    <value>Brand new Help Center with quick start guide, FAQ, and step-by-step tutorials.</value>
+  </data>
+  <data name="Info_Changelog_New_2" xml:space="preserve">
+    <value>Integrated screen mirroring (Pro) with recording, screenshot capture, and physical control of the device.</value>
+  </data>
+  <data name="Info_Changelog_New_3" xml:space="preserve">
+    <value>Open core architecture: the Pro module is now loaded as a separate, signed plugin.</value>
+  </data>
+  <data name="Info_Changelog_New_4" xml:space="preserve">
+    <value>Customizable animations with adjustable speed and the option to disable them entirely.</value>
+  </data>
+  <data name="Info_Changelog_New_5" xml:space="preserve">
+    <value>Wireless ADB connection wizard with automatic pairing on supported devices.</value>
+  </data>
+  <data name="Info_Changelog_New_6" xml:space="preserve">
+    <value>Extended power menu: reboot to recovery, bootloader, fastboot, and sideload.</value>
+  </data>
+  <data name="Info_Changelog_New_7" xml:space="preserve">
+    <value>AI-assisted package analysis to spot unwanted apps in just a few seconds.</value>
+  </data>
+  <data name="Info_Changelog_New_8" xml:space="preserve">
+    <value>Multi-APK and split bundle install (Pro) with signature verification.</value>
+  </data>
+  <data name="Info_Changelog_New_9" xml:space="preserve">
+    <value>Configurable DNS, captive portal, and Google Core Services controls.</value>
+  </data>
+  <data name="Info_Changelog_New_10" xml:space="preserve">
+    <value>Optimization report at the end of every session, with detailed action history.</value>
+  </data>
+  <data name="Info_Changelog_New_11" xml:space="preserve">
+    <value>Full Italian and English localization, ready to switch on the fly.</value>
+  </data>
+  <data name="Info_Changelog_New_12" xml:space="preserve">
+    <value>Modernized interface with rounded corners, glow effects, and smoother transitions.</value>
+  </data>
+  <data name="Info_Changelog_Updated" xml:space="preserve">
+    <value>Improved</value>
+  </data>
+  <data name="Info_Changelog_Updated_1" xml:space="preserve">
+    <value>Faster device detection and more reliable ADB communication.</value>
+  </data>
+  <data name="Info_Changelog_Updated_2" xml:space="preserve">
+    <value>Reduced memory usage and faster startup time.</value>
+  </data>
+  <data name="Info_Changelog_Updated_3" xml:space="preserve">
+    <value>Refined the debloat list with cleaner package descriptions and more accurate categories.</value>
+  </data>
+  <data name="Info_Changelog_Updated_4" xml:space="preserve">
+    <value>Smoother optimization progress with real-time status and clearer log output.</value>
+  </data>
+  <data name="Info_Changelog_Updated_5" xml:space="preserve">
+    <value>Tooltips, labels, and dialog wording revised throughout the interface for clarity.</value>
+  </data>
+  <data name="Info_Changelog_Updated_6" xml:space="preserve">
+    <value>Hardened error handling: fewer unexpected crashes and more informative messages.</value>
+  </data>
+  <data name="Info_Changelog_Updated_7" xml:space="preserve">
+    <value>Streamlined Settings page with grouped options and a clearer reset flow.</value>
+  </data>
+  <data name="Info_Changelog_Updated_8" xml:space="preserve">
+    <value>Updated bundled scrcpy and ADB binaries to their latest stable releases.</value>
+  </data>
+  <data name="Info_Changelog_Removed" xml:space="preserve">
+    <value>Removed</value>
+  </data>
+  <data name="Info_Changelog_Removed_1" xml:space="preserve">
+    <value>Legacy debloat history format and a number of unused legacy resources.</value>
+  </data>
+
+</root>

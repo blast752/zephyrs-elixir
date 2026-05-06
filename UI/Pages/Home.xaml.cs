@@ -4,7 +4,7 @@ namespace ZephyrsElixir.UI.Pages;
 public sealed partial class Home : UserControl
 {
     private static readonly Lazy<string> AppVersion = new(GetAppVersion);
-    
+
     private readonly Action<string> _navigate;
 
     public Home() : this(_ => { }) { }
@@ -13,7 +13,7 @@ public sealed partial class Home : UserControl
     {
         _navigate = requestNavigation ?? throw new ArgumentNullException(nameof(requestNavigation));
         InitializeComponent();
-        
+
         TxtVersion.Text = $"{Strings.Home_Version} {AppVersion.Value}";
         Loaded += OnLoaded;
     }
@@ -23,9 +23,9 @@ public sealed partial class Home : UserControl
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
         this.SubscribeToDeviceState(BtnOptimize);
-        
+
         (Resources["Anim.Entry"] as Storyboard)?.Begin();
-        
+
         if (Resources["Anim.PulseGlow"] is Storyboard pulse)
             MascotGlow.BeginStoryboard(pulse);
     }
@@ -34,17 +34,17 @@ public sealed partial class Home : UserControl
 
     #region Event Handlers
 
-    private void OnStartOptimizationClick(object sender, RoutedEventArgs e) 
+    private void OnStartOptimizationClick(object sender, RoutedEventArgs e)
         => _navigate("Optimize");
 
     private void OnWirelessConnectionClick(object sender, RoutedEventArgs e)
     {
         new WirelessConnectionDialog(
-            async args => await MainWindow.ExecuteAdbCommandWithOutputAsync(args),
+            async args => await AdbExecutor.ExecuteCommandAsync(args),
             msg => Dispatcher.Invoke(() => DialogService.Instance.ShowInfoDirect(
                 Strings.WirelessConnection_Log_Title, msg, Window.GetWindow(this))))
-        { 
-            Owner = Window.GetWindow(this) 
+        {
+            Owner = Window.GetWindow(this)
         }.ShowDialog();
     }
 
@@ -52,17 +52,7 @@ public sealed partial class Home : UserControl
         => DialogService.Instance.ShowChangelog(Window.GetWindow(this));
 
     private void OnBannerClick(object sender, MouseButtonEventArgs e)
-    {
-        try
-        {
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = "https://play.google.com/store/apps/details?id=com.paget96.batteryguru",
-                UseShellExecute = true
-            });
-        }
-        catch { /* Ignore navigation errors */ }
-    }
+        => ShellUtils.OpenUrl("https://play.google.com/store/apps/details?id=com.paget96.batteryguru");
 
     private void OnBannerCloseClick(object sender, RoutedEventArgs e)
     {
@@ -78,10 +68,10 @@ public sealed partial class Home : UserControl
     {
         var fade = new DoubleAnimation(1, 0, TimeSpan.FromMilliseconds(300));
         fade.Completed += (_, _) => PartnerBanner.Visibility = Visibility.Collapsed;
-        
+
         PartnerBanner.BeginAnimation(OpacityProperty, fade);
         PartnerBanner.RenderTransform.BeginAnimation(
-            TranslateTransform.YProperty, 
+            TranslateTransform.YProperty,
             new DoubleAnimation(0, -20, TimeSpan.FromMilliseconds(300)));
     }
 
@@ -91,7 +81,7 @@ public sealed partial class Home : UserControl
         {
             var version = Assembly.GetExecutingAssembly().GetName().Version;
             if (version is null) return "Unknown";
-            
+
             var str = version.ToString(3);
             return version.Major == 0 ? $"{str} (Beta)" : str;
         }

@@ -1,6 +1,11 @@
-
 namespace ZephyrsElixir.Core
 {
+    internal static class StringHelper
+    {
+        public static readonly char[] Newlines = { '\r', '\n' };
+        public static string[] SplitLines(this string s) => s.Split(Newlines, StringSplitOptions.RemoveEmptyEntries);
+    }
+
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum SafetyRiskLevel { Unknown, Safe, Caution, Critical }
 
@@ -23,7 +28,7 @@ namespace ZephyrsElixir.Core
         [JsonPropertyName("safetyScore")] public double SafetyScore { get; set; } = 50.0;
         [JsonPropertyName("description")] public string Description { get; set; } = "Analyzing...";
         [JsonPropertyName("warningMessage")] public string? WarningMessage { get; set; }
-        
+
         [JsonIgnore] public bool IsOfflineResult { get; set; }
     }
 
@@ -36,6 +41,7 @@ namespace ZephyrsElixir.Core
         public DateTime UninstallDate { get; set; }
         public string? LocalApkPath { get; set; }
         public bool IsSystemApp { get; set; }
+        public string? DeviceSerial { get; set; }
     }
 
     public class PermissionItem : INotifyPropertyChanged
@@ -52,20 +58,20 @@ namespace ZephyrsElixir.Core
         }
         public event PropertyChangedEventHandler? PropertyChanged;
     }
-    
+
     public static class AiQuotaManager
     {
         private static readonly string QuotaFilePath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "ZephyrsElixir", ".ai_quota");
-        
+
         private static readonly object _lock = new();
         private static DateTime _lastResetDate = DateTime.MinValue;
         private static int _usedToday;
         private static bool _loaded;
 
         public static int DailyLimit => LicenseConfig.FreeAiAnalysisQuotaDaily;
-        
+
         public static int RemainingToday
         {
             get
@@ -79,11 +85,11 @@ namespace ZephyrsElixir.Core
                 }
             }
         }
-        
+
         public static bool HasQuota => Features.IsAvailable(Features.AIAnalysisUnlimited) || RemainingToday > 0;
-        
+
         public static bool IsUnlimited => Features.IsAvailable(Features.AIAnalysisUnlimited);
-        
+
         public static int UsedToday
         {
             get
@@ -100,7 +106,7 @@ namespace ZephyrsElixir.Core
         public static bool TryConsume()
         {
             if (Features.IsAvailable(Features.AIAnalysisUnlimited)) return true;
-            
+
             EnsureLoaded();
             lock (_lock)
             {
@@ -115,7 +121,7 @@ namespace ZephyrsElixir.Core
         public static int ConsumeBatch(int count)
         {
             if (Features.IsAvailable(Features.AIAnalysisUnlimited)) return count;
-            
+
             EnsureLoaded();
             lock (_lock)
             {
@@ -135,6 +141,7 @@ namespace ZephyrsElixir.Core
             {
                 _lastResetDate = today;
                 _usedToday = 0;
+                SaveAsync();
             }
         }
 
@@ -156,32 +163,38 @@ namespace ZephyrsElixir.Core
                 if (!File.Exists(QuotaFilePath)) return;
                 var lines = File.ReadAllLines(QuotaFilePath);
                 if (lines.Length >= 2 &&
-                    DateTime.TryParse(lines[0], out var date) &&
-                    int.TryParse(lines[1], out var used))
+                    DateTime.TryParse(lines[0], System.Globalization.CultureInfo.InvariantCulture,
+                        System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AdjustToUniversal, out var date) &&
+                    int.TryParse(lines[1], System.Globalization.NumberStyles.Integer,
+                        System.Globalization.CultureInfo.InvariantCulture, out var used))
                 {
                     _lastResetDate = date.Date;
-                    _usedToday = used;
+                    _usedToday = Math.Max(0, used);
+                    ResetIfNewDay();
                 }
             }
-            catch { /* Ignora errori di lettura */ }
+            catch { /* best-effort load */ }
         }
+
+        private static readonly object _ioLock = new();
 
         private static void SaveAsync()
         {
+            var date = _lastResetDate.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+            var used = _usedToday.ToString(System.Globalization.CultureInfo.InvariantCulture);
             _ = Task.Run(() =>
             {
-                try
+                lock (_ioLock)
                 {
-                    var dir = Path.GetDirectoryName(QuotaFilePath);
-                    if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
-                        Directory.CreateDirectory(dir);
-                    File.WriteAllLines(QuotaFilePath, new[]
+                    try
                     {
-                        _lastResetDate.ToString("yyyy-MM-dd"),
-                        _usedToday.ToString()
-                    });
+                        var dir = Path.GetDirectoryName(QuotaFilePath);
+                        if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
+                            Directory.CreateDirectory(dir);
+                        File.WriteAllLines(QuotaFilePath, new[] { date, used });
+                    }
+                    catch { /* best-effort save */ }
                 }
-                catch { }
             });
         }
 
@@ -214,55 +227,53 @@ namespace ZephyrsElixir.Core
             await Semaphore.WaitAsync(ct);
             try
             {
-                var result = await Task.Run(() => ExecuteCore(command, ct, onOutput), ct);
+                var result = await ExecuteCoreAsync(command, ct, onOutput);
                 AdbLogger.Instance.LogAdbCommand(command, result, result.StartsWith("Error:", StringComparison.OrdinalIgnoreCase));
                 return result;
             }
             finally { Semaphore.Release(); }
         }
 
-        public static string ExecuteCommand(string command)
-        {
-            var result = ExecuteCore(command, CancellationToken.None);
-            AdbLogger.Instance.LogAdbCommand(command, result, result.StartsWith("Error:", StringComparison.OrdinalIgnoreCase));
-            return result;
-        }
+        public static string ExecuteCommand(string command) => ExecuteCommandAsync(command).GetAwaiter().GetResult();
 
-        private static string ExecuteCore(string command, CancellationToken ct, Action<string>? onOutput = null)
+        private static async Task<string> ExecuteCoreAsync(string command, CancellationToken ct, Action<string>? onOutput = null)
         {
             var psi = new ProcessStartInfo(AdbPath, command)
             {
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false,
-                CreateNoWindow = true,
-                StandardOutputEncoding = Encoding.UTF8,
-                StandardErrorEncoding = Encoding.UTF8
+                RedirectStandardOutput = true, RedirectStandardError = true,
+                UseShellExecute = false, CreateNoWindow = true,
+                StandardOutputEncoding = Encoding.UTF8, StandardErrorEncoding = Encoding.UTF8
             };
 
             using var process = Process.Start(psi);
             if (process == null) return "Error: Could not start ADB process.";
 
-            using (ct.Register(() => { try { process.Kill(true); } catch { } }))
+            using var reg = ct.Register(() => { try { process.Kill(true); } catch { } });
+
+            if (onOutput != null)
             {
-                if (onOutput != null)
-                {
-                    var sb = new StringBuilder();
-                    process.OutputDataReceived += (_, e) => { if (!string.IsNullOrEmpty(e.Data)) { onOutput(e.Data); sb.AppendLine(e.Data); } };
-                    process.ErrorDataReceived += (_, e) => { if (!string.IsNullOrEmpty(e.Data)) { onOutput(e.Data); sb.AppendLine(e.Data); } };
-                    process.BeginOutputReadLine();
-                    process.BeginErrorReadLine();
-                    process.WaitForExit();
-                    return sb.ToString().Trim();
-                }
-
-                var output = process.StandardOutput.ReadToEnd();
-                var error = process.StandardError.ReadToEnd();
-                process.WaitForExit(30000);
-
-                if (!process.HasExited) { process.Kill(true); return "Error: Command timeout."; }
-                return !string.IsNullOrWhiteSpace(error) ? error.Trim() : output.Trim();
+                var sb = new StringBuilder();
+                process.OutputDataReceived += (_, e) => { if (!string.IsNullOrEmpty(e.Data)) { onOutput(e.Data); sb.AppendLine(e.Data); } };
+                process.ErrorDataReceived += (_, e) => { if (!string.IsNullOrEmpty(e.Data)) { onOutput(e.Data); sb.AppendLine(e.Data); } };
+                process.BeginOutputReadLine();
+                process.BeginErrorReadLine();
+                await process.WaitForExitAsync(ct).ConfigureAwait(false);
+                return sb.ToString().Trim();
             }
+
+            var outputTask = process.StandardOutput.ReadToEndAsync(ct);
+            var errorTask = process.StandardError.ReadToEndAsync(ct);
+
+            using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+            cts.CancelAfter(30000);
+            try { await process.WaitForExitAsync(cts.Token).ConfigureAwait(false); }
+            catch (OperationCanceledException) when (!ct.IsCancellationRequested)
+            { try { process.Kill(true); } catch { } return "Error: Command timeout."; }
+
+            var output = await outputTask.ConfigureAwait(false);
+            var error = await errorTask.ConfigureAwait(false);
+            return !string.IsNullOrWhiteSpace(error) ? error.Trim() : output.Trim();
+        }
         }
     }
 
@@ -273,24 +284,37 @@ namespace ZephyrsElixir.Core
 
         public bool IsConnected { get; private set; }
         public int BatteryLevel { get; private set; }
-        public string DeviceName { get; private set; } = "No device connected";
-        public string StatusText => IsConnected ? DeviceName : "No device connected";
-        public double BatteryPercentage => BatteryLevel;
+        public string DeviceName { get; private set; } = Strings.DeviceStatus_NoDevice;
+        public string DeviceSerial { get; private set; } = string.Empty;
+        public string StatusText => IsConnected ? DeviceName : Strings.DeviceStatus_NoDevice;
 
         public event EventHandler<bool>? DeviceStatusChanged;
         public event EventHandler<(string DeviceName, int BatteryLevel)>? DeviceInfoUpdated;
 
         private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromSeconds(2) };
         private bool _monitoring;
+        private bool _updating;
 
-        private DeviceManager() => _timer.Tick += async (_, _) => await UpdateAsync();
+        private DeviceManager() => _timer.Tick += async (_, _) =>
+        {
+            if (_updating) return;
+            _updating = true;
+            try { await UpdateAsync(); }
+            finally { _updating = false; }
+        };
 
         public void StartMonitoring()
         {
             if (_monitoring) return;
             _monitoring = true;
             _timer.Start();
-            Task.Run(UpdateAsync);
+            _ = Task.Run(async () =>
+            {
+                if (_updating) return;
+                _updating = true;
+                try { await UpdateAsync(); }
+                finally { _updating = false; }
+            });
         }
 
         public void StopMonitoring() { _monitoring = false; _timer.Stop(); }
@@ -308,19 +332,23 @@ namespace ZephyrsElixir.Core
                 {
                     var batteryTask = GetBatteryAsync();
                     var nameTask = GetNameAsync();
-                    await Task.WhenAll(batteryTask, nameTask);
-                    
-                    if (batteryTask.Result != BatteryLevel || nameTask.Result != DeviceName)
+                    var serialTask = GetSerialAsync();
+                    await Task.WhenAll(batteryTask, nameTask, serialTask);
+
+                    var newSerial = serialTask.Result;
+                    if (batteryTask.Result != BatteryLevel || nameTask.Result != DeviceName || newSerial != DeviceSerial)
                     {
                         BatteryLevel = batteryTask.Result;
                         DeviceName = nameTask.Result;
+                        DeviceSerial = newSerial;
                         DeviceInfoUpdated?.Invoke(this, (DeviceName, BatteryLevel));
                     }
                 }
                 else if (was)
                 {
                     BatteryLevel = 0;
-                    DeviceName = "No device connected";
+                    DeviceName = Strings.DeviceStatus_NoDevice;
+                    DeviceSerial = string.Empty;
                     DeviceInfoUpdated?.Invoke(this, (DeviceName, BatteryLevel));
                 }
             }
@@ -331,14 +359,14 @@ namespace ZephyrsElixir.Core
         {
             var result = await AdbExecutor.ExecuteCommandAsync("devices");
             if (string.IsNullOrWhiteSpace(result)) return false;
-            return result.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+            return result.SplitLines()
                 .Skip(1).Any(l => !string.IsNullOrWhiteSpace(l) && l.Trim().EndsWith("device", StringComparison.OrdinalIgnoreCase));
         }
 
         public async Task<int> GetBatteryAsync()
         {
             var output = await AdbExecutor.ExecuteCommandAsync("shell dumpsys battery");
-            var line = output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+            var line = output.SplitLines()
                 .FirstOrDefault(l => l.Trim().StartsWith("level:", StringComparison.OrdinalIgnoreCase));
             if (line != null && int.TryParse(line.Split(':')[1].Trim(), out int level))
                 return Math.Clamp(level, 0, 100);
@@ -349,9 +377,18 @@ namespace ZephyrsElixir.Core
         {
             var brand = Clean(await AdbExecutor.ExecuteCommandAsync("shell getprop ro.product.brand"));
             var model = Clean(await AdbExecutor.ExecuteCommandAsync("shell getprop ro.product.model"));
-            if (!string.IsNullOrEmpty(brand)) brand = char.ToUpper(brand[0]) + brand[1..];
+            if (!string.IsNullOrEmpty(brand))
+                brand = char.ToUpper(brand[0], CultureInfo.InvariantCulture) + brand[1..];
             var name = $"{brand} {model}".Trim();
-            return string.IsNullOrWhiteSpace(name) ? "Unknown Device" : name;
+            return string.IsNullOrWhiteSpace(name) ? Strings.DeviceStatus_NoDevice : name;
+        }
+
+        public async Task<string> GetSerialAsync()
+        {
+            var serial = Clean(await AdbExecutor.ExecuteCommandAsync("shell getprop ro.serialno"));
+            if (string.IsNullOrEmpty(serial))
+                serial = Clean(await AdbExecutor.ExecuteCommandAsync("get-serialno"));
+            return serial;
         }
 
         public async Task<string> GetFullDevicePropertiesAsync() => await AdbExecutor.ExecuteCommandAsync("shell getprop");
@@ -383,7 +420,7 @@ namespace ZephyrsElixir.Core
             var perms = new List<PermissionItem>();
             bool inSection = false;
 
-            foreach (var line in output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
+            foreach (var line in output.SplitLines())
             {
                 var trim = line.Trim();
                 if (trim.StartsWith("runtime permissions:", StringComparison.OrdinalIgnoreCase)) { inSection = true; continue; }
@@ -415,39 +452,102 @@ namespace ZephyrsElixir.Core
 
     public static class UninstallHistoryManager
     {
-        private static readonly string BaseDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ZephyrsElixir", "Backups");
+        private static readonly string BaseDir = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "ZephyrsElixir", "Backups");
         private static readonly string HistoryFile = Path.Combine(BaseDir, "history.json");
+        private static readonly SemaphoreSlim _lock = new(1, 1);
 
-        static UninstallHistoryManager() { if (!Directory.Exists(BaseDir)) Directory.CreateDirectory(BaseDir); }
-
-        public static async Task<List<HistoryItem>> LoadHistoryAsync()
+        static UninstallHistoryManager()
         {
-            if (!File.Exists(HistoryFile)) return new();
-            try { using var s = File.OpenRead(HistoryFile); return await JsonSerializer.DeserializeAsync<List<HistoryItem>>(s) ?? new(); }
+            if (!Directory.Exists(BaseDir)) Directory.CreateDirectory(BaseDir);
+        }
+
+        public static async Task<List<HistoryItem>> LoadHistoryAsync(string? deviceSerial = null)
+        {
+            await _lock.WaitAsync();
+            try
+            {
+                var all = await LoadAllInternalAsync();
+
+                if (deviceSerial is null) return all;
+
+                if (string.IsNullOrEmpty(deviceSerial))
+                    return all.Where(h => string.IsNullOrEmpty(h.DeviceSerial)).ToList();
+
+                return all
+                    .Where(h => h.DeviceSerial == deviceSerial || string.IsNullOrEmpty(h.DeviceSerial))
+                    .GroupBy(h => h.PackageName)
+                    .Select(g => g.OrderByDescending(h => h.UninstallDate).First())
+                    .OrderByDescending(h => h.UninstallDate)
+                    .ToList();
+            }
             catch { return new(); }
+            finally { _lock.Release(); }
         }
 
         public static async Task AddEntryAsync(HistoryItem item)
         {
-            var list = await LoadHistoryAsync();
-            list.RemoveAll(x => x.PackageName == item.PackageName);
-            list.Insert(0, item);
-            using var s = File.Create(HistoryFile);
-            await JsonSerializer.SerializeAsync(s, list);
+            await _lock.WaitAsync();
+            try
+            {
+                var list = await LoadAllInternalAsync();
+
+                list.RemoveAll(x =>
+                    x.PackageName == item.PackageName &&
+                    (x.DeviceSerial == item.DeviceSerial ||
+                    (string.IsNullOrEmpty(x.DeviceSerial) && string.IsNullOrEmpty(item.DeviceSerial))));
+
+                list.Insert(0, item);
+                await SaveAsync(list);
+            }
+            finally { _lock.Release(); }
         }
 
         public static async Task RemoveEntryAsync(HistoryItem item)
         {
-            var list = await LoadHistoryAsync();
-            var target = list.FirstOrDefault(x => x.PackageName == item.PackageName && x.UninstallDate == item.UninstallDate);
-            if (target == null) return;
-            if (!string.IsNullOrEmpty(target.LocalApkPath) && File.Exists(target.LocalApkPath)) try { File.Delete(target.LocalApkPath); } catch { }
-            list.Remove(target);
-            using var s = File.Create(HistoryFile);
-            await JsonSerializer.SerializeAsync(s, list);
+            await _lock.WaitAsync();
+            try
+            {
+                var list = await LoadAllInternalAsync();
+                var target = list.FirstOrDefault(x =>
+                    x.PackageName == item.PackageName &&
+                    x.UninstallDate == item.UninstallDate);
+
+                if (target is null) return;
+
+                if (!string.IsNullOrEmpty(target.LocalApkPath) && File.Exists(target.LocalApkPath))
+                    try { File.Delete(target.LocalApkPath); } catch { }
+
+                list.Remove(target);
+                await SaveAsync(list);
+            }
+            finally { _lock.Release(); }
         }
 
-        public static string GetBackupPath(string pkg, string ver) => Path.Combine(BaseDir, $"{pkg}_{ver}.apk");
+        public static string GetBackupPath(string pkg, string ver) =>
+            Path.Combine(BaseDir, $"{pkg}_{ver}.apk");
+
+        private static async Task<List<HistoryItem>> LoadAllInternalAsync()
+        {
+            if (!File.Exists(HistoryFile)) return new();
+            try
+            {
+                using var stream = File.OpenRead(HistoryFile);
+                return await JsonSerializer.DeserializeAsync<List<HistoryItem>>(stream) ?? new();
+            }
+            catch (JsonException)
+            {
+                try { File.Delete(HistoryFile); } catch { }
+                return new();
+            }
+        }
+
+        private static async Task SaveAsync(List<HistoryItem> list)
+        {
+            using var stream = File.Create(HistoryFile);
+            await JsonSerializer.SerializeAsync(stream, list);
+        }
     }
 
     public static class CloudIntelligenceManager
@@ -470,29 +570,29 @@ namespace ZephyrsElixir.Core
         {
             var toAnalyze = new List<string>();
             var needsCloud = new List<string>();
-            
+
             foreach (var pkg in packages)
             {
-                if (Cache.TryGetValue(pkg, out var cached)) 
-                { 
-                    onResult(cached); 
-                    continue; 
+                if (Cache.TryGetValue(pkg, out var cached))
+                {
+                    onResult(cached);
+                    continue;
                 }
-                
-                if (TryOffline(pkg, out var offline)) 
-                { 
-                    Cache.TryAdd(pkg, offline!); 
-                    onResult(offline!); 
-                    continue; 
+
+                if (TryOffline(pkg, out var offline))
+                {
+                    Cache.TryAdd(pkg, offline!);
+                    onResult(offline!);
+                    continue;
                 }
-                
+
                 needsCloud.Add(pkg);
             }
 
             if (needsCloud.Count == 0) return;
 
-            var quotaAvailable = AiQuotaManager.IsUnlimited 
-                ? needsCloud.Count 
+            var quotaAvailable = AiQuotaManager.IsUnlimited
+                ? needsCloud.Count
                 : AiQuotaManager.ConsumeBatch(needsCloud.Count);
 
             var cloudPackages = needsCloud.Take(quotaAvailable).ToList();
@@ -523,22 +623,22 @@ namespace ZephyrsElixir.Core
 
         public static async Task<PackageIntelligenceData> AnalyzeSingleAsync(string packageName, CancellationToken ct = default)
         {
-            if (Cache.TryGetValue(packageName, out var cached)) 
+            if (Cache.TryGetValue(packageName, out var cached))
                 return cached;
-            
+
             if (TryOffline(packageName, out var offline))
             {
                 Cache.TryAdd(packageName, offline!);
                 return offline!;
             }
-            
+
             if (AiQuotaManager.TryConsume())
             {
                 var result = await FetchAsync(packageName, ct);
                 Cache.TryAdd(packageName, result);
                 return result;
             }
-            
+
             var fallback = CreateQuotaFallback(packageName);
             Cache.TryAdd(packageName, fallback);
             return fallback;
@@ -583,26 +683,29 @@ namespace ZephyrsElixir.Core
             data = null;
             var lower = pkg.ToLowerInvariant();
 
-            if (IsCritical(lower))
+            if (IsCriticalPackage(lower))
             {
-                data = new() { PackageName = pkg, RiskLevel = SafetyRiskLevel.Critical, SafetyScore = 0, Description = "Core System Component", WarningMessage = "REMOVAL WILL BRICK DEVICE" };
+                data = new() { PackageName = pkg, RiskLevel = SafetyRiskLevel.Critical, SafetyScore = 5, Description = "Core System Component", WarningMessage = "REMOVAL WILL BRICK DEVICE", IsOfflineResult = true };
                 return true;
             }
-            if (IsSafeBloat(lower, out var desc, out var warn))
+            if (IsSafeBloat(lower, out var desc, out var warn, out var score))
             {
-                data = new() { PackageName = pkg, RiskLevel = SafetyRiskLevel.Safe, SafetyScore = warn != null ? 75 : 95, Description = desc, WarningMessage = warn };
+                data = new() { PackageName = pkg, RiskLevel = SafetyRiskLevel.Safe, SafetyScore = score, Description = desc, WarningMessage = warn, IsOfflineResult = true };
                 return true;
             }
             if (IsCaution(lower, out var cdesc))
             {
-                data = new() { PackageName = pkg, RiskLevel = SafetyRiskLevel.Caution, SafetyScore = 35, Description = cdesc, WarningMessage = "May affect device functionality" };
+                data = new() { PackageName = pkg, RiskLevel = SafetyRiskLevel.Caution, SafetyScore = 35, Description = cdesc, WarningMessage = "May affect device functionality", IsOfflineResult = true };
                 return true;
             }
             return false;
         }
 
-        private static bool IsCritical(string p) => p == "android" ||
-            CriticalExact.Contains(p) || CriticalPatterns.Any(c => p.Contains(c));
+        public static bool IsCriticalPackage(string packageName)
+        {
+            var p = packageName.ToLowerInvariant();
+            return p == "android" || CriticalExact.Contains(p) || CriticalPatterns.Any(c => p.Contains(c));
+        }
 
         private static readonly HashSet<string> CriticalExact = new()
         {
@@ -610,50 +713,95 @@ namespace ZephyrsElixir.Core
             "com.android.inputmethod.latin", "com.android.packageinstaller", "com.android.permissioncontroller",
             "com.android.shell", "com.android.keychain", "com.android.nfc", "com.android.providers.settings",
             "com.android.providers.contacts", "com.android.providers.telephony", "com.android.providers.downloads",
-            "com.android.server.telecom", "com.samsung.android.incallui", "com.samsung.android.dialer", "com.sec.android.app.launcher"
+            "com.android.providers.media", "com.android.providers.calendar",
+            "com.android.server.telecom", "com.android.server.wifi",
+            "com.android.launcher", "com.android.inputmethod",
+            "com.android.biometrics", "com.android.location.fused",
+            "com.google.android.gms", "com.android.vending",
+            "com.google.android.inputmethod", "com.google.android.inputmethod.latin",
+            "com.google.android.permissioncontroller", "com.google.android.biometrics",
+            "com.samsung.android.incallui", "com.samsung.android.dialer", "com.sec.android.app.launcher",
+            "com.samsung.android.honeyboard", "com.sec.android.inputmethod",
+            "com.miui.home", "com.miui.securitycenter",
+            "com.huawei.android.launcher", "com.huawei.systemmanager",
+            "com.oppo.launcher", "com.coloros.safecenter",
+            "com.bbk.launcher2"
         };
 
-        private static readonly string[] CriticalPatterns = { "bluetooth", "telephony", "biometrics", "keyguard", "fingerprint", "facerecognition", "wifi.service", "networkstack", "tethering", "vpn", "ipsec", "proxy" };
+        private static readonly string[] CriticalPatterns = { "bluetooth", "telephony", "biometrics", "keyguard", "fingerprint", "facerecognition", "wifi.service", "networkstack", "tethering", "vpn", "ipsec", "proxy", "audio.service", "system_server", "webview" };
 
-        private static bool IsSafeBloat(string p, out string desc, out string? warn)
+        private static readonly string[] CarrierPatterns = { "sprint", "verizon", "tmobile", "att.", "vodafone", "orange", "docomo", "softbank", "telstra", "turkcell", "claro", "movistar", "airtel", "jio." };
+        private static readonly string[] SocialPatterns = { "facebook", "instagram", "tiktok", "twitter", "snapchat", "linkedin", "meta.catapult", "meta.provider" };
+        private static readonly string[] AnalyticsPatterns = { "analytics", "telemetry", "tracking", "diagnostics", "crashlytics", "metrics", "appsflyer", "adjust.sdk", "braze" };
+        private static readonly string[] AdPatterns = { ".ads", "admob", "advertising", "adservices", "ironsource", "applovin", "mopub" };
+        private static readonly string[] PreinstalledPrefixes = { "com.facebook.", "com.instagram.", "com.netflix.", "com.spotify.", "com.amazon.", "com.microsoft.office", "com.ebay.", "com.booking.", "flipboard", "com.linkedin.", "com.tiktok." };
+
+        private static readonly Dictionary<string, (string Desc, string Warn)> PrivacyRisks = new()
         {
-            desc = "Bloatware"; warn = null;
+            ["com.samsung.android.appcloud"] = ("Samsung AppCloud", "SPYWARE: uploads app data silently"),
+            ["com.samsung.android.mobileservice"] = ("Samsung Mobile Service", "PRIVACY: background data exfiltration"),
+            ["com.samsung.android.voc"] = ("Samsung Voice Pipeline", "PRIVACY: voice data collection"),
+            ["com.sec.spp.push"] = ("Samsung Push Service", "PRIVACY: persistent device tracking"),
+            ["com.samsung.android.bixby.agent"] = ("Bixby Agent", "PRIVACY: voice/usage data collection"),
+            ["com.samsung.android.bixby.service"] = ("Bixby Service", "PRIVACY: voice/usage data collection"),
+            ["com.samsung.android.game.gamehome"] = ("Game Launcher", "PRIVACY: tracks gaming habits"),
+            ["com.samsung.android.game.gametools"] = ("Game Tools Overlay", "PRIVACY: gaming activity tracking"),
+            ["com.samsung.android.da.daagent"] = ("Samsung Dual Messenger", "PRIVACY: app usage monitoring"),
+            ["com.samsung.android.rubin.app"] = ("Samsung Customization", "PRIVACY: behavioral profiling"),
+            ["com.samsung.android.samsungpass"] = ("Samsung Pass", "PRIVACY: biometric data sync"),
+            ["com.miui.analytics"] = ("Xiaomi Analytics", "PRIVACY: heavy device telemetry"),
+            ["com.xiaomi.mipicks"] = ("Xiaomi GetApps", "PRIVACY: app usage data"),
+            ["com.miui.cloudservice"] = ("Mi Cloud Sync", "PRIVACY: cloud sync to CN servers"),
+            ["com.miui.msa.global"] = ("Xiaomi Ad Service", "ADWARE: ad injection framework"),
+            ["com.xiaomi.midrop"] = ("Mi Share", "PRIVACY: nearby device scanning"),
+            ["com.miui.daemon"] = ("MIUI Daemon", "PRIVACY: persistent telemetry"),
+            ["com.miui.yellowpage"] = ("MIUI Yellow Pages", "PRIVACY: contacts data upload"),
+            ["com.huawei.hianalytics"] = ("Huawei Analytics", "PRIVACY: telemetry to CN servers"),
+            ["com.huawei.hivision"] = ("HiVision Scanner", "PRIVACY: camera data processing"),
+            ["com.huawei.hicloud"] = ("Huawei Cloud", "PRIVACY: cloud sync to CN servers"),
+            ["com.heytap.usercenter"] = ("OPPO User Center", "PRIVACY: behavioral data collection"),
+            ["com.coloros.ocs"] = ("ColorOS Cloud", "PRIVACY: device data sync"),
+            ["com.google.android.adservices"] = ("Google Ad Services", "PRIVACY: cross-app ad tracking"),
+        };
 
-            if (new[] { "sprint", "verizon", "tmobile", "att.", "vodafone", "orange", "docomo" }.Any(c => p.Contains(c))) { desc = "Carrier Bloatware"; return true; }
-            if (new[] { "facebook", "instagram", "tiktok", "twitter", "snapchat", "linkedin", "meta" }.Any(c => p.Contains(c))) { desc = "Social Media Bloat"; return true; }
-            if (new[] { "analytics", "telemetry", "tracking", "diagnostics", "crashlytics" }.Any(c => p.Contains(c))) { desc = "Analytics/Tracking"; warn = "Privacy: Collects usage data"; return true; }
-            if (new[] { ".ads", "admob", "advertising", "adservices" }.Any(c => p.Contains(c))) { desc = "Advertising Service"; return true; }
+        private static readonly Dictionary<string, string> CautionPatterns = new()
+        {
+            ["camera"] = "Camera App", ["gallery"] = "Gallery App", ["keyboard"] = "Keyboard", ["email"] = "Email Client",
+            ["calendar"] = "Calendar", ["contacts"] = "Contacts", ["browser"] = "Browser", ["music"] = "Music Player",
+            ["video"] = "Video Player", ["filemanager"] = "File Manager", ["backup"] = "Backup Service",
+            ["smartswitch"] = "Data Transfer", ["pay"] = "Payment Service", ["wallet"] = "Wallet Service",
+            ["clock"] = "Clock/Alarm", ["calculator"] = "Calculator", ["updater"] = "System Updater",
+            ["myfiles"] = "File Manager", ["recorder"] = "Voice Recorder"
+        };
 
-            var privacyRisks = new Dictionary<string, (string d, string w)>
-            {
-                ["com.samsung.android.appcloud"] = ("Samsung AppCloud", "PRIVACY: Uploads app list"),
-                ["com.samsung.android.mobileservice"] = ("Samsung Mobile Service", "PRIVACY: Background data sync"),
-                ["com.samsung.android.voc"] = ("Samsung Voice", "PRIVACY: Voice data collection"),
-                ["com.sec.spp.push"] = ("Samsung Push Service", "PRIVACY: Persistent tracking"),
-                ["com.samsung.android.bixby"] = ("Bixby Assistant", "PRIVACY: Voice/usage data"),
-                ["com.samsung.android.game.gamehome"] = ("Game Launcher", "PRIVACY: Gaming habits tracking"),
-                ["com.miui.analytics"] = ("Xiaomi Analytics", "PRIVACY: Heavy data collection"),
-                ["com.xiaomi.mipicks"] = ("Xiaomi GetApps", "Xiaomi App Store"),
-                ["com.miui.cloudservice"] = ("Mi Cloud", "PRIVACY: Cloud sync service")
-            };
-            if (privacyRisks.TryGetValue(p, out var r)) { desc = r.d; warn = r.w; return true; }
-            if (p.Contains("bixby")) { desc = "Bixby Service"; warn = "PRIVACY: Voice data collection"; return true; }
-            if (new[] { "com.facebook.", "com.instagram.", "com.netflix.", "com.spotify.", "com.amazon.", "com.microsoft.office", "com.ebay.", "com.booking.", "flipboard" }.Any(c => p.StartsWith(c))) { desc = "Preinstalled App"; return true; }
+        private static readonly HashSet<string> CautionExact = new()
+        {
+            "com.samsung.android.app.notes", "com.samsung.android.calendar", "com.samsung.android.email.provider",
+            "com.sec.android.app.myfiles", "com.sec.android.app.camera",
+            "com.miui.gallery", "com.miui.player", "com.miui.miservice",
+            "com.huawei.camera", "com.huawei.photos", "com.huawei.contacts",
+            "com.android.chrome"
+        };
+
+        private static bool IsSafeBloat(string p, out string desc, out string? warn, out double score)
+        {
+            desc = "Bloatware"; warn = null; score = 95;
+
+            if (CarrierPatterns.Any(c => p.Contains(c))) { desc = "Carrier Bloatware"; score = 95; return true; }
+            if (SocialPatterns.Any(c => p.Contains(c))) { desc = "Social Media Bloat"; score = 93; return true; }
+            if (AnalyticsPatterns.Any(c => p.Contains(c))) { desc = "Analytics/Tracking"; warn = "PRIVACY: collects usage data"; score = 90; return true; }
+            if (AdPatterns.Any(c => p.Contains(c))) { desc = "Advertising Service"; warn = "AD TRACKING: injected ad infrastructure"; score = 92; return true; }
+            if (PrivacyRisks.TryGetValue(p, out var r)) { desc = r.Desc; warn = r.Warn; score = warn != null && warn.Contains("SPYWARE") ? 93 : 85; return true; }
+            if (p.Contains("bixby")) { desc = "Bixby Service"; warn = "PRIVACY: voice data collection"; score = 78; return true; }
+            if (PreinstalledPrefixes.Any(c => p.StartsWith(c))) { desc = "Preinstalled App"; score = 88; return true; }
             return false;
         }
 
         private static bool IsCaution(string p, out string desc)
         {
             desc = "OEM Feature";
-            var patterns = new Dictionary<string, string>
-            {
-                ["camera"] = "Camera App", ["gallery"] = "Gallery App", ["keyboard"] = "Keyboard", ["email"] = "Email Client",
-                ["calendar"] = "Calendar", ["contacts"] = "Contacts", ["browser"] = "Browser", ["music"] = "Music Player",
-                ["video"] = "Video Player", ["filemanager"] = "File Manager", ["backup"] = "Backup Service",
-                ["smartswitch"] = "Data Transfer", ["pay"] = "Payment Service", ["wallet"] = "Wallet Service"
-            };
-            foreach (var (k, v) in patterns) if (p.Contains(k)) { desc = v; return true; }
-            if (new[] { "com.samsung.android.app.notes", "com.samsung.android.calendar", "com.samsung.android.email.provider", "com.sec.android.app.myfiles", "com.miui.securitycenter", "com.miui.home" }.Contains(p)) { desc = "OEM Core App"; return true; }
+            foreach (var (k, v) in CautionPatterns) if (p.Contains(k)) { desc = v; return true; }
+            if (CautionExact.Contains(p)) { desc = "OEM Core App"; return true; }
             return false;
         }
 
@@ -674,12 +822,12 @@ namespace ZephyrsElixir.Core
     public static class ZephyrsAgent
     {
         internal static readonly HttpClient HttpClient = new() { Timeout = TimeSpan.FromSeconds(10) };
-        
+
         private const string Pkg = "com.zephyrselixir.agent";
         private const string Activity = $"{Pkg}/.StartServiceActivity";
         private const string Uri = "http://localhost:8080";
         private const string VersionCheckUrl = "https://zephyrselixir.com/agent-version.txt";
-        
+
         private static bool _running;
         private static readonly SemaphoreSlim Semaphore = new(1);
         private static readonly JsonSerializerOptions JsonOpts = new() { PropertyNameCaseInsensitive = true };
@@ -696,7 +844,7 @@ namespace ZephyrsElixir.Core
                 }
 
                 progress?.Report("Checking ZephyrsAgent...");
-                
+
                 var installedVersion = await GetInstalledVersionAsync(ct);
                 var needsInstall = installedVersion is null;
                 var needsUpdate = false;
@@ -705,7 +853,7 @@ namespace ZephyrsElixir.Core
                 {
                     var latestVersion = await GetLatestVersionAsync(ct);
                     needsUpdate = latestVersion is not null && CompareVersions(installedVersion!, latestVersion) < 0;
-                    
+
                     if (needsUpdate)
                         progress?.Report($"Updating agent ({installedVersion} → {latestVersion})...");
                 }
@@ -751,8 +899,8 @@ namespace ZephyrsElixir.Core
 
         private static async Task<string?> GetInstalledVersionAsync(CancellationToken ct)
         {
-            var output = await AdbExecutor.ExecuteCommandAsync($"shell dumpsys package {Pkg} | grep versionName", ct);
-            
+            var output = await AdbExecutor.ExecuteCommandAsync($"shell \"dumpsys package {Pkg} | grep versionName\"", ct);
+
             if (string.IsNullOrWhiteSpace(output) || output.Contains("Unable to find"))
                 return null;
 
@@ -770,7 +918,7 @@ namespace ZephyrsElixir.Core
             }
             catch
             {
-                return GetEmbeddedVersion(); 
+                return GetEmbeddedVersion();
             }
         }
 
@@ -816,15 +964,15 @@ namespace ZephyrsElixir.Core
 
             var remote = $"/data/local/tmp/{Pkg}.apk";
             await AdbExecutor.ExecuteCommandAsync($"push \"{apk}\" {remote}", ct);
-            
+
             var result = await AdbExecutor.ExecuteCommandAsync($"shell pm install -r {remote}", ct);
-            
+
             if (!result.Contains("Success", StringComparison.OrdinalIgnoreCase))
             {
                 await AdbExecutor.ExecuteCommandAsync($"shell pm uninstall {Pkg}", ct);
                 result = await AdbExecutor.ExecuteCommandAsync($"shell pm install {remote}", ct);
             }
-            
+
             await AdbExecutor.ExecuteCommandAsync($"shell rm {remote}", ct);
             return result.Contains("Success", StringComparison.OrdinalIgnoreCase);
         }
@@ -894,4 +1042,3 @@ namespace ZephyrsElixir.Core
             if (DeviceManager.Instance.IsConnected) onInfoUpdated?.Invoke(DeviceManager.Instance.DeviceName, DeviceManager.Instance.BatteryLevel);
         }
     }
-}

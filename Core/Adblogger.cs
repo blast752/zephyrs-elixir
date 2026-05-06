@@ -3,34 +3,35 @@ namespace ZephyrsElixir.Core;
 public sealed class AdbLogger
 {
     #region Singleton
-    
+
     private static readonly Lazy<AdbLogger> _instance = new(() => new AdbLogger());
     public static AdbLogger Instance => _instance.Value;
-    
+
     private AdbLogger() { }
-    
+
     #endregion
 
     #region Configuration
-    
+
     private const int MaxEntries = 150;
     private const int MaxDetailLength = 300;
     private const int DedupeWindowSeconds = 5;
-    
+
     #endregion
 
     #region State
-    
-    private readonly ConcurrentQueue<LogEntry> _entries = new();
-    private volatile LogEntry? _lastEntry;
+
+    private readonly List<LogEntry> _entries = new();
+    private readonly object _lock = new();
+    private LogEntry? _lastEntry;
     private int _duplicateCount;
-    
+
     public event EventHandler<LogEntry>? LogEntryAdded;
-    
+
     #endregion
 
     #region Public Types
-    
+
     public enum LogLevel { Info, Success, Warning, Error, Command }
 
     public sealed record LogEntry(
@@ -43,13 +44,13 @@ public sealed class AdbLogger
     {
         public override string ToString()
         {
-            var time = Timestamp.ToString("HH:mm:ss");
+            var time = Timestamp.ToString("HH:mm:ss", CultureInfo.InvariantCulture);
             var repeat = RepeatCount > 1 ? $" (×{RepeatCount})" : "";
             var detail = string.IsNullOrEmpty(Detail) ? "" : $"\n    → {Detail}";
             return $"[{time}] [{Level}] [{Category}] {Message}{repeat}{detail}";
         }
     }
-    
+
     #endregion
 
     #region Core Logging Methods
@@ -88,13 +89,13 @@ public sealed class AdbLogger
     public void LogException(string category, Exception ex)
     {
         var message = $"{ex.GetType().Name}: {SanitizeMessage(ex.Message)}";
-        var detail = ex.InnerException != null 
-            ? $"Inner: {ex.InnerException.GetType().Name}" 
+        var detail = ex.InnerException != null
+            ? $"Inner: {ex.InnerException.GetType().Name}"
             : null;
-        
+
         AddEntry(LogLevel.Error, category, message, detail);
     }
-    
+
     #endregion
 
     #region Entry Management
@@ -104,98 +105,95 @@ public sealed class AdbLogger
         var sanitizedDetail = detail != null ? Truncate(SanitizeMessage(detail), MaxDetailLength) : null;
         var now = DateTime.Now;
 
-        var last = _lastEntry;
-        if (last != null && 
-            last.Level == level && 
-            last.Category == category && 
-            last.Message == message &&
-            (now - last.Timestamp).TotalSeconds < DedupeWindowSeconds)
+        LogEntry? newEntry;
+
+        lock (_lock)
         {
-            Interlocked.Increment(ref _duplicateCount);
-            return;
+            // De-duplicate consecutive identical entries within the dedupe window.
+            if (_lastEntry is { } last &&
+                last.Level == level &&
+                last.Category == category &&
+                last.Message == message &&
+                (now - last.Timestamp).TotalSeconds < DedupeWindowSeconds)
+            {
+                _duplicateCount++;
+                return;
+            }
+
+            // Flush any accumulated repeat count onto the previous (same-reference) entry
+            // BEFORE appending the new one. Records use value-equality, so identity checks
+            // must use ReferenceEquals to avoid false positives against another equal record.
+            if (_lastEntry is not null && _duplicateCount > 1 &&
+                _entries.Count > 0 && ReferenceEquals(_entries[^1], _lastEntry))
+            {
+                var merged = _lastEntry with { RepeatCount = _duplicateCount };
+                _entries[^1] = merged;
+            }
+
+            newEntry = new LogEntry(now, level, category, message, sanitizedDetail);
+            _entries.Add(newEntry);
+            _lastEntry = newEntry;
+            _duplicateCount = 1;
+
+            if (_entries.Count > MaxEntries)
+                _entries.RemoveAt(0);
         }
 
-        FlushDuplicates();
-
-        var entry = new LogEntry(now, level, category, message, sanitizedDetail);
-        _lastEntry = entry;
-        _duplicateCount = 1;
-
-        Enqueue(entry);
+        LogEntryAdded?.Invoke(this, newEntry);
     }
 
-    private void FlushDuplicates()
-    {
-        var last = _lastEntry;
-        var count = Interlocked.Exchange(ref _duplicateCount, 0);
-        
-        if (last != null && count > 1)
-        {
-            var updated = last with { RepeatCount = count };
-            
-            if (TryRemoveLast(out _))
-                Enqueue(updated);
-        }
-    }
-
-    private void Enqueue(LogEntry entry)
-    {
-        _entries.Enqueue(entry);
-        
-        while (_entries.Count > MaxEntries)
-            _entries.TryDequeue(out _);
-
-        LogEntryAdded?.Invoke(this, entry);
-    }
-
-    private bool TryRemoveLast(out LogEntry? removed)
-    {
-        var items = _entries.ToArray();
-        removed = null;
-        
-        if (items.Length == 0) return false;
-
-        while (_entries.TryDequeue(out _)) { }
-        
-        for (int i = 0; i < items.Length - 1; i++)
-            _entries.Enqueue(items[i]);
-        
-        removed = items[^1];
-        return true;
-    }
-    
     #endregion
 
     #region Export & Query
 
-    public bool HasLogs => !_entries.IsEmpty;
-    public int Count => _entries.Count;
-    public IReadOnlyList<LogEntry> GetAllEntries() => _entries.ToArray();
+    public bool HasLogs
+    {
+        get { lock (_lock) return _entries.Count > 0; }
+    }
+
+    public int Count
+    {
+        get { lock (_lock) return _entries.Count; }
+    }
+
+    public IReadOnlyList<LogEntry> GetAllEntries()
+    {
+        lock (_lock) return _entries.ToArray();
+    }
 
     public string GetFormattedLog()
     {
-        FlushDuplicates();
-        
+        LogEntry[] snapshot;
+        lock (_lock)
+        {
+            // Flush pending duplicate-count into the tail entry, again guarded by identity.
+            if (_lastEntry is not null && _duplicateCount > 1 &&
+                _entries.Count > 0 && ReferenceEquals(_entries[^1], _lastEntry))
+            {
+                _entries[^1] = _lastEntry with { RepeatCount = _duplicateCount };
+            }
+            snapshot = _entries.ToArray();
+        }
+
         var sb = new StringBuilder(4096);
-        
+
         sb.AppendLine("════════════════════════════════════════════════════════════");
         sb.AppendLine("  Zephyr's Elixir - Diagnostic Log");
         sb.AppendLine($"  Generated: {DateTime.Now:yyyy-MM-dd HH:mm}");
         sb.AppendLine("════════════════════════════════════════════════════════════");
         sb.AppendLine();
 
-        if (_entries.IsEmpty)
+        if (snapshot.Length == 0)
         {
             sb.AppendLine("No operations logged. Perform some actions and try again.");
             return sb.ToString();
         }
 
-        var entries = _entries.ToArray();
         var stats = new Dictionary<LogLevel, int>();
-        foreach (var e in entries)
+        foreach (var e in snapshot)
             stats[e.Level] = stats.GetValueOrDefault(e.Level) + e.RepeatCount;
 
-        sb.AppendLine($"Summary: {entries.Length} entries");
+        sb.AppendLine($"Summary: {snapshot.Length} entries");
         if (stats.TryGetValue(LogLevel.Error, out var errors) && errors > 0)
             sb.AppendLine($"  ⚠ {errors} error(s)");
         if (stats.TryGetValue(LogLevel.Warning, out var warnings) && warnings > 0)
@@ -205,7 +203,7 @@ public sealed class AdbLogger
         sb.AppendLine();
 
         DateTime? currentBlock = null;
-        foreach (var entry in entries)
+        foreach (var entry in snapshot)
         {
             var block = new DateTime(
                 entry.Timestamp.Year, entry.Timestamp.Month, entry.Timestamp.Day,
@@ -231,50 +229,53 @@ public sealed class AdbLogger
 
     public void Clear()
     {
-        while (_entries.TryDequeue(out _)) { }
-        _lastEntry = null;
-        _duplicateCount = 0;
+        lock (_lock)
+        {
+            _entries.Clear();
+            _lastEntry = null;
+            _duplicateCount = 0;
+        }
     }
-    
+
     #endregion
 
     #region Sanitization (Privacy)
 
+    private static readonly Regex WinPathRegex = new(@"[A-Za-z]:\\[^\s""]+\\([^\s""\\]+)", RegexOptions.Compiled);
+    private static readonly Regex UnixPathRegex = new(@"/(?:home|Users|mnt|storage)/[^\s""]+/([^\s""/]+)", RegexOptions.Compiled);
+    private static readonly Regex IpRegex = new(@"(\d{1,3})\.\d{1,3}\.\d{1,3}\.\d{1,3}", RegexOptions.Compiled);
+    private static readonly Regex SerialRegex = new(@"\b[A-Z0-9]{8,}\b", RegexOptions.Compiled);
+    private static readonly Regex EmailRegex = new(@"\b[\w.-]+@[\w.-]+\.\w+\b", RegexOptions.Compiled);
+    private static readonly Regex WinPathOutputRegex = new(@"[A-Za-z]:\\[^\s\r\n]+", RegexOptions.Compiled);
+    private static readonly Regex DataPathRegex = new(@"/(?:data|storage|sdcard)/[^\s\r\n]+", RegexOptions.Compiled);
+    private static readonly Regex StackTraceRegex = new(@" in [^\r\n]+:line \d+", RegexOptions.Compiled);
+    private static readonly Regex MsgPathRegex = new(@"[A-Za-z]:\\[^\s]+", RegexOptions.Compiled);
+
     private static string SanitizeCommand(string command)
     {
         if (string.IsNullOrEmpty(command)) return command;
-
-        command = Regex.Replace(command, @"[A-Za-z]:\\[^\s""]+\\([^\s""\\]+)", "$1");
-        command = Regex.Replace(command, @"/(?:home|Users|mnt|storage)/[^\s""]+/([^\s""/]+)", "$1");
-        
-        command = Regex.Replace(command, @"(\d{1,3})\.\d{1,3}\.\d{1,3}\.\d{1,3}", "$1.xxx.xxx.xxx");
-        
+        command = WinPathRegex.Replace(command, "$1");
+        command = UnixPathRegex.Replace(command, "$1");
+        command = IpRegex.Replace(command, "$1.xxx.xxx.xxx");
         return command;
     }
 
     private static string SanitizeOutput(string output)
     {
         if (string.IsNullOrEmpty(output)) return output;
-
         var result = output;
-        
-        result = Regex.Replace(result, @"\b[A-Z0-9]{8,}\b", "[SERIAL]");
-        
-        result = Regex.Replace(result, @"\b[\w.-]+@[\w.-]+\.\w+\b", "[EMAIL]");
-        
-        result = Regex.Replace(result, @"[A-Za-z]:\\[^\s\r\n]+", "[PATH]");
-        result = Regex.Replace(result, @"/(?:data|storage|sdcard)/[^\s\r\n]+", "[PATH]");
-
+        result = SerialRegex.Replace(result, "[SERIAL]");
+        result = EmailRegex.Replace(result, "[EMAIL]");
+        result = WinPathOutputRegex.Replace(result, "[PATH]");
+        result = DataPathRegex.Replace(result, "[PATH]");
         return Truncate(result, MaxDetailLength);
     }
 
     private static string SanitizeMessage(string message)
     {
         if (string.IsNullOrEmpty(message)) return message;
-        
-        var result = Regex.Replace(message, @" in [^\r\n]+:line \d+", "");
-        result = Regex.Replace(result, @"[A-Za-z]:\\[^\s]+", "[PATH]");
-        
+        var result = StackTraceRegex.Replace(message, "");
+        result = MsgPathRegex.Replace(result, "[PATH]");
         return result;
     }
 
@@ -282,9 +283,9 @@ public sealed class AdbLogger
     {
         if (string.IsNullOrEmpty(text) || text.Length <= maxLength)
             return text;
-        
+
         return string.Concat(text.AsSpan(0, maxLength - 3), "...");
     }
-    
+
     #endregion
 }

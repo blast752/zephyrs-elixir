@@ -66,16 +66,16 @@
         <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled">
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,20">
 
-                <Border x:Name="HeroCard"
+                <h:ShadowCard x:Name="HeroCard"
                         Width="700" MinWidth="600" Padding="40" CornerRadius="35"
                         Background="#281E3C6E" BorderBrush="#6400BFFF" BorderThickness="2"
                         RenderTransformOrigin="0.5,0.5">
-                    <Border.Effect>
+                    <h:ShadowCard.ShadowEffect>
                         <DropShadowEffect BlurRadius="50" ShadowDepth="0" Color="#007FFF" Opacity="0.6"/>
-                    </Border.Effect>
-                    <Border.RenderTransform>
+                    </h:ShadowCard.ShadowEffect>
+                    <h:ShadowCard.RenderTransform>
                         <TranslateTransform Y="40"/>
-                    </Border.RenderTransform>
+                    </h:ShadowCard.RenderTransform>
 
                     <StackPanel HorizontalAlignment="Center">
                         <Grid Width="370" Height="370" Margin="0,0,0,20">
@@ -120,14 +120,21 @@
                                    Width="323.75" Height="323.75" Stretch="Uniform"/>
                         </Grid>
 
-                        <TextBlock Text="{h:Translate Home_Title}"
-                                   FontSize="42" FontWeight="Bold"
-                                   TextAlignment="Center" Margin="0,10"
-                                   Foreground="{StaticResource Home.Brush.Title}">
-                            <TextBlock.Effect>
-                                <DropShadowEffect Color="Black" BlurRadius="8" ShadowDepth="2" Opacity="0.5"/>
-                            </TextBlock.Effect>
-                        </TextBlock>
+                        <Grid Margin="0,10">
+                            <TextBlock Text="{h:Translate Home_Title}"
+                                       FontSize="42" FontWeight="Bold"
+                                       TextAlignment="Center"
+                                       Foreground="{StaticResource Home.Brush.Title}"
+                                       IsHitTestVisible="False">
+                                <TextBlock.Effect>
+                                    <DropShadowEffect Color="Black" BlurRadius="8" ShadowDepth="2" Opacity="0.5"/>
+                                </TextBlock.Effect>
+                            </TextBlock>
+                            <TextBlock Text="{h:Translate Home_Title}"
+                                       FontSize="42" FontWeight="Bold"
+                                       TextAlignment="Center"
+                                       Foreground="{StaticResource Home.Brush.Title}"/>
+                        </Grid>
 
                         <TextBlock Text="{h:Translate Home_Subtitle}"
                                    FontSize="18" Foreground="#C8DCFF" Opacity="0.8"
@@ -147,7 +154,7 @@
                                     Style="{StaticResource App.Style.Button}" Margin="5"/>
                         </WrapPanel>
                     </StackPanel>
-                </Border>
+                </h:ShadowCard>
 
                 <Border x:Name="PartnerBanner"
                         Width="650" Margin="0,20,0,0" Padding="15" CornerRadius="16"

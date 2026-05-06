@@ -16,10 +16,9 @@
                             Title="{h:Translate Tools_Header}"
                             Subtitle="{h:Translate Tools_Subtitle}"/>
 
-        <Border Grid.Row="2"
-                Style="{StaticResource App.Style.GlassCard}"
+        <h:ShadowCard Grid.Row="2"
                 Padding="24"
-                Effect="{StaticResource App.Effect.PageShadow}">
+                ShadowEffect="{StaticResource App.Effect.PageShadow}">
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                 <ItemsControl x:Name="ToolsGrid" ItemsSource="{Binding ToolItems}">
                     <ItemsControl.ItemsPanel>
@@ -51,21 +50,21 @@
                                                             <ScaleTransform x:Name="CardScale" ScaleX="1" ScaleY="1"/>
                                                         </Border.RenderTransform>
                                                         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                                                            <Border Width="56" Height="56" CornerRadius="28" 
+                                                            <h:GlowIcon Size="56" CornerRadius="28" 
                                                                     Background="{Binding IconBrush}" 
                                                                     HorizontalAlignment="Center"
                                                                     Margin="0,0,0,14">
-                                                                <Border.Effect>
+                                                                <h:GlowIcon.GlowEffect>
                                                                     <DropShadowEffect BlurRadius="12" ShadowDepth="0" 
                                                                                       Color="{Binding GlowColor}" Opacity="0.5"/>
-                                                                </Border.Effect>
+                                                                </h:GlowIcon.GlowEffect>
                                                                 <TextBlock Text="{Binding Icon}" 
                                                                            FontFamily="Segoe MDL2 Assets" 
                                                                            FontSize="24" 
                                                                            Foreground="White"
                                                                            HorizontalAlignment="Center" 
                                                                            VerticalAlignment="Center"/>
-                                                            </Border>
+                                                            </h:GlowIcon>
                                                             <TextBlock Text="{Binding Title}" 
                                                                        FontSize="14" 
                                                                        FontWeight="SemiBold" 
@@ -136,7 +135,7 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </ScrollViewer>
-        </Border>
+        </h:ShadowCard>
 
         <Border x:Name="SubPageHost" 
                 Grid.Row="0" Grid.RowSpan="3"

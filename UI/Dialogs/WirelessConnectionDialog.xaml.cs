@@ -1,10 +1,8 @@
 
-namespace ZephyrsElixir;
+namespace ZephyrsElixir.UI.Dialogs;
 
 public sealed partial class WirelessConnectionDialog : Window
 {
-    #region Constants & Configuration
-
     private static class Config
     {
         public const int DefaultPort = 5555;
@@ -18,31 +16,9 @@ public sealed partial class WirelessConnectionDialog : Window
         public const string FallbackNetworkPrefix = "192.168.1.";
     }
 
-    private static class ButtonText
-    {
-        public const string Connect = "Connect";
-        public const string Pair = "Pair";
-    }
-
-    private static class StatusMessages
-    {
-        public const string EnterConnectionDetails = "Enter device's last IP number";
-        public const string EnterPairingDetails = "Enter pairing details from device";
-        public const string Connecting = "Connecting to device...";
-        public const string Pairing = "Pairing with device...";
-    }
-
-    #endregion
-
-    #region Dependencies
-
     private readonly Func<string, Task> _executeAdbCommand;
     private readonly Action<string> _appendTerminal;
     private readonly string _networkPrefix;
-
-    #endregion
-
-    #region Constructor
 
     public WirelessConnectionDialog(Func<string, Task> executeAdbCommand, Action<string> appendTerminal)
     {
@@ -96,10 +72,6 @@ public sealed partial class WirelessConnectionDialog : Window
         }
     }
 
-    #endregion
-
-    #region Event Handlers
-
     private void OnVersionChanged(object sender, RoutedEventArgs e)
     {
         if (!IsLoaded) return;
@@ -118,8 +90,8 @@ public sealed partial class WirelessConnectionDialog : Window
         Android10Panel.Visibility = isAndroid10 ? Visibility.Visible : Visibility.Collapsed;
         Android11Panel.Visibility = isAndroid10 ? Visibility.Collapsed : Visibility.Visible;
 
-        ActionButton.Content = isAndroid10 ? ButtonText.Connect : ButtonText.Pair;
-        StepIndicator.Text = isAndroid10 ? StatusMessages.EnterConnectionDetails : StatusMessages.EnterPairingDetails;
+        ActionButton.Content = isAndroid10 ? Strings.Wireless_Button_Connect : Strings.Wireless_Button_Pair;
+        StepIndicator.Text = isAndroid10 ? Strings.Wireless_Status_EnterIP : Strings.Wireless_Status_EnterPairing;
         ConnectionProgress.Value = 50;
     }
 
@@ -145,24 +117,10 @@ public sealed partial class WirelessConnectionDialog : Window
         }
     }
 
-    private void OnOctetPreviewInput(object sender, TextCompositionEventArgs e)
+    private void OnDigitOnlyPreviewInput(object sender, TextCompositionEventArgs e)
     {
         e.Handled = !e.Text.All(char.IsDigit);
     }
-
-    private void OnPortPreviewInput(object sender, TextCompositionEventArgs e)
-    {
-        e.Handled = !e.Text.All(char.IsDigit);
-    }
-
-    private void OnPairCodePreviewInput(object sender, TextCompositionEventArgs e)
-    {
-        e.Handled = !e.Text.All(char.IsDigit);
-    }
-
-    #endregion
-
-    #region Connection Logic
 
     private async Task PerformConnectionAsync()
     {
@@ -183,7 +141,7 @@ public sealed partial class WirelessConnectionDialog : Window
         }
         catch (Exception ex)
         {
-            ShowStatus($"❌ Operation failed: {ex.Message}", StatusType.Error);
+            ShowStatus($"❌ {string.Format(Strings.Wireless_Status_OperationFailed, ex.Message)}", StatusType.Error);
             ConnectionProgress.Value = 50;
         }
         finally
@@ -202,9 +160,9 @@ public sealed partial class WirelessConnectionDialog : Window
         var fullIp = $"{_networkPrefix}{lastOctet}";
         var port = Config.DefaultPort.ToString();
 
-        ShowStatus(StatusMessages.Connecting, StatusType.Progress);
+        ShowStatus(Strings.Wireless_Status_Connecting, StatusType.Progress);
         ConnectionProgress.Value = 75;
-        LogToTerminal($"[Android 10] Starting wireless connection to {fullIp}:{port}...");
+        LogToTerminal($"[Android 10] {Strings.Wireless_Status_Connecting} {fullIp}:{port}...");
 
         await _executeAdbCommand($"tcpip {port}");
         LogToTerminal("TCP/IP mode enabled");
@@ -214,7 +172,7 @@ public sealed partial class WirelessConnectionDialog : Window
         await _executeAdbCommand($"connect {fullIp}:{port}");
         LogToTerminal("Connection command sent");
 
-        ShowStatus($"✔ Connection initiated to {fullIp}:{port}. Verify on main window.", StatusType.Success);
+        ShowStatus($"✔ {string.Format(Strings.Wireless_Status_ConnectionInitiated, $"{fullIp}:{port}")}", StatusType.Success);
         ConnectionProgress.Value = 100;
         
         return true;
@@ -233,14 +191,14 @@ public sealed partial class WirelessConnectionDialog : Window
 
         var fullIp = $"{_networkPrefix}{lastOctet}";
 
-        ShowStatus(StatusMessages.Pairing, StatusType.Progress);
+        ShowStatus(Strings.Wireless_Status_Pairing, StatusType.Progress);
         ConnectionProgress.Value = 75;
-        LogToTerminal($"[Android 11+] Starting pairing with {fullIp}:{port}...");
+        LogToTerminal($"[Android 11+] {Strings.Wireless_Status_Pairing} {fullIp}:{port}...");
 
         await _executeAdbCommand($"pair {fullIp}:{port} {code}");
         LogToTerminal("Pairing command executed successfully");
 
-        ShowStatus("✔ Pairing completed! Device should now be connected.", StatusType.Success);
+        ShowStatus($"✔ {Strings.Wireless_Status_PairingComplete}", StatusType.Success);
         ConnectionProgress.Value = 100;
         SuccessMessage.Visibility = Visibility.Visible;
 
@@ -248,10 +206,6 @@ public sealed partial class WirelessConnectionDialog : Window
     }
 
     private void LogToTerminal(string message) => _appendTerminal($"{message}\n");
-
-    #endregion
-
-    #region Validation
 
     private enum InputType { LastOctet, Port, PairingCode }
 
@@ -262,7 +216,7 @@ public sealed partial class WirelessConnectionDialog : Window
             InputType.LastOctet => ValidateLastOctet(value),
             InputType.Port => ValidatePort(value),
             InputType.PairingCode => ValidatePairingCode(value),
-            _ => (false, "Unknown validation type")
+            _ => (false, Strings.Common_Status_Error)
         };
 
         if (!isValid)
@@ -274,13 +228,13 @@ public sealed partial class WirelessConnectionDialog : Window
     private static (bool IsValid, string ErrorMessage) ValidateLastOctet(string octet)
     {
         if (string.IsNullOrWhiteSpace(octet))
-            return (false, "Please enter the device's last IP number.");
+            return (false, Strings.Wireless_Validation_EnterLastIP);
         
         if (!int.TryParse(octet, out var number))
-            return (false, "Please enter a valid number.");
+            return (false, Strings.Wireless_Validation_InvalidNumber);
         
         if (number < Config.MinOctet || number > Config.MaxOctet)
-            return (false, $"Please enter a number between {Config.MinOctet} and {Config.MaxOctet}.");
+            return (false, string.Format(Strings.Wireless_Validation_OctetRange, Config.MinOctet, Config.MaxOctet));
         
         return (true, string.Empty);
     }
@@ -288,25 +242,21 @@ public sealed partial class WirelessConnectionDialog : Window
     private static (bool IsValid, string ErrorMessage) ValidatePort(string port)
     {
         if (string.IsNullOrWhiteSpace(port))
-            return (false, "Please enter the port from the pairing dialog.");
+            return (false, Strings.Wireless_Validation_EnterPort);
         
         if (!int.TryParse(port, out var portNumber))
-            return (false, "Please enter a valid port number.");
+            return (false, Strings.Wireless_Validation_InvalidPort);
         
         if (portNumber <= 0 || portNumber > Config.MaxPort)
-            return (false, $"Please enter a valid port number (1-{Config.MaxPort}).");
+            return (false, string.Format(Strings.Wireless_Validation_PortRange, Config.MaxPort));
         
         return (true, string.Empty);
     }
 
     private static (bool IsValid, string ErrorMessage) ValidatePairingCode(string code) =>
         code.Length != Config.PairCodeLength || !code.All(char.IsDigit)
-            ? (false, $"Please enter the {Config.PairCodeLength}-digit pairing code.")
+            ? (false, string.Format(Strings.Wireless_Validation_PairingCode, Config.PairCodeLength))
             : (true, string.Empty);
-
-    #endregion
-
-    #region UI Helpers
 
     private enum StatusType { Progress, Success, Error }
 
@@ -326,16 +276,20 @@ public sealed partial class WirelessConnectionDialog : Window
         PairCodeTextBox.IsEnabled = !isLoading && !isAndroid10;
     }
 
+    private static readonly SolidColorBrush ProgressBrush = UIHelpers.FrozenSolid(0x00, 0xBF, 0xFF);
+    private static readonly SolidColorBrush SuccessBrush = UIHelpers.FrozenSolid(0x90, 0xEE, 0x90);
+    private static readonly SolidColorBrush ErrorBrush = UIHelpers.FrozenSolid(0xFF, 0x63, 0x47);
+
     private void ShowStatus(string message, StatusType type)
     {
         StatusText.Text = message;
-        StatusText.Foreground = new SolidColorBrush(type switch
+        StatusText.Foreground = type switch
         {
-            StatusType.Progress => (Color)FindResource("App.Color.DeepSkyBlue"),
-            StatusType.Success => Colors.LightGreen,
-            StatusType.Error => Colors.Tomato,
-            _ => Colors.White
-        });
+            StatusType.Progress => ProgressBrush,
+            StatusType.Success => SuccessBrush,
+            StatusType.Error => ErrorBrush,
+            _ => Brushes.White
+        };
         StatusText.Visibility = Visibility.Visible;
 
         StatusText.BeginAnimation(OpacityProperty, 
@@ -346,10 +300,6 @@ public sealed partial class WirelessConnectionDialog : Window
     {
         StatusText.Visibility = Visibility.Collapsed;
     }
-
-    #endregion
-
-    #region Network Detection
 
     private static string DetectNetworkPrefix()
     {
@@ -384,6 +334,4 @@ public sealed partial class WirelessConnectionDialog : Window
     private static bool IsValidIpv4Address(UnicastIPAddressInformation ip) =>
         ip.Address.AddressFamily == AddressFamily.InterNetwork &&
         !IPAddress.IsLoopback(ip.Address);
-
-    #endregion
 }

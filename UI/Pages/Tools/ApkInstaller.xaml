@@ -9,10 +9,6 @@
              DragLeave="OnDragLeave">
 
     <UserControl.Resources>
-        <h:InverseBoolToVisibilityConverter x:Key="InverseBoolToVis"/>
-        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
-        <h:SmartTruncateConverter x:Key="SmartTruncate"/>
-        
         <Style x:Key="StatusIndicator" TargetType="Ellipse">
             <Setter Property="Width" Value="8"/>
             <Setter Property="Height" Value="8"/>
@@ -52,9 +48,9 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Border Style="{StaticResource App.Style.GlassCard}"
+        <h:ShadowCard
                 Padding="24"
-                Effect="{StaticResource App.Effect.PageShadow}">
+                ShadowEffect="{StaticResource App.Effect.PageShadow}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -64,37 +60,36 @@
                 </Grid.ColumnDefinitions>
 
                 <Button Style="{StaticResource App.Style.Button.Inline}"
-                        Content="Back" Tag="&#xE72B;"
+                        Content="{h:Translate ApkInstaller_Button_Back}" Tag="&#xE72B;"
                         Click="OnBackClick"
                         VerticalAlignment="Center"/>
 
                 <StackPanel Grid.Column="2" VerticalAlignment="Center">
-                    <TextBlock Text="APK Installer" FontSize="26" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock Text="{h:Translate Tools_ApkInstaller_Title}" FontSize="26" FontWeight="Bold" Foreground="White"/>
                     <TextBlock x:Name="StatusText" 
-                               Text="Drag and drop APK files to install" 
+                               Text="{h:Translate ApkInstaller_DragDrop}" 
                                Foreground="#B0B8C8" FontSize="13" Margin="0,4,0,0"/>
                 </StackPanel>
 
                 <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
                     <Button x:Name="BrowseButton"
                             Style="{StaticResource App.Style.Button}"
-                            Content="Browse Files" Tag="&#xE8E5;"
+                            Content="{h:Translate ApkInstaller_Button_Browse}" Tag="&#xE8E5;"
                             Click="OnBrowseClick"
                             Margin="0,0,12,0"/>
                     <Button x:Name="ClearButton"
                             Style="{StaticResource App.Style.Button.Inline.Destructive}"
-                            Content="Clear All" Tag="&#xE74D;"
+                            Content="{h:Translate ApkInstaller_Button_ClearAll}" Tag="&#xE74D;"
                             Click="OnClearClick"
                             Visibility="Collapsed"/>
                 </StackPanel>
             </Grid>
-        </Border>
+        </h:ShadowCard>
 
-        <Border Grid.Row="2"
-                Style="{StaticResource App.Style.GlassCard}"
+        <h:ShadowCard Grid.Row="2"
                 Padding="0"
                 ClipToBounds="True"
-                Effect="{StaticResource App.Effect.PageShadow}">
+                ShadowEffect="{StaticResource App.Effect.PageShadow}">
             <Grid>
                 <Border x:Name="DropZone"
                         Margin="24"
@@ -119,22 +114,22 @@
                     </Border.RenderTransform>
 
                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <Border Width="80" Height="80" CornerRadius="40"
+                        <h:GlowIcon Size="80" CornerRadius="40"
                                 Background="{StaticResource App.Brush.IconCircle}"
                                 HorizontalAlignment="Center" Margin="0,0,0,20">
-                            <Border.Effect>
+                            <h:GlowIcon.GlowEffect>
                                 <DropShadowEffect BlurRadius="20" ShadowDepth="0" 
                                                   Color="{StaticResource App.Color.DeepSkyBlue}" Opacity="0.4"/>
-                            </Border.Effect>
+                            </h:GlowIcon.GlowEffect>
                             <TextBlock Text="&#xE896;" FontFamily="Segoe MDL2 Assets" 
                                        FontSize="36" Foreground="White"
                                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
+                        </h:GlowIcon>
                         
-                        <TextBlock Text="Drop APK files here" 
+                        <TextBlock Text="{h:Translate ApkInstaller_DropHere}" 
                                    FontSize="20" FontWeight="SemiBold" Foreground="White"
                                    HorizontalAlignment="Center"/>
-                        <TextBlock Text="or click Browse Files to select" 
+                        <TextBlock Text="{h:Translate ApkInstaller_OrBrowse}" 
                                    FontSize="13" Foreground="#90FFFFFF"
                                    HorizontalAlignment="Center" Margin="0,8,0,0"/>
                         
@@ -172,10 +167,10 @@
                                 <ColumnDefinition Width="110"/>
                                 <ColumnDefinition Width="44"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="1" Text="Package" Foreground="#90FFFFFF" FontSize="12" FontWeight="SemiBold"/>
-                            <TextBlock Grid.Column="2" Text="Version" Foreground="#90FFFFFF" FontSize="12" FontWeight="SemiBold"/>
-                            <TextBlock Grid.Column="3" Text="Size" Foreground="#90FFFFFF" FontSize="12" FontWeight="SemiBold"/>
-                            <TextBlock Grid.Column="4" Text="Status" Foreground="#90FFFFFF" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="{h:Translate ApkInstaller_Column_Package}" Foreground="#90FFFFFF" FontSize="12" FontWeight="SemiBold"/>
+                            <TextBlock Grid.Column="2" Text="{h:Translate ApkInstaller_Column_Version}" Foreground="#90FFFFFF" FontSize="12" FontWeight="SemiBold"/>
+                            <TextBlock Grid.Column="3" Text="{h:Translate ApkInstaller_Column_Size}" Foreground="#90FFFFFF" FontSize="12" FontWeight="SemiBold"/>
+                            <TextBlock Grid.Column="4" Text="{h:Translate ApkInstaller_Column_Status}" Foreground="#90FFFFFF" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                         </Grid>
                     </Border>
 
@@ -213,7 +208,7 @@
 
                                             <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="8,0,12,0">
                                                 <TextBlock FontSize="13" FontWeight="SemiBold" Foreground="White"
-                                                           Text="{Binding DisplayName, Converter={StaticResource SmartTruncate}, ConverterParameter=45}"
+                                                           Text="{Binding DisplayName, Converter={StaticResource App.Converter.SmartTruncate}, ConverterParameter=45}"
                                                            TextTrimming="None"
                                                            ToolTipService.InitialShowDelay="300">
                                                     <TextBlock.ToolTip>
@@ -227,7 +222,7 @@
                                                     </TextBlock.ToolTip>
                                                 </TextBlock>
                                                 <TextBlock FontSize="11" Foreground="#70FFFFFF"
-                                                           Text="{Binding PackageName, Converter={StaticResource SmartTruncate}, ConverterParameter=50}"
+                                                           Text="{Binding PackageName, Converter={StaticResource App.Converter.SmartTruncate}, ConverterParameter=50}"
                                                            TextTrimming="None"
                                                            ToolTipService.InitialShowDelay="300">
                                                     <TextBlock.ToolTip>
@@ -243,7 +238,7 @@
                                                            TextTrimming="CharacterEllipsis" MaxWidth="80"/>
                                                 <TextBlock Text="{Binding VersionCode, StringFormat='({0})'}" 
                                                            FontSize="10" Foreground="#60FFFFFF"
-                                                           Visibility="{Binding HasVersionCode, Converter={StaticResource BoolToVis}}"/>
+                                                           Visibility="{Binding HasVersionCode, Converter={StaticResource App.Converter.BooleanToVisibility}}"/>
                                             </StackPanel>
 
                                             <TextBlock Grid.Column="3" Text="{Binding SizeDisplay}" 
@@ -263,7 +258,7 @@
                                                              Height="3" Background="#20FFFFFF"
                                                              Foreground="{StaticResource App.Brush.DeepSkyBlue}"
                                                              Value="{Binding Progress}" Maximum="100"
-                                                             Visibility="{Binding IsInstalling, Converter={StaticResource BoolToVis}}"/>
+                                                             Visibility="{Binding IsInstalling, Converter={StaticResource App.Converter.BooleanToVisibility}}"/>
                                             </Grid>
 
                                             <Button Grid.Column="5" 
@@ -271,8 +266,8 @@
                                                     Content="" Tag="&#xE74D;"
                                                     Width="32" Height="32" MinWidth="32"
                                                     Click="OnRemovePackage"
-                                                    ToolTip="Remove from list"
-                                                    Visibility="{Binding CanRemove, Converter={StaticResource BoolToVis}}"/>
+                                                    ToolTip="{h:Translate ApkInstaller_Tooltip_Remove}"
+                                                    Visibility="{Binding CanRemove, Converter={StaticResource App.Converter.BooleanToVisibility}}"/>
                                         </Grid>
                                     </Border>
                                 </DataTemplate>
@@ -285,35 +280,42 @@
                         Background="#E0101828" 
                         Visibility="Collapsed"
                         IsHitTestVisible="False">
-                    <Border Margin="40" CornerRadius="20" 
-                            BorderThickness="3" BorderBrush="{StaticResource App.Brush.DeepSkyBlue}"
-                            Background="#3000BFFF">
-                        <Border.Effect>
-                            <DropShadowEffect BlurRadius="30" ShadowDepth="0" 
-                                              Color="{StaticResource App.Color.DeepSkyBlue}" Opacity="0.5"/>
-                        </Border.Effect>
-                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                            <TextBlock Text="&#xE896;" FontFamily="Segoe MDL2 Assets" 
-                                       FontSize="64" Foreground="{StaticResource App.Brush.DeepSkyBlue}"
-                                       HorizontalAlignment="Center">
-                                <TextBlock.Effect>
-                                    <DropShadowEffect BlurRadius="20" ShadowDepth="0" 
-                                                      Color="{StaticResource App.Color.DeepSkyBlue}" Opacity="0.6"/>
-                                </TextBlock.Effect>
-                            </TextBlock>
-                            <TextBlock Text="Release to add files" 
-                                       FontSize="24" FontWeight="Bold" Foreground="White"
-                                       HorizontalAlignment="Center" Margin="0,16,0,0"/>
-                        </StackPanel>
-                    </Border>
+                    <Grid Margin="40">
+                        <Border CornerRadius="20" 
+                                BorderThickness="3" BorderBrush="{StaticResource App.Brush.DeepSkyBlue}"
+                                Background="#3000BFFF">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="30" ShadowDepth="0" 
+                                                  Color="{StaticResource App.Color.DeepSkyBlue}" Opacity="0.5"/>
+                            </Border.Effect>
+                        </Border>
+                        <Border CornerRadius="20" Background="Transparent">
+                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <Grid HorizontalAlignment="Center">
+                                    <TextBlock Text="&#xE896;" FontFamily="Segoe MDL2 Assets" 
+                                               FontSize="64" Foreground="{StaticResource App.Brush.DeepSkyBlue}"
+                                               IsHitTestVisible="False">
+                                        <TextBlock.Effect>
+                                            <DropShadowEffect BlurRadius="20" ShadowDepth="0" 
+                                                              Color="{StaticResource App.Color.DeepSkyBlue}" Opacity="0.6"/>
+                                        </TextBlock.Effect>
+                                    </TextBlock>
+                                    <TextBlock Text="&#xE896;" FontFamily="Segoe MDL2 Assets" 
+                                               FontSize="64" Foreground="{StaticResource App.Brush.DeepSkyBlue}"/>
+                                </Grid>
+                                <TextBlock Text="{h:Translate ApkInstaller_ReleaseToAdd}" 
+                                           FontSize="24" FontWeight="Bold" Foreground="White"
+                                           HorizontalAlignment="Center" Margin="0,16,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
                 </Border>
             </Grid>
-        </Border>
+        </h:ShadowCard>
 
-        <Border Grid.Row="4"
-                Style="{StaticResource App.Style.GlassCard}"
+        <h:ShadowCard Grid.Row="4"
                 Padding="20,16"
-                Effect="{StaticResource App.Effect.PageShadow}">
+                ShadowEffect="{StaticResource App.Effect.PageShadow}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -326,7 +328,7 @@
                     <TextBlock Text="&#xE8F1;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                Foreground="#70B0B8C8" VerticalAlignment="Center" Margin="0,0,10,0"/>
                     <TextBlock x:Name="SummaryText" 
-                               Text="No packages selected" 
+                               Text="{h:Translate ApkInstaller_NoPackages}" 
                                FontSize="13" Foreground="#B0B8C8" VerticalAlignment="Center"/>
                 </StackPanel>
 
@@ -337,28 +339,28 @@
                                   Style="{StaticResource App.Style.GlassCheckBox}"
                                   IsChecked="True"
                                   VerticalAlignment="Center"/>
-                        <TextBlock Text="Bypass security" FontSize="12" Foreground="#D0D8E8" 
+                        <TextBlock Text="{h:Translate ApkInstaller_BypassSecurity}" FontSize="12" Foreground="#D0D8E8" 
                                    VerticalAlignment="Center" Margin="8,0,0,0"
-                                   ToolTip="Skip verification checks during installation"/>
+                                   ToolTip="{h:Translate ApkInstaller_BypassSecurity_Tooltip}"/>
                     </StackPanel>
                     
                     <StackPanel Orientation="Horizontal">
                         <CheckBox x:Name="AllowDowngradeCheck" 
                                   Style="{StaticResource App.Style.GlassCheckBox}"
                                   VerticalAlignment="Center"/>
-                        <TextBlock Text="Allow downgrade" FontSize="12" Foreground="#D0D8E8" 
+                        <TextBlock Text="{h:Translate ApkInstaller_AllowDowngrade}" FontSize="12" Foreground="#D0D8E8" 
                                    VerticalAlignment="Center" Margin="8,0,0,0"
-                                   ToolTip="Allow installing older versions over newer ones"/>
+                                   ToolTip="{h:Translate ApkInstaller_AllowDowngrade_Tooltip}"/>
                     </StackPanel>
                 </StackPanel>
 
                 <Button x:Name="InstallButton" Grid.Column="3"
                         Style="{StaticResource App.Style.Button}"
-                        Content="Install All" Tag="&#xE896;"
+                        Content="{h:Translate ApkInstaller_InstallAll}" Tag="&#xE896;"
                         MinWidth="150"
                         Click="OnInstallClick"
                         IsEnabled="False"/>
             </Grid>
-        </Border>
+        </h:ShadowCard>
     </Grid>
 </UserControl>

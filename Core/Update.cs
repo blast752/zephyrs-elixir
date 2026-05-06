@@ -1,4 +1,4 @@
-namespace ZephyrsElixir
+namespace ZephyrsElixir.Core
 {
     public sealed class UpdateInfo
     {
@@ -12,10 +12,11 @@ namespace ZephyrsElixir
         private const string UpdateJsonUrl = "https://zephyrselixir.com/zupdate.json";
 
         private static readonly HttpClient HttpClient;
+        private static readonly JsonSerializerOptions JsonOpts = new() { PropertyNameCaseInsensitive = true };
 
         static Updater()
         {
-            HttpClient = new HttpClient();
+            HttpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(20) };
             var version = Assembly.GetExecutingAssembly().GetName().Version;
             HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd($"ZephyrsElixir-Updater/{version}");
         }
@@ -40,8 +41,7 @@ namespace ZephyrsElixir
             try
             {
                 string json = await HttpClient.GetStringAsync(UpdateJsonUrl).ConfigureAwait(false);
-                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                return JsonSerializer.Deserialize<UpdateInfo>(json, options)!;
+                return JsonSerializer.Deserialize<UpdateInfo>(json, JsonOpts)!;
             }
             catch (Exception ex)
             {
@@ -71,7 +71,7 @@ namespace ZephyrsElixir
         private static async Task DownloadAndUpdateAsync(UpdateInfo remoteInfo)
         {
             string tempInstallerName = $"ZephyrsElixir_Update_{remoteInfo.Version}.exe";
-            string tempInstallerPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), tempInstallerName);
+            string tempInstallerPath = Path.Combine(Path.GetTempPath(), tempInstallerName);
 
             try
             {

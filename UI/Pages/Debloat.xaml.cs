@@ -10,7 +10,6 @@ namespace ZephyrsElixir.UI.Pages
         private readonly ICollectionView _appsView, _historyView;
         private readonly DispatcherTimer _iconTimer;
         private readonly SemaphoreSlim _loadSem = new(1);
-        private readonly ConcurrentQueue<AppInfoViewModel> _iconQueue = new();
         private readonly ConcurrentQueue<(AppInfoViewModel App, BitmapImage? Icon)> _loadedIcons = new();
         private readonly BlurEffect _blur = new() { Radius = 30, KernelType = KernelType.Gaussian };
 
@@ -56,11 +55,15 @@ namespace ZephyrsElixir.UI.Pages
             AppIconLoader.ClearCache();
         }
 
-        private void OnDeviceChanged(bool _) => UpdateStatus();
+        private void OnDeviceChanged(bool connected)
+        {
+            UpdateStatus();
+            if (_historyMode) _ = LoadHistoryAsync();
+        }
 
         private void UpdateStatus()
         {
-            StatusText.Text = DeviceManager.Instance.IsConnected
+            PageHeaderControl.Subtitle = DeviceManager.Instance.IsConnected
                 ? Strings.Debloat_Status_Connected
                 : Strings.Debloat_Status_Disconnected;
 
@@ -97,14 +100,14 @@ namespace ZephyrsElixir.UI.Pages
                 var vms = new List<AppInfoViewModel>();
                 try
                 {
-                    var progress = new Progress<string>(msg => Dispatcher.BeginInvoke(() => StatusText.Text = msg, DispatcherPriority.Background));
+                    var progress = new Progress<string>(msg => Dispatcher.BeginInvoke(() => PageHeaderControl.Subtitle = msg, DispatcherPriority.Background));
                     if (!await ZephyrsAgent.EnsureAgentIsRunningAsync(progress, ct) || ct.IsCancellationRequested) { SetLoading(false); return; }
 
                     var apps = await ZephyrsAgent.GetInstalledAppsAsync(progress, ct);
                     if (!ct.IsCancellationRequested)
                         vms = apps.Select(a => new AppInfoViewModel { Name = a.Name, PackageName = a.PackageName, Version = a.Version, State = a.State }).ToList();
                 }
-                catch (Exception ex) { StatusText.Text = ex.Message; }
+                catch (Exception ex) { PageHeaderControl.Subtitle = ex.Message; }
                 finally
                 {
                     if (!ct.IsCancellationRequested)
@@ -134,13 +137,13 @@ namespace ZephyrsElixir.UI.Pages
 
         private void StartIconLoading(IEnumerable<AppInfoViewModel> apps, CancellationToken ct)
         {
-            ClearQueues();
-            foreach (var a in apps) _iconQueue.Enqueue(a);
+            while (_loadedIcons.TryDequeue(out _)) { }
+            var appList = apps.ToList();
             _iconTimer.Start();
 
             _iconTask = Task.Run(async () =>
             {
-                await Parallel.ForEachAsync(_iconQueue, new ParallelOptions { MaxDegreeOfParallelism = 8, CancellationToken = ct }, async (a, c) =>
+                await Parallel.ForEachAsync(appList, new ParallelOptions { MaxDegreeOfParallelism = 8, CancellationToken = ct }, async (a, c) =>
                 {
                     await Dispatcher.InvokeAsync(() => a.IsLoadingIcon = true, DispatcherPriority.Background, c);
                     var icon = await AppIconLoader.LoadIconAsync(a.PackageName, c);
@@ -151,16 +154,31 @@ namespace ZephyrsElixir.UI.Pages
 
         private void OnIconTick(object? s, EventArgs e)
         {
-            if (_loadedIcons.IsEmpty) { if (_iconQueue.IsEmpty && (_iconTask?.IsCompleted ?? true)) _iconTimer.Stop(); return; }
+            if (_loadedIcons.IsEmpty) { if (_iconTask?.IsCompleted ?? true) _iconTimer.Stop(); return; }
             for (int i = 0; i < 10 && _loadedIcons.TryDequeue(out var item); i++) { item.App.Icon = item.Icon; item.App.IsLoadingIcon = false; }
         }
 
         private async Task LoadHistoryAsync()
         {
-            var items = await UninstallHistoryManager.LoadHistoryAsync();
+            var deviceSerial = DeviceManager.Instance.IsConnected 
+                ? DeviceManager.Instance.DeviceSerial 
+                : string.Empty;
+            
+            var items = await UninstallHistoryManager.LoadHistoryAsync(deviceSerial);
+            
             _history.Clear();
             foreach (var h in items)
-                _history.Add(new HistoryAppViewModel { Name = h.DisplayName, PackageName = h.PackageName, Version = h.Version, UninstallDate = h.UninstallDate, LocalApkPath = h.LocalApkPath, IsSystemApp = h.IsSystemApp, Icon = DecodeIcon(h.IconBase64) });
+                _history.Add(new HistoryAppViewModel 
+                { 
+                    Name = h.DisplayName, 
+                    PackageName = h.PackageName, 
+                    Version = h.Version, 
+                    UninstallDate = h.UninstallDate, 
+                    LocalApkPath = h.LocalApkPath, 
+                    IsSystemApp = h.IsSystemApp, 
+                    Icon = DecodeIcon(h.IconBase64) 
+                });
+            
             UpdateUI();
         }
 
@@ -246,14 +264,18 @@ namespace ZephyrsElixir.UI.Pages
         private async void RevokeAllPermissions_Click(object s, RoutedEventArgs e)
         {
             if (AppDetailsOverlayReal.DataContext is not AppDetailsViewModel { HasGrantedPermissions: true } vm) return;
-            if (MessageBox.Show(string.Format(Strings.Debloat_Overlay_RevokeQuestion, vm.GrantedPermissionsCount, vm.App.Name), 
-                Strings.MessageBox_ConfirmAction_Title, 
-                MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return;
-            try { var c = await vm.RevokeAllPermissionsAsync(); StatusText.Text = string.Format(Strings.Debloat_Status_Revoked, c, vm.App.Name); }
+            if (!DialogService.Instance.ConfirmDirect(
+                string.Format(Strings.Debloat_Overlay_RevokeQuestion, vm.GrantedPermissionsCount, vm.App.Name),
+                Window.GetWindow(this),
+                Strings.MessageBox_ConfirmAction_Title)) return;
+            try { var c = await vm.RevokeAllPermissionsAsync(); PageHeaderControl.Subtitle = string.Format(Strings.Debloat_Status_Revoked, c, vm.App.Name); }
             catch (Exception ex) { DialogService.Instance.ShowInfoDirect(Strings.Advanced_Error, string.Format(Strings.Common_Status_Error, ex.Message), Window.GetWindow(this)); }
         }
 
         private async void DisableButton_Click(object s, RoutedEventArgs e) => await PerformAction("disable-user");
+
+        private static readonly SolidColorBrush CriticalWarningBrush = AppBrushes.Failed;
+        private static readonly SolidColorBrush NormalWarningBrush = UIHelpers.FrozenSolid(0xB0, 0xB8, 0xC8);
 
         private void UninstallButton_Click(object s, RoutedEventArgs e)
         {
@@ -264,7 +286,7 @@ namespace ZephyrsElixir.UI.Pages
             UninstallConfirmText.Text = crit > 0 
                 ? string.Format(Strings.Debloat_Uninstall_WarningCritical, crit) 
                 : string.Format(Strings.Debloat_Uninstall_Question, _toUninstall.Count);
-            UninstallConfirmText.Foreground = new SolidColorBrush(crit > 0 ? Color.FromRgb(255, 107, 107) : (Color)ColorConverter.ConvertFromString("#B0B8C8"));
+            UninstallConfirmText.Foreground = crit > 0 ? CriticalWarningBrush : NormalWarningBrush;
             ShowOverlay(UninstallConfirmOverlay);
         }
 
@@ -286,7 +308,7 @@ namespace ZephyrsElixir.UI.Pages
             {
                 foreach (var a in sel)
                 {
-                    await Dispatcher.InvokeAsync(() => StatusText.Text = string.Format(Strings.Debloat_Action_Processing, a.Name), DispatcherPriority.Background);
+                    await Dispatcher.InvokeAsync(() => PageHeaderControl.Subtitle = string.Format(Strings.Debloat_Action_Processing, a.Name), DispatcherPriority.Background);
                     var r = await AdbExecutor.ExecuteCommandAsync($"shell pm {cmd} {a.PackageName}");
                     if (r.Contains("success", StringComparison.OrdinalIgnoreCase)) ok.Add(a.PackageName);
                 }
@@ -294,7 +316,7 @@ namespace ZephyrsElixir.UI.Pages
 
             UpdateAfterAction(ok.ToHashSet(), cmd);
             SetLoading(false);
-            StatusText.Text = string.Format(Strings.Debloat_Action_Done, ok.Count);
+            PageHeaderControl.Subtitle = string.Format(Strings.Debloat_Action_Done, ok.Count);
         }
 
         private async Task Uninstall(bool backup)
@@ -307,7 +329,7 @@ namespace ZephyrsElixir.UI.Pages
             {
                 foreach (var a in _toUninstall)
                 {
-                    await Dispatcher.InvokeAsync(() => StatusText.Text = string.Format(Strings.Debloat_Action_Processing, a.Name), DispatcherPriority.Background);
+                    await Dispatcher.InvokeAsync(() => PageHeaderControl.Subtitle = string.Format(Strings.Debloat_Action_Processing, a.Name), DispatcherPriority.Background);
 
                     string? path = null;
                     var iconB64 = "";
@@ -330,7 +352,17 @@ namespace ZephyrsElixir.UI.Pages
                     if (r.Contains("success", StringComparison.OrdinalIgnoreCase))
                     {
                         ok.Add(a.PackageName);
-                        await UninstallHistoryManager.AddEntryAsync(new HistoryItem { PackageName = a.PackageName, DisplayName = a.Name, Version = a.Version, UninstallDate = DateTime.Now, LocalApkPath = path, IconBase64 = iconB64, IsSystemApp = a.State == AppState.System });
+                        await UninstallHistoryManager.AddEntryAsync(new HistoryItem 
+                        { 
+                            PackageName = a.PackageName, 
+                            DisplayName = a.Name, 
+                            Version = a.Version, 
+                            UninstallDate = DateTime.Now, 
+                            LocalApkPath = path, 
+                            IconBase64 = iconB64, 
+                            IsSystemApp = a.State == AppState.System,
+                            DeviceSerial = DeviceManager.Instance.DeviceSerial
+                        });
                     }
                     else { fail.Add(a.Name); if (path != null && File.Exists(path)) File.Delete(path); }
                 }
@@ -338,7 +370,7 @@ namespace ZephyrsElixir.UI.Pages
 
             UpdateAfterAction(ok.ToHashSet(), "uninstall");
             SetLoading(false);
-            StatusText.Text = string.Format(Strings.Debloat_Status_Success, ok.Count, _toUninstall.Count, Strings.Debloat_Action_Uninstall_Past);
+            PageHeaderControl.Subtitle = string.Format(Strings.Debloat_Status_Success, ok.Count, _toUninstall.Count, Strings.Debloat_Action_Uninstall_Past);
             if (fail.Any()) 
                 DialogService.Instance.ShowInfoDirect(
                     Strings.Common_Warning_Title, 
@@ -373,7 +405,7 @@ namespace ZephyrsElixir.UI.Pages
             });
 
             SetLoading(false);
-            if (ok) { StatusText.Text = string.Format(Strings.Debloat_Restored_Success, h.Name); await UninstallHistoryManager.RemoveEntryAsync(new HistoryItem { PackageName = h.PackageName, UninstallDate = h.UninstallDate }); _history.Remove(h); }
+            if (ok) { PageHeaderControl.Subtitle = string.Format(Strings.Debloat_Restored_Success, h.Name); await UninstallHistoryManager.RemoveEntryAsync(new HistoryItem { PackageName = h.PackageName, UninstallDate = h.UninstallDate }); _history.Remove(h); }
             else DialogService.Instance.ShowInfoDirect(
                 Strings.Advanced_Error, 
                 string.Format(Strings.Debloat_Restored_Failed, h.Name), 
@@ -401,7 +433,7 @@ namespace ZephyrsElixir.UI.Pages
 
         private void SetLoading(bool on, string? text = null)
         {
-            if (text != null) StatusText.Text = text;
+            if (text != null) PageHeaderControl.Subtitle = text;
             LoadingIndicator.Visibility = on ? Visibility.Visible : Visibility.Collapsed;
             AppsScrollViewer.Effect = on ? _blur : null;
             AppsScrollViewer.IsEnabled = !on;
@@ -412,6 +444,6 @@ namespace ZephyrsElixir.UI.Pages
         private void ShowOverlay(UIElement el) { OverlayContainer.Visibility = Visibility.Visible; el.Visibility = Visibility.Visible; }
         private void HideOverlay(UIElement el) { el.Visibility = Visibility.Collapsed; OverlayContainer.Visibility = Visibility.Collapsed; }
         private void CloseOverlay() { UninstallConfirmOverlay.Visibility = Visibility.Collapsed; OverlayContainer.Visibility = Visibility.Collapsed; }
-        private void ClearQueues() { while (_iconQueue.TryDequeue(out _)) { } while (_loadedIcons.TryDequeue(out _)) { } }
+        private void ClearQueues() { while (_loadedIcons.TryDequeue(out _)) { } }
     }
 }

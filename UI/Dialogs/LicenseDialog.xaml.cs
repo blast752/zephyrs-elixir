@@ -1,4 +1,4 @@
-namespace ZephyrsElixir.UI.Views;
+namespace ZephyrsElixir.UI.Dialogs;
 
 public partial class LicenseDialog : Window
 {
@@ -10,15 +10,6 @@ public partial class LicenseDialog : Window
         _viewModel = new LicenseViewModel();
         DataContext = _viewModel;
         Loaded += (_, _) => TxtLicenseKey?.Focus();
-        Closed += (_, _) => _viewModel.Cleanup();
-    }
-
-    public static bool Show(Window? owner = null)
-    {
-        var dialog = new LicenseDialog
-        {
-            Owner = owner ?? Application.Current.MainWindow
-        };
-        return dialog.ShowDialog() == true;
+        Closed += (_, _) => _viewModel.Dispose();
     }
 }

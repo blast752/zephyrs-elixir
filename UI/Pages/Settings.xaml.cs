@@ -110,30 +110,27 @@ public partial class Settings : UserControl
         {
             AdbLogger.Instance.LogException("System", ex);
             
-            string errorMessage = string.Format(
+            var errorMessage = string.Format(
                 Strings.Settings_MessageBox_ExportError_Message 
                     ?? "Failed to export log:\n{0}",
                 ex.Message);
 
             DialogService.Instance.ShowInfoDirect(
-                Strings.Settings_MessageBox_ExportError_Title,
-                string.Format(Strings.Settings_Export_NoLogs, ex.Message),
+                Strings.Settings_MessageBox_ExportError_Title ?? "Export Error",
+                errorMessage,
                 Window.GetWindow(this));
         }
     }
-
-    private static class SystemInfoConstants
-    {
-        public const string HeaderLine = "═══════════════════════════════════════════════════════════════";
-    }
+    
+    public const string HeaderLine = "═══════════════════════════════════════════════════════════════";
 
     private static string GetSystemInformation()
     {
         var sb = new StringBuilder(1024);
         
-        sb.AppendLine(SystemInfoConstants.HeaderLine);
+        sb.AppendLine(HeaderLine);
         sb.AppendLine("  SYSTEM INFORMATION");
-        sb.AppendLine(SystemInfoConstants.HeaderLine);
+        sb.AppendLine(HeaderLine);
         sb.AppendLine();
         
         try

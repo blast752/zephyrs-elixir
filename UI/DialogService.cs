@@ -14,58 +14,27 @@ public sealed class DialogService
     #region Quick Methods - Info, Warning, Error, Success
 
     public void ShowInfo(string messageKey, Window? owner = null, string? titleKey = null)
-    {
-        var config = new DialogConfig
-        {
-            Title = GetString(titleKey ?? "Dialog_Title_Info"),
-            Message = GetString(messageKey),
-            Type = DialogType.Info,
-            Owner = owner ?? GetActiveWindow(),
-            Buttons = new[] { OkButton }
-        };
-
-        Show(config);
-    }
+        => ShowSimple(messageKey, DialogType.Info, owner, titleKey ?? "Dialog_Title_Info");
 
     public void ShowWarning(string messageKey, Window? owner = null, string? titleKey = null)
-    {
-        var config = new DialogConfig
-        {
-            Title = GetString(titleKey ?? "Dialog_Title_Warning"),
-            Message = GetString(messageKey),
-            Type = DialogType.Warning,
-            Owner = owner ?? GetActiveWindow(),
-            Buttons = new[] { OkButton }
-        };
-
-        Show(config);
-    }
+        => ShowSimple(messageKey, DialogType.Warning, owner, titleKey ?? "Dialog_Title_Warning");
 
     public void ShowError(string messageKey, Window? owner = null, string? titleKey = null)
-    {
-        var config = new DialogConfig
-        {
-            Title = GetString(titleKey ?? "Dialog_Title_Error"),
-            Message = GetString(messageKey),
-            Type = DialogType.Error,
-            Owner = owner ?? GetActiveWindow(),
-            Buttons = new[] { OkButton }
-        };
-
-        Show(config);
-    }
+        => ShowSimple(messageKey, DialogType.Error, owner, titleKey ?? "Dialog_Title_Error");
 
     public void ShowSuccess(string messageKey, Window? owner = null, string? titleKey = null)
+        => ShowSimple(messageKey, DialogType.Success, owner, titleKey ?? "Dialog_Title_Success");
+
+    private void ShowSimple(string messageKey, DialogType type, Window? owner, string titleKey)
     {
         var config = new DialogConfig
         {
-            Title = GetString(titleKey ?? "Dialog_Title_Success"),
+            Title = GetString(titleKey),
             Message = GetString(messageKey),
-            Type = DialogType.Success,
+            Type = type,
             Owner = owner ?? GetActiveWindow(),
             Buttons = new[] { OkButton }
         };
-
         Show(config);
     }
 
@@ -73,85 +42,44 @@ public sealed class DialogService
 
     #region Confirmation Dialogs
 
-    public bool Confirm(string messageKey, Window? owner = null, string? titleKey = null)
-    {
-        var config = new DialogConfig
-        {
-            Title = GetString(titleKey ?? "Common_Confirm_Title"),
-            Message = GetString(messageKey),
-            Type = DialogType.Question,
-            Owner = owner ?? GetActiveWindow(),
-            Buttons = new[]
-            {
-                new DialogButton(GetString("Common_Button_No"), DialogAction.No, ButtonStyle.Secondary),
-                new DialogButton(GetString("Common_Button_Yes"), DialogAction.Yes, ButtonStyle.Primary)
-            }
-        };
-
-        var dialog = UnifiedDialog.Create(config);
-        dialog.ShowDialog();
-        return dialog.Result == DialogAction.Yes;
-    }
-
-    public bool ConfirmCustom(string messageKey, string confirmButtonKey, string cancelButtonKey, 
-                               Window? owner = null, string? titleKey = null)
-    {
-        var config = new DialogConfig
-        {
-            Title = GetString(titleKey ?? "Common_Confirm_Title"),
-            Message = GetString(messageKey),
-            Type = DialogType.Question,
-            Owner = owner ?? GetActiveWindow(),
-            Buttons = new[]
-            {
-                new DialogButton(GetString(cancelButtonKey), DialogAction.Cancel, ButtonStyle.Secondary),
-                new DialogButton(GetString(confirmButtonKey), DialogAction.Primary, ButtonStyle.Primary)
-            }
-        };
-
-        var dialog = UnifiedDialog.Create(config);
-        dialog.ShowDialog();
-        return dialog.Result == DialogAction.Primary;
-    }
-
-    public bool ConfirmDirect(string message, Window? owner = null, string? title = null)
+    private DialogAction ShowConfirmCore(string message, DialogType type, DialogButton cancel, DialogButton confirm, Window? owner, string? title)
     {
         var config = new DialogConfig
         {
             Title = title ?? GetString("Common_Confirm_Title"),
             Message = message,
-            Type = DialogType.Question,
+            Type = type,
             Owner = owner ?? GetActiveWindow(),
-            Buttons = new[]
-            {
-                new DialogButton(GetString("Common_Button_Cancel"), DialogAction.Cancel, ButtonStyle.Secondary),
-                new DialogButton(GetString("Common_Button_OK"), DialogAction.Primary, ButtonStyle.Primary)
-            }
+            Buttons = new[] { cancel, confirm }
         };
         var dialog = UnifiedDialog.Create(config);
         dialog.ShowDialog();
-        return dialog.Result == DialogAction.Primary;
+        return dialog.Result;
     }
 
-    public bool ConfirmStopOptimization(Window? owner = null)
-    {
-        var config = new DialogConfig
-        {
-            Title = GetString("Dialog_StopOptimization_Title"),
-            Message = GetString("Dialog_StopOptimization_Description"),
-            Type = DialogType.Warning,
-            Owner = owner ?? GetActiveWindow(),
-            Buttons = new[]
-            {
-                new DialogButton(GetString("Dialog_StopOptimization_ContinueButton"), DialogAction.Cancel, ButtonStyle.Secondary),
-                new DialogButton(GetString("Dialog_StopOptimization_StopButton"), DialogAction.Primary, ButtonStyle.Accent)
-            }
-        };
+    public bool Confirm(string messageKey, Window? owner = null, string? titleKey = null) =>
+        ShowConfirmCore(GetString(messageKey), DialogType.Question,
+            new DialogButton(GetString("Common_Button_No"), DialogAction.No, ButtonStyle.Secondary),
+            new DialogButton(GetString("Common_Button_Yes"), DialogAction.Yes, ButtonStyle.Primary),
+            owner, titleKey is null ? null : GetString(titleKey)) == DialogAction.Yes;
 
-        var dialog = UnifiedDialog.Create(config);
-        dialog.ShowDialog();
-        return dialog.Result == DialogAction.Primary;
-    }
+    public bool ConfirmCustom(string messageKey, string confirmButtonKey, string cancelButtonKey, Window? owner = null, string? titleKey = null) =>
+        ShowConfirmCore(GetString(messageKey), DialogType.Question,
+            new DialogButton(GetString(cancelButtonKey), DialogAction.Cancel, ButtonStyle.Secondary),
+            new DialogButton(GetString(confirmButtonKey), DialogAction.Primary, ButtonStyle.Primary),
+            owner, titleKey is null ? null : GetString(titleKey)) == DialogAction.Primary;
+
+    public bool ConfirmDirect(string message, Window? owner = null, string? title = null) =>
+        ShowConfirmCore(message, DialogType.Question,
+            new DialogButton(GetString("Common_Button_Cancel"), DialogAction.Cancel, ButtonStyle.Secondary),
+            new DialogButton(GetString("Common_Button_OK"), DialogAction.Primary, ButtonStyle.Primary),
+            owner, title) == DialogAction.Primary;
+
+    public bool ConfirmStopOptimization(Window? owner = null) =>
+        ShowConfirmCore(GetString("Dialog_StopOptimization_Description"), DialogType.Warning,
+            new DialogButton(GetString("Dialog_StopOptimization_ContinueButton"), DialogAction.Cancel, ButtonStyle.Secondary),
+            new DialogButton(GetString("Dialog_StopOptimization_StopButton"), DialogAction.Primary, ButtonStyle.Accent),
+            owner, GetString("Dialog_StopOptimization_Title")) == DialogAction.Primary;
 
     #endregion
 
@@ -182,7 +110,7 @@ public sealed class DialogService
     public void ShowProRequiredWithUpgrade(string featureMessageKey, Window? owner = null)
     {
         var ownerWindow = owner ?? GetActiveWindow();
-        
+
         if (ShowProRequired(featureMessageKey, ownerWindow))
         {
             var licenseDialog = new LicenseDialog { Owner = ownerWindow };
@@ -218,7 +146,7 @@ public sealed class DialogService
     public void ShowFormatted(DialogType type, string messageKey, Window? owner = null, params object[] args)
     {
         var message = string.Format(GetString(messageKey), args);
-        
+
         var config = new DialogConfig
         {
             Title = GetTitleForType(type),
@@ -241,7 +169,7 @@ public sealed class DialogService
         dialog.ShowDialog();
     }
 
-    private static string GetString(string key) => 
+    private static string GetString(string key) =>
         TranslationManager.Instance[key];
 
     private static Window? GetActiveWindow() =>
@@ -250,16 +178,16 @@ public sealed class DialogService
 
     private static string GetTitleForType(DialogType type) => type switch
     {
-        DialogType.Info => GetString("Dialog_Title_Info"),
-        DialogType.Success => GetString("Dialog_Title_Success"),
-        DialogType.Warning => GetString("Dialog_Title_Warning"),
-        DialogType.Error => GetString("Dialog_Title_Error"),
-        DialogType.Question => GetString("Common_Confirm_Title"),
+        DialogType.Info        => GetString("Dialog_Title_Info"),
+        DialogType.Success     => GetString("Dialog_Title_Success"),
+        DialogType.Warning     => GetString("Dialog_Title_Warning"),
+        DialogType.Error       => GetString("Dialog_Title_Error"),
+        DialogType.Question    => GetString("Common_Confirm_Title"),
         DialogType.ProRequired => GetString("Pro_Required_Title"),
-        _ => GetString("Dialog_Title_Info")
+        _                      => GetString("Dialog_Title_Info")
     };
 
-    private static DialogButton OkButton => 
+    private static DialogButton OkButton =>
         new(GetString("Common_Button_OK"), DialogAction.Primary, ButtonStyle.Primary);
 
     #endregion
@@ -267,42 +195,23 @@ public sealed class DialogService
     #region Info Dialogs (License, Privacy, Changelog)
 
     public void ShowLicense(Window? owner = null)
-    {
-        var config = new DialogConfig
-        {
-            Title = GetString("Info_License_Title"),
-            Type = DialogType.RichContent,
-            Owner = owner ?? GetActiveWindow(),
-            Buttons = new[] { new DialogButton(GetString("Dialog_Button_GotIt"), DialogAction.Primary, ButtonStyle.Primary) },
-            RichContent = CreateLicenseContent()
-        };
-
-        Show(config);
-    }
+        => ShowRichInfo("Info_License_Title", CreateLicenseContent(), owner);
 
     public void ShowPrivacy(Window? owner = null)
-    {
-        var config = new DialogConfig
-        {
-            Title = GetString("Info_Privacy_Title"),
-            Type = DialogType.RichContent,
-            Owner = owner ?? GetActiveWindow(),
-            Buttons = new[] { new DialogButton(GetString("Dialog_Button_GotIt"), DialogAction.Primary, ButtonStyle.Primary) },
-            RichContent = CreatePrivacyContent()
-        };
-
-        Show(config);
-    }
+        => ShowRichInfo("Info_Privacy_Title", CreatePrivacyContent(), owner);
 
     public void ShowChangelog(Window? owner = null)
+        => ShowRichInfo("Info_Changelog_Title", CreateChangelogContent(), owner);
+
+    private void ShowRichInfo(string titleKey, IEnumerable<Block> content, Window? owner)
     {
         var config = new DialogConfig
         {
-            Title = GetString("Info_Changelog_Title"),
+            Title = GetString(titleKey),
             Type = DialogType.RichContent,
             Owner = owner ?? GetActiveWindow(),
             Buttons = new[] { new DialogButton(GetString("Dialog_Button_GotIt"), DialogAction.Primary, ButtonStyle.Primary) },
-            RichContent = CreateChangelogContent()
+            RichContent = content
         };
 
         Show(config);
@@ -395,9 +304,9 @@ public sealed class DialogService
 
     #region FlowDocument Helpers
 
-    private static readonly Brush TextBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFDCDCF0")!);
-    private static readonly Brush TitleBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFFD700")!);
-    private static readonly Brush LinkBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF87CEFA")!);
+    private static readonly Brush TextBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xDC, 0xDC, 0xF0));
+    private static readonly Brush TitleBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0xD7, 0x00));
+    private static readonly Brush LinkBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x87, 0xCE, 0xFA));
 
     static DialogService()
     {
@@ -438,7 +347,7 @@ public sealed class DialogService
         var hyperlink = new Hyperlink(new Run(url)) { NavigateUri = new Uri(url), Foreground = LinkBrush };
         hyperlink.RequestNavigate += (_, e) =>
         {
-            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
+            ShellUtils.OpenUrl(e.Uri);
             e.Handled = true;
         };
 

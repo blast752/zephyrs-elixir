@@ -42,7 +42,7 @@ namespace ZephyrsElixir.UI.Pages
             this.SubscribeToDeviceUpdates(onStatusChanged: OnDeviceChanged, controls: _devControls);
             
             foreach (var ctrl in new UIElement[] { SafetyCoreButton, ResetAdIdButton, CaptivePortalButton, GoogleCoreControlButton, RamExpansionButton })
-                LicenseGuard.SetRequiredTier(ctrl, LicenseTier.Pro);;
+                LicenseGuard.SetRequiredTier(ctrl, LicenseTier.Pro);
             
             if (DeviceManager.Instance.IsConnected) { LoadAnimSpeed(); StartAnimSync(); _ = CheckRamAsync(); }
             _initialized = true;
@@ -119,30 +119,96 @@ namespace ZephyrsElixir.UI.Pages
             });
         }
 
-        private async void OnResetAdIdClick(object s, RoutedEventArgs e)
-        {
-            if (!Confirm(Strings.Advanced_ResetAdId_Confirm)) return;
-            await Exec(ResetAdIdButton, PrivacyStatusBorder, PrivacyStatusText, async () =>
-            {
-                await Adb($"shell am broadcast -a com.google.android.gms.ads.identifier.service.START --es \"registration_id\" \"{Guid.NewGuid().ToString().ToLowerInvariant()}\"");
-                await Task.Delay(500);
-                await Adb("shell settings put global ad_id 00000000-0000-0000-0000-000000000000");
-                Track(Ops.AdId);
-                return (true, Strings.Advanced_ResetAdId_Success);
-            });
-        }
-
         private async void OnSafetyCoreClick(object s, RoutedEventArgs e)
         {
             if (!Confirm(Strings.Advanced_SafetyCore_Confirm)) return;
-            await Exec(SafetyCoreButton, PrivacyStatusBorder, PrivacyStatusText, async () =>
+            if (SafetyCoreButton != null) SafetyCoreButton.IsEnabled = false;
+            Show(PrivacyStatusBorder, PrivacyStatusText, Strings.Advanced_Status_Processing);
+            try
             {
-                var chk = await Adb("shell pm list packages com.google.android.safetycore");
-                if (!chk.Contains("com.google.android.safetycore")) return (true, Strings.Advanced_SafetyCore_NotInstalled);
-                var o = await Adb("shell pm disable-user --user 0 com.google.android.safetycore");
-                if (o.Contains("disabled", StringComparison.OrdinalIgnoreCase) || o.Contains("new state", StringComparison.OrdinalIgnoreCase)) { Track(Ops.SafetyCore); return (true, Strings.Advanced_SafetyCore_Success); }
-                return (false, $"{Strings.Advanced_Error}: {o}");
-            });
+                var result = await Pro.ExecuteAsync(ProCommandIds.SafetyCore);
+                if (result.Success)
+                {
+                    var isNotInstalled = result.Message.Contains("not installed", StringComparison.OrdinalIgnoreCase);
+                    Track(Ops.SafetyCore);
+                    Show(PrivacyStatusBorder, PrivacyStatusText, isNotInstalled ? Strings.Advanced_SafetyCore_NotInstalled : Strings.Advanced_SafetyCore_Success);
+                    await Task.Delay(3000);
+                    Hide(PrivacyStatusBorder);
+                }
+                else
+                {
+                    Show(PrivacyStatusBorder, PrivacyStatusText, $"{Strings.Advanced_Error}: {result.Message}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Show(PrivacyStatusBorder, PrivacyStatusText, $"{Strings.Advanced_Error}: {ex.Message}");
+            }
+            finally
+            {
+                if (SafetyCoreButton != null) SafetyCoreButton.IsEnabled = DeviceManager.Instance.IsConnected;
+            }
+        }
+
+        private async void OnResetAdIdClick(object s, RoutedEventArgs e)
+        {
+            if (!Confirm(Strings.Advanced_ResetAdId_Confirm)) return;
+            await ExecPro(ResetAdIdButton, PrivacyStatusBorder, PrivacyStatusText,
+                ProCommandIds.ResetAdId, Ops.AdId, Strings.Advanced_ResetAdId_Success);
+        }
+
+        private async void OnCaptivePortalClick(object s, RoutedEventArgs e)
+        {
+            if (!Confirm(Strings.Advanced_CaptivePortal_Confirm)) return;
+            await ExecPro(CaptivePortalButton, PrivacyStatusBorder, PrivacyStatusText,
+                ProCommandIds.CaptivePortal, Ops.CaptivePortal, Strings.Advanced_CaptivePortal_Success);
+        }
+
+        private async void OnGoogleCoreControlClick(object s, RoutedEventArgs e)
+        {
+            if (!Confirm(Strings.Advanced_GoogleCoreControl_Confirm)) return;
+            await ExecPro(GoogleCoreControlButton, PrivacyStatusBorder, PrivacyStatusText,
+                ProCommandIds.GoogleCoreControl, Ops.GoogleCore, Strings.Advanced_GoogleCoreControl_Success);
+        }
+
+        private async void OnRamExpansionClick(object s, RoutedEventArgs e)
+        {
+            if (!_hasEnoughRam) return;
+            if (!Confirm(Strings.Advanced_RamExpansion_Confirm)) return;
+            var brand = (await Adb("shell getprop ro.product.brand")).Trim().ToUpperInvariant();
+            await ExecPro(RamExpansionButton, PrivacyStatusBorder, PrivacyStatusText,
+                ProCommandIds.RamExpansion, Ops.RamExpansion, string.Format(Strings.Advanced_RamExpansion_Success_Brand, brand));
+        }
+
+        private async Task ExecPro(Button? btn, Border? border, TextBlock? text, string commandId, string opKey, string? successMessage = null)
+        {
+            if (btn != null) btn.IsEnabled = false;
+            Show(border, text, Strings.Advanced_Status_Processing);
+
+            try
+            {
+                var result = await Pro.ExecuteAsync(commandId);
+
+                if (result.Success)
+                {
+                    Track(opKey);
+                    Show(border, text, successMessage ?? result.Message);
+                    await Task.Delay(3000);
+                    Hide(border);
+                }
+                else
+                {
+                    Show(border, text, $"{Strings.Advanced_Error}: {result.Message}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Show(border, text, $"{Strings.Advanced_Error}: {ex.Message}");
+            }
+            finally
+            {
+                if (btn != null) btn.IsEnabled = DeviceManager.Instance.IsConnected;
+            }
         }
 
         private async void LoadAnimSpeed()
@@ -177,7 +243,7 @@ namespace ZephyrsElixir.UI.Pages
             if (AnimationSlider == null || AnimationValueText == null) return;
             _resetting = true;
             AnimationSlider.Value = v;
-            AnimationValueText.Text = v == 0 ? "Off" : $"{v:F2}x";
+            AnimationValueText.Text = v == 0 ? Strings.Advanced_Animation_Value_Off : $"{v:F2}x";
             _resetting = false;
         }
 
@@ -192,7 +258,7 @@ namespace ZephyrsElixir.UI.Pages
         private void OnAnimationSliderChanged(object s, RoutedPropertyChangedEventArgs<double> e)
         {
             if (_resetting || AnimationValueText == null) return;
-            AnimationValueText.Text = e.NewValue == 0 ? "Off" : $"{e.NewValue:F2}x";
+            AnimationValueText.Text = e.NewValue == 0 ? Strings.Advanced_Animation_Value_Off : $"{e.NewValue:F2}x";
             AnimateValue();
         }
 
@@ -268,24 +334,36 @@ namespace ZephyrsElixir.UI.Pages
             try
             {
                 var ops = new HashSet<string>(_ops);
-                var actions = new (string Op, string Status, Func<Task> Act)[]
+
+                var freeReverts = new (string Op, string Status, Func<Task> Act)[]
                 {
                     (Ops.Animations, Strings.Advanced_Status_ResetAnimations, async () => { await SetAnimSpeedAsync(1.0); ResetSlider(); }),
                     (Ops.Compilation, Strings.Advanced_Status_ResetCompilation, () => Adb("shell cmd package compile --reset -a")),
                     (Ops.Battery, Strings.Advanced_Status_ResetBattery, () => Adb("shell dumpsys battery reset")),
                     (Ops.Dns, Strings.Advanced_Status_ResetDNS, ResetDnsAsync),
-                    (Ops.SafetyCore, Strings.Advanced_Status_ReenableSafetyCore, ReenableSafetyCoreAsync),
-                    (Ops.AdId, Strings.Advanced_Status_ResetAdId, ReenableAdIdAsync),
-                    (Ops.CaptivePortal, Strings.Advanced_Status_ReenableCaptivePortal, ReenableCaptiveAsync),
-                    (Ops.GoogleCore, Strings.Advanced_Status_ReenableGoogleCoreControl, ReenableGoogleAsync),
-                    (Ops.RamExpansion, Strings.Advanced_Status_ReenableRamExpansion, ReenableRamAsync)
                 };
 
-                foreach (var (op, status, act) in actions)
+                foreach (var (op, status, act) in freeReverts)
                 {
                     if (!ops.Contains(op)) continue;
                     Show(TroubleshootingStatusBorder, TroubleshootingStatusText, status);
                     await act();
+                }
+
+                var proReverts = new (string Op, string Status, string CommandId)[]
+                {
+                    (Ops.SafetyCore, Strings.Advanced_Status_ReenableSafetyCore, ProCommandIds.SafetyCore),
+                    (Ops.AdId, Strings.Advanced_Status_ResetAdId, ProCommandIds.ResetAdId),
+                    (Ops.CaptivePortal, Strings.Advanced_Status_ReenableCaptivePortal, ProCommandIds.CaptivePortal),
+                    (Ops.GoogleCore, Strings.Advanced_Status_ReenableGoogleCoreControl, ProCommandIds.GoogleCoreControl),
+                    (Ops.RamExpansion, Strings.Advanced_Status_ReenableRamExpansion, ProCommandIds.RamExpansion),
+                };
+
+                foreach (var (op, status, cmdId) in proReverts)
+                {
+                    if (!ops.Contains(op)) continue;
+                    Show(TroubleshootingStatusBorder, TroubleshootingStatusText, status);
+                    await Pro.RevertAsync(cmdId);
                 }
 
                 _ops.Clear();
@@ -298,53 +376,6 @@ namespace ZephyrsElixir.UI.Pages
             catch (Exception ex) { Show(TroubleshootingStatusBorder, TroubleshootingStatusText, $"{Strings.Advanced_Error}: {ex.Message}"); }
             finally { UpdateResetBtn(); }
         }
-
-        private async void OnCaptivePortalClick(object s, RoutedEventArgs e)
-        {
-            if (!Confirm(Strings.Advanced_CaptivePortal_Confirm)) return;
-            await Exec(CaptivePortalButton, PrivacyStatusBorder, PrivacyStatusText, async () =>
-            {
-                await Adb("shell settings put global captive_portal_detection_enabled 0");
-                await Adb("shell settings put global captive_portal_mode 0");
-                Track(Ops.CaptivePortal);
-                return (true, Strings.Advanced_CaptivePortal_Success);
-            });
-        }
-
-        private async void OnGoogleCoreControlClick(object s, RoutedEventArgs e)
-        {
-            if (!Confirm(Strings.Advanced_GoogleCoreControl_Confirm)) return;
-            await Exec(GoogleCoreControlButton, PrivacyStatusBorder, PrivacyStatusText, async () =>
-            {
-                await Adb("shell settings put global google_core_control 0");
-                Track(Ops.GoogleCore);
-                return (true, Strings.Advanced_GoogleCoreControl_Success);
-            });
-        }
-
-        private async void OnRamExpansionClick(object s, RoutedEventArgs e)
-        {
-            if (!_hasEnoughRam) return;
-            if (!Confirm(Strings.Advanced_RamExpansion_Confirm)) return;
-            await Exec(RamExpansionButton, PrivacyStatusBorder, PrivacyStatusText, async () =>
-            {
-                var brand = (await Adb("shell getprop ro.product.brand")).Trim().ToLowerInvariant();
-                var mfr = (await Adb("shell getprop ro.product.manufacturer")).Trim().ToLowerInvariant();
-                foreach (var cmd in GetRamCmds(brand, mfr)) await Adb(cmd);
-                Track(Ops.RamExpansion);
-                return (true, string.Format(Strings.Advanced_RamExpansion_Success_Brand, brand.ToUpperInvariant()));
-            });
-        }
-
-        private static IEnumerable<string> GetRamCmds(string brand, string mfr) => (brand, mfr) switch
-        {
-            ("samsung", _) or (_, "samsung") => new[] { "shell settings put global ram_expand_size_list 0", "shell settings put global ram_expand_size 0", "shell settings put global zram_enabled 0" },
-            ("xiaomi" or "redmi" or "poco", _) or (_, "xiaomi") => new[] { "shell settings put global extra_free_kbytes 0", "shell setprop persist.miui.extm.enable 0", "shell settings put global mi_ram_expansion_enabled 0" },
-            ("oneplus" or "oppo" or "realme", _) or (_, "oneplus" or "oppo" or "realme") => new[] { "shell settings put global ram_boost_enabled 0", "shell settings put global ram_expand_size 0", "shell setprop persist.sys.oplus.nandswap.condition false" },
-            ("vivo" or "iqoo", _) or (_, "vivo") => new[] { "shell settings put global virtual_ram_config 0", "shell settings put global ram_expand_size 0" },
-            ("huawei" or "honor", _) or (_, "huawei") => new[] { "shell settings put global ram_expand_enabled 0", "shell settings put global memory_expansion_enabled 0" },
-            _ => new[] { "shell settings put global ram_expand_size 0", "shell settings put global zram_enabled 0", "shell settings put global enable_swap 0" }
-        };
 
         private async Task CheckRamAsync()
         {
@@ -370,11 +401,6 @@ namespace ZephyrsElixir.UI.Pages
         }
 
         private async Task ResetDnsAsync() { await Adb("shell settings put global private_dns_mode off"); await Adb("shell settings delete global private_dns_specifier"); _cfgDns = null; }
-        private static async Task ReenableSafetyCoreAsync() { var c = await AdbExecutor.ExecuteCommandAsync("shell pm list packages com.google.android.safetycore"); if (c.Contains("com.google.android.safetycore")) await AdbExecutor.ExecuteCommandAsync("shell pm enable com.google.android.safetycore"); }
-        private static async Task ReenableAdIdAsync() { await AdbExecutor.ExecuteCommandAsync("shell settings delete global ad_id"); await Task.Delay(100); await AdbExecutor.ExecuteCommandAsync("shell am broadcast -a com.google.android.gms.ads.identifier.service.RESET"); }
-        private static async Task ReenableCaptiveAsync() { await AdbExecutor.ExecuteCommandAsync("shell settings put global captive_portal_detection_enabled 1"); await AdbExecutor.ExecuteCommandAsync("shell settings put global captive_portal_mode 1"); }
-        private static Task ReenableGoogleAsync() => AdbExecutor.ExecuteCommandAsync("shell settings delete global google_core_control");
-        private static async Task ReenableRamAsync() { foreach (var s in new[] { "ram_expand_size_list", "zram_enabled", "extra_free_kbytes", "ram_boost_enabled", "ram_expand_size", "virtual_ram_config", "enable_swap" }) await AdbExecutor.ExecuteCommandAsync($"shell settings delete global {s}"); }
 
         private void Track(string op) { _ops.Add(op); UpdateUI(); }
         private void Clear(string op) { _ops.Remove(op); UpdateUI(); }

@@ -2,6 +2,27 @@ namespace ZephyrsElixir.UI.Dialogs;
 
 public sealed partial class UnifiedDialog : Window
 {
+    #region Cached Icon Brushes (shared across all dialog instances)
+
+    // Frozen at class-init to avoid allocating/freezing a new LinearGradientBrush
+    // on every dialog open. Keeps identical visuals, saves GC pressure.
+    private static readonly Brush InfoIconBrush     = UIHelpers.CreateGradientBrush("#00BFFF", "#007FFF");
+    private static readonly Brush SuccessIconBrush  = AppBrushes.GradientGreen; // identical colors — shared
+    private static readonly Brush WarningIconBrush  = UIHelpers.CreateGradientBrush("#FFD700", "#FFA500");
+    private static readonly Brush ErrorIconBrush    = UIHelpers.CreateGradientBrush("#FF6B6B", "#FF4757");
+    private static readonly Brush QuestionIconBrush = UIHelpers.CreateGradientBrush("#A78BFA", "#7C3AED");
+    private static readonly Brush ProIconBrush      = WarningIconBrush; // same gold/orange palette
+
+    private static readonly SolidColorBrush DefaultIconBrush;
+
+    static UnifiedDialog()
+    {
+        DefaultIconBrush = new SolidColorBrush(Colors.White);
+        DefaultIconBrush.Freeze();
+    }
+
+    #endregion
+
     #region Dialog Result
 
     public DialogAction Result { get; private set; } = DialogAction.Cancel;
@@ -93,42 +114,31 @@ public sealed partial class UnifiedDialog : Window
     private static string GetIconForType(DialogType type) => type switch
     {
         DialogType.Info or DialogType.RichContent => "\uE946",
-        DialogType.Success => "\uE73E",
-        DialogType.Warning => "\uE7BA",
-        DialogType.Error => "\uEA39",
-        DialogType.Question => "\uE897",
+        DialogType.Success     => "\uE73E",
+        DialogType.Warning     => "\uE7BA",
+        DialogType.Error       => "\uEA39",
+        DialogType.Question    => "\uE897",
         DialogType.ProRequired => "\uE735",
-        _ => "\uE946"
+        _                      => "\uE946"
     };
 
     private static Brush GetIconBrush(DialogType type) => type switch
     {
-        DialogType.Info or DialogType.RichContent => CreateGradient("#00BFFF", "#007FFF"),
-        DialogType.Success => CreateGradient("#00D68F", "#00B377"),
-        DialogType.Warning => CreateGradient("#FFD700", "#FFA500"),
-        DialogType.Error => CreateGradient("#FF6B6B", "#FF4757"),
-        DialogType.Question => CreateGradient("#A78BFA", "#7C3AED"),
-        DialogType.ProRequired => CreateGradient("#FFD700", "#FFA500"),
-        _ => new SolidColorBrush(Colors.White)
-    };
-
-    private static LinearGradientBrush CreateGradient(string color1, string color2) => new()
-    {
-        StartPoint = new Point(0, 0),
-        EndPoint = new Point(1, 1),
-        GradientStops =
-        {
-            new GradientStop((Color)ColorConverter.ConvertFromString(color1)!, 0),
-            new GradientStop((Color)ColorConverter.ConvertFromString(color2)!, 1)
-        }
+        DialogType.Info or DialogType.RichContent => InfoIconBrush,
+        DialogType.Success     => SuccessIconBrush,
+        DialogType.Warning     => WarningIconBrush,
+        DialogType.Error       => ErrorIconBrush,
+        DialogType.Question    => QuestionIconBrush,
+        DialogType.ProRequired => ProIconBrush,
+        _                      => DefaultIconBrush
     };
 
     private static string GetButtonStyle(ButtonStyle style) => style switch
     {
-        ButtonStyle.Primary => "DialogPrimaryButtonStyle",
+        ButtonStyle.Primary   => "DialogPrimaryButtonStyle",
         ButtonStyle.Secondary => "DialogSecondaryButtonStyle",
-        ButtonStyle.Accent => "DialogAccentButtonStyle",
-        _ => "DialogSecondaryButtonStyle"
+        ButtonStyle.Accent    => "DialogAccentButtonStyle",
+        _                     => "DialogSecondaryButtonStyle"
     };
 
     #endregion
@@ -173,7 +183,7 @@ public sealed record DialogConfig
     public DialogType Type { get; init; } = DialogType.Info;
     public IReadOnlyList<DialogButton> Buttons { get; init; } = Array.Empty<DialogButton>();
     public Window? Owner { get; init; }
-    
+
     public IEnumerable<Block>? RichContent { get; init; }
 }
 

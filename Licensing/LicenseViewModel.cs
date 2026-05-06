@@ -16,6 +16,7 @@ public sealed partial class LicenseViewModel : ObservableObject, IDisposable
     [NotifyCanExecuteChangedFor(nameof(ActivateCommand))]
     [NotifyCanExecuteChangedFor(nameof(DeactivateCommand))]
     [NotifyCanExecuteChangedFor(nameof(RefreshCommand))]
+    [NotifyCanExecuteChangedFor(nameof(RetryDllDownloadCommand))]
     private bool _isLoading;
 
     [ObservableProperty] 
@@ -40,7 +41,20 @@ public sealed partial class LicenseViewModel : ObservableObject, IDisposable
     [NotifyPropertyChangedFor(nameof(MaskedLicenseKey))]
     [NotifyPropertyChangedFor(nameof(HasActiveLicense))]
     [NotifyPropertyChangedFor(nameof(ShowDeactivateButton))]
+    [NotifyPropertyChangedFor(nameof(ShowDllDownloadFailed))]
+    [NotifyPropertyChangedFor(nameof(ShowDllDownloading))]
+    [NotifyPropertyChangedFor(nameof(DllStateText))]
     private LicenseState _currentState;
+
+    [ObservableProperty]
+    private string? _activationStatusMessage;
+
+    [ObservableProperty]
+    private double _downloadPercent;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ShowDownloadProgress))]
+    private bool _isDownloading;
 
     #endregion
 
@@ -48,7 +62,7 @@ public sealed partial class LicenseViewModel : ObservableObject, IDisposable
 
     public bool IsPro => CurrentState.EffectiveTier >= LicenseTier.Pro;
     public bool IsFree => !IsPro;
-    public string TierDisplayName => IsPro ? "Pro" : "Free";
+    public string TierDisplayName => IsPro ? "Pro" : Strings.License_Status_Free;
     
     public bool HasActiveLicense => CurrentState.LicenseKey is not null;
     public bool ShowDeactivateButton => HasActiveLicense && CurrentState.IsActive;
@@ -59,6 +73,19 @@ public sealed partial class LicenseViewModel : ObservableObject, IDisposable
     
     public bool ShowError => !string.IsNullOrEmpty(ErrorMessage);
     public bool ShowSuccess => !string.IsNullOrEmpty(SuccessMessage);
+    public bool ShowDownloadProgress => IsDownloading;
+    
+    public bool ShowDllDownloadFailed => CurrentState.DllState == ProDllState.DownloadFailed && CurrentState.IsActive;
+    public bool ShowDllDownloading => CurrentState.DllState == ProDllState.Downloading;
+    
+    public string? DllStateText => CurrentState.DllState switch
+    {
+        ProDllState.Downloading => Strings.License_Dll_Downloading,
+        ProDllState.DownloadFailed => Strings.License_Dll_DownloadFailed,
+        ProDllState.Corrupted => Strings.License_Dll_Corrupted,
+        ProDllState.UpdateAvailable => Strings.License_Dll_UpdateAvailable,
+        _ => null
+    };
     
     public string StatusIcon => CurrentState switch
     {
@@ -72,27 +99,27 @@ public sealed partial class LicenseViewModel : ObservableObject, IDisposable
     
     public string StatusText => CurrentState switch
     {
-        { Status: LicenseStatus.PastDue } => "Payment past due",
-        { Status: LicenseStatus.Suspended } => "License suspended",
-        { Status: LicenseStatus.Expired } => "License expired",
-        { Status: LicenseStatus.Canceled } => "Subscription canceled",
+        { Status: LicenseStatus.PastDue } => Strings.License_Status_PastDue,
+        { Status: LicenseStatus.Suspended } => Strings.License_Status_Suspended,
+        { Status: LicenseStatus.Expired } => Strings.License_Status_Expired,
+        { Status: LicenseStatus.Canceled } => Strings.License_Status_Canceled,
         { IsActive: true } => CurrentState.StatusDescription,
-        _ => "Free"
+        _ => Strings.License_Status_Free
     };
     
     public string ExpirationText => CurrentState switch
     {
-        { ExpiresAt: null } when IsPro => "Subscription active",
-        { ExpiresAt: var exp } when exp > DateTime.UtcNow => $"Renews {exp.Value:MMMM dd, yyyy}",
-        { IsExpired: true } => "Expired",
+        { ExpiresAt: null } when IsPro => Strings.License_Status_SubscriptionActive,
+        { ExpiresAt: var exp } when exp > DateTime.UtcNow => string.Format(Strings.License_Status_Renews, exp.Value.ToString("MMMM dd, yyyy")),
+        { IsExpired: true } => Strings.License_Status_Expired,
         _ => string.Empty
     };
     
     public string OfflineStatusText => CurrentState switch
     {
-        { IsOffline: true, OfflineGraceExpired: true } => "⚠ Offline too long - please reconnect to validate",
-        { IsOffline: true } => $"⚠ Offline mode ({LicenseConfig.OfflineGraceDays - (int)(DateTime.UtcNow - CurrentState.LastValidated).TotalDays} days remaining)",
-        { IsActive: true } => "✓ License validated",
+        { IsOffline: true, OfflineGraceExpired: true } => $"⚠ {Strings.License_Status_OfflineTooLong}",
+        { IsOffline: true } => $"⚠ {string.Format(Strings.License_Status_OfflineMode, LicenseConfig.OfflineGraceDays - (int)(DateTime.UtcNow - CurrentState.LastValidated).TotalDays)}",
+        { IsActive: true } => $"✓ {Strings.License_Status_Validated}",
         _ => string.Empty
     };
     
@@ -134,19 +161,24 @@ public sealed partial class LicenseViewModel : ObservableObject, IDisposable
             
             if (e.Reason == LicenseChangeReason.Revocation)
             {
-                SetError($"License revoked: {e.NewState.LastError ?? "Contact support for details"}");
+                SetError(string.Format(Strings.License_Revoked, e.NewState.LastError ?? Strings.License_Revoked_ContactSupport));
             }
             else if (e.Reason == LicenseChangeReason.Expiration)
             {
-                SetError("Your license has expired. Please renew to continue using Pro features.");
+                SetError(Strings.License_Expired_Renew);
             }
             else if (e.Downgraded && e.Reason != LicenseChangeReason.Deactivation)
             {
-                SetError(e.NewState.LastError ?? "License status changed");
+                SetError(e.NewState.LastError ?? Strings.License_Status_Changed);
             }
             else if (e.CameOnline && e.NewState.IsActive)
             {
-                ShowSuccessMessage("License validated successfully");
+                ShowSuccessMessage(Strings.License_Status_Validated);
+            }
+            else if (e.Reason == LicenseChangeReason.ProDllChanged && e.NewState.DllState == ProDllState.Ready && e.NewState.IsActive)
+            {
+                ShowSuccessMessage(Strings.License_Progress_Complete);
+                ProLoader.ReloadIfNeeded();
             }
         });
     }
@@ -155,8 +187,6 @@ public sealed partial class LicenseViewModel : ObservableObject, IDisposable
     {
         LicenseService.Instance.StateChanged -= OnLicenseStateChanged;
     }
-
-    public void Cleanup() => Dispose();
 
     #endregion
 
@@ -167,16 +197,44 @@ public sealed partial class LicenseViewModel : ObservableObject, IDisposable
     {
         await ExecuteAsync(async () =>
         {
-            var result = await LicenseService.Instance.ActivateAsync(LicenseKey);
+            ActivationStatusMessage = null;
+            IsDownloading = false;
+            DownloadPercent = 0;
+
+            var progress = new Progress<ActivationProgress>(p =>
+            {
+                Application.Current?.Dispatcher.BeginInvoke(() =>
+                {
+                    ActivationStatusMessage = p.DisplayMessage;
+                    if (p.Phase == ActivationPhase.Downloading)
+                    {
+                        IsDownloading = true;
+                        DownloadPercent = p.Percent;
+                    }
+                    else if (p.Phase == ActivationPhase.Complete)
+                    {
+                        IsDownloading = false;
+                        DownloadPercent = 100;
+                    }
+                });
+            });
+
+            var result = await LicenseService.Instance.ActivateAsync(LicenseKey, progress);
             
+            IsDownloading = false;
+            ActivationStatusMessage = null;
+
             if (result.IsSuccess)
             {
-                ShowSuccessMessage("License activated successfully! 🎉");
+                ShowSuccessMessage(result.Message ?? Strings.License_Progress_Complete);
                 LicenseKey = string.Empty;
+                
+                if (result.NewState?.DllState == ProDllState.Ready)
+                    ProLoader.ReloadIfNeeded();
             }
             else
             {
-                SetError(result.Error ?? "Activation failed. Please check your key.");
+                SetError(result.Error ?? Strings.License_Activation_Failed);
             }
         });
     }
@@ -188,12 +246,13 @@ public sealed partial class LicenseViewModel : ObservableObject, IDisposable
         
         await ExecuteAsync(async () =>
         {
+            ProLoader.Unload();
             var result = await LicenseService.Instance.DeactivateAsync();
             
             if (result.IsSuccess)
-                ShowSuccessMessage(result.Message ?? "License deactivated successfully.");
+                ShowSuccessMessage(result.Message ?? Strings.License_Deactivated_Success);
             else
-                SetError(result.Error ?? "Deactivation failed.");
+                SetError(result.Error ?? Strings.License_Deactivated_Failed);
         });
     }
 
@@ -207,24 +266,53 @@ public sealed partial class LicenseViewModel : ObservableObject, IDisposable
             await LicenseService.Instance.ForceValidateAsync();
             
             if (CurrentState.IsActive)
-                ShowSuccessMessage("License status refreshed.");
+                ShowSuccessMessage(Strings.License_Status_Refreshed);
             else if (CurrentState.LastError is not null)
                 SetError(CurrentState.LastError);
-        }, "Could not refresh license status");
+        }, Strings.License_RefreshFailed);
+    }
+
+    [RelayCommand]
+    private async Task RetryDllDownloadAsync()
+    {
+        if (IsLoading) return;
+
+        await ExecuteAsync(async () =>
+        {
+            IsDownloading = true;
+            DownloadPercent = 0;
+            ActivationStatusMessage = Strings.License_Dll_Downloading;
+
+            var progress = new Progress<ActivationProgress>(p =>
+            {
+                Application.Current?.Dispatcher.BeginInvoke(() =>
+                {
+                    ActivationStatusMessage = p.DisplayMessage;
+                    if (p.Phase == ActivationPhase.Downloading)
+                        DownloadPercent = p.Percent;
+                });
+            });
+
+            await LicenseService.Instance.RetryProDllDownloadAsync(progress);
+
+            IsDownloading = false;
+            ActivationStatusMessage = null;
+
+            if (CurrentState.DllState == ProDllState.Ready)
+            {
+                ShowSuccessMessage(Strings.License_Progress_Complete);
+                ProLoader.ReloadIfNeeded();
+            }
+            else
+            {
+                SetError(Strings.License_Dll_DownloadFailed);
+            }
+        });
     }
 
     [RelayCommand]
     private static void OpenPurchasePage()
-    {
-        try
-        {
-            Process.Start(new ProcessStartInfo(LicenseConfig.PurchaseUrl)
-            {
-                UseShellExecute = true
-            });
-        }
-        catch { }
-    }
+        => ShellUtils.OpenUrl(LicenseConfig.PurchaseUrl);
 
     [RelayCommand]
     private void CopyDeviceId()
@@ -232,7 +320,7 @@ public sealed partial class LicenseViewModel : ObservableObject, IDisposable
         try
         {
             Clipboard.SetText(DeviceId);
-            ShowSuccessTemporary("Device ID copied to clipboard", TimeSpan.FromSeconds(2));
+            ShowSuccessTemporary(Strings.License_DeviceIdCopied, TimeSpan.FromSeconds(2));
         }
         catch { }
     }
@@ -257,6 +345,7 @@ public sealed partial class LicenseViewModel : ObservableObject, IDisposable
         finally
         {
             IsLoading = false;
+            IsDownloading = false;
         }
     }
 

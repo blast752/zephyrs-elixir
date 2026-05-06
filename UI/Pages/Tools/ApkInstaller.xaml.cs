@@ -2,8 +2,19 @@ namespace ZephyrsElixir.UI.Pages;
 
 public sealed partial class ApkInstaller : UserControl
 {
-    private static readonly string Aapt2Path = System.IO.Path.Combine(
+    private static readonly string Aapt2Path = Path.Combine(
         AppDomain.CurrentDomain.BaseDirectory, "Tools", "adb", "aapt2.exe");
+
+    private static readonly Regex PkgNameRegex = new(@"package:\s*name='([^']+)'", RegexOptions.Compiled);
+    private static readonly Regex VerNameRegex = new(@"versionName='([^']+)'", RegexOptions.Compiled);
+    private static readonly Regex VerCodeRegex = new(@"versionCode='(\d+)'", RegexOptions.Compiled);
+    private static readonly Regex LabelLangRegex = new(@"application-label-\w+:'([^']+)'", RegexOptions.Compiled);
+    private static readonly Regex LabelRegex = new(@"application-label:'([^']+)'", RegexOptions.Compiled);
+    private static readonly Regex DpiSplitRegex = new(@"(ldpi|mdpi|hdpi|xhdpi|xxhdpi|xxxhdpi|nodpi|\d+dpi)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    private static readonly Regex LangSplitRegex = new(@"config\.[a-z]{2}($|[_-])", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    private static readonly Regex InstalledVerRegex = new(@"versionCode=(\d+)", RegexOptions.Compiled);
+    private static readonly Regex ProgressRegex = new(@"(\d+)%", RegexOptions.Compiled);
+    private static readonly Regex FailureRegex = new(@"Failure \[([^\]]+)\]", RegexOptions.Compiled);
 
     private readonly Action _onClose;
     private readonly ObservableCollection<ApkPackage> _packages = new();
@@ -13,14 +24,18 @@ public sealed partial class ApkInstaller : UserControl
 
     public ObservableCollection<ApkPackage> Packages => _packages;
 
+    private readonly EventHandler<LicenseStateChangedEventArgs> _onLicenseChanged;
+
     public ApkInstaller(Action onClose)
     {
         _onClose = onClose;
         InitializeComponent();
         DataContext = this;
         _packages.CollectionChanged += (_, _) => UpdateUI();
-        
-        LicenseService.Instance.StateChanged += (_, _) => Dispatcher.BeginInvoke(UpdateUI);
+
+        _onLicenseChanged = (_, _) => Dispatcher.BeginInvoke(UpdateUI);
+        LicenseService.Instance.StateChanged += _onLicenseChanged;
+        Unloaded += (_, _) => LicenseService.Instance.StateChanged -= _onLicenseChanged;
     }
 
     #region Event Handlers
@@ -108,7 +123,7 @@ public sealed partial class ApkInstaller : UserControl
     }
 
     private static bool IsValidApkFile(string path) =>
-        System.IO.Path.GetExtension(path).ToLowerInvariant() is ".apk" or ".xapk" or ".apks" or ".apkm";
+        Path.GetExtension(path).ToLowerInvariant() is ".apk" or ".xapk" or ".apks" or ".apkm";
 
     #endregion
 
@@ -158,7 +173,7 @@ public sealed partial class ApkInstaller : UserControl
                 await Dispatcher.InvokeAsync(() => _packages.Add(new ApkPackage
                 {
                     FilePath = file,
-                    DisplayName = System.IO.Path.GetFileName(file),
+                    DisplayName = Path.GetFileName(file),
                     PackageName = "Error parsing file",
                     Status = InstallStatus.Failed,
                     ErrorMessage = ex.Message,
@@ -180,7 +195,7 @@ public sealed partial class ApkInstaller : UserControl
     }
 
     private ApkPackage? ParsePackageFile(string filePath) =>
-        System.IO.Path.GetExtension(filePath).ToLowerInvariant() switch
+        Path.GetExtension(filePath).ToLowerInvariant() switch
         {
             ".apk" => ParseSingleApk(filePath),
             ".xapk" or ".apks" or ".apkm" => ParseBundleFile(filePath),
@@ -189,7 +204,7 @@ public sealed partial class ApkInstaller : UserControl
 
     private static ApkPackage ParseSingleApk(string filePath)
     {
-        var fileName = System.IO.Path.GetFileNameWithoutExtension(filePath);
+        var fileName = Path.GetFileNameWithoutExtension(filePath);
         var info = ExtractApkInfo(filePath);
 
         return new ApkPackage
@@ -207,7 +222,7 @@ public sealed partial class ApkInstaller : UserControl
 
     private ApkPackage ParseBundleFile(string filePath)
     {
-        var tempDir = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "ZephyrsElixir_APK", Guid.NewGuid().ToString("N"));
+        var tempDir = Path.Combine(Path.GetTempPath(), "ZephyrsElixir_APK", Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(tempDir);
 
         try
@@ -222,11 +237,11 @@ public sealed partial class ApkInstaller : UserControl
                 Size = new FileInfo(filePath).Length
             };
 
-            var manifestPath = System.IO.Path.Combine(tempDir, "manifest.json");
+            var manifestPath = Path.Combine(tempDir, "manifest.json");
             if (File.Exists(manifestPath))
                 ParseJsonManifest(manifestPath, package, isXapk: true);
 
-            var infoPath = System.IO.Path.Combine(tempDir, "info.json");
+            var infoPath = Path.Combine(tempDir, "info.json");
             if (File.Exists(infoPath) && string.IsNullOrEmpty(package.PackageName))
                 ParseJsonManifest(infoPath, package, isXapk: false);
 
@@ -239,14 +254,14 @@ public sealed partial class ApkInstaller : UserControl
                 {
                     var info = ExtractApkInfo(baseApk);
                     package.PackageName = !string.IsNullOrEmpty(info.PackageName) ? info.PackageName : "unknown";
-                    package.DisplayName = !string.IsNullOrEmpty(info.Label) ? info.Label : System.IO.Path.GetFileNameWithoutExtension(filePath);
+                    package.DisplayName = !string.IsNullOrEmpty(info.Label) ? info.Label : Path.GetFileNameWithoutExtension(filePath);
                     package.VersionName = !string.IsNullOrEmpty(info.VersionName) ? info.VersionName : "1.0";
                     package.VersionCode = info.VersionCode;
                 }
             }
 
             package.ApkFiles = SelectOptimalSplitApks(allApks, package);
-            package.DisplayName ??= System.IO.Path.GetFileNameWithoutExtension(filePath);
+            package.DisplayName ??= Path.GetFileNameWithoutExtension(filePath);
 
             return package;
         }
@@ -262,13 +277,13 @@ public sealed partial class ApkInstaller : UserControl
     {
         foreach (var name in new[] { "base.apk", "app.apk", "original.apk" })
         {
-            var match = apks.FirstOrDefault(a => System.IO.Path.GetFileName(a).Equals(name, StringComparison.OrdinalIgnoreCase));
+            var match = apks.FirstOrDefault(a => Path.GetFileName(a).Equals(name, StringComparison.OrdinalIgnoreCase));
             if (match != null) return match;
         }
 
         return apks.FirstOrDefault(a =>
         {
-            var n = System.IO.Path.GetFileNameWithoutExtension(a).ToLowerInvariant();
+            var n = Path.GetFileNameWithoutExtension(a).ToLowerInvariant();
             return !n.Contains("split") && !n.Contains("config") && !n.Contains("dpi") &&
                    !n.Contains("arm") && !n.Contains("x86") && !n.Contains("hdpi");
         }) ?? apks.FirstOrDefault();
@@ -307,7 +322,7 @@ public sealed partial class ApkInstaller : UserControl
 
     private static ApkInfo ExtractApkInfo(string apkPath)
     {
-        var info = new ApkInfo { PackageName = System.IO.Path.GetFileNameWithoutExtension(apkPath) };
+        var info = new ApkInfo { PackageName = Path.GetFileNameWithoutExtension(apkPath) };
         if (!File.Exists(Aapt2Path)) return info;
 
         try
@@ -328,19 +343,19 @@ public sealed partial class ApkInstaller : UserControl
             var output = process.StandardOutput.ReadToEnd();
             process.WaitForExit(5000);
 
-            var pkgMatch = Regex.Match(output, @"package:\s*name='([^']+)'");
+            var pkgMatch = PkgNameRegex.Match(output);
             if (pkgMatch.Success) info = info with { PackageName = pkgMatch.Groups[1].Value };
 
-            var verNameMatch = Regex.Match(output, @"versionName='([^']+)'");
+            var verNameMatch = VerNameRegex.Match(output);
             if (verNameMatch.Success) info = info with { VersionName = verNameMatch.Groups[1].Value };
 
-            var verCodeMatch = Regex.Match(output, @"versionCode='(\d+)'");
+            var verCodeMatch = VerCodeRegex.Match(output);
             if (verCodeMatch.Success && int.TryParse(verCodeMatch.Groups[1].Value, out var vc))
                 info = info with { VersionCode = vc };
 
-            var labelMatch = Regex.Match(output, @"application-label-\w+:'([^']+)'");
+            var labelMatch = LabelLangRegex.Match(output);
             if (!labelMatch.Success)
-                labelMatch = Regex.Match(output, @"application-label:'([^']+)'");
+                labelMatch = LabelRegex.Match(output);
             if (labelMatch.Success) info = info with { Label = labelMatch.Groups[1].Value };
         }
         catch { }
@@ -349,7 +364,7 @@ public sealed partial class ApkInstaller : UserControl
     }
 
     private static PackageType GetPackageType(string path) =>
-        System.IO.Path.GetExtension(path).ToLowerInvariant() switch
+        Path.GetExtension(path).ToLowerInvariant() switch
         {
             ".apk" => PackageType.Apk,
             ".xapk" => PackageType.Xapk,
@@ -369,7 +384,7 @@ public sealed partial class ApkInstaller : UserControl
 
         foreach (var apk in allApks)
         {
-            var fileName = System.IO.Path.GetFileNameWithoutExtension(apk).ToLowerInvariant();
+            var fileName = Path.GetFileNameWithoutExtension(apk).ToLowerInvariant();
 
             if (IsBaseApk(fileName)) { selected.Add(apk); continue; }
             if (IsArchSplit(fileName)) { if (MatchesArch(fileName, deviceInfo.Abi)) selected.Add(apk); continue; }
@@ -380,19 +395,19 @@ public sealed partial class ApkInstaller : UserControl
             selected.Add(apk);
         }
 
-        if (!selected.Any(s => IsArchSplit(System.IO.Path.GetFileNameWithoutExtension(s))))
-            selected.AddRange(allApks.Where(a => IsArchSplit(System.IO.Path.GetFileNameWithoutExtension(a))));
+        if (!selected.Any(s => IsArchSplit(Path.GetFileNameWithoutExtension(s))))
+            selected.AddRange(allApks.Where(a => IsArchSplit(Path.GetFileNameWithoutExtension(a))));
 
-        if (!selected.Any(s => IsDpiSplit(System.IO.Path.GetFileNameWithoutExtension(s))))
+        if (!selected.Any(s => IsDpiSplit(Path.GetFileNameWithoutExtension(s))))
         {
             var dpiApk = FindClosestDpiApk(allApks, deviceInfo.Dpi);
             if (dpiApk != null) selected.Add(dpiApk);
         }
 
-        if (!selected.Any(s => IsLangSplit(System.IO.Path.GetFileNameWithoutExtension(s))))
+        if (!selected.Any(s => IsLangSplit(Path.GetFileNameWithoutExtension(s))))
         {
-            var langApk = allApks.FirstOrDefault(a => System.IO.Path.GetFileNameWithoutExtension(a).Contains(".en", StringComparison.OrdinalIgnoreCase))
-                ?? allApks.FirstOrDefault(a => IsLangSplit(System.IO.Path.GetFileNameWithoutExtension(a)));
+            var langApk = allApks.FirstOrDefault(a => Path.GetFileNameWithoutExtension(a).Contains(".en", StringComparison.OrdinalIgnoreCase))
+                ?? allApks.FirstOrDefault(a => IsLangSplit(Path.GetFileNameWithoutExtension(a)));
             if (langApk != null) selected.Add(langApk);
         }
 
@@ -402,8 +417,8 @@ public sealed partial class ApkInstaller : UserControl
 
     private static bool IsBaseApk(string n) => n.Contains("base") || n == "app" || (!n.Contains("split") && !n.Contains("config"));
     private static bool IsArchSplit(string n) => n.Contains("arm64") || n.Contains("armeabi") || n.Contains("x86") || n.Contains("mips");
-    private static bool IsDpiSplit(string n) => Regex.IsMatch(n, @"(ldpi|mdpi|hdpi|xhdpi|xxhdpi|xxxhdpi|nodpi|\d+dpi)", RegexOptions.IgnoreCase);
-    private static bool IsLangSplit(string n) => Regex.IsMatch(n, @"config\.[a-z]{2}($|[_-])", RegexOptions.IgnoreCase);
+    private static bool IsDpiSplit(string n) => DpiSplitRegex.IsMatch(n);
+    private static bool IsLangSplit(string n) => LangSplitRegex.IsMatch(n);
 
     private static bool MatchesArch(string name, string abi)
     {
@@ -441,7 +456,7 @@ public sealed partial class ApkInstaller : UserControl
 
         return dpiMap
             .OrderBy(d => Math.Abs(d.dpi - deviceDpi))
-            .Select(d => apks.FirstOrDefault(a => System.IO.Path.GetFileNameWithoutExtension(a).Contains(d.name, StringComparison.OrdinalIgnoreCase)))
+            .Select(d => apks.FirstOrDefault(a => Path.GetFileNameWithoutExtension(a).Contains(d.name, StringComparison.OrdinalIgnoreCase)))
             .FirstOrDefault(a => a != null);
     }
 
@@ -539,8 +554,8 @@ public sealed partial class ApkInstaller : UserControl
         if (string.IsNullOrEmpty(packageName)) return 0;
         try
         {
-            var output = await AdbExecutor.ExecuteCommandAsync($"shell dumpsys package {packageName} | grep versionCode");
-            var match = Regex.Match(output, @"versionCode=(\d+)");
+            var output = await AdbExecutor.ExecuteCommandAsync($"shell \"dumpsys package {packageName} | grep versionCode\"");
+            var match = InstalledVerRegex.Match(output);
             return match.Success && int.TryParse(match.Groups[1].Value, out var v) ? v : 0;
         }
         catch { return 0; }
@@ -574,7 +589,7 @@ public sealed partial class ApkInstaller : UserControl
             output.AppendLine(e.Data);
             if (e.Data.Contains("%"))
             {
-                var match = Regex.Match(e.Data, @"(\d+)%");
+                var match = ProgressRegex.Match(e.Data);
                 if (match.Success && int.TryParse(match.Groups[1].Value, out var p))
                     Dispatcher.BeginInvoke(() => package.Progress = p);
             }
@@ -592,26 +607,25 @@ public sealed partial class ApkInstaller : UserControl
         return (success && !result.Contains("Failure"), result);
     }
 
+    private static readonly (string Pattern, string Message)[] InstallErrors =
+    {
+        ("INSTALL_FAILED_ALREADY_EXISTS", "App already installed"),
+        ("INSTALL_FAILED_INVALID_APK", "Invalid APK file"),
+        ("INSTALL_FAILED_INSUFFICIENT_STORAGE", "Not enough storage"),
+        ("INSTALL_FAILED_DUPLICATE_PACKAGE", "Package already exists"),
+        ("INSTALL_FAILED_UPDATE_INCOMPATIBLE", "Incompatible update"),
+        ("INSTALL_FAILED_VERSION_DOWNGRADE", "Cannot downgrade"),
+        ("INSTALL_PARSE_FAILED_NO_CERTIFICATES", "APK not signed"),
+        ("INSTALL_FAILED_TEST_ONLY", "Test-only APK"),
+        ("INSTALL_FAILED_OLDER_SDK", "Requires newer Android"),
+        ("INSTALL_FAILED_MISSING_SPLIT", "Missing split APK")
+    };
+
     private static string ParseInstallError(string output)
     {
-        var errors = new Dictionary<string, string>
-        {
-            ["INSTALL_FAILED_ALREADY_EXISTS"] = "App already installed",
-            ["INSTALL_FAILED_INVALID_APK"] = "Invalid APK file",
-            ["INSTALL_FAILED_INSUFFICIENT_STORAGE"] = "Not enough storage",
-            ["INSTALL_FAILED_DUPLICATE_PACKAGE"] = "Package already exists",
-            ["INSTALL_FAILED_UPDATE_INCOMPATIBLE"] = "Incompatible update",
-            ["INSTALL_FAILED_VERSION_DOWNGRADE"] = "Cannot downgrade",
-            ["INSTALL_PARSE_FAILED_NO_CERTIFICATES"] = "APK not signed",
-            ["INSTALL_FAILED_TEST_ONLY"] = "Test-only APK",
-            ["INSTALL_FAILED_OLDER_SDK"] = "Requires newer Android",
-            ["INSTALL_FAILED_MISSING_SPLIT"] = "Missing split APK"
-        };
-
-        foreach (var (pattern, message) in errors)
-            if (output.Contains(pattern)) return message;
-
-        var match = Regex.Match(output, @"Failure \[([^\]]+)\]");
+        foreach (var (pattern, message) in InstallErrors)
+            if (output.Contains(pattern, StringComparison.Ordinal)) return message;
+        var match = FailureRegex.Match(output);
         return match.Success ? match.Groups[1].Value : "Installation failed";
     }
 
@@ -722,13 +736,7 @@ public sealed class ApkPackage : INotifyPropertyChanged
     public bool CanRemove => Status != InstallStatus.Installing;
     public bool HasError => Status == InstallStatus.Failed && !string.IsNullOrEmpty(ErrorMessage);
 
-    public string SizeDisplay => Size switch
-    {
-        < 1024 => $"{Size} B",
-        < 1024 * 1024 => $"{Size / 1024.0:F1} KB",
-        < 1024 * 1024 * 1024 => $"{Size / (1024.0 * 1024):F1} MB",
-        _ => $"{Size / (1024.0 * 1024 * 1024):F2} GB"
-    };
+    public string SizeDisplay => UIHelpers.FormatBytes(Size);
 
     public string StatusText => Status switch
     {
@@ -742,11 +750,11 @@ public sealed class ApkPackage : INotifyPropertyChanged
 
     public Brush StatusBrush => Status switch
     {
-        InstallStatus.Pending => new SolidColorBrush(Color.FromRgb(160, 176, 200)),
-        InstallStatus.Installing => new SolidColorBrush(Color.FromRgb(255, 208, 0)),
-        InstallStatus.Success => new SolidColorBrush(Color.FromRgb(0, 214, 143)),
-        InstallStatus.Updated => new SolidColorBrush(Color.FromRgb(0, 191, 255)),
-        InstallStatus.Failed => new SolidColorBrush(Color.FromRgb(255, 107, 107)),
+        InstallStatus.Pending => AppBrushes.Pending,
+        InstallStatus.Installing => AppBrushes.Installing,
+        InstallStatus.Success => AppBrushes.Success,
+        InstallStatus.Updated => AppBrushes.Updated,
+        InstallStatus.Failed => AppBrushes.Failed,
         _ => Brushes.White
     };
 
@@ -767,11 +775,11 @@ public sealed class ApkPackage : INotifyPropertyChanged
 
     public Brush TypeBrush => PackageType switch
     {
-        PackageType.Apk => UIHelpers.CreateGradientBrush("#63B5FF", "#1175E6"),
-        PackageType.Xapk => UIHelpers.CreateGradientBrush("#00D68F", "#00B377"),
-        PackageType.Apks => UIHelpers.CreateGradientBrush("#FFD000", "#CC9900"),
-        PackageType.Apkm => UIHelpers.CreateGradientBrush("#7D64FF", "#5A3FD9"),
-        _ => UIHelpers.CreateGradientBrush("#808080", "#606060")
+        PackageType.Apk => AppBrushes.GradientApk,
+        PackageType.Xapk => AppBrushes.GradientXapk,
+        PackageType.Apks => AppBrushes.GradientApks,
+        PackageType.Apkm => AppBrushes.GradientApkm,
+        _ => AppBrushes.GradientDefault
     };
 
     public event PropertyChangedEventHandler? PropertyChanged;

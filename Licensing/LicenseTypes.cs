@@ -4,11 +4,9 @@ namespace ZephyrsElixir.Licensing;
 
 public static class LicenseConfig
 {
-    // API Endpoints
     public const string ApiBaseUrl = "https://zephyrselixir.com/api/license";
     public const string PurchaseUrl = "https://whop.com/zephyr-s-elixir";
     
-    // Timeouts & Intervals
     public const int RequestTimeoutSeconds = 15;
     public const int ValidationIntervalHoursOnline = 4;  
     public const int ValidationIntervalHoursOffline = 1;     
@@ -17,7 +15,7 @@ public static class LicenseConfig
     
     public const string CacheFileName = ".zephyr_license";
     public const string CacheEntropy = "ZephyrsElixir.v3";   
-    public const int CacheVersion = 3;
+    public const int CacheVersion = 4;
     
     public const int FreeAiAnalysisQuotaDaily = 25;
     
@@ -34,6 +32,58 @@ public static class LicenseConfig
     
     public const int TimestampToleranceMinutesPast = 5;
     public const int TimestampToleranceMinutesFuture = 10;
+}
+
+#endregion
+
+#region Pro DLL Configuration
+
+public static class ProDllConfig
+{
+    public static readonly string ProDirectory = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+        "ZephyrsElixir", "pro");
+
+    public const string EncryptedDllFileName = "module.bin";
+    public const string FingerprintFileName = "module.fp";
+    public const string TempDllFileName = "module.tmp";
+
+    public static string EncryptedDllPath => Path.Combine(ProDirectory, EncryptedDllFileName);
+    public static string FingerprintPath => Path.Combine(ProDirectory, FingerprintFileName);
+    public static string TempDllPath => Path.Combine(ProDirectory, TempDllFileName);
+
+    public static readonly IReadOnlySet<string> AllowedDownloadDomains = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+    {
+        "cdn.zephyrselixir.com",
+        "zephyrselixir.com",
+        "dl.zephyrselixir.com"
+    };
+
+    public const int DownloadConnectTimeoutSeconds = 10;
+    public const int DownloadReadTimeoutSeconds = 60;
+    public const int MaxDllSizeBytes = 50 * 1024 * 1024;
+    public const int MinDllSizeBytes = 1024;
+    public const long MinDiskSpaceBytes = 100 * 1024 * 1024;
+
+    public const string EncryptionEntropy = "ZephyrsElixir.ProDll.v1";
+    public const int AesKeySize = 256;
+    public const int AesNonceSize = 12;
+    public const int AesTagSize = 16;
+}
+
+#endregion
+
+#region Pro DLL State
+
+public enum ProDllState
+{
+    NotPresent = 0,
+    Downloading = 1,
+    Verifying = 2,
+    Ready = 3,
+    Corrupted = 4,
+    UpdateAvailable = 5,
+    DownloadFailed = 6
 }
 
 #endregion
@@ -94,7 +144,6 @@ public static class LicenseKeyHelper
         var normalized = Normalize(key);
         if (normalized.Length < LicenseConfig.KeyMinLength) return normalized;
         
-        // Format: Z-XXXXXX-XXXXXXXX-XXXXXXX
         return $"{normalized[..1]}-{normalized[1..7]}-{normalized[7..15]}-{normalized[15..]}";
     }
     
@@ -144,17 +193,18 @@ public sealed record LicenseState
     public bool IsOffline { get; init; }
     public SubscriptionPlan Plan { get; init; } = SubscriptionPlan.None;
     public string? LastError { get; init; }
+    public ProDllState DllState { get; init; } = ProDllState.NotPresent;
     
-    // Computed properties
     public bool IsExpired => ExpiresAt.HasValue && ExpiresAt.Value < DateTime.UtcNow;
     
     public bool OfflineGraceExpired => IsOffline && 
         (DateTime.UtcNow - LastValidated).TotalDays > LicenseConfig.OfflineGraceDays;
     
-    public bool IsActive => Status is LicenseStatus.Active or LicenseStatus.Trialing or LicenseStatus.Completed 
-                            && Tier != LicenseTier.Free 
-                            && !IsExpired 
-                            && !OfflineGraceExpired;
+    public bool IsActive => Status is LicenseStatus.Active or LicenseStatus.Trialing or LicenseStatus.Completed
+                            or LicenseStatus.Canceled or LicenseStatus.PastDue
+                        && Tier != LicenseTier.Free
+                        && !IsExpired
+                        && !OfflineGraceExpired;
     
     public LicenseTier EffectiveTier => IsActive ? Tier : LicenseTier.Free;
     
@@ -224,7 +274,8 @@ public enum LicenseChangeReason
     Validation,
     Expiration,
     Revocation,
-    NetworkChange
+    NetworkChange,
+    ProDllChanged
 }
 
 #endregion
@@ -241,6 +292,37 @@ public sealed record LicenseRequest
     
     [JsonPropertyName("app_version")] 
     public string? AppVersion { get; init; }
+    
+    [JsonPropertyName("pro_dll_version")]
+    public string? ProDllVersion { get; init; }
+}
+
+public sealed record ProDllInfo
+{
+    [JsonPropertyName("download_url")]
+    public string? DownloadUrl { get; init; }
+
+    [JsonPropertyName("sha256")]
+    public string? Sha256 { get; init; }
+
+    [JsonPropertyName("version")]
+    public string? Version { get; init; }
+
+    [JsonPropertyName("size_bytes")]
+    public long SizeBytes { get; init; }
+
+    [JsonPropertyName("url_expires_at")]
+    public long UrlExpiresAt { get; init; }
+
+    [JsonPropertyName("allow_rollback")]
+    public bool AllowRollback { get; init; }
+
+    public bool IsValid => !string.IsNullOrEmpty(DownloadUrl) 
+        && !string.IsNullOrEmpty(Sha256) 
+        && !string.IsNullOrEmpty(Version)
+        && SizeBytes > 0;
+
+    public bool IsUrlExpired => DateTimeOffset.UtcNow.ToUnixTimeSeconds() >= UrlExpiresAt;
 }
 
 public sealed record LicenseResponse
@@ -271,6 +353,9 @@ public sealed record LicenseResponse
     
     [JsonPropertyName("hint")] 
     public string? Hint { get; init; }
+
+    [JsonPropertyName("pro_dll")]
+    public ProDllInfo? ProDll { get; init; }
     
     public string? FullError => string.IsNullOrEmpty(Hint) ? Error : $"{Error}\n{Hint}";
     
@@ -312,17 +397,59 @@ internal sealed record CachedLicense
     public string? Signature { get; init; }
     public string? Checksum { get; init; }
     public int Version { get; init; } = LicenseConfig.CacheVersion;
-    public string? DeviceId { get; init; }       
+    public string? DeviceId { get; init; }
+    public string? ProDllVersion { get; init; }
+    public string? ProDllHash { get; init; }
     
-    public static string ComputeChecksum(string? normalizedKey, LicenseTier tier, LicenseStatus status, DateTime? expiresAt, string? signature, string? deviceId)
+    public static string ComputeChecksum(string? normalizedKey, LicenseTier tier, LicenseStatus status, DateTime? expiresAt, string? signature, string? deviceId, string? proDllVersion = null)
     {
-        var data = $"{normalizedKey}:{(int)tier}:{(int)status}:{expiresAt?.Ticks}:{signature}:{deviceId}:v{LicenseConfig.CacheVersion}";
+        var data = $"{normalizedKey}:{(int)tier}:{(int)status}:{expiresAt?.Ticks}:{signature}:{deviceId}:{proDllVersion}:v{LicenseConfig.CacheVersion}";
         return Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(data)));
     }
     
     public bool VerifyChecksum(string? deviceId) =>
         Version >= LicenseConfig.CacheVersion &&
-        Checksum == ComputeChecksum(NormalizedKey, Tier, Status, ExpiresAt, Signature, deviceId);
+        Checksum == ComputeChecksum(NormalizedKey, Tier, Status, ExpiresAt, Signature, deviceId, ProDllVersion);
+}
+
+#endregion
+
+#region Pro DLL Fingerprint
+
+internal sealed record ProDllFingerprint
+{
+    public string Sha256 { get; init; } = "";
+    public string Version { get; init; } = "";
+    public long Timestamp { get; init; }
+    public string DeviceId { get; init; } = "";
+    public long SizeBytes { get; init; }
+    public string Checksum { get; init; } = "";
+
+    public static ProDllFingerprint Create(string sha256, string version, string deviceId, long sizeBytes)
+    {
+        var ts = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        var fp = new ProDllFingerprint
+        {
+            Sha256 = sha256,
+            Version = version,
+            Timestamp = ts,
+            DeviceId = deviceId,
+            SizeBytes = sizeBytes
+        };
+        return fp with { Checksum = fp.ComputeChecksum() };
+    }
+
+    public string ComputeChecksum()
+    {
+        var data = $"{Sha256}:{Version}:{Timestamp}:{DeviceId}:{SizeBytes}:fp.v1";
+        return Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(data)));
+    }
+
+    public bool Verify(string deviceId) =>
+        DeviceId == deviceId &&
+        !string.IsNullOrEmpty(Sha256) &&
+        !string.IsNullOrEmpty(Version) &&
+        Checksum == ComputeChecksum();
 }
 
 #endregion
@@ -355,7 +482,6 @@ public readonly record struct LicenseResult
 
 public static class Features
 {
-    // Free tier features
     public const string Optimization = "optimization";
     public const string Debloat = "debloat";
     public const string AIAnalysis = "ai.analysis";
@@ -365,7 +491,6 @@ public static class Features
     public const string PrivateDns = "privacy.dns";
     public const string AnimationSpeed = "advanced.animations";
     
-    // Pro tier features
     public const string ExtremeMode = "optimization.extreme";
     public const string ScreenMirror = "tools.screen_mirror";
     public const string ScreenRecording = "tools.screen_recording";
@@ -382,7 +507,6 @@ public static class Features
     private static readonly Lazy<Dictionary<string, LicenseTier>> _requirements = new(() =>
         new Dictionary<string, LicenseTier>(StringComparer.OrdinalIgnoreCase)
         {
-            // Free tier
             [Optimization] = LicenseTier.Free,
             [Debloat] = LicenseTier.Free,
             [AIAnalysis] = LicenseTier.Free,
@@ -392,7 +516,6 @@ public static class Features
             [PrivateDns] = LicenseTier.Free,
             [AnimationSpeed] = LicenseTier.Free,
             
-            // Pro tier
             [ExtremeMode] = LicenseTier.Pro,
             [ScreenMirror] = LicenseTier.Pro,
             [ScreenRecording] = LicenseTier.Pro,
@@ -409,7 +532,8 @@ public static class Features
 
     public static bool IsAvailable(string featureId) =>
         _requirements.Value.TryGetValue(featureId, out var required) &&
-        LicenseService.Instance.CurrentState.EffectiveTier >= required;
+        LicenseService.Instance.CurrentState.EffectiveTier >= required &&
+        (required < LicenseTier.Pro || ProLoader.IsLoaded);
 
     public static LicenseTier? GetRequiredTier(string featureId) =>
         _requirements.Value.TryGetValue(featureId, out var tier) ? tier : null;

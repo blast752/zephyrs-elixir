@@ -10,10 +10,6 @@
              Background="Transparent"
              Loaded="OnSettingsLoaded">
 
-    <UserControl.Resources>
-        <h:CapitalizeConverter x:Key="CapitalizeConverter"/>
-    </UserControl.Resources>
-
     <Grid Margin="30">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/> <RowDefinition Height="24"/>   <RowDefinition Height="*"/>    </Grid.RowDefinitions>
@@ -44,7 +40,7 @@
                                     SelectedItem="{Binding Source={x:Static localization:TranslationManager.Instance}, Path=CurrentCulture}">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Parent.NativeName, Converter={StaticResource CapitalizeConverter}}"/>
+                                        <TextBlock Text="{Binding Parent.NativeName, Converter={StaticResource App.Converter.Capitalize}}"/>
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>

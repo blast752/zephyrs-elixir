@@ -87,22 +87,25 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <Border CornerRadius="16" BorderThickness="1.5">
-        <Border.BorderBrush>
-            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="#60FFD700" Offset="0"/>
-                <GradientStop Color="#6000BFFF" Offset="1"/>
-            </LinearGradientBrush>
-        </Border.BorderBrush>
-        <Border.Background>
-            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="#FF1E2A45" Offset="0"/>
-                <GradientStop Color="#FF152238" Offset="1"/>
-            </LinearGradientBrush>
-        </Border.Background>
-        <Border.Effect>
-            <DropShadowEffect BlurRadius="40" ShadowDepth="0" Color="#400064C8" Opacity="0.8"/>
-        </Border.Effect>
+    <Grid>
+        <Border CornerRadius="16" BorderThickness="1.5">
+            <Border.BorderBrush>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#60FFD700" Offset="0"/>
+                    <GradientStop Color="#6000BFFF" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.BorderBrush>
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#FF1E2A45" Offset="0"/>
+                    <GradientStop Color="#FF152238" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="40" ShadowDepth="0" Color="#400064C8" Opacity="0.8"/>
+            </Border.Effect>
+        </Border>
+        <Border CornerRadius="16" Background="Transparent">
 
         <Grid>
             <Grid.RowDefinitions>
@@ -166,4 +169,5 @@
             </Border>
         </Grid>
     </Border>
+    </Grid>
 </Window>

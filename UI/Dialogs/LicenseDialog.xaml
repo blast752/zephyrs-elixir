@@ -1,8 +1,8 @@
-<Window x:Class="ZephyrsElixir.UI.Views.LicenseDialog"
+<Window x:Class="ZephyrsElixir.UI.Dialogs.LicenseDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:h="clr-namespace:ZephyrsElixir.UI.Helpers"
-        Title="License" Width="460" SizeToContent="Height"
+        Title="{h:Translate License_Dialog_Title}" Width="460" SizeToContent="Height"
         WindowStartupLocation="CenterOwner" WindowStyle="None"
         AllowsTransparency="True" Background="Transparent"
         ResizeMode="NoResize" ShowInTaskbar="False">
@@ -13,10 +13,13 @@
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
     </Window.Resources>
 
-    <Border CornerRadius="16" 
-            Background="#FF0E1A33"
-            BorderBrush="{DynamicResource App.Brush.Gold}" BorderThickness="1.5"
-            Effect="{DynamicResource App.Effect.PageShadow}">
+    <Grid>
+        <Border CornerRadius="16" 
+                Background="#FF0E1A33"
+                BorderBrush="{DynamicResource App.Brush.Gold}" BorderThickness="1.5"
+                Effect="{DynamicResource App.Effect.PageShadow}"/>
+        <Border CornerRadius="16" 
+                Background="Transparent">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -35,7 +38,7 @@
                         </Border>
                         <StackPanel VerticalAlignment="Center">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="License" FontSize="20" FontWeight="SemiBold" 
+                                <TextBlock Text="{h:Translate License_Dialog_Title}" FontSize="20" FontWeight="SemiBold" 
                                            Foreground="{DynamicResource App.Brush.CheckedForeground}"/>
                                 <Border Background="{DynamicResource App.Brush.Gold}" 
                                         CornerRadius="4" Padding="8,2" Margin="12,0,0,0" VerticalAlignment="Center"
@@ -86,15 +89,44 @@
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
                                 <TextBlock Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="18"
                                            Foreground="{DynamicResource App.Brush.DeepSkyBlue}" Margin="0,0,10,0"/>
-                                <TextBlock Text="Pro License Active" FontSize="16" FontWeight="SemiBold"
+                                <TextBlock Text="{h:Translate License_Dialog_ProActive}" FontSize="16" FontWeight="SemiBold"
                                            Foreground="{DynamicResource App.Brush.DeepSkyBlue}"/>
                             </StackPanel>
                             <TextBlock Text="{Binding ExpirationText}" FontSize="13" 
                                        Foreground="{DynamicResource App.Brush.DeepSkyBlue}" Opacity="0.8" Margin="0,0,0,4"/>
                             <TextBlock Text="{Binding OfflineStatusText}" FontSize="12" 
                                        Foreground="{DynamicResource App.Brush.NavButtonForeground}"/>
+
+                            <TextBlock Text="{Binding DllStateText}" FontSize="12" Margin="0,8,0,0" TextWrapping="Wrap"
+                                       Visibility="{Binding DllStateText, Converter={StaticResource StrToVis}}">
+                                <TextBlock.Foreground>
+                                    <SolidColorBrush Color="{DynamicResource App.Color.Gold}"/>
+                                </TextBlock.Foreground>
+                            </TextBlock>
+
+                            <Button Content="↻ Retry Download" Command="{Binding RetryDllDownloadCommand}"
+                                    Margin="0,10,0,0" HorizontalAlignment="Left" Height="32" Padding="14,0" 
+                                    FontSize="11" Cursor="Hand"
+                                    Visibility="{Binding ShowDllDownloadFailed, Converter={StaticResource BoolToVis}}">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border x:Name="bg" Background="{DynamicResource App.Brush.IconCircle}" 
+                                                CornerRadius="8" Padding="{TemplateBinding Padding}">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="bg" Property="Opacity" Value="0.85"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Button.Template>
+                                <Button.Foreground>
+                                    <SolidColorBrush Color="{DynamicResource App.Color.DeepSkyBlue}"/>
+                                </Button.Foreground>
+                            </Button>
                             
-                            <Button Content="Deactivate License" Command="{Binding DeactivateCommand}"
+                            <Button Content="{h:Translate License_Dialog_Deactivate}" Command="{Binding DeactivateCommand}"
                                     Margin="0,16,0,0" HorizontalAlignment="Left" Height="36" Padding="16,0" 
                                     FontSize="12" Cursor="Hand">
                                 <Button.Template>
@@ -119,7 +151,7 @@
                     </Border>
 
                     <StackPanel Visibility="{Binding IsPro, Converter={StaticResource App.Converter.InverseBoolToVisibility}}">
-                        <TextBlock Text="Unlock Pro Features" FontSize="16" FontWeight="SemiBold"
+                        <TextBlock Text="{h:Translate License_Dialog_UnlockTitle}" FontSize="16" FontWeight="SemiBold"
                                    Foreground="{DynamicResource App.Brush.CheckedForeground}" Margin="0,0,0,14"/>
 
                         <Border Background="{DynamicResource App.Brush.Glass.Background}" 
@@ -197,7 +229,7 @@
                             </StackPanel>
                         </Border>
 
-                        <TextBlock Text="L I C E N S E   K E Y" FontSize="10" FontWeight="SemiBold"
+                        <TextBlock Text="{h:Translate License_Dialog_KeyLabel}" FontSize="10" FontWeight="SemiBold"
                                    Foreground="{DynamicResource App.Brush.NavButtonForeground}" Margin="0,0,0,8"/>
                         
                         <TextBox x:Name="TxtLicenseKey" 
@@ -222,7 +254,7 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             
-                            <Button Grid.Column="0" Content="Get License" Command="{Binding OpenPurchasePageCommand}"
+                            <Button Grid.Column="0" Content="{h:Translate License_Dialog_GetLicense}" Command="{Binding OpenPurchasePageCommand}"
                                     Height="42" FontSize="13" FontWeight="Medium" Cursor="Hand"
                                     Foreground="{DynamicResource App.Brush.NavButtonForeground}">
                                 <Button.Template>
@@ -243,7 +275,7 @@
                             </Button>
                             
                             <Button Grid.Column="2" Command="{Binding ActivateCommand}" IsEnabled="{Binding CanActivate}"
-                                    Content="{Binding IsLoading, Converter={StaticResource LoadingText}, ConverterParameter='Activate|Activating...'}"
+                                    Content="{Binding IsLoading, Converter={StaticResource LoadingText}, ConverterParameter='License_Dialog_Activate|License_Dialog_Activating'}"
                                     Height="42" FontSize="13" FontWeight="SemiBold" Cursor="Hand"
                                     Foreground="{DynamicResource App.Brush.CheckedForeground}">
                                 <Button.Template>
@@ -272,7 +304,7 @@
                                 <TextBlock Text="&#xE72E;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                            Foreground="{DynamicResource App.Brush.NavButtonForeground}" 
                                            Margin="0,0,8,0" VerticalAlignment="Center" Opacity="0.7"/>
-                                <TextBlock Text="We only collect an anonymous device ID for validation." 
+                                <TextBlock Text="{h:Translate License_Dialog_PrivacyNote}" 
                                            FontSize="11" Foreground="{DynamicResource App.Brush.NavButtonForeground}" Opacity="0.7"/>
                             </StackPanel>
                             
@@ -282,7 +314,7 @@
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="Your Device ID:" FontSize="11" FontWeight="Medium"
+                                <TextBlock Grid.Column="0" Text="{h:Translate License_Dialog_DeviceId}" FontSize="11" FontWeight="Medium"
                                            Foreground="{DynamicResource App.Brush.NavButtonForeground}" 
                                            VerticalAlignment="Center" Margin="0,0,8,0"/>
                                 <TextBlock Grid.Column="1" Text="{Binding DeviceId}" FontSize="11" FontFamily="Consolas"
@@ -317,12 +349,48 @@
                 <Border.Background>
                     <SolidColorBrush Color="{DynamicResource App.Color.Blue900}" Opacity="0.9"/>
                 </Border.Background>
-                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="280">
                     <TextBlock Style="{DynamicResource License.Style.Spinner}"/>
-                    <TextBlock Text="Please wait..." Foreground="{DynamicResource App.Brush.NavButtonForeground}" 
-                               FontSize="13" Margin="0,12,0,0"/>
+                    
+                    <TextBlock Text="{Binding ActivationStatusMessage}" 
+                               Foreground="{DynamicResource App.Brush.CheckedForeground}" 
+                               FontSize="14" FontWeight="Medium" Margin="0,16,0,0" 
+                               HorizontalAlignment="Center" TextAlignment="Center"
+                               Visibility="{Binding ActivationStatusMessage, Converter={StaticResource StrToVis}}"/>
+
+                    <TextBlock Text="{h:Translate License_Dialog_PleaseWait}" 
+                               Foreground="{DynamicResource App.Brush.NavButtonForeground}" 
+                               FontSize="13" Margin="0,12,0,0" HorizontalAlignment="Center">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ActivationStatusMessage, Converter={StaticResource StrToVis}}" Value="Visible">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    
+                    <ProgressBar Minimum="0" Maximum="100" Value="{Binding DownloadPercent, Mode=OneWay}"
+                                 Height="6" Margin="0,16,0,0"
+                                 Visibility="{Binding ShowDownloadProgress, Converter={StaticResource BoolToVis}}"
+                                 Foreground="{DynamicResource App.Brush.DeepSkyBlue}"
+                                 Background="#20FFFFFF" BorderThickness="0">
+                        <ProgressBar.Template>
+                            <ControlTemplate TargetType="ProgressBar">
+                                <Grid>
+                                    <Border CornerRadius="3" Background="{TemplateBinding Background}" />
+                                    <Border CornerRadius="3" HorizontalAlignment="Left" x:Name="PART_Indicator"
+                                            Background="{TemplateBinding Foreground}"/>
+                                </Grid>
+                            </ControlTemplate>
+                        </ProgressBar.Template>
+                    </ProgressBar>
                 </StackPanel>
             </Border>
         </Grid>
     </Border>
+    </Grid>
 </Window>

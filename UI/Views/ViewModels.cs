@@ -1,28 +1,7 @@
 
-namespace ZephyrsElixir.UI.ViewModels
+namespace ZephyrsElixir.UI.Views
 {
-    public abstract class ObservableBase : INotifyPropertyChanged
-    {
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        protected void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-
-        protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? name = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
-            OnPropertyChanged(name);
-            return true;
-        }
-
-        protected void RaiseMultiple(params string[] names)
-        {
-            foreach (var name in names) OnPropertyChanged(name);
-        }
-    }
-
-    public sealed class AppInfoViewModel : ObservableBase, IEquatable<AppInfoViewModel>
+    public sealed class AppInfoViewModel : ObservableObject, IEquatable<AppInfoViewModel>
     {
         public event Action<bool>? IsSelectedChanged;
 
@@ -37,12 +16,15 @@ namespace ZephyrsElixir.UI.ViewModels
 
         public AppInfoViewModel()
         {
-            TranslationManager.Instance.LanguageChanged += (_, _) => 
-            {
-                if (_aiDescription == Strings.Debloat_Risk_Analyzing)
-                    OnPropertyChanged(nameof(AiDescription));
-                RaiseMultiple(nameof(RiskDisplay));
-            };
+            WeakEventManager<TranslationManager, EventArgs>.AddHandler(
+                TranslationManager.Instance, nameof(TranslationManager.LanguageChanged), OnLanguageChanged);
+        }
+
+        private void OnLanguageChanged(object? sender, EventArgs e)
+        {
+            if (_aiDescription == Strings.Debloat_Risk_Analyzing)
+                OnPropertyChanged(nameof(AiDescription));
+            OnPropertyChanged(nameof(RiskDisplay));
         }
 
         public string Name { get; init; } = string.Empty;
@@ -52,49 +34,49 @@ namespace ZephyrsElixir.UI.ViewModels
         public AppState State
         {
             get => _state;
-            set => SetField(ref _state, value);
+            set => SetProperty(ref _state, value);
         }
 
         public bool IsSelected
         {
             get => _isSelected;
-            set { if (SetField(ref _isSelected, value)) IsSelectedChanged?.Invoke(_isSelected); }
+            set { if (SetProperty(ref _isSelected, value)) IsSelectedChanged?.Invoke(_isSelected); }
         }
 
         public BitmapImage? Icon
         {
             get => _icon;
-            set => SetField(ref _icon, value);
+            set => SetProperty(ref _icon, value);
         }
 
         public bool IsLoadingIcon
         {
             get => _isLoadingIcon;
-            set => SetField(ref _isLoadingIcon, value);
+            set => SetProperty(ref _isLoadingIcon, value);
         }
 
         public SafetyRiskLevel RiskLevel
         {
             get => _riskLevel;
-            set { if (SetField(ref _riskLevel, value)) RaiseMultiple(nameof(RiskDisplay), nameof(RiskColor), nameof(RiskBadgeBackground), nameof(CanSafelyRemove)); }
+            set { if (SetProperty(ref _riskLevel, value)) OnPropertyChanged(nameof(RiskDisplay)); OnPropertyChanged(nameof(RiskColor)); OnPropertyChanged(nameof(RiskBadgeBackground)); OnPropertyChanged(nameof(CanSafelyRemove)); }
         }
 
         public double SafetyScore
         {
             get => _safetyScore;
-            set { if (SetField(ref _safetyScore, value)) OnPropertyChanged(nameof(SafetyScoreDisplay)); }
+            set { if (SetProperty(ref _safetyScore, value)) OnPropertyChanged(nameof(SafetyScoreDisplay)); }
         }
 
         public string AiDescription
         {
             get => _aiDescription;
-            set => SetField(ref _aiDescription, value);
+            set => SetProperty(ref _aiDescription, value);
         }
 
         public string? WarningMessage
         {
             get => _warningMessage;
-            set { if (SetField(ref _warningMessage, value)) RaiseMultiple(nameof(RiskDisplay), nameof(HasWarning)); }
+            set { if (SetProperty(ref _warningMessage, value)) OnPropertyChanged(nameof(RiskDisplay)); OnPropertyChanged(nameof(HasWarning)); }
         }
 
         public string SafetyScoreDisplay => $"{SafetyScore:F0}%";
@@ -126,21 +108,14 @@ namespace ZephyrsElixir.UI.ViewModels
             _ => UnknownBackgroundBrush
         };
 
-        private static readonly SolidColorBrush SafeBrush = Frozen(50, 205, 50);
-        private static readonly SolidColorBrush CautionBrush = Frozen(255, 190, 0);
-        private static readonly SolidColorBrush CriticalBrush = Frozen(220, 20, 60);
-        private static readonly SolidColorBrush UnknownBrush = Frozen(128, 128, 128, 80);
-        private static readonly SolidColorBrush SafeBackgroundBrush = Frozen(50, 205, 50, 30);
-        private static readonly SolidColorBrush CautionBackgroundBrush = Frozen(255, 190, 0, 30);
-        private static readonly SolidColorBrush CriticalBackgroundBrush = Frozen(220, 20, 60, 30);
-        private static readonly SolidColorBrush UnknownBackgroundBrush = Frozen(128, 128, 128, 20);
-
-        private static SolidColorBrush Frozen(byte r, byte g, byte b, byte a = 255)
-        {
-            var brush = new SolidColorBrush(Color.FromArgb(a, r, g, b));
-            brush.Freeze();
-            return brush;
-        }
+        private static readonly SolidColorBrush SafeBrush = AppBrushes.Green;
+        private static readonly SolidColorBrush CautionBrush = AppBrushes.Caution;
+        private static readonly SolidColorBrush CriticalBrush = AppBrushes.Critical;
+        private static readonly SolidColorBrush UnknownBrush = UIHelpers.FrozenSolid(128, 128, 128, 80);
+        private static readonly SolidColorBrush SafeBackgroundBrush = UIHelpers.FrozenSolid(50, 205, 50, 30);
+        private static readonly SolidColorBrush CautionBackgroundBrush = UIHelpers.FrozenSolid(255, 190, 0, 30);
+        private static readonly SolidColorBrush CriticalBackgroundBrush = UIHelpers.FrozenSolid(220, 20, 60, 30);
+        private static readonly SolidColorBrush UnknownBackgroundBrush = UIHelpers.FrozenSolid(128, 128, 128, 20);
 
         public void ApplyIntelligence(PackageIntelligenceData data)
         {
@@ -155,26 +130,29 @@ namespace ZephyrsElixir.UI.ViewModels
         public override int GetHashCode() => PackageName.GetHashCode();
     }
 
-    public sealed class HistoryAppViewModel : ObservableBase
+    public sealed class HistoryAppViewModel : ObservableObject
     {
         private bool _isSelected;
         private BitmapImage? _icon;
 
         public HistoryAppViewModel()
         {
-            TranslationManager.Instance.LanguageChanged += (_, _) => OnPropertyChanged(nameof(StatusDisplay));
+            WeakEventManager<TranslationManager, EventArgs>.AddHandler(
+                TranslationManager.Instance, nameof(TranslationManager.LanguageChanged), OnLanguageChanged);
         }
+
+        private void OnLanguageChanged(object? sender, EventArgs e) => OnPropertyChanged(nameof(StatusDisplay));
 
         public bool IsSelected
         {
             get => _isSelected;
-            set => SetField(ref _isSelected, value);
+            set => SetProperty(ref _isSelected, value);
         }
 
         public BitmapImage? Icon
         {
             get => _icon;
-            set => SetField(ref _icon, value);
+            set => SetProperty(ref _icon, value);
         }
 
         public string Name { get; init; } = string.Empty;
@@ -184,14 +162,17 @@ namespace ZephyrsElixir.UI.ViewModels
         public string? LocalApkPath { get; init; }
         public bool IsSystemApp { get; init; }
 
-        public bool HasBackup => !string.IsNullOrEmpty(LocalApkPath) && System.IO.File.Exists(LocalApkPath);
+        public bool HasBackup => !string.IsNullOrEmpty(LocalApkPath) && File.Exists(LocalApkPath);
         public string DateDisplay => UninstallDate.ToString("g");
         public string StatusDisplay => HasBackup 
             ? Strings.Debloat_History_Status_Backup 
             : Strings.Debloat_History_Status_Uninstalled;
+
+        public string? DeviceSerial { get; init; }
+        public bool IsLegacyEntry => string.IsNullOrEmpty(DeviceSerial);
     }
 
-    public sealed class AppDetailsViewModel : ObservableBase
+    public sealed class AppDetailsViewModel : ObservableObject
     {
         private readonly AppInfoViewModel _app;
         private StandbyBucket _selectedBucket;
@@ -202,7 +183,7 @@ namespace ZephyrsElixir.UI.ViewModels
 
         public Dictionary<StandbyBucket, string> BucketOptions => new()
         {
-            { StandbyBucket.Active, $"{Strings.Debloat_Bucket_Active} ({Strings.Advanced_Animation_Slow})" },
+            { StandbyBucket.Active, Strings.Debloat_Bucket_Active },
             { StandbyBucket.WorkingSet, Strings.Debloat_Bucket_WorkingSet },
             { StandbyBucket.Frequent, Strings.Debloat_Bucket_Frequent },
             { StandbyBucket.Rare, Strings.Debloat_Bucket_Rare },
@@ -212,13 +193,13 @@ namespace ZephyrsElixir.UI.ViewModels
         public bool IsLoading
         {
             get => _isLoading;
-            set => SetField(ref _isLoading, value);
+            set => SetProperty(ref _isLoading, value);
         }
 
         public StandbyBucket SelectedBucket
         {
             get => _selectedBucket;
-            set { if (SetField(ref _selectedBucket, value)) _ = PermissionManager.SetAppStandbyBucketAsync(_app.PackageName, value); }
+            set { if (SetProperty(ref _selectedBucket, value)) _ = PermissionManager.SetAppStandbyBucketAsync(_app.PackageName, value); }
         }
 
         public int GrantedPermissionsCount => Permissions.Count(p => p.IsGranted);
@@ -227,8 +208,11 @@ namespace ZephyrsElixir.UI.ViewModels
         public AppDetailsViewModel(AppInfoViewModel app) 
         {
             _app = app;
-            TranslationManager.Instance.LanguageChanged += (_, _) => OnPropertyChanged(nameof(BucketOptions));
+            WeakEventManager<TranslationManager, EventArgs>.AddHandler(
+                TranslationManager.Instance, nameof(TranslationManager.LanguageChanged), OnLanguageChanged);
         }
+
+        private void OnLanguageChanged(object? sender, EventArgs e) => OnPropertyChanged(nameof(BucketOptions));
 
         public async Task LoadDataAsync()
         {
@@ -243,14 +227,14 @@ namespace ZephyrsElixir.UI.ViewModels
                         if (e.PropertyName == nameof(PermissionItem.IsGranted))
                         {
                             await PermissionManager.SetPermissionAsync(_app.PackageName, p.PermissionKey, p.IsGranted);
-                            RaiseMultiple(nameof(GrantedPermissionsCount), nameof(HasGrantedPermissions));
+                            OnPropertyChanged(nameof(GrantedPermissionsCount)); OnPropertyChanged(nameof(HasGrantedPermissions));
                         }
                     };
                     Permissions.Add(p);
                 }
                 _selectedBucket = await PermissionManager.GetAppStandbyBucketAsync(_app.PackageName);
                 OnPropertyChanged(nameof(SelectedBucket));
-                RaiseMultiple(nameof(GrantedPermissionsCount), nameof(HasGrantedPermissions));
+                OnPropertyChanged(nameof(GrantedPermissionsCount)); OnPropertyChanged(nameof(HasGrantedPermissions));
             }
             finally { IsLoading = false; }
         }
@@ -269,20 +253,23 @@ namespace ZephyrsElixir.UI.ViewModels
                 }
                 catch (Exception ex) { AdbLogger.Instance.LogWarning("RevokeAll", $"Failed: {p.PermissionKey}: {ex.Message}"); }
             }
-            RaiseMultiple(nameof(GrantedPermissionsCount), nameof(HasGrantedPermissions));
+            OnPropertyChanged(nameof(GrantedPermissionsCount)); OnPropertyChanged(nameof(HasGrantedPermissions));
             return count;
         }
     }
 
-    public sealed class DnsProviderViewModel : ObservableBase
+    public sealed class DnsProviderViewModel : ObservableObject
     {
         private int _pingMs = -1;
         private bool _isPinging;
 
         public DnsProviderViewModel()
         {
-            TranslationManager.Instance.LanguageChanged += (_, _) => OnPropertyChanged(nameof(PingDisplay));
+            WeakEventManager<TranslationManager, EventArgs>.AddHandler(
+                TranslationManager.Instance, nameof(TranslationManager.LanguageChanged), OnLanguageChanged);
         }
+
+        private void OnLanguageChanged(object? sender, EventArgs e) => OnPropertyChanged(nameof(PingDisplay));
 
         public string Name { get; init; } = string.Empty;
         public string Hostname { get; init; } = string.Empty;
@@ -290,13 +277,13 @@ namespace ZephyrsElixir.UI.ViewModels
         public int PingMs
         {
             get => _pingMs;
-            set { if (SetField(ref _pingMs, value)) OnPropertyChanged(nameof(PingDisplay)); }
+            set { if (SetProperty(ref _pingMs, value)) OnPropertyChanged(nameof(PingDisplay)); }
         }
 
         public bool IsPinging
         {
             get => _isPinging;
-            set { if (SetField(ref _isPinging, value)) OnPropertyChanged(nameof(PingDisplay)); }
+            set { if (SetProperty(ref _isPinging, value)) OnPropertyChanged(nameof(PingDisplay)); }
         }
 
         public string PingDisplay => IsPinging ? "..." : PingMs switch
@@ -308,5 +295,40 @@ namespace ZephyrsElixir.UI.ViewModels
             < 200 => $"{PingMs}ms",
             _ => $"{PingMs}ms ⚠"
         };
+    }
+
+    public class MenuItemBase : INotifyPropertyChanged
+    {
+        private readonly Func<string> _titleAccessor;
+        private readonly Func<string> _descriptionAccessor;
+
+        public string Key { get; }
+        public string Icon { get; }
+        public string Title => _titleAccessor();
+        public string Description => _descriptionAccessor();
+        public Brush IconBrush { get; }
+        public Color GlowColor { get; }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        public MenuItemBase(string key, string icon, Func<string> titleAccessor, Func<string> descriptionAccessor,
+                               Brush iconBrush, Color glowColor)
+        {
+            Key = key;
+            Icon = icon;
+            _titleAccessor = titleAccessor;
+            _descriptionAccessor = descriptionAccessor;
+            IconBrush = iconBrush;
+            GlowColor = glowColor;
+        }
+
+        public void Refresh()
+        {
+            OnPropertyChanged(nameof(Title));
+            OnPropertyChanged(nameof(Description));
+        }
+
+        protected void OnPropertyChanged([CallerMemberName] string? propertyName = null) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

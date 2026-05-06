@@ -3,9 +3,7 @@
                     xmlns:helpers="clr-namespace:ZephyrsElixir.UI.Helpers"
                     xmlns:core="clr-namespace:ZephyrsElixir.Core">
 
-    <!-- SECTION 1: CORE RESOURCES (Colors, Brushes, Effects, Easings, Converters) -->
-    <!-- 1.1 Color Palette -->
-    <Color x:Key="App.Color.Blue900">#0B2041</Color>
+<Color x:Key="App.Color.Blue900">#0B2041</Color>
     <Color x:Key="App.Color.Blue700">#0D3A78</Color>
     <Color x:Key="App.Color.Blue500">#1175E6</Color>
     <Color x:Key="App.Color.Blue300">#63B5FF</Color>
@@ -16,33 +14,26 @@
     <Color x:Key="App.Color.DeepSkyBlue">#00BFFF</Color>
     <Color x:Key="App.Color.Crimson">#FF6B6B</Color>
 
-    <!-- 1.2 Solid Color Brushes -->
-    <!-- Battery Status -->
-    <SolidColorBrush x:Key="App.Brush.Battery.Low" Color="#D2042D"/>
+<SolidColorBrush x:Key="App.Brush.Battery.Low" Color="#D2042D"/>
     <SolidColorBrush x:Key="App.Brush.Battery.Medium" Color="#F5A623"/>
     <SolidColorBrush x:Key="App.Brush.Battery.High" Color="#7ED321"/>
 
-    <!-- Status Indicators -->
-    <SolidColorBrush x:Key="App.Brush.Status.Idle" Color="#607D8B"/>
+<SolidColorBrush x:Key="App.Brush.Status.Idle" Color="#607D8B"/>
     <SolidColorBrush x:Key="App.Brush.Status.Active" Color="#00E676"/>
     <SolidColorBrush x:Key="App.Brush.Status.Connected" Color="#00BFFF"/>
 
-    <!-- Standard Brushes -->
-    <SolidColorBrush x:Key="App.Brush.Gold" Color="{StaticResource App.Color.Gold}"/>
+<SolidColorBrush x:Key="App.Brush.Gold" Color="{StaticResource App.Color.Gold}"/>
     <SolidColorBrush x:Key="App.Brush.CheckedForeground" Color="{StaticResource App.Color.White}"/>
     <SolidColorBrush x:Key="App.Brush.NavButtonForeground" Color="{StaticResource App.Color.White80}"/>
     <SolidColorBrush x:Key="App.Brush.DeepSkyBlue" Color="{StaticResource App.Color.DeepSkyBlue}"/>
 
-    <!-- Interactive States -->
-    <SolidColorBrush x:Key="App.Brush.Idle" Color="{StaticResource App.Color.White20}"/>
+<SolidColorBrush x:Key="App.Brush.Idle" Color="{StaticResource App.Color.White20}"/>
     <SolidColorBrush x:Key="App.Brush.Destructive.Idle" Color="#15FF2A2A"/>
 
-    <!-- Glass Effect Brushes (NOTA: GlassSeparator rimosso perché duplicato di Glass.Border) -->
-    <SolidColorBrush x:Key="App.Brush.Glass.Background" Color="#1AFFFFFF"/>
+<SolidColorBrush x:Key="App.Brush.Glass.Background" Color="#1AFFFFFF"/>
     <SolidColorBrush x:Key="App.Brush.Glass.Border" Color="#3AFFFFFF"/>
 
-    <!-- 1.3 Gradient Brushes -->
-    <LinearGradientBrush x:Key="App.Brush.IconCircle" StartPoint="0,0" EndPoint="1,1">
+<LinearGradientBrush x:Key="App.Brush.IconCircle" StartPoint="0,0" EndPoint="1,1">
         <GradientStop Color="{StaticResource App.Color.Blue300}" Offset="0"/>
         <GradientStop Color="{StaticResource App.Color.Blue500}" Offset="1"/>
     </LinearGradientBrush>
@@ -62,8 +53,7 @@
         <GradientStop Color="#86FFFFFF" Offset="1"/>
     </LinearGradientBrush>
 
-    <!-- Destructive State Brushes -->
-    <LinearGradientBrush x:Key="App.Brush.Destructive.Hover" StartPoint="0,0" EndPoint="1,1">
+<LinearGradientBrush x:Key="App.Brush.Destructive.Hover" StartPoint="0,0" EndPoint="1,1">
         <GradientStop Color="#25FF4444" Offset="0"/>
         <GradientStop Color="#40FF4444" Offset="1"/>
     </LinearGradientBrush>
@@ -78,27 +68,19 @@
         <GradientStop Color="#DC143C" Offset="1"/>
     </LinearGradientBrush>
 
-    <!-- Sidebar Background -->
-    <LinearGradientBrush x:Key="Sidebar.Brush.Background" StartPoint="0,0" EndPoint="0,1">
+<LinearGradientBrush x:Key="Sidebar.Brush.Background" StartPoint="0,0" EndPoint="0,1">
         <GradientStop Color="{StaticResource App.Color.Blue700}" Offset="0.0"/>
         <GradientStop Color="{StaticResource App.Color.Blue500}" Offset="0.33"/>
         <GradientStop Color="{StaticResource App.Color.Blue700}" Offset="0.66"/>
         <GradientStop Color="{StaticResource App.Color.Blue900}" Offset="1.0"/>
     </LinearGradientBrush>
 
-    <!-- 1.4 Animation Easing Functions -->
-    <CubicEase x:Key="App.Easing.Smooth" EasingMode="EaseOut"/>
-    <QuadraticEase x:Key="App.Easing.Quick" EasingMode="EaseOut"/>
+<CubicEase x:Key="App.Easing.Smooth" EasingMode="EaseOut"/>
     <BackEase x:Key="App.Easing.Bounce" EasingMode="EaseOut" Amplitude="0.3"/>
 
-    <!-- 1.5 Shared Effects  -->
-    <DropShadowEffect x:Key="App.Effect.PageShadow" 
+<DropShadowEffect x:Key="App.Effect.PageShadow" 
                       BlurRadius="30" ShadowDepth="5" 
                       Color="Black" Opacity="0.4"/>
-
-    <DropShadowEffect x:Key="App.Effect.LogoGlow" 
-                      Color="#4A90E2" BlurRadius="8" 
-                      ShadowDepth="0" Opacity="0.6"/>
 
     <DropShadowEffect x:Key="App.Effect.IconCircleHover" 
                       BlurRadius="14" ShadowDepth="0" 
@@ -135,18 +117,16 @@
                       BlurRadius="12" ShadowDepth="2" 
                       Opacity="0.4" Color="Black"/>
 
-    <!-- 1.6 Converters -->
-    <helpers:IntToBoolConverter x:Key="App.Converter.IntToBool"/>
+<x:Static Member="helpers:IntToBoolConverter.Instance" x:Key="App.Converter.IntToBool"/>
     <BooleanToVisibilityConverter x:Key="App.Converter.BooleanToVisibility"/>
-    <helpers:PercentageToScaleConverter x:Key="App.Converter.PercentageToScale"/>
-    <helpers:BatteryWidthConverter x:Key="App.Converter.BatteryWidthConverter"/>
-    <helpers:WidthToColumnsConverter x:Key="App.Converter.WidthToColumns"/>
-    <helpers:InverseBoolToVisibilityConverter x:Key="App.Converter.InverseBoolToVisibility"/>
+    <x:Static Member="helpers:PercentageToScaleConverter.Instance" x:Key="App.Converter.PercentageToScale"/>
+    <x:Static Member="helpers:BatteryWidthConverter.Instance" x:Key="App.Converter.BatteryWidthConverter"/>
+    <x:Static Member="helpers:WidthToColumnsConverter.Instance" x:Key="App.Converter.WidthToColumns"/>
+    <x:Static Member="helpers:InverseBoolToVisibilityConverter.Instance" x:Key="App.Converter.InverseBoolToVisibility"/>
+    <x:Static Member="helpers:CapitalizeConverter.Instance" x:Key="App.Converter.Capitalize"/>
+    <x:Static Member="helpers:SmartTruncateConverter.Instance" x:Key="App.Converter.SmartTruncate"/>
 
-    <!-- SECTION 2: BASE STYLES -->
-
-    <!-- 2.1 Text & Typography -->
-    <Style x:Key="App.Style.Glyph" TargetType="TextBlock">
+<Style x:Key="App.Style.Glyph" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
         <Setter Property="FontSize" Value="18"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
@@ -160,8 +140,7 @@
         <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
 
-    <!-- 2.2 Glass Card (base container reusable) -->
-    <Style x:Key="App.Style.GlassCard" TargetType="Border">
+<Style x:Key="App.Style.GlassCard" TargetType="Border">
         <Setter Property="Background" Value="{StaticResource App.Brush.Glass.Background}"/>
         <Setter Property="BorderBrush" Value="{StaticResource App.Brush.Glass.Border}"/>
         <Setter Property="BorderThickness" Value="1"/>
@@ -169,11 +148,53 @@
         <Setter Property="Padding" Value="30"/>
     </Style>
 
+    <Style TargetType="{x:Type helpers:ShadowCard}">
+        <Setter Property="Background" Value="{StaticResource App.Brush.Glass.Background}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource App.Brush.Glass.Border}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="16"/>
+        <Setter Property="Padding" Value="30"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type helpers:ShadowCard}">
+                    <Grid>
+                        <Border x:Name="ShadowLayer"
+                                CornerRadius="{TemplateBinding CornerRadius}"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Effect="{TemplateBinding ShadowEffect}"/>
+                        <Border x:Name="ContentLayer"
+                                CornerRadius="{TemplateBinding CornerRadius}"
+                                Background="Transparent"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter/>
+                        </Border>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
-    <!-- SECTION 3: BUTTON STYLES -->
+    <Style TargetType="{x:Type helpers:GlowIcon}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type helpers:GlowIcon}">
+                    <Grid Width="{TemplateBinding Size}" Height="{TemplateBinding Size}">
+                        <Border CornerRadius="{TemplateBinding CornerRadius}"
+                                Background="{TemplateBinding Background}"
+                                Effect="{TemplateBinding GlowEffect}"/>
+                        <Border CornerRadius="{TemplateBinding CornerRadius}"
+                                Background="Transparent">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
-    <!-- 3.1 Glass Button Template -->
-    <ControlTemplate x:Key="App.Template.GlassButton" TargetType="Button">
+<ControlTemplate x:Key="App.Template.GlassButton" TargetType="Button">
         <Grid>
             <Border x:Name="container" 
                     Background="{TemplateBinding Background}" 
@@ -187,16 +208,15 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     
-                    <Border x:Name="iconCircle" 
-                            Width="36" Height="36" 
-                            CornerRadius="18" 
+                    <helpers:GlowIcon x:Name="iconCircle" 
+                            Size="36" CornerRadius="18" 
                             Background="{TemplateBinding BorderBrush}">
                         <TextBlock x:Name="icon" 
                                    Text="{TemplateBinding Tag}" 
                                    Style="{StaticResource App.Style.Glyph}" 
                                    HorizontalAlignment="Center" 
                                    VerticalAlignment="Center"/>
-                    </Border>
+                    </helpers:GlowIcon>
                     
                     <TextBlock Grid.Column="2" 
                                Text="{TemplateBinding Content}" 
@@ -212,7 +232,7 @@
                 <Setter TargetName="icon" Property="Foreground" Value="#AAFFFFFF"/>
             </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter TargetName="iconCircle" Property="Effect" Value="{StaticResource App.Effect.IconCircleHover}"/>
+                <Setter TargetName="iconCircle" Property="GlowEffect" Value="{StaticResource App.Effect.IconCircleHover}"/>
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
                 <Setter TargetName="container" Property="Opacity" Value="0.9"/>
@@ -225,8 +245,7 @@
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
-    <!-- 3.2 Standard Button Style -->
-    <Style x:Key="App.Style.Button" TargetType="Button">
+<Style x:Key="App.Style.Button" TargetType="Button">
         <Setter Property="MinHeight" Value="54"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Foreground" Value="{StaticResource App.Brush.NavButtonForeground}"/>
@@ -246,8 +265,7 @@
         </Style.Triggers>
     </Style>
 
-    <!-- 3.3 Destructive Button Style -->
-    <Style x:Key="App.Style.Button.Destructive" TargetType="Button" BasedOn="{StaticResource App.Style.Button}">
+<Style x:Key="App.Style.Button.Destructive" TargetType="Button" BasedOn="{StaticResource App.Style.Button}">
         <Setter Property="Foreground" Value="#FFC0C0"/>
         <Setter Property="Background" Value="{StaticResource App.Brush.Destructive.Idle}"/>
         <Setter Property="BorderBrush" Value="{StaticResource App.Brush.Destructive.IconCircle}"/>
@@ -263,8 +281,7 @@
         </Style.Triggers>
     </Style>
 
-    <!-- 3.4 Inline Button Template & Styles -->
-    <ControlTemplate x:Key="App.Template.InlineButton" TargetType="Button">
+<ControlTemplate x:Key="App.Template.InlineButton" TargetType="Button">
         <Border x:Name="container" 
                 Background="{TemplateBinding Background}" 
                 CornerRadius="8" 
@@ -335,8 +352,7 @@
         </Style.Triggers>
     </Style>
 
-    <!-- 3.5 Icon Only Button -->
-    <Style x:Key="App.Style.Button.IconOnly" TargetType="Button">
+<Style x:Key="App.Style.Button.IconOnly" TargetType="Button">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Padding" Value="8"/>
@@ -362,8 +378,7 @@
         </Setter>
     </Style>
 
-    <!-- 3.6 Link Button -->
-    <Style x:Key="App.Style.Button.Link" TargetType="Button">
+<Style x:Key="App.Style.Button.Link" TargetType="Button">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Foreground" Value="#C8DCFF"/>
@@ -386,8 +401,7 @@
         </Setter>
     </Style>
 
-    <!-- 3.7 Window Control Close Button -->
-    <Style x:Key="App.Style.WindowControl.Close" TargetType="Button">
+<Style x:Key="App.Style.WindowControl.Close" TargetType="Button">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Cursor" Value="Hand"/>
@@ -418,16 +432,13 @@
         </Setter>
     </Style>
 
-    <!-- 3.8 Settings Control Button -->
-    <Style x:Key="App.Style.SettingsControl" TargetType="Button" BasedOn="{StaticResource App.Style.Button}">
+<Style x:Key="App.Style.SettingsControl" TargetType="Button" BasedOn="{StaticResource App.Style.Button}">
         <Setter Property="Width" Value="Auto"/>
         <Setter Property="MinWidth" Value="220"/>
         <Setter Property="HorizontalAlignment" Value="Right"/>
     </Style>
 
-
-    <!-- SECTION 4: TOGGLE BUTTON STYLES -->
-    <Style x:Key="App.Style.ToggleButton" TargetType="ToggleButton">
+<Style x:Key="App.Style.ToggleButton" TargetType="ToggleButton">
         <Setter Property="Margin" Value="0,10,0,0"/>
         <Setter Property="MinHeight" Value="54"/>
         <Setter Property="Cursor" Value="Hand"/>
@@ -491,9 +502,7 @@
         </Setter>
     </Style>
 
-
-    <!-- SECTION 5: RADIO BUTTON STYLES -->
-    <Style x:Key="App.Style.RadioButton" TargetType="RadioButton">
+<Style x:Key="App.Style.RadioButton" TargetType="RadioButton">
         <Setter Property="Margin" Value="5,0"/>
         <Setter Property="MinHeight" Value="54"/>
         <Setter Property="Cursor" Value="Hand"/>
@@ -529,8 +538,7 @@
         </Setter>
     </Style>
 
-    <!-- Segmented Radio Button -->
-    <Style x:Key="App.Style.SegmentedRadioButton" TargetType="RadioButton">
+<Style x:Key="App.Style.SegmentedRadioButton" TargetType="RadioButton">
         <Setter Property="Foreground" Value="#B0B8C8"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Background" Value="Transparent"/>
@@ -539,16 +547,17 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="RadioButton">
-                    <Border x:Name="Bd" 
-                            CornerRadius="8" 
-                            Background="{TemplateBinding Background}">
-                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    </Border>
+                    <Grid>
+                        <Border x:Name="ShadowBd" CornerRadius="8" Background="Transparent"/>
+                        <Border x:Name="Bd" CornerRadius="8" Background="Transparent">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsChecked" Value="True">
-                            <Setter TargetName="Bd" Property="Background" Value="#33FFFFFF"/>
+                            <Setter TargetName="ShadowBd" Property="Background" Value="#33FFFFFF"/>
+                            <Setter TargetName="ShadowBd" Property="Effect" Value="{StaticResource App.Effect.SegmentedSelected}"/>
                             <Setter Property="Foreground" Value="White"/>
-                            <Setter TargetName="Bd" Property="Effect" Value="{StaticResource App.Effect.SegmentedSelected}"/>
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Foreground" Value="White"/>
@@ -559,10 +568,7 @@
         </Setter>
     </Style>
 
-
-    <!-- SECTION 6: CHECKBOX STYLES -->
-    <!-- 6.1 Glass CheckBox -->
-    <Style x:Key="App.Style.GlassCheckBox" TargetType="CheckBox">
+<Style x:Key="App.Style.GlassCheckBox" TargetType="CheckBox">
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -613,8 +619,7 @@
         </Setter>
     </Style>
 
-    <!-- 6.2 Toggle Switch -->
-    <Style x:Key="App.Style.ToggleSwitch" TargetType="CheckBox">
+<Style x:Key="App.Style.ToggleSwitch" TargetType="CheckBox">
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Template">
@@ -678,8 +683,7 @@
         </Setter>
     </Style>
 
-    <!-- 6.3 Toggle Switch Extreme  -->
-    <Style x:Key="App.Style.ToggleSwitch.Extreme" TargetType="CheckBox" BasedOn="{StaticResource App.Style.ToggleSwitch}">
+<Style x:Key="App.Style.ToggleSwitch.Extreme" TargetType="CheckBox" BasedOn="{StaticResource App.Style.ToggleSwitch}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="CheckBox">
@@ -689,12 +693,14 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         
-                        <Border x:Name="ContentGlow" Grid.Column="0" VerticalAlignment="Center">
-                            <Border.Effect>
-                                <DropShadowEffect Color="{StaticResource App.Color.Gold}" BlurRadius="8" ShadowDepth="0" Opacity="0"/>
-                            </Border.Effect>
+                        <Grid Grid.Column="0" VerticalAlignment="Center">
+                            <Border x:Name="ContentGlow">
+                                <Border.Effect>
+                                    <DropShadowEffect Color="{StaticResource App.Color.Gold}" BlurRadius="8" ShadowDepth="0" Opacity="0"/>
+                                </Border.Effect>
+                            </Border>
                             <ContentPresenter Content="{TemplateBinding Content}"/>
-                        </Border>
+                        </Grid>
                         
                         <Border x:Name="SwitchTrack" 
                                 Grid.Column="1" 
@@ -781,9 +787,7 @@
         </Setter>
     </Style>
 
-
-    <!-- SECTION 7: SCROLLBAR STYLE -->
-    <Style TargetType="{x:Type ScrollBar}">
+<Style TargetType="{x:Type ScrollBar}">
         <Setter Property="Width" Value="14"/>
         <Setter Property="MinWidth" Value="14"/>
         <Setter Property="Template">
@@ -881,15 +885,7 @@
         </Setter>
     </Style>
 
-
-    <!-- ═══════════════════════════════════════════════════════════════════════
-         SECTION 8: COMBOBOX STYLES
-         ═══════════════════════════════════════════════════════════════════════ -->
-
-    <!-- ─────────────────────────────────────────────────────────────────────────
-         8.1 ComboBox Item Style (Condiviso)
-         ───────────────────────────────────────────────────────────────────────── -->
-    <Style x:Key="App.Style.ComboBoxItem" TargetType="{x:Type ComboBoxItem}">
+<Style x:Key="App.Style.ComboBoxItem" TargetType="{x:Type ComboBoxItem}">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="Padding" Value="12,8"/>
@@ -915,10 +911,7 @@
         </Setter>
     </Style>
 
-    <!-- ─────────────────────────────────────────────────────────────────────────
-         8.2 Base ComboBox Toggle Button Template
-         ───────────────────────────────────────────────────────────────────────── -->
-    <ControlTemplate x:Key="App.Template.ComboBoxToggleButton" TargetType="{x:Type ToggleButton}">
+<ControlTemplate x:Key="App.Template.ComboBoxToggleButton" TargetType="{x:Type ToggleButton}">
         <Border x:Name="templateRoot" 
                 CornerRadius="8" 
                 BorderThickness="1" 
@@ -950,10 +943,7 @@
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
-    <!-- ─────────────────────────────────────────────────────────────────────────
-         8.3 Slim ComboBox Toggle Button Template (Differenze minime: padding ridotto)
-         ───────────────────────────────────────────────────────────────────────── -->
-    <ControlTemplate x:Key="App.Template.ComboBoxToggleButton.Slim" TargetType="{x:Type ToggleButton}">
+<ControlTemplate x:Key="App.Template.ComboBoxToggleButton.Slim" TargetType="{x:Type ToggleButton}">
         <Border x:Name="templateRoot" 
                 CornerRadius="8" 
                 BorderThickness="1" 
@@ -985,10 +975,7 @@
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
-    <!-- ─────────────────────────────────────────────────────────────────────────
-         8.5 Standard ComboBox Style
-         ───────────────────────────────────────────────────────────────────────── -->
-    <Style x:Key="App.Style.ComboBox" TargetType="{x:Type ComboBox}">
+<Style x:Key="App.Style.ComboBox" TargetType="{x:Type ComboBox}">
         <Setter Property="MinHeight" Value="42"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Foreground" Value="White"/>
@@ -1027,10 +1014,7 @@
         </Setter>
     </Style>
 
-    <!-- ─────────────────────────────────────────────────────────────────────────
-         8.6 Slim ComboBox Style (BasedOn per DRY)
-         ───────────────────────────────────────────────────────────────────────── -->
-    <Style x:Key="App.Style.ComboBox.Slim" TargetType="{x:Type ComboBox}" BasedOn="{StaticResource App.Style.ComboBox}">
+<Style x:Key="App.Style.ComboBox.Slim" TargetType="{x:Type ComboBox}" BasedOn="{StaticResource App.Style.ComboBox}">
         <Setter Property="Height" Value="34"/>
         <Setter Property="MinHeight" Value="34"/>
         <Setter Property="FontSize" Value="13"/>
@@ -1068,11 +1052,7 @@
         </Setter>
     </Style>
 
-    <!-- ═══════════════════════════════════════════════════════════════════════
-         SECTION 9: TEXTBOX STYLES
-         ═══════════════════════════════════════════════════════════════════════ -->
-
-    <Style x:Key="App.Style.TextBox.Glass" TargetType="TextBox">
+<Style x:Key="App.Style.TextBox.Glass" TargetType="TextBox">
         <Setter Property="Background" Value="{StaticResource App.Brush.Glass.Background}"/>
         <Setter Property="BorderBrush" Value="{StaticResource App.Brush.Glass.Border}"/>
         <Setter Property="BorderThickness" Value="1"/>
@@ -1087,7 +1067,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="TextBox">
                     <Grid>
-                        <Border x:Name="border" 
+                        <Border x:Name="shadowBorder" 
                                 Background="{TemplateBinding Background}" 
                                 BorderBrush="{TemplateBinding BorderBrush}" 
                                 BorderThickness="{TemplateBinding BorderThickness}" 
@@ -1095,6 +1075,10 @@
                             <Border.Effect>
                                 <DropShadowEffect ShadowDepth="1" BlurRadius="5" Color="Black" Opacity="0.15"/>
                             </Border.Effect>
+                        </Border>
+                        <Border x:Name="border" 
+                                Background="Transparent"
+                                CornerRadius="12">
                             <Grid Margin="{TemplateBinding Padding}">
                                 <ScrollViewer x:Name="PART_ContentHost" 
                                               Focusable="False" 
@@ -1118,13 +1102,13 @@
                             <Setter TargetName="placeholder" Property="Visibility" Value="Visible"/>
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="BorderBrush" Value="#60FFFFFF"/>
-                            <Setter TargetName="border" Property="Background" Value="#25FFFFFF"/>
+                            <Setter TargetName="shadowBorder" Property="BorderBrush" Value="#60FFFFFF"/>
+                            <Setter TargetName="shadowBorder" Property="Background" Value="#25FFFFFF"/>
                         </Trigger>
                         <Trigger Property="IsFocused" Value="True">
-                            <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource App.Brush.DeepSkyBlue}"/>
-                            <Setter TargetName="border" Property="Background" Value="#2AFFFFFF"/>
-                            <Setter TargetName="border" Property="Effect" Value="{StaticResource App.Effect.DeepSkyBlueGlow}"/>
+                            <Setter TargetName="shadowBorder" Property="BorderBrush" Value="{StaticResource App.Brush.DeepSkyBlue}"/>
+                            <Setter TargetName="shadowBorder" Property="Background" Value="#2AFFFFFF"/>
+                            <Setter TargetName="shadowBorder" Property="Effect" Value="{StaticResource App.Effect.DeepSkyBlueGlow}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -1140,12 +1124,7 @@
         <Setter Property="MaxLength" Value="50"/>
     </Style>
 
-
-    <!-- ═══════════════════════════════════════════════════════════════════════
-         SECTION 10: PROGRESSBAR STYLE
-         ═══════════════════════════════════════════════════════════════════════ -->
-
-    <Style x:Key="App.Style.ProgressBar" TargetType="ProgressBar">
+<Style x:Key="App.Style.ProgressBar" TargetType="ProgressBar">
         <Setter Property="Height" Value="24"/>
         <Setter Property="Background" Value="{StaticResource App.Brush.Glass.Background}"/>
         <Setter Property="BorderBrush" Value="{StaticResource App.Brush.Glass.Border}"/>
@@ -1174,12 +1153,7 @@
         </Setter>
     </Style>
 
-
-    <!-- ═══════════════════════════════════════════════════════════════════════
-         SECTION 11: STATUS TAG STYLES
-         ═══════════════════════════════════════════════════════════════════════ -->
-
-    <Style x:Key="App.Style.StatusTag.Info" TargetType="Border">
+<Style x:Key="App.Style.StatusTag.Info" TargetType="Border">
         <Setter Property="Padding" Value="10,6"/>
         <Setter Property="CornerRadius" Value="14"/>
         <Setter Property="Background" Value="#2A00BFFF"/>
@@ -1197,12 +1171,7 @@
         <Setter Property="BorderBrush" Value="#4ADC143C"/>
     </Style>
 
-
-    <!-- ═══════════════════════════════════════════════════════════════════════
-         SECTION 12: TOOLTIP STYLE
-         ═══════════════════════════════════════════════════════════════════════ -->
-
-    <Style x:Key="App.Style.Tooltip" TargetType="ToolTip">
+<Style x:Key="App.Style.Tooltip" TargetType="ToolTip">
         <Setter Property="Background" Value="#F0151F38"/>
         <Setter Property="Foreground" Value="#E0FFFFFF"/>
         <Setter Property="BorderBrush" Value="#50FFFFFF"/>
@@ -1212,31 +1181,30 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ToolTip">
-                    <Border Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="8"
-                            Padding="{TemplateBinding Padding}"
-                            Effect="{StaticResource App.Effect.TooltipShadow}">
-                        <ContentPresenter/>
-                    </Border>
+                    <Grid>
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8"
+                                Effect="{StaticResource App.Effect.TooltipShadow}"/>
+                        <Border Background="Transparent"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter/>
+                        </Border>
+                    </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
 
-
-    <!-- ═══════════════════════════════════════════════════════════════════════
-         SECTION 13: CONTAINER & LAYOUT STYLES
-         ═══════════════════════════════════════════════════════════════════════ -->
-
-    <Style x:Key="App.Style.OverlayContainer" TargetType="Border">
+<Style x:Key="App.Style.OverlayCard" TargetType="{x:Type helpers:ShadowCard}">
         <Setter Property="Background" Value="#DC101828"/>
         <Setter Property="BorderBrush" Value="{StaticResource App.Brush.Glass.Border}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="20"/>
         <Setter Property="Padding" Value="30"/>
-        <Setter Property="Effect" Value="{StaticResource App.Effect.PageShadow}"/>
+        <Setter Property="ShadowEffect" Value="{StaticResource App.Effect.PageShadow}"/>
     </Style>
 
     <Style x:Key="App.Style.PermissionItem" TargetType="Border">
@@ -1252,12 +1220,7 @@
         <Setter Property="Height" Value="48"/>
     </Style>
 
-
-    <!-- ═══════════════════════════════════════════════════════════════════════
-         SECTION 14: SIDEBAR STYLES
-         ═══════════════════════════════════════════════════════════════════════ -->
-
-    <Style x:Key="Sidebar.Style.Title" TargetType="TextBlock">
+<Style x:Key="Sidebar.Style.Title" TargetType="TextBlock">
         <Setter Property="HorizontalAlignment" Value="Center"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="FontSize" Value="24"/>
@@ -1289,12 +1252,7 @@
         <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
 
-
-    <!-- ═══════════════════════════════════════════════════════════════════════
-         SECTION 15: SPINNER STYLE
-         ═══════════════════════════════════════════════════════════════════════ -->
-
-    <Style x:Key="License.Style.Spinner" TargetType="TextBlock">
+<Style x:Key="License.Style.Spinner" TargetType="TextBlock">
         <Setter Property="Text" Value="&#xE117;"/>
         <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
         <Setter Property="FontSize" Value="28"/>
@@ -1318,15 +1276,7 @@
         </Style.Triggers>
     </Style>
 
-
-    <!-- ═══════════════════════════════════════════════════════════════════════
-         SECTION 16: PAGE-SPECIFIC STYLES
-         ═══════════════════════════════════════════════════════════════════════ -->
-
-    <!-- ─────────────────────────────────────────────────────────────────────────
-         16.1 Debloat Page - App List Item
-         ───────────────────────────────────────────────────────────────────────── -->
-    <Style x:Key="App.Style.Debloat.AppListItem" TargetType="ListViewItem">
+<Style x:Key="App.Style.Debloat.AppListItem" TargetType="ListViewItem">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Margin" Value="0,0,0,10"/>
         <Setter Property="Template">
@@ -1384,15 +1334,7 @@
         </Setter>
     </Style>
 
-
-    <!-- ═══════════════════════════════════════════════════════════════════════
-         SECTION 17: CUSTOM CONTROL STYLES (helpers namespace)
-         ═══════════════════════════════════════════════════════════════════════ -->
-
-    <!-- ─────────────────────────────────────────────────────────────────────────
-         17.1 Settings Section
-         ───────────────────────────────────────────────────────────────────────── -->
-    <Style TargetType="{x:Type helpers:SettingsSection}">
+<Style TargetType="{x:Type helpers:SettingsSection}">
         <Setter Property="Margin" Value="0,0,0,24"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -1442,10 +1384,7 @@
         </Setter>
     </Style>
 
-    <!-- ─────────────────────────────────────────────────────────────────────────
-         17.2 Setting Item
-         ───────────────────────────────────────────────────────────────────────── -->
-    <Style TargetType="{x:Type helpers:SettingItem}">
+<Style TargetType="{x:Type helpers:SettingItem}">
         <Setter Property="Margin" Value="0,8,0,8"/>
         <Setter Property="MinHeight" Value="60"/>
         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -1480,219 +1419,63 @@
         </Setter>
     </Style>
 
-    <!-- ─────────────────────────────────────────────────────────────────────────
-         17.3 Page Header
-         ───────────────────────────────────────────────────────────────────────── -->
-    <Style TargetType="{x:Type helpers:PageHeader}">
+<Style TargetType="{x:Type helpers:PageHeader}">
         <Setter Property="IsTabStop" Value="False"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type helpers:PageHeader}">
-                    <Border Style="{StaticResource App.Style.GlassCard}"
-                            Padding="24"
-                            Effect="{StaticResource App.Effect.PageShadow}">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
+                    <Grid>
+                        <Border CornerRadius="16"
+                                Background="{StaticResource App.Brush.Glass.Background}"
+                                BorderBrush="{StaticResource App.Brush.Glass.Border}"
+                                BorderThickness="1"
+                                Effect="{StaticResource App.Effect.PageShadow}"/>
+                        <Border CornerRadius="16"
+                                Background="Transparent"
+                                Padding="24">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
 
-                            <TextBlock Grid.Column="0" 
-                                       Text="{TemplateBinding Icon}"
-                                       FontFamily="Segoe MDL2 Assets" 
-                                       FontSize="28" 
-                                       Foreground="{StaticResource App.Brush.DeepSkyBlue}"
-                                       VerticalAlignment="Center"
-                                       Margin="0,0,16,0"
-                                       Effect="{StaticResource App.Effect.LogoGlow}"/>
-
-                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                <TextBlock Text="{TemplateBinding Title}" 
-                                           FontSize="28"
-                                           FontWeight="Bold"
-                                           Foreground="White"
+                                <TextBlock Grid.Column="0" 
+                                           Text="{TemplateBinding Icon}"
+                                           FontFamily="Segoe MDL2 Assets" 
+                                           FontSize="28" 
+                                           Foreground="{StaticResource App.Brush.DeepSkyBlue}"
                                            VerticalAlignment="Center"
-                                           Effect="{DynamicResource App.Effect.LogoGlow}"/>
-                                
-                                <TextBlock Text="{TemplateBinding Subtitle}" 
-                                           Foreground="#B0B8C8" 
-                                           FontSize="13" 
-                                           Margin="0,4,0,0"
-                                           TextWrapping="Wrap">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Style.Triggers>
-                                                <Trigger Property="Text" Value="">
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
-                            </StackPanel>
-                        </Grid>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+                                           Margin="0,0,16,0"/>
 
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="{TemplateBinding Title}" 
+                                               FontSize="28"
+                                               FontWeight="Bold"
+                                               Foreground="White"
+                                               VerticalAlignment="Center"/>
+                                    
+                                    <TextBlock Text="{TemplateBinding Subtitle}" 
+                                               Foreground="#B0B8C8" 
+                                               FontSize="13" 
+                                               Margin="0,4,0,0"
+                                               TextWrapping="Wrap">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Style.Triggers>
+                                                    <Trigger Property="Text" Value="">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </StackPanel>
 
-    <!-- ═══════════════════════════════════════════════════════════════════════
-         SECTION 18: FAQ EXPANDER STYLE
-         ═══════════════════════════════════════════════════════════════════════ -->
-
-    <Style x:Key="FaqExpander" TargetType="Expander">
-        <Setter Property="Background" Value="#19007FFF"/>
-        <Setter Property="BorderBrush">
-            <Setter.Value>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                    <GradientStop Color="#B3FFD700" Offset="0.0"/>
-                    <GradientStop Color="#8000BFFF" Offset="1.0"/>
-                </LinearGradientBrush>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="BorderThickness" Value="1.5"/>
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="Margin" Value="0,0,0,10"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Expander">
-                    <Border Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="12">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <!-- Header / Toggle Button -->
-                            <ToggleButton x:Name="HeaderSite"
-                                          Grid.Row="0"
-                                          IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
-                                          Content="{TemplateBinding Header}"
-                                          Background="Transparent"
-                                          BorderThickness="0"
-                                          Padding="16,14"
-                                          HorizontalContentAlignment="Stretch"
-                                          VerticalContentAlignment="Center"
-                                          Cursor="Hand">
-                                <ToggleButton.Template>
-                                    <ControlTemplate TargetType="ToggleButton">
-                                        <Border x:Name="HeaderBorder"
-                                                Background="{TemplateBinding Background}"
-                                                Padding="{TemplateBinding Padding}"
-                                                CornerRadius="12">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-
-                                                <!-- Question Icon -->
-                                                <TextBlock Grid.Column="0"
-                                                           Text="&#xE897;"
-                                                           FontFamily="Segoe MDL2 Assets"
-                                                           FontSize="20"
-                                                           Foreground="#FFD700"
-                                                           VerticalAlignment="Center"
-                                                           Margin="0,0,12,0"/>
-
-                                                <!-- Question Text -->
-                                                <TextBlock Grid.Column="1"
-                                                           Text="{Binding Header, RelativeSource={RelativeSource AncestorType=Expander}}"
-                                                           FontSize="15"
-                                                           FontWeight="SemiBold"
-                                                           Foreground="White"
-                                                           TextWrapping="Wrap"
-                                                           VerticalAlignment="Center"/>
-
-                                                <!-- Chevron Icon -->
-                                                <TextBlock x:Name="ChevronIcon"
-                                                           Grid.Column="2"
-                                                           Text="&#xE70D;"
-                                                           FontFamily="Segoe MDL2 Assets"
-                                                           FontSize="14"
-                                                           Foreground="#00BFFF"
-                                                           VerticalAlignment="Center"
-                                                           Margin="12,0,0,0"
-                                                           RenderTransformOrigin="0.5,0.5">
-                                                    <TextBlock.RenderTransform>
-                                                        <RotateTransform Angle="0"/>
-                                                    </TextBlock.RenderTransform>
-                                                </TextBlock>
-                                            </Grid>
-                                        </Border>
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="HeaderBorder" Property="Background" Value="#2600BFFF"/>
-                                            </Trigger>
-                                            <Trigger Property="IsChecked" Value="True">
-                                                <Trigger.EnterActions>
-                                                    <BeginStoryboard>
-                                                        <Storyboard>
-                                                            <DoubleAnimation Storyboard.TargetName="ChevronIcon"
-                                                                             Storyboard.TargetProperty="(TextBlock.RenderTransform).(RotateTransform.Angle)"
-                                                                             To="180" Duration="0:0:0.2"
-                                                                             EasingFunction="{StaticResource App.Easing.Smooth}"/>
-                                                        </Storyboard>
-                                                    </BeginStoryboard>
-                                                </Trigger.EnterActions>
-                                                <Trigger.ExitActions>
-                                                    <BeginStoryboard>
-                                                        <Storyboard>
-                                                            <DoubleAnimation Storyboard.TargetName="ChevronIcon"
-                                                                             Storyboard.TargetProperty="(TextBlock.RenderTransform).(RotateTransform.Angle)"
-                                                                             To="0" Duration="0:0:0.2"
-                                                                             EasingFunction="{StaticResource App.Easing.Smooth}"/>
-                                                        </Storyboard>
-                                                    </BeginStoryboard>
-                                                </Trigger.ExitActions>
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </ToggleButton.Template>
-                            </ToggleButton>
-
-                            <!-- Content / Answer -->
-                            <Border x:Name="ContentSite"
-                                    Grid.Row="1"
-                                    Background="#0CFFFFFF"
-                                    CornerRadius="0,0,12,12"
-                                    Padding="16,0,16,14"
-                                    Visibility="Collapsed"
-                                    Opacity="0">
-                                <Border.RenderTransform>
-                                    <TranslateTransform Y="-10"/>
-                                </Border.RenderTransform>
-                                <ContentPresenter Margin="32,8,0,0"
-                                                  TextBlock.Foreground="#C8D8FF"
-                                                  TextBlock.FontSize="14"/>
-                            </Border>
-                        </Grid>
-                    </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsExpanded" Value="True">
-                            <Setter TargetName="ContentSite" Property="Visibility" Value="Visible"/>
-                            <Trigger.EnterActions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="ContentSite"
-                                                         Storyboard.TargetProperty="Opacity"
-                                                         From="0" To="1" Duration="0:0:0.25"
-                                                         EasingFunction="{StaticResource App.Easing.Smooth}"/>
-                                        <DoubleAnimation Storyboard.TargetName="ContentSite"
-                                                         Storyboard.TargetProperty="(Border.RenderTransform).(TranslateTransform.Y)"
-                                                         From="-10" To="0" Duration="0:0:0.25"
-                                                         EasingFunction="{StaticResource App.Easing.Smooth}"/>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </Trigger.EnterActions>
-                        </Trigger>
-                    </ControlTemplate.Triggers>
+                                <ContentPresenter Grid.Column="2" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                    </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

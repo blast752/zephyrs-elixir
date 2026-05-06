@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:shell="clr-namespace:ZephyrsElixir.UI.Shell"
+        xmlns:h="clr-namespace:ZephyrsElixir.UI.Helpers"
         mc:Ignorable="d"
         Title="Zephyr's Elixir"
         Width="1400" Height="900"
@@ -11,10 +12,17 @@
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
         ResizeMode="CanResize"
-        AllowsTransparency="True"
-        Background="Transparent"
+        Background="#FF0E1A33"
         StateChanged="OnWindowStateChanged"
         SourceInitialized="OnSourceInitialized">
+
+    <Window.InputBindings>
+        <KeyBinding Key="F1" Command="ApplicationCommands.Help"/>
+    </Window.InputBindings>
+
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.Help" Executed="OnShowHelp"/>
+    </Window.CommandBindings>
 
     <Window.Resources>
         <Color x:Key="TitleBarBackgroundColor">#FF0C1528</Color>
@@ -24,7 +32,7 @@
         <Color x:Key="CloseHoverColor">#FFE81123</Color>
         <Color x:Key="ClosePressColor">#FFC42B1C</Color>
         <Color x:Key="WindowBorderColor">#FF1A2238</Color>
-        
+
         <SolidColorBrush x:Key="TitleBarBackground" Color="{StaticResource TitleBarBackgroundColor}"/>
         <SolidColorBrush x:Key="ButtonIcon" Color="{StaticResource ButtonIconColor}"/>
         <SolidColorBrush x:Key="ButtonHover" Color="{StaticResource ButtonHoverColor}"/>
@@ -32,14 +40,14 @@
         <SolidColorBrush x:Key="CloseHoverBrush" Color="{StaticResource CloseHoverColor}"/>
         <SolidColorBrush x:Key="ClosePressBrush" Color="{StaticResource ClosePressColor}"/>
         <SolidColorBrush x:Key="WindowBorder" Color="{StaticResource WindowBorderColor}"/>
-        
+
         <ControlTemplate x:Key="WindowControlButtonTemplate" TargetType="Button">
             <Border x:Name="ButtonBorder"
                     Background="Transparent"
                     Width="46"
                     Height="32"
                     WindowChrome.IsHitTestVisibleInChrome="True">
-                <ContentPresenter HorizontalAlignment="Center" 
+                <ContentPresenter HorizontalAlignment="Center"
                                   VerticalAlignment="Center"/>
             </Border>
             <ControlTemplate.Triggers>
@@ -59,7 +67,7 @@
                     Height="32"
                     CornerRadius="0,8,0,0"
                     WindowChrome.IsHitTestVisibleInChrome="True">
-                <ContentPresenter HorizontalAlignment="Center" 
+                <ContentPresenter HorizontalAlignment="Center"
                                   VerticalAlignment="Center"/>
             </Border>
             <ControlTemplate.Triggers>
@@ -83,7 +91,7 @@
                 <RowDefinition Height="40"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            
+
             <Grid Grid.Row="0"
                   Background="{StaticResource TitleBarBackground}">
                 <Grid.ColumnDefinitions>
@@ -91,7 +99,7 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-            
+
                 <StackPanel Grid.Column="0"
                             Orientation="Horizontal"
                             Margin="12,0,0,0"
@@ -106,64 +114,62 @@
                             FontWeight="Normal"
                             VerticalAlignment="Center"/>
                 </StackPanel>
-                
+
                 <Rectangle Grid.Column="1"
                            Fill="Transparent"
                            MouseLeftButtonDown="OnTitleBarMouseDown"
                            WindowChrome.IsHitTestVisibleInChrome="True"/>
-                
+
                 <StackPanel Grid.Column="2"
                             Orientation="Horizontal"
                             HorizontalAlignment="Right">
-                    
+
                     <Button x:Name="MinimizeButton"
                             Click="OnMinimizeClick"
                             Template="{StaticResource WindowControlButtonTemplate}"
-                            ToolTip="Minimize">
+                            ToolTip="{h:Translate Window_Tooltip_Minimize}">
                         <Rectangle Width="10" Height="1" Fill="White"/>
                     </Button>
-                    
+
                     <Button x:Name="MaximizeRestoreButton"
                             Click="OnMaximizeClick"
                             Template="{StaticResource WindowControlButtonTemplate}"
-                            ToolTip="Maximize">
+                            ToolTip="{h:Translate Window_Tooltip_Maximize}">
                         <Canvas x:Name="MaximizeIcon" Width="10" Height="10">
                             <Rectangle Width="10" Height="10"
                                        Stroke="{StaticResource ButtonIcon}"
                                        StrokeThickness="1"/>
                         </Canvas>
                     </Button>
-                    
+
                     <Button x:Name="CloseButton"
                             Click="OnCloseClick"
                             Template="{StaticResource CloseButtonTemplate}"
-                            ToolTip="Close">
-                        <TextBlock Text="&#xE8BB;" 
-                                   FontFamily="{StaticResource AppIconFont}" 
+                            ToolTip="{h:Translate Window_Tooltip_Close}">
+                        <TextBlock Text="&#xE8BB;"
+                                   FontFamily="{StaticResource AppIconFont}"
                                    FontSize="10"
                                    Foreground="{StaticResource ButtonIcon}"/>
                     </Button>
                 </StackPanel>
             </Grid>
-            
+
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="280"/>
                     <ColumnDefinition Width="1"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                
+
                 <Border Grid.Column="0"
                         Background="#FF0A1224">
                     <shell:Sidebar x:Name="AppSidebar"
-                                   NavigateRequested="OnSidebarNavigate"
-                                   DeviceStatusText="{Binding DeviceStatusText}"
-                                   DeviceBattery="{Binding DeviceBatteryPercentage}"/>
+                                   NavigateRequested="OnSidebarNavigate"/>
                 </Border>
-                
+
                 <Rectangle Grid.Column="1"
                            Fill="#1A1A1D"/>
-                
+
                 <Border Grid.Column="2"
                         Background="#FF0E1A33">
                     <ContentControl x:Name="ContentHost"

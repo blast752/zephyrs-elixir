@@ -1,8 +1,8 @@
-<Window x:Class="ZephyrsElixir.WirelessConnectionDialog"
+<Window x:Class="ZephyrsElixir.UI.Dialogs.WirelessConnectionDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:h="clr-namespace:ZephyrsElixir.UI.Helpers"
-        Title="Wireless ADB Connection"
+        Title="{h:Translate Wireless_Title}"
         Width="520" Height="580"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
@@ -10,15 +10,15 @@
         AllowsTransparency="True"
         Background="Transparent">
 
-    <Window.Effect>
-        <DropShadowEffect BlurRadius="25" ShadowDepth="0" Color="Black" Opacity="0.4"/>
-    </Window.Effect>
+    <Grid>
+        <Border CornerRadius="16" 
+                Background="#FF0E1A33"
+                BorderBrush="{DynamicResource App.Brush.Gold}" 
+                BorderThickness="1.5"
+                Effect="{DynamicResource App.Effect.PageShadow}"/>
 
-    <Border CornerRadius="16" 
-            Background="#FF0E1A33"
-            BorderBrush="{DynamicResource App.Brush.Gold}" 
-            BorderThickness="1.5"
-            Effect="{DynamicResource App.Effect.PageShadow}">
+        <Border CornerRadius="16"
+                Background="Transparent">
 
         <Grid>
             <Grid.RowDefinitions>
@@ -59,12 +59,12 @@
                     </Border>
 
                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                        <TextBlock Text="Wireless ADB Connection" 
+                        <TextBlock Text="{h:Translate Wireless_Title}" 
                                    FontSize="20" 
                                    FontWeight="SemiBold" 
                                    Foreground="{DynamicResource App.Brush.CheckedForeground}"/>
                         <TextBlock x:Name="StepIndicator" 
-                                   Text="Select your Android version" 
+                                   Text="{h:Translate Wireless_Status_EnterIP}" 
                                    FontSize="12" 
                                    Foreground="{DynamicResource App.Brush.NavButtonForeground}" 
                                    Margin="0,2,0,0"/>
@@ -76,7 +76,7 @@
                             Width="32" Height="32" 
                             Cursor="Hand" 
                             h:WindowClose.Result="False"
-                            ToolTip="Close dialog">
+                            ToolTip="{h:Translate Wireless_Tooltip_Close}">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
                                 <Border x:Name="bg" Background="Transparent" CornerRadius="8">
@@ -107,7 +107,7 @@
                                  Margin="0,0,0,24"
                                  Value="0"/>
 
-                    <TextBlock Text="Select your Android version to proceed with the appropriate connection method:"
+                    <TextBlock Text="{h:Translate Wireless_SelectVersion}"
                                FontSize="13" 
                                Foreground="{DynamicResource App.Brush.NavButtonForeground}"
                                TextWrapping="Wrap"
@@ -125,13 +125,13 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <RadioButton x:Name="Android10Radio" 
-                                         Content="Android 10 &amp; below" 
+                                         Content="{h:Translate Wireless_Android10}" 
                                          GroupName="AndroidVersion"
                                          IsChecked="True"
                                          Style="{StaticResource App.Style.SegmentedRadioButton}"
                                          Checked="OnVersionChanged"/>
                             <RadioButton x:Name="Android11Radio" 
-                                         Content="Android 11+" 
+                                         Content="{h:Translate Wireless_Android11}" 
                                          Grid.Column="1"
                                          GroupName="AndroidVersion"
                                          Style="{StaticResource App.Style.SegmentedRadioButton}"
@@ -153,11 +153,11 @@
                                        VerticalAlignment="Top"
                                        Margin="0,2,12,0"/>
                             <StackPanel>
-                                <TextBlock Text="How to check your Android version:" 
+                                <TextBlock Text="{h:Translate Wireless_CheckVersion_Title}" 
                                            FontSize="13" 
                                            FontWeight="SemiBold" 
                                            Foreground="{DynamicResource App.Brush.DeepSkyBlue}"/>
-                                <TextBlock Text="Settings → About Phone → Android Version" 
+                                <TextBlock Text="{h:Translate Wireless_CheckVersion_Path}" 
                                            FontSize="12" 
                                            Foreground="{DynamicResource App.Brush.NavButtonForeground}" 
                                            Opacity="0.8"
@@ -167,7 +167,7 @@
                     </Border>
 
                     <StackPanel x:Name="Android10Panel" Visibility="Collapsed">
-                        <TextBlock Text="Simple Connection Mode" 
+                        <TextBlock Text="{h:Translate Wireless_SimpleMode}" 
                                    FontSize="16" 
                                    FontWeight="SemiBold" 
                                    Foreground="{DynamicResource App.Brush.DeepSkyBlue}"
@@ -181,11 +181,11 @@
                                 Padding="14,10"
                                 Margin="0,0,0,20">
                             <StackPanel>
-                                <TextBlock Text="📱 Enable Developer Options → Wireless Debugging" 
+                                <TextBlock Text="{h:Translate Wireless_SimpleMode_Step}" 
                                            FontSize="13" 
                                            FontWeight="SemiBold" 
                                            Foreground="{DynamicResource App.Brush.DeepSkyBlue}"/>
-                                <TextBlock Text="Make sure your device and PC are on the same network" 
+                                <TextBlock Text="{h:Translate Wireless_SimpleMode_SameNetwork}" 
                                            FontSize="12" 
                                            Foreground="{DynamicResource App.Brush.NavButtonForeground}" 
                                            Opacity="0.7"
@@ -194,7 +194,7 @@
                         </Border>
 
                         <StackPanel Margin="0,0,0,16">
-                            <TextBlock Text="Device IP Address" 
+                            <TextBlock Text="{h:Translate Wireless_DeviceIP}" 
                                        FontSize="13" 
                                        Foreground="{DynamicResource App.Brush.CheckedForeground}" 
                                        Margin="0,0,0,8"/>
@@ -243,13 +243,13 @@
                                              Margin="5,0,0,0"
                                              CaretBrush="{DynamicResource App.Brush.DeepSkyBlue}"
                                              VerticalContentAlignment="Center"
-                                             PreviewTextInput="OnOctetPreviewInput"
+                                             PreviewTextInput="OnDigitOnlyPreviewInput"
                                              KeyDown="OnEnterKeyDown"
-                                             ToolTip="Enter the last number (1-254)"/>
+                                             ToolTip="{h:Translate Wireless_Tooltip_IpOctet}"/>
                                 </Grid>
                             </Border>
                             
-                            <TextBlock Text="Your network prefix is auto-detected. Just enter the device's last number."
+                            <TextBlock Text="{h:Translate Wireless_IpAutoDetected}"
                                        FontSize="11"
                                        Foreground="{DynamicResource App.Brush.NavButtonForeground}"
                                        Opacity="0.6"
@@ -257,7 +257,7 @@
                         </StackPanel>
 
                         <StackPanel Margin="0,0,0,16">
-                            <TextBlock Text="Port" 
+                            <TextBlock Text="{h:Translate Wireless_Port}" 
                                        FontSize="13" 
                                        Foreground="{DynamicResource App.Brush.CheckedForeground}" 
                                        Margin="0,0,0,8"/>
@@ -296,7 +296,7 @@
                                 </Grid>
                             </Border>
                             
-                            <TextBlock Text="Default ADB port (automatically configured)"
+                            <TextBlock Text="{h:Translate Wireless_PortDefault}"
                                        FontSize="11"
                                        Foreground="{DynamicResource App.Brush.NavButtonForeground}"
                                        Opacity="0.6"
@@ -305,7 +305,7 @@
                     </StackPanel>
 
                     <StackPanel x:Name="Android11Panel" Visibility="Collapsed">
-                        <TextBlock Text="Pairing Mode (More Secure)" 
+                        <TextBlock Text="{h:Translate Wireless_PairingMode}" 
                                    FontSize="16" 
                                    FontWeight="SemiBold" 
                                    Foreground="{DynamicResource App.Brush.DeepSkyBlue}"
@@ -319,12 +319,12 @@
                                 Padding="14,10"
                                 Margin="0,0,0,20">
                             <StackPanel>
-                                <TextBlock Text="📱 Settings → Developer Options → Wireless Debugging → Pair Device" 
+                                <TextBlock Text="{h:Translate Wireless_PairingMode_Step}" 
                                            FontSize="13" 
                                            FontWeight="SemiBold" 
                                            Foreground="{DynamicResource App.Brush.DeepSkyBlue}"
                                            TextWrapping="Wrap"/>
-                                <TextBlock Text="Copy the IP address, port, and pairing code from your device" 
+                                <TextBlock Text="{h:Translate Wireless_PairingMode_CopyInfo}" 
                                            FontSize="12" 
                                            Foreground="{DynamicResource App.Brush.NavButtonForeground}" 
                                            Opacity="0.7"
@@ -333,7 +333,7 @@
                         </Border>
 
                         <StackPanel Margin="0,0,0,16">
-                            <TextBlock Text="Device IP Address" 
+                            <TextBlock Text="{h:Translate Wireless_DeviceIP}" 
                                        FontSize="13" 
                                        Foreground="{DynamicResource App.Brush.CheckedForeground}" 
                                        Margin="0,0,0,8"/>
@@ -382,13 +382,13 @@
                                              HorizontalAlignment="Left"
                                              VerticalContentAlignment="Center"
                                              Margin="5,0,0,0"
-                                             PreviewTextInput="OnOctetPreviewInput"
+                                             PreviewTextInput="OnDigitOnlyPreviewInput"
                                              KeyDown="OnEnterKeyDown"
-                                             ToolTip="Enter the last number (1-254)"/>
+                                             ToolTip="{h:Translate Wireless_Tooltip_IpOctet}"/>
                                 </Grid>
                             </Border>
                             
-                            <TextBlock Text="Your network prefix is auto-detected. Enter the device's last number from the pairing dialog."
+                            <TextBlock Text="{h:Translate Wireless_IpAutoDetected_Pairing}"
                                        FontSize="11"
                                        Foreground="{DynamicResource App.Brush.NavButtonForeground}"
                                        Opacity="0.6"
@@ -397,7 +397,7 @@
                         </StackPanel>
 
                         <StackPanel Margin="0,0,0,16">
-                            <TextBlock Text="Pairing Port" 
+                            <TextBlock Text="{h:Translate Wireless_PairingPort}" 
                                        FontSize="13" 
                                        Foreground="{DynamicResource App.Brush.CheckedForeground}" 
                                        Margin="0,0,0,8"/>
@@ -437,13 +437,13 @@
                                              VerticalContentAlignment="Center"
                                              HorizontalContentAlignment="Center"
                                              Margin="8,0,8,0"
-                                             PreviewTextInput="OnPortPreviewInput"
+                                             PreviewTextInput="OnDigitOnlyPreviewInput"
                                              KeyDown="OnEnterKeyDown"
-                                             ToolTip="Enter the port from pairing dialog"/>
+                                             ToolTip="{h:Translate Wireless_Tooltip_PairingPort}"/>
                                 </Grid>
                             </Border>
                             
-                            <TextBlock Text="Copy the port number from your device's pairing dialog"
+                            <TextBlock Text="{h:Translate Wireless_PairingPort_Help}"
                                        FontSize="11"
                                        Foreground="{DynamicResource App.Brush.NavButtonForeground}"
                                        Opacity="0.6"
@@ -451,7 +451,7 @@
                         </StackPanel>
 
                         <StackPanel Margin="0,0,0,16">
-                            <TextBlock Text="6-Digit Pairing Code" 
+                            <TextBlock Text="{h:Translate Wireless_PairingCode}" 
                                        FontSize="13" 
                                        Foreground="{DynamicResource App.Brush.CheckedForeground}" 
                                        Margin="0,0,0,8"/>
@@ -492,13 +492,13 @@
                                              HorizontalContentAlignment="Center"
                                              FontStretch="Expanded"
                                              Margin="8,0,8,0"
-                                             PreviewTextInput="OnPairCodePreviewInput"
+                                             PreviewTextInput="OnDigitOnlyPreviewInput"
                                              KeyDown="OnEnterKeyDown"
-                                             ToolTip="Enter the 6-digit code"/>
+                                             ToolTip="{h:Translate Wireless_Tooltip_PairingCode}"/>
                                 </Grid>
                             </Border>
                             
-                            <TextBlock Text="Enter the 6-digit code shown on your device"
+                            <TextBlock Text="{h:Translate Wireless_PairingCode_Help}"
                                        FontSize="11"
                                        Foreground="{DynamicResource App.Brush.NavButtonForeground}"
                                        Opacity="0.6"
@@ -515,11 +515,11 @@
                                 <SolidColorBrush Color="{DynamicResource App.Color.Success}" Opacity="0.2"/>
                             </Border.BorderBrush>
                             <StackPanel>
-                                <TextBlock Text="✓ Pairing completed successfully!" 
+                                <TextBlock Text="{h:Translate Wireless_PairingSuccess}" 
                                            FontSize="13" 
                                            FontWeight="SemiBold" 
                                            Foreground="{DynamicResource App.Brush.Success}"/>
-                                <TextBlock Text="The device is now connected. You can close this dialog." 
+                                <TextBlock Text="{h:Translate Wireless_PairingSuccess_Detail}" 
                                            FontSize="12" 
                                            Foreground="{DynamicResource App.Brush.NavButtonForeground}" 
                                            Opacity="0.7"
@@ -560,7 +560,7 @@
 
                     <Button x:Name="CancelButton" 
                             Grid.Column="1"
-                            Content="Cancel"
+                            Content="{h:Translate Common_Button_Cancel}"
                             Height="42" 
                             Width="110"
                             FontSize="13" 
@@ -587,7 +587,7 @@
 
                     <Button x:Name="ActionButton" 
                             Grid.Column="3"
-                            Content="Connect"
+                            Content="{h:Translate Wireless_Button_Connect}"
                             Height="42" 
                             Width="110"
                             FontSize="13" 
@@ -616,6 +616,7 @@
 
         </Grid>
     </Border>
+    </Grid>
 
     <Window.Triggers>
         <EventTrigger RoutedEvent="Loaded">

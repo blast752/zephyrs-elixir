@@ -16,27 +16,18 @@
         <RowDefinition Height="*"/>
     </Grid.RowDefinitions>
 
-    <Border Grid.Row="0"
-            Style="{StaticResource App.Style.GlassCard}"
-            Padding="24"
-            Effect="{StaticResource App.Effect.PageShadow}">
+    <h:PageHeader x:Name="PageHeaderControl" Grid.Row="0"
+                Icon="&#xE74D;"
+                Title="{h:Translate Debloat_Header}"
+                Subtitle="{h:Translate Debloat_Status_ConnectAndLoad}">
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="20"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <StackPanel VerticalAlignment="Center">
-                <TextBlock Text="{h:Translate Debloat_Header}" 
-                           FontSize="26" FontWeight="Bold" Foreground="White"/>
-                <TextBlock x:Name="StatusText" 
-                           Text="{h:Translate Debloat_Status_ConnectAndLoad}" 
-                           Foreground="#B0B8C8" FontSize="13" Margin="0,6,0,0"/>
-            </StackPanel>
-
-            <Border Grid.Column="1" Style="{StaticResource App.Style.SegmentedContainer}" Width="240">
+            <Border Grid.Column="0" Style="{StaticResource App.Style.SegmentedContainer}" Width="240">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -56,7 +47,7 @@
             </Border>
 
             <Button x:Name="LoadAppsButton" 
-                    Grid.Column="3" 
+                    Grid.Column="2" 
                     Style="{StaticResource App.Style.Button}" 
                     Content="{h:Translate Debloat_Button_LoadApps}" 
                     Tag="&#xE895;"
@@ -64,13 +55,12 @@
                     IsEnabled="False" 
                     MinWidth="160"/>
         </Grid>
-    </Border>
+    </h:PageHeader>
 
-    <Border Grid.Row="2"
-            Style="{StaticResource App.Style.GlassCard}"
+    <h:ShadowCard Grid.Row="2"
             Padding="24"
             ClipToBounds="False"
-            Effect="{StaticResource App.Effect.PageShadow}">
+            ShadowEffect="{StaticResource App.Effect.PageShadow}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -302,11 +292,7 @@
                 <Border x:Name="LoadingIndicator" Visibility="Collapsed" Background="#B30E1A33" CornerRadius="12" BorderBrush="{StaticResource App.Brush.Glass.Border}" BorderThickness="1" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="40">
                     <StackPanel>
                         <ProgressBar IsIndeterminate="True" Width="200" Style="{StaticResource App.Style.ProgressBar}"/>
-                        <TextBlock Text="{h:Translate Debloat_Loading}" Foreground="White" FontSize="15" FontWeight="SemiBold" Margin="0,20,0,0" HorizontalAlignment="Center">
-                            <TextBlock.Effect>
-                                <DropShadowEffect ShadowDepth="1" BlurRadius="5" Color="Black" Opacity="0.7"/>
-                            </TextBlock.Effect>
-                        </TextBlock>
+                        <TextBlock Text="{h:Translate Debloat_Loading}" Foreground="White" FontSize="15" FontWeight="SemiBold" Margin="0,20,0,0" HorizontalAlignment="Center"/>
                     </StackPanel>
                 </Border>
             </Grid>
@@ -338,19 +324,12 @@
                 </StackPanel>
             </Grid>
         </Grid>
-    </Border>
+    </h:ShadowCard>
 
     <Grid x:Name="OverlayContainer" Grid.Row="0" Grid.RowSpan="3" Visibility="Collapsed" Background="#CC050A14">
         
-        <Grid x:Name="AppDetailsOverlay" Visibility="Collapsed">
-             <Border Style="{StaticResource App.Style.OverlayContainer}" Width="650" Height="700">
-                <Grid>
-                    </Grid>
-             </Border>
-        </Grid>
-
         <Grid x:Name="UninstallConfirmOverlay" Visibility="Collapsed">
-            <Border Style="{StaticResource App.Style.OverlayContainer}" Width="520" VerticalAlignment="Center">
+            <h:ShadowCard Style="{StaticResource App.Style.OverlayCard}" Width="520" VerticalAlignment="Center">
                 <StackPanel>
                     <Border Width="56" Height="56" CornerRadius="28" Background="#20DC143C" HorizontalAlignment="Center" Margin="0,0,0,18">
                         <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="24" Foreground="#FF6B6B" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -394,12 +373,12 @@
                                 Click="CancelUninstall_Click"/>
                     </StackPanel>
                 </StackPanel>
-            </Border>
+            </h:ShadowCard>
         </Grid>
     </Grid>
     
     <Grid x:Name="AppDetailsOverlayReal" Grid.Row="0" Grid.RowSpan="3" Visibility="Collapsed" Background="#CC050A14">
-        <Border Style="{StaticResource App.Style.OverlayContainer}" Width="620" Height="Auto" MaxHeight="760" VerticalAlignment="Center">
+        <h:ShadowCard Style="{StaticResource App.Style.OverlayCard}" Width="620" Height="Auto" MaxHeight="760" VerticalAlignment="Center">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -577,7 +556,7 @@
                     </Grid>
                 </Border>
             </Grid>
-        </Border>
+        </h:ShadowCard>
     </Grid>
 
 </Grid>

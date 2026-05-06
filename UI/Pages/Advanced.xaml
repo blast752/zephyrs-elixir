@@ -132,10 +132,9 @@
                       Padding="0,0,10,0">
             <StackPanel>
                 
-                <Border Style="{StaticResource App.Style.GlassCard}"
-                        Margin="0,0,0,0"
+                <h:ShadowCard Margin="0,0,0,0"
                         Padding="24"
-                        Effect="{StaticResource App.Effect.PageShadow}">
+                        ShadowEffect="{StaticResource App.Effect.PageShadow}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -441,12 +440,11 @@
                             
                         </StackPanel>
                     </Grid>
-                </Border>
+                </h:ShadowCard>
 
-                <Border Style="{StaticResource App.Style.GlassCard}"
-                        Margin="0,20,0,0"
+                <h:ShadowCard Margin="0,20,0,0"
                         Padding="24"
-                        Effect="{StaticResource App.Effect.PageShadow}">
+                        ShadowEffect="{StaticResource App.Effect.PageShadow}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -578,12 +576,11 @@
                             
                         </StackPanel>
                     </Grid>
-                </Border>
+                </h:ShadowCard>
 
-                <Border Style="{StaticResource App.Style.GlassCard}"
-                        Margin="0,20,0,30"
+                <h:ShadowCard Margin="0,20,0,30"
                         Padding="24"
-                        Effect="{StaticResource App.Effect.PageShadow}">
+                        ShadowEffect="{StaticResource App.Effect.PageShadow}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -737,7 +734,7 @@
                             
                         </StackPanel>
                     </Grid>
-                </Border>
+                </h:ShadowCard>
 
             </StackPanel>
         </ScrollViewer>
