@@ -30,6 +30,14 @@ public sealed class LicenseService : IDisposable
     private string? _cachedProDllVersion;
     private string? _cachedProDllHash;
 
+    private FileSystemWatcher? _dllWatcher;
+    private Timer? _dllGuardianTimer;
+    private CancellationTokenSource? _dllGuardianCts;
+    private NetworkAvailabilityChangedEventHandler? _dllNetworkHandler;
+    private DateTime _lastDllHealAttemptUtc = DateTime.MinValue;
+    private int _dllConsecutiveFailures;
+    private int _dllHealInFlight;
+
     #endregion
 
     #region Events & Properties
@@ -155,6 +163,7 @@ public sealed class LicenseService : IDisposable
         }
         
         StartPeriodicValidation();
+        StartProDllGuardian();
         
         _initialized = true;
         Log("Init", $"Initialization complete. IsPro: {IsPro}, Status: {CurrentState.Status}, DllState: {CurrentState.DllState}");
@@ -1294,6 +1303,235 @@ public sealed class LicenseService : IDisposable
 
     #endregion
 
+    #region Pro DLL Self-Healing Guardian
+
+    private enum GuardianTrigger { Startup, LicenseStateChanged, NetworkRestored, FileSystem, Periodic, Manual }
+
+    private void StartProDllGuardian()
+    {
+        _dllGuardianCts = new CancellationTokenSource();
+        StateChanged += OnGuardianLicenseChanged;
+
+        _dllNetworkHandler = OnGuardianNetworkChanged;
+        NetworkChange.NetworkAvailabilityChanged += _dllNetworkHandler;
+
+        SetupDllWatcher();
+
+        var interval = TimeSpan.FromMinutes(ProDllConfig.GuardianPeriodicCheckMinutes);
+        _dllGuardianTimer = new Timer(
+            _ => _ = EvaluateProDllStateAsync(GuardianTrigger.Periodic),
+            null, interval, interval);
+
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await Task.Delay(
+                    TimeSpan.FromSeconds(ProDllConfig.GuardianStartupDelaySeconds),
+                    _dllGuardianCts.Token);
+                await EvaluateProDllStateAsync(GuardianTrigger.Startup);
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception ex) { Log("Guardian", $"Startup eval error: {ex.Message}"); }
+        });
+
+        Log("Guardian", "Pro DLL guardian started");
+    }
+
+    private void StopProDllGuardian()
+    {
+        try { _dllGuardianCts?.Cancel(); } catch { }
+
+        StateChanged -= OnGuardianLicenseChanged;
+        if (_dllNetworkHandler is not null)
+            NetworkChange.NetworkAvailabilityChanged -= _dllNetworkHandler;
+
+        _dllGuardianTimer?.Dispose();
+        _dllWatcher?.Dispose();
+        _dllGuardianCts?.Dispose();
+    }
+
+    public Task TriggerProDllGuardianAsync() => EvaluateProDllStateAsync(GuardianTrigger.Manual);
+
+    private void SetupDllWatcher()
+    {
+        try
+        {
+            if (!Directory.Exists(ProDllConfig.ProDirectory))
+                Directory.CreateDirectory(ProDllConfig.ProDirectory);
+
+            _dllWatcher = new FileSystemWatcher(ProDllConfig.ProDirectory, ProDllConfig.EncryptedDllFileName)
+            {
+                NotifyFilter = NotifyFilters.FileName | NotifyFilters.Size,
+                IncludeSubdirectories = false,
+                EnableRaisingEvents = true
+            };
+            _dllWatcher.Deleted += (_, _) => ScheduleDebouncedEvaluation(GuardianTrigger.FileSystem, ProDllConfig.GuardianFileSystemDebounceSeconds);
+            _dllWatcher.Renamed += (_, _) => ScheduleDebouncedEvaluation(GuardianTrigger.FileSystem, ProDllConfig.GuardianFileSystemDebounceSeconds);
+        }
+        catch (Exception ex)
+        {
+            Log("Guardian", $"Watcher setup failed (non-fatal): {ex.Message}");
+            _dllWatcher = null;
+        }
+    }
+
+    private void OnGuardianLicenseChanged(object? sender, LicenseStateChangedEventArgs e)
+    {
+        if (_disposed || e.Reason is LicenseChangeReason.ProDllChanged) return;
+        _ = EvaluateProDllStateAsync(GuardianTrigger.LicenseStateChanged);
+    }
+
+    private void OnGuardianNetworkChanged(object? sender, NetworkAvailabilityEventArgs e)
+    {
+        if (_disposed || !e.IsAvailable) return;
+        ScheduleDebouncedEvaluation(GuardianTrigger.NetworkRestored, ProDllConfig.GuardianNetworkDebounceSeconds);
+    }
+
+    private void ScheduleDebouncedEvaluation(GuardianTrigger trigger, int debounceSeconds)
+    {
+        var token = _dllGuardianCts?.Token ?? CancellationToken.None;
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await Task.Delay(TimeSpan.FromSeconds(debounceSeconds), token);
+                await EvaluateProDllStateAsync(trigger);
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception ex) { Log("Guardian", $"Debounced eval error ({trigger}): {ex.Message}"); }
+        });
+    }
+
+    private async Task EvaluateProDllStateAsync(GuardianTrigger trigger)
+    {
+        if (_disposed) return;
+        if (Interlocked.CompareExchange(ref _dllHealInFlight, 1, 0) != 0) return;
+
+        try
+        {
+            if (CurrentState.LicenseKey is not null
+                && CurrentState.EffectiveTier >= LicenseTier.Pro
+                && CurrentState.DllState != ProDllState.Downloading)
+            {
+                var actualDllState = VerifyLocalProDll();
+                if (actualDllState != CurrentState.DllState)
+                {
+                    Log("Guardian", $"DllState drift: {CurrentState.DllState} → {actualDllState} (trigger={trigger})");
+                    CurrentState = CurrentState with { DllState = actualDllState };
+                }
+            }
+
+            var state = CurrentState;
+
+            if (ShouldRemoveDll(state))
+            {
+                await EnforceDllRemovalAsync(trigger);
+                return;
+            }
+
+            if (ShouldEnsureDllPresence(state) && CanAttemptHealNow(trigger))
+            {
+                await EnforceDllPresenceAsync(trigger);
+                return;
+            }
+
+            if (state.DllState == ProDllState.Ready)
+                _dllConsecutiveFailures = 0;
+        }
+        catch (Exception ex)
+        {
+            Log("Guardian", $"Evaluate error ({trigger}): {ex.Message}");
+        }
+        finally
+        {
+            Interlocked.Exchange(ref _dllHealInFlight, 0);
+        }
+    }
+
+    private static bool ShouldRemoveDll(LicenseState state)
+    {
+        var dllPresent =
+            File.Exists(ProDllConfig.EncryptedDllPath) ||
+            File.Exists(ProDllConfig.FingerprintPath) ||
+            File.Exists(ProDllConfig.TempDllPath);
+        if (!dllPresent) return false;
+
+        if (state.LicenseKey is null) return true;
+        if (state.Tier < LicenseTier.Pro) return true;
+        if (state.OfflineGraceExpired) return true;
+        if (state.IsExpired) return true;
+
+        return state.Status
+            is LicenseStatus.Refunded
+            or LicenseStatus.Blocked
+            or LicenseStatus.Invalid
+            or LicenseStatus.Expired
+            or LicenseStatus.Suspended;
+    }
+
+    private static bool ShouldEnsureDllPresence(LicenseState state)
+    {
+        if (state.LicenseKey is null) return false;
+        if (state.EffectiveTier < LicenseTier.Pro) return false;
+        if (state.OfflineGraceExpired) return false;
+        if (state.DllState is ProDllState.Ready or ProDllState.Downloading) return false;
+        return true;
+    }
+
+    private bool CanAttemptHealNow(GuardianTrigger trigger)
+    {
+        var isImmediate = trigger
+            is GuardianTrigger.Startup
+            or GuardianTrigger.LicenseStateChanged
+            or GuardianTrigger.NetworkRestored
+            or GuardianTrigger.FileSystem
+            or GuardianTrigger.Manual;
+        if (isImmediate) return true;
+
+        if (_dllConsecutiveFailures == 0) return true;
+
+        var schedule = ProDllConfig.GuardianBackoffSchedule;
+        var idx = Math.Min(_dllConsecutiveFailures, schedule.Length - 1);
+        return DateTime.UtcNow - _lastDllHealAttemptUtc >= schedule[idx];
+    }
+
+    private async Task EnforceDllRemovalAsync(GuardianTrigger trigger)
+    {
+        Log("Guardian", $"Removing Pro DLL (trigger={trigger}, state={CurrentState.Status})");
+        ProLoader.Unload();
+        await CleanupProDllAsync().ConfigureAwait(false);
+        _dllConsecutiveFailures = 0;
+    }
+
+    private async Task EnforceDllPresenceAsync(GuardianTrigger trigger)
+    {
+        if (!NetworkInterface.GetIsNetworkAvailable())
+        {
+            Log("Guardian", $"Heal deferred — no network (trigger={trigger})");
+            return;
+        }
+
+        _lastDllHealAttemptUtc = DateTime.UtcNow;
+        Log("Guardian", $"Healing Pro DLL (trigger={trigger}, attempt={_dllConsecutiveFailures + 1})");
+
+        var success = await EnsureProDllAsync().ConfigureAwait(false);
+
+        if (success)
+        {
+            _dllConsecutiveFailures = 0;
+            Log("Guardian", "Heal complete");
+        }
+        else
+        {
+            var max = ProDllConfig.GuardianBackoffSchedule.Length - 1;
+            _dllConsecutiveFailures = Math.Min(_dllConsecutiveFailures + 1, max);
+            Log("Guardian", $"Heal failed (consecutive failures={_dllConsecutiveFailures})");
+        }
+    }
+
+    #endregion
+
     #region Helpers
 
     private LicenseRequest CreateRequest(string key) => new()
@@ -1367,6 +1605,8 @@ public sealed class LicenseService : IDisposable
         if (_disposed) return;
         _disposed = true;
         
+        StopProDllGuardian();
+
         _validationCts?.Cancel();
         _validationCts?.Dispose();
         _validationTimer?.Dispose();

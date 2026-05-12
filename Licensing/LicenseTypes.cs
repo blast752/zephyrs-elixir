@@ -69,6 +69,21 @@ public static class ProDllConfig
     public const int AesKeySize = 256;
     public const int AesNonceSize = 12;
     public const int AesTagSize = 16;
+
+    public const int GuardianStartupDelaySeconds = 3;
+    public const int GuardianPeriodicCheckMinutes = 30;
+    public const int GuardianNetworkDebounceSeconds = 4;
+    public const int GuardianFileSystemDebounceSeconds = 2;
+
+    public static readonly TimeSpan[] GuardianBackoffSchedule =
+    {
+        TimeSpan.Zero,
+        TimeSpan.FromMinutes(1),
+        TimeSpan.FromMinutes(5),
+        TimeSpan.FromMinutes(15),
+        TimeSpan.FromMinutes(30),
+        TimeSpan.FromHours(1)
+    };
 }
 
 #endregion

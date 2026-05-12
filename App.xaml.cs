@@ -30,8 +30,6 @@ namespace ZephyrsElixir
 
             LicenseService.Instance.StateChanged += OnLicenseStateForProReload;
 
-            _ = ProDllGuardian.Instance.StartAsync();
-
             await Updater.CheckForUpdatesAsync(win);
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Optimized);
         }
@@ -129,7 +127,6 @@ namespace ZephyrsElixir
         protected override void OnExit(ExitEventArgs e)
         {
             LicenseService.Instance.StateChanged -= OnLicenseStateForProReload;
-            ProDllGuardian.Instance.Dispose();
             ProLoader.Unload();
             _instance = null;
             base.OnExit(e);
