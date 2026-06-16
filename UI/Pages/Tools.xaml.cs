@@ -3,21 +3,26 @@ namespace ZephyrsElixir.UI.Pages;
 public sealed partial class Tools : UserControl
 {
     private readonly List<ToolItem> _tools;
-    private FrameworkElement? _activeSubPage;
 
     public Tools()
     {
         InitializeComponent();
         
-        _tools = new List<ToolItem>
-        {
-            new("apk_installer", "\uE896", () => Strings.Tools_ApkInstaller_Title, () => Strings.Tools_ApkInstaller_Description, 
+        _tools =
+        [
+            new("apk_installer", "\uE896", () => Strings.Tools_ApkInstaller_Title, () => Strings.Tools_ApkInstaller_Description,
                 AppBrushes.GradientApk, Color.FromRgb(99, 181, 255)),
-            new("screen_mirror", "\uE7F4", () => Strings.Tools_ScreenMirror_Title, () => Strings.Tools_ScreenMirror_Description, 
+            new("screen_mirror", "\uE7F4", () => Strings.Tools_ScreenMirror_Title, () => Strings.Tools_ScreenMirror_Description,
                 AppBrushes.GradientApkm, Color.FromRgb(125, 100, 255), true),
-            new("reboot", "\uE777", () => Strings.Tools_Reboot_Title, () => Strings.Tools_Reboot_Description, 
-                AppBrushes.GradientOrange, Color.FromRgb(255, 159, 67), true)
-        };
+            new("performance_monitor", "\uE9D9", () => Strings.Tools_PerformanceMonitor_Title, () => Strings.Tools_PerformanceMonitor_Description,
+                AppBrushes.GradientCyan, Color.FromRgb(0, 191, 255), true),
+            new("reboot", "\uE777", () => Strings.Tools_Reboot_Title, () => Strings.Tools_Reboot_Description,
+                AppBrushes.GradientOrange, Color.FromRgb(255, 159, 67), true),
+            new("file_manager", "\uED25", () => Strings.Tools_FileManager_Title, () => Strings.Tools_FileManager_Description,
+                AppBrushes.GradientCyan, Color.FromRgb(0, 191, 255)),
+            new("adb_shell", "\uE756", () => Strings.Tools_AdbConsole_Title, () => Strings.Tools_AdbConsole_Description,
+                AppBrushes.GradientGreen, Color.FromRgb(0, 214, 143)),
+        ];
 
         DataContext = this;
         Loaded += OnLoaded;
@@ -27,22 +32,12 @@ public sealed partial class Tools : UserControl
 
     public IEnumerable<ToolItem> ToolItems => _tools;
 
-    private void OnLoaded(object sender, RoutedEventArgs e)
-    {
-        UpdateLocalizedStrings();
-        UpdateToolsAvailability();
-    }
+    private void OnLoaded(object sender, RoutedEventArgs e) => UpdateLocalizedStrings();
 
     private void UpdateLocalizedStrings()
     {
         foreach (var tool in _tools)
             tool.Refresh();
-    }
-
-    private void UpdateToolsAvailability()
-    {
-        ToolsGrid.ItemsSource = null;
-        ToolsGrid.ItemsSource = _tools;
     }
 
     private void OnToolClick(object sender, RoutedEventArgs e)
@@ -51,7 +46,13 @@ public sealed partial class Tools : UserControl
 
         if (key == "screen_mirror" && !Features.IsAvailable(Features.ScreenMirror))
         {
-            ShowProOrModuleError();
+            ShowProOrModuleError("Pro_Required_ScreenMirror");
+            return;
+        }
+
+        if (key == "performance_monitor" && !Features.IsAvailable(Features.PerformanceMonitor))
+        {
+            ShowProOrModuleError("Pro_Required_PerformanceMonitor");
             return;
         }
 
@@ -59,13 +60,16 @@ public sealed partial class Tools : UserControl
         {
             "apk_installer" => new ApkInstaller(CloseSubPage),
             "screen_mirror" => Pro.CreatePage(ProCommandIds.ScreenMirrorPage, CloseSubPage),
+            "performance_monitor" => Pro.CreatePage(ProCommandIds.PerformanceMonitorPage, CloseSubPage),
             "reboot" => new PowerMenu(CloseSubPage),
+            "file_manager" => new FileManager(CloseSubPage),
+            "adb_shell" => new AdbShellConsoleView(CloseSubPage),
             _ => null
         };
 
-        if (page == null && key == "screen_mirror")
+        if (page == null && key is "screen_mirror" or "performance_monitor")
         {
-            ShowProOrModuleError();
+            ShowProOrModuleError(key == "performance_monitor" ? "Pro_Required_PerformanceMonitor" : "Pro_Required_ScreenMirror");
             return;
         }
 
@@ -73,7 +77,7 @@ public sealed partial class Tools : UserControl
             ShowSubPage(page);
     }
 
-    private void ShowProOrModuleError()
+    private void ShowProOrModuleError(string proRequiredKey = "Pro_Required_ScreenMirror")
     {
         if (LicenseService.Instance.IsPro && !ProLoader.IsLoaded)
         {
@@ -85,12 +89,11 @@ public sealed partial class Tools : UserControl
                 Window.GetWindow(this));
         }
         else
-            DialogService.Instance.ShowProRequiredWithUpgrade("Pro_Required_ScreenMirror");
+            DialogService.Instance.ShowProRequiredWithUpgrade(proRequiredKey);
     }
 
     private void ShowSubPage(FrameworkElement page)
     {
-        _activeSubPage = page;
         SubPageContent.Content = page;
         SubPageHost.Visibility = Visibility.Visible;
     }
@@ -99,7 +102,6 @@ public sealed partial class Tools : UserControl
     {
         SubPageHost.Visibility = Visibility.Collapsed;
         SubPageContent.Content = null;
-        _activeSubPage = null;
     }
 }
 
@@ -122,6 +124,4 @@ public sealed class ToolItem : MenuItemBase
         BaseEnabled = baseEnabled;
         _isEnabled = baseEnabled;
     }
-
-    public void RefreshStrings() => Refresh();
 }

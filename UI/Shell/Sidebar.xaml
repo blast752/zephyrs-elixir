@@ -54,13 +54,13 @@
                               Content="{Binding [Sidebar_Nav_Home], Source={x:Static loc:TranslationManager.Instance}}" 
                               IsChecked="{Binding SelectedKey, Converter={StaticResource StringEq}, ConverterParameter=Home}"
                               Click="OnNavigationClick"/>
-                <ToggleButton x:Name="BtnOptimize" 
-                              Style="{StaticResource App.Style.ToggleButton}" 
+                <ToggleButton x:Name="BtnOptimize"
+                              Style="{StaticResource App.Style.ToggleButton}"
                               Tag="&#xE777;"
-                              Content="{Binding [Sidebar_Nav_Optimize], Source={x:Static loc:TranslationManager.Instance}}" 
+                              Content="{Binding [Sidebar_Nav_Optimize], Source={x:Static loc:TranslationManager.Instance}}"
                               IsChecked="{Binding SelectedKey, Converter={StaticResource StringEq}, ConverterParameter=Optimize}"
                               Click="OnNavigationClick"/>
-                <ToggleButton x:Name="BtnDebloat" 
+                <ToggleButton x:Name="BtnDebloat"
                               Style="{StaticResource App.Style.ToggleButton}" 
                               Tag="&#xE74D;"
                               Content="{Binding [Sidebar_Nav_Debloat], Source={x:Static loc:TranslationManager.Instance}}" 

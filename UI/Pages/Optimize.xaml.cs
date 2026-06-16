@@ -522,7 +522,7 @@ public sealed partial class Optimize : UserControl
             line =>
             {
                 LogToConsole($"{line}\n");
-                var match = CompileOutputRegex.Match(line);
+                var match = CompileOutputRegex().Match(line);
                 if (match.Success)
                     UpdateStepLabel(string.Format(Strings.Optimize_Status_Compiling, match.Groups[1].Value.Split('.').Last()));
             });
@@ -564,73 +564,34 @@ public sealed partial class Optimize : UserControl
 
     #region Memory Analysis Helpers
 
-    private static readonly Regex MemInfoPssRegex = new(@"^([\d,]+)\s*K[B]?:\s*([\w\.]+)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-    private static readonly Regex MemInfoFallbackRegex = new(@"([\d,]+)\s*K[B]?.*?(com\.[\w\.]+|org\.[\w\.]+|net\.[\w\.]+)", RegexOptions.Compiled);
-    private static readonly Regex ActivityProcessRegex = new(@"(com\.[\w\.]+|org\.[\w\.]+|net\.[\w\.]+).*?(?:lastPss|pss|mem)[=:\s]*([\d,]+)", RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
-    private static readonly Regex CompileOutputRegex = new(@"on\s+([\w\.]+)$", RegexOptions.Compiled);
+    [GeneratedRegex(@"(com\.[\w\.]+|org\.[\w\.]+|net\.[\w\.]+).*?(?:lastPss|pss|mem)[=:\s]*([\d,]+)", RegexOptions.IgnoreCase | RegexOptions.Singleline)]
+    private static partial Regex ActivityProcessRegex();
+
+    [GeneratedRegex(@"on\s+([\w\.]+)$")]
+    private static partial Regex CompileOutputRegex();
 
     private async Task<List<(string Package, long MemoryKb)>> GetHeavyAppsAsync(CancellationToken ct)
     {
         var memInfo = await RunAdbAsync("shell dumpsys meminfo", ct);
-        var result = ParseMemInfo(memInfo);
-        
+        var result = MemInfoParser.ParseMemInfo(memInfo);
+
         if (result.Count == 0)
             result = ParseActivityProcesses(await RunAdbAsync("shell dumpsys activity processes", ct));
-        
+
         if (result.Count == 0)
             result = ParsePsOutput(await RunAdbAsync("shell ps -A -o RSS,NAME", ct));
-        
+
         return result
             .Where(x => x.MemoryKb > MemoryThresholdKb && !CloudIntelligenceManager.IsCriticalPackage(x.Package))
             .OrderByDescending(x => x.MemoryKb)
             .ToList();
     }
 
-    private static List<(string Package, long MemoryKb)> ParseMemInfo(string output)
-    {
-        var result = new List<(string, long)>();
-        bool inPssSection = false;
-        
-        foreach (var line in output.Split('\n'))
-        {
-            var trimmed = line.Trim();
-            
-            if (trimmed.StartsWith("Total PSS by process", StringComparison.OrdinalIgnoreCase) ||
-                trimmed.StartsWith("Total RSS by process", StringComparison.OrdinalIgnoreCase))
-            {
-                inPssSection = true;
-                continue;
-            }
-            
-            if (inPssSection && string.IsNullOrWhiteSpace(trimmed)) 
-                break;
-            
-            if (inPssSection)
-            {
-                var match = MemInfoPssRegex.Match(trimmed);
-                if (match.Success)
-                {
-                    var kb = long.Parse(match.Groups[1].Value.Replace(",", ""));
-                    var pkg = match.Groups[2].Value;
-                    if (pkg.Contains('.') && !pkg.StartsWith("pid"))
-                        result.Add((pkg, kb));
-                }
-            }
-            else
-            {
-                var match = MemInfoFallbackRegex.Match(trimmed);
-                if (match.Success && !result.Any(r => r.Item1 == match.Groups[2].Value))
-                    result.Add((match.Groups[2].Value, long.Parse(match.Groups[1].Value.Replace(",", ""))));
-            }
-        }
-        return result;
-    }
-
     private static List<(string Package, long MemoryKb)> ParseActivityProcesses(string output)
     {
         var result = new List<(string, long)>();
         
-        foreach (Match match in ActivityProcessRegex.Matches(output))
+        foreach (Match match in ActivityProcessRegex().Matches(output))
         {
             var pkg = match.Groups[1].Value;
             if (long.TryParse(match.Groups[2].Value.Replace(",", ""), out var kb))

@@ -2,18 +2,23 @@ namespace ZephyrsElixir.Core;
 
 public static class AppConfiguration
 {
+    #region Build & installer manifest — NOT consumed by app code at runtime
+    // These values mirror what authoritatively lives in ZephyrsElixir.csproj / ZephyrsElixir.Pro.csproj,
+    // ZephyrsElixirInstaller_V2.iss and Build-ZephyrsElixir.ps1. C# cannot share a const with Inno Setup
+    // or the PowerShell build script, so nothing in this region is read at runtime — it is a single-place
+    // reference that must be kept in sync manually when releasing.
+
     public static class Version
     {
-        public const string Application = "0.6.5";
-        public const string ApplicationFull = "0.6.5.0";
-        public const string Pro = "1.0.1";
-        public const string ProFull = "1.0.1.0";
-        public const string InstallerProduct = "0.6.5.0";
+        public const string Application = "0.7.0";
+        public const string ApplicationFull = "0.7.0.0";
+        public const string Pro = "1.0.2";
+        public const string ProFull = "1.0.2.0";
+        public const string InstallerProduct = "0.7.0.0";
     }
 
     public static class Identity
     {
-        public const string AppName = "Zephyr's Elixir";
         public const string AppNameShort = "Zephyrs Elixir";
         public const string AppMutex = "ZephyrsElixir";
         public const string AppPublisher = "Blast752";
@@ -22,33 +27,47 @@ public static class AppConfiguration
         public const string ProDllName = "ZephyrsElixir.Pro.dll";
     }
 
+    public static class Installer
+    {
+        public const string FirewallRuleInbound = "ZephyrsElixir ADB Inbound";
+        public const string FirewallRuleOutbound = "ZephyrsElixir ADB Outbound";
+        public const string RegUninstallKeyV1 = "Zephyrs Elixir_is1";
+    }
+
+    #endregion
+
     public static class Paths
     {
-        public const string SolutionRoot = @"C:\Users\Administrator\Documents\ZephyrsElixir";
+        // --- Runtime paths (consumed by the app) ---
+        public static readonly string AppDataDir = "ZephyrsElixir";
+
+        public static readonly string LocalAppDataRoot = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            AppDataDir);
+
+        public static readonly string ToolsDir = "Tools";
+        public static readonly string AdbDir = $@"{ToolsDir}\adb";
+
+        public static readonly string ScrcpyDir = Path.Combine(LocalAppDataRoot, "scrcpy");
+        public static readonly string ScrcpyExe = Path.Combine(ScrcpyDir, "scrcpy.exe");
+        public static readonly string ScrcpyVersionFile = Path.Combine(ScrcpyDir, ".version");
+        public static readonly string ScrcpyZipName = "scrcpy.zip";
+
+        public static readonly string BaseOutputDir = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+            AppDataDir);
+        public static readonly string RecordingsDir = Path.Combine(BaseOutputDir, "Recordings");
+        public static readonly string ScreenshotsDir = Path.Combine(BaseOutputDir, "Screenshots");
+
+        // --- Build & installer reference — NOT consumed at runtime; mirror of Build-ZephyrsElixir.ps1 / .iss ---
+        public const string SolutionRoot = @"C:\Users\Administrator\Desktop\PortableGit\ZE";
 
         public static readonly string CsprojMain = $@"{SolutionRoot}\ZephyrsElixir\ZephyrsElixir.csproj";
         public static readonly string CsprojPro = $@"{SolutionRoot}\ZephyrsElixir.Pro\ZephyrsElixir.Pro.csproj";
         public static readonly string ProBinDir = $@"{SolutionRoot}\ZephyrsElixir.Pro\bin\Release\net8.0-windows\win-x64";
         public static readonly string ProDllDestDir = @"C:\Users\Administrator\Desktop\PortableGit\elixirsite\pro";
         public static readonly string LicenseIndexJs = @"C:\Users\Administrator\Desktop\PortableGit\elixirsite\api\license\index.js";
-
-        public static readonly string ToolsDir = "Tools";
-        public static readonly string AdbDir = $@"{ToolsDir}\adb";
         public static readonly string AdbInstallDir = @"{app}\Tools\adb";
-
-        public static readonly string AppDataDir = "ZephyrsElixir";
-        public static readonly string ScrcpyDir = System.IO.Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            AppDataDir, "scrcpy");
-        public static readonly string ScrcpyExe = System.IO.Path.Combine(ScrcpyDir, "scrcpy.exe");
-        public static readonly string ScrcpyVersionFile = System.IO.Path.Combine(ScrcpyDir, ".version");
-        public static readonly string ScrcpyZipName = "scrcpy.zip";
-
-        public static readonly string BaseOutputDir = System.IO.Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-            AppDataDir);
-        public static readonly string RecordingsDir = System.IO.Path.Combine(BaseOutputDir, "Recordings");
-        public static readonly string ScreenshotsDir = System.IO.Path.Combine(BaseOutputDir, "Screenshots");
 
         public const string DefaultInstallDir = @"{commonpf}\Zephyrs Elixir";
         public const string InstallerOutputDir = "InstallerOutput";
@@ -69,46 +88,22 @@ public static class AppConfiguration
         public const string ZephyrUpdateJson = "https://zephyrselixir.com/zupdate.json";
     }
 
-    public static class Limits
+    // Single source of truth for legal documents (version, date, public URLs, controller).
+    public static class Legal
     {
-        public const int HttpClientTimeoutSeconds = 15;
-        public const int HttpClientDownloadTimeoutMinutes = 5;
-        public const int MirrorStartDelayMs = 500;
-        public const int RecordingStartDelayMs = 300;
-
-        public const int BitrateMin = 2;
-        public const int BitrateMax = 50;
-        public const int BitrateDefault = 8;
-
-        public const int AudioBitrateMin = 32;
-        public const int AudioBitrateMax = 320;
-        public const int AudioBitrateDefault = 128;
-
-        public const int DisplayBufferMin = 0;
-        public const int DisplayBufferMax = 200;
-        public const int DisplayBufferDefault = 50;
-
-        public const int ScrcpyPollDelayMs = 1000;
-        public const int PostKillWaitMs = 1000;
-
-        public const int AdbDefaultTimeout = 30000;
+        public const string DocumentsVersion = "1.0";
+        public const string EffectiveDate    = "2026-06-15";
+        public const string EulaVersion      = "1.0";   // bump to force EULA re-acceptance
+        public const string PrivacyUrl       = "https://zephyrselixir.com/privacy";
+        public const string TermsUrl         = "https://zephyrselixir.com/terms";
+        public const string ControllerName   = "blast752";
+        public const string ContactEmail     = "zephyrselixir@gmail.com";
     }
 
     public static class Application
     {
         public const string Name = "Zephyr's Elixir";
         public const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss";
-    }
-
-    public static class Colors
-    {
-        public const byte RgbTitleBarRed = 12;
-        public const byte RgbTitleBarGreen = 21;
-        public const byte RgbTitleBarBlue = 40;
-
-        public const byte RgbWindowBorderRed = 26;
-        public const byte RgbWindowBorderGreen = 34;
-        public const byte RgbWindowBorderBlue = 56;
     }
 
     public static class Common
@@ -122,6 +117,7 @@ public static class AppConfiguration
         public const int WmNcHitTest = 0x0084;
         public const int WmDpiChanged = 0x02E0;
         public const int WmGetMinMaxInfo = 0x0024;
+        public const int WmDisplayChange = 0x007E;
 
         public const uint MonitorDefaultToNearest = 0x00000002;
 
@@ -136,7 +132,10 @@ public static class AppConfiguration
         public const int HtBottomLeft = 16;
         public const int HtBottomRight = 17;
 
-        public const uint SetWindowPosNoCopyBits = 0x0002;
+        public const uint SwpNoZOrder = 0x0004;
+        public const uint SwpNoActivate = 0x0010;
+        public const uint SwpNoCopyBits = 0x0100;
+        public const uint SwpReposition = SwpNoZOrder | SwpNoActivate | SwpNoCopyBits;
     }
 
     public static class Window
@@ -145,26 +144,20 @@ public static class AppConfiguration
         public const double DefaultHeight = 900;
         public const double MinWidth = 1100;
         public const double MinHeight = 700;
+        public const double AbsoluteMinWidth = 640;
+        public const double AbsoluteMinHeight = 480;
 
-        public const double CornerRadiusValue = 8;
         public const double CornerRadius = 8;
-        public const double TitleBarHeight = 40;
-        public const double SidebarWidth = 280;
-        public const double BorderThickness = 1;
-        public const double ResizeBorderThickness = 8;
-
         public const double CaptionHeight = 40;
-
         public const double GlassFrameThickness = 1;
-        public static readonly System.Windows.CornerRadius WindowCornerRadius = new(8);
-        public static readonly System.Windows.Thickness WindowGlassFrame = new(1);
-        public static readonly System.Windows.Thickness WindowResizeBorder = new(8);
+        public const double ResizeBorderThickness = 8;
+        public const double CaptionButtonWidth = 46;
+        public const double CaptionButtonCount = 3;
+        public const double CaptionButtonsAreaWidth = CaptionButtonWidth * CaptionButtonCount;
 
-        public const string MinTrackSizeKey = "MinTrackSize";
-        public const string TitleBarBackgroundColor = "#FF0C1528";
-        public const string WindowBackgroundColor = "#FF0E1A33";
-        public const string SidebarBackgroundColor = "#FF0A1224";
-        public const string WindowBorderColor = "#FF1A2238";
+        public static readonly System.Windows.CornerRadius WindowCornerRadius = new(CornerRadius);
+        public static readonly System.Windows.Thickness WindowGlassFrame = new(GlassFrameThickness);
+        public static readonly System.Windows.Thickness WindowResizeBorder = new(ResizeBorderThickness);
 
         public const string SidebarDefaultKey = "Home";
         public const string HelpScreenKey = "Help";
@@ -172,57 +165,6 @@ public static class AppConfiguration
         public static readonly System.Windows.Media.Color TitleBarBg = System.Windows.Media.Color.FromRgb(12, 21, 40);
         public static readonly System.Windows.Media.Color BorderColor = System.Windows.Media.Color.FromRgb(26, 34, 56);
 
-        public const int DwmCornerPreference = 2;
-        public const int DwmDarkMode = 1;
-        public const int DwmCaptionColorAttr = 35;
-        public const int DwmBorderColorAttr = 34;
-        public const int DwmCornerAttr = 33;
-        public const int DwmDarkModeAttr = 20;
-
-        public const string ScrcpyWindowTitle = "Zephyr's Elixir \u2014 Screen Mirror";
-    }
-
-    public static class ScreenMirror
-    {
-        public const string DeviceScreenshotPrefix = "/sdcard/screenshot_temp_";
-        public const string ScreenshotFilenameFormat = "screenshot_{0:yyyyMMdd_HHmmss}.png";
-        public const string RecordingFilenameFormat = "recording_{0:yyyyMMdd_HHmmss}.{1}";
-
-        public static readonly string[] ResolutionOptions = { "720", "1080", "1280", "1440", "2160", "0" };
-        public static readonly int[] FpsOptions = { 30, 60, 90, 120, 144 };
-
-        public const string DefaultVideoCodec = "h264";
-        public const string DefaultAudioCodec = "opus";
-        public const string DefaultRecordFormat = "mp4";
-        public const string DefaultQualityPreset = "balanced";
-        public const string DefaultKeyboardMode = "sdk";
-        public const string DefaultMouseMode = "sdk";
-        public const string DefaultOrientation = "auto";
-    }
-
-    public static class Installer
-    {
-        public const string FirewallRuleInbound = "ZephyrsElixir ADB Inbound";
-        public const string FirewallRuleOutbound = "ZephyrsElixir ADB Outbound";
-        public const string RegUninstallKeyV1 = "Zephyrs Elixir_is1";
-    }
-
-    public static class ScreenMirrorSettings
-    {
-        public const int ResolutionDefaultIndex = 2;
-        public const int QualityDefaultIndex = 1;
-        public const int VideoCodecDefaultIndex = 0;
-        public const int FpsDefaultIndex = 1;
-        public const int AudioCodecDefaultIndex = 0;
-        public const int RecordFormatDefaultIndex = 0;
-        public const int KeyboardModeDefaultIndex = 0;
-        public const int MouseModeDefaultIndex = 0;
-        public const int OrientationDefaultIndex = 0;
-
-        public const bool StayAwakeDefault = true;
-        public const bool AudioForwardDefault = true;
-        public const bool ClipboardSyncDefault = true;
-
-        public const string ScrcpyArgsDelimiter = " ";
+        public const string ScrcpyWindowTitle = "Zephyr's Elixir — Screen Mirror";
     }
 }

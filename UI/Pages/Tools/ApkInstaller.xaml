@@ -2,7 +2,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:h="clr-namespace:ZephyrsElixir.UI.Helpers"
-             Background="#FF0E1A33"
+             Background="{StaticResource App.Brush.WindowBg}"
              AllowDrop="True"
              Drop="OnDrop"
              DragOver="OnDragOver"
@@ -27,16 +27,11 @@
                     <Setter Property="Fill" Value="#FF6B6B"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Status}" Value="Updated">
-                    <Setter Property="Fill" Value="#00BFFF"/>
+                    <Setter Property="Fill" Value="{StaticResource App.Brush.DeepSkyBlue}"/>
                 </DataTrigger>
             </Style.Triggers>
         </Style>
         
-        <Style x:Key="TypeBadge" TargetType="Border">
-            <Setter Property="CornerRadius" Value="6"/>
-            <Setter Property="Padding" Value="8,3"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-        </Style>
     </UserControl.Resources>
 
     <Grid Margin="30">
@@ -135,7 +130,7 @@
                         
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,24,0,0">
                             <Border Background="#2000BFFF" CornerRadius="8" Padding="12,6" Margin="4,0">
-                                <TextBlock Text=".APK" FontSize="12" FontWeight="SemiBold" Foreground="#00BFFF"/>
+                                <TextBlock Text=".APK" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource App.Brush.DeepSkyBlue}"/>
                             </Border>
                             <Border Background="#2000D68F" CornerRadius="8" Padding="12,6" Margin="4,0">
                                 <TextBlock Text=".XAPK" FontSize="12" FontWeight="SemiBold" Foreground="#00D68F"/>
@@ -198,7 +193,7 @@
                                                 </Border>
                                                 <Border Width="14" Height="14" CornerRadius="7" 
                                                         Background="{Binding TypeBrush}"
-                                                        BorderBrush="#FF0E1A33" BorderThickness="2"
+                                                        BorderBrush="{StaticResource App.Brush.WindowBg}" BorderThickness="2"
                                                         HorizontalAlignment="Right" VerticalAlignment="Bottom"
                                                         Margin="0,0,-2,-2">
                                                     <TextBlock Text="{Binding TypeLetter}" FontSize="8" FontWeight="Bold"

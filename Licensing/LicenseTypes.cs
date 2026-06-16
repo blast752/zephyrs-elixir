@@ -509,6 +509,7 @@ public static class Features
     public const string ExtremeMode = "optimization.extreme";
     public const string ScreenMirror = "tools.screen_mirror";
     public const string ScreenRecording = "tools.screen_recording";
+    public const string PerformanceMonitor = "performance.monitor";
     public const string ApkBackup = "debloat.backup";
     public const string MultiApkInstall = "tools.apk_multi_install";
     public const string AIAnalysisUnlimited = "ai.analysis.unlimited";
@@ -534,6 +535,7 @@ public static class Features
             [ExtremeMode] = LicenseTier.Pro,
             [ScreenMirror] = LicenseTier.Pro,
             [ScreenRecording] = LicenseTier.Pro,
+            [PerformanceMonitor] = LicenseTier.Pro,
             [ApkBackup] = LicenseTier.Pro,
             [MultiApkInstall] = LicenseTier.Pro,
             [AIAnalysisUnlimited] = LicenseTier.Pro,
@@ -583,7 +585,7 @@ public static class Features
         ExtremeMode, ScreenMirror, ScreenRecording, ApkBackup,
         MultiApkInstall, AIAnalysisUnlimited, PrivacySafetyCore,
         PrivacyAdId, PrivacyCaptivePortal, PrivacyGoogleCore,
-        PrivacyRamExpansion, PrioritySupport
+        PrivacyRamExpansion, PrioritySupport, PerformanceMonitor
     };
 
     public static readonly IReadOnlyList<string> FreeFeatures = new[]

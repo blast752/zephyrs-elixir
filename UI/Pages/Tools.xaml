@@ -140,7 +140,7 @@
         <Border x:Name="SubPageHost" 
                 Grid.Row="0" Grid.RowSpan="3"
                 Visibility="Collapsed"
-                Background="#FF0E1A33">
+                Background="{StaticResource App.Brush.WindowBg}">
             <ContentControl x:Name="SubPageContent"/>
         </Border>
     </Grid>

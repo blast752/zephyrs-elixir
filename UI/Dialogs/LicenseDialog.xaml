@@ -15,7 +15,7 @@
 
     <Grid>
         <Border CornerRadius="16" 
-                Background="#FF0E1A33"
+                Background="{StaticResource App.Brush.WindowBg}"
                 BorderBrush="{DynamicResource App.Brush.Gold}" BorderThickness="1.5"
                 Effect="{DynamicResource App.Effect.PageShadow}"/>
         <Border CornerRadius="16" 

@@ -351,6 +351,7 @@ public static class ProCommandIds
     public const string MultiApkInstall = "tools.apk_multi_install";
 
     public const string ScreenMirrorPage = "tools.screen_mirror";
+    public const string PerformanceMonitorPage = "performance.monitor";
 }
 
 #endregion

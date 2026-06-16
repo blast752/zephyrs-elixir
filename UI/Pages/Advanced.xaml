@@ -61,7 +61,7 @@
                                           Converter={StaticResource App.Converter.PercentageToScale}, 
                                           ConverterParameter=ActualWidth}">
                                 <Border.Effect>
-                                    <DropShadowEffect Color="#00BFFF" BlurRadius="12" ShadowDepth="0" Opacity="0.6"/>
+                                    <DropShadowEffect Color="{StaticResource App.Color.DeepSkyBlue}" BlurRadius="12" ShadowDepth="0" Opacity="0.6"/>
                                 </Border.Effect>
                             </Border>
                             
@@ -163,10 +163,7 @@
                         
                         <StackPanel Grid.Row="2" Margin="0,15,0,0">
                             
-                            <Border Background="#1AFFFFFF" 
-                                   CornerRadius="12" 
-                                   Padding="20"
-                                   Margin="0,0,0,15">
+                            <Border Style="{StaticResource App.Style.SoftTile}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
@@ -196,10 +193,7 @@
                                 </Grid>
                             </Border>
 
-                            <Border Background="#1AFFFFFF" 
-                                   CornerRadius="12" 
-                                   Padding="20"
-                                   Margin="0,0,0,15">
+                            <Border Style="{StaticResource App.Style.SoftTile}">
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
@@ -252,7 +246,7 @@
                                                                 Text="{Binding PingDisplay}"
                                                                 FontSize="12"
                                                                 FontWeight="Normal"
-                                                                Foreground="#00BFFF"
+                                                                Foreground="{StaticResource App.Brush.DeepSkyBlue}"
                                                                 Margin="15,0,0,0"
                                                                 VerticalAlignment="Center"
                                                                 MinWidth="60"
@@ -284,10 +278,7 @@
                                 </Grid>
                             </Border>
 
-                            <Border Background="#1AFFFFFF" 
-                                   CornerRadius="12" 
-                                   Padding="20"
-                                   Margin="0,0,0,15">
+                            <Border Style="{StaticResource App.Style.SoftTile}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
@@ -317,10 +308,7 @@
                                 </Grid>
                             </Border>
 
-                            <Border Background="#1AFFFFFF" 
-                                CornerRadius="12" 
-                                Padding="20"
-                                Margin="0,0,0,15">
+                            <Border Style="{StaticResource App.Style.SoftTile}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
@@ -350,10 +338,7 @@
                                 </Grid>
                             </Border>
 
-                            <Border Background="#1AFFFFFF" 
-                                CornerRadius="12" 
-                                Padding="20"
-                                Margin="0,0,0,15">
+                            <Border Style="{StaticResource App.Style.SoftTile}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
@@ -384,10 +369,7 @@
                             </Border>
 
                             <Border x:Name="RamExpansionBorder"
-                                Background="#1AFFFFFF" 
-                                CornerRadius="12" 
-                                Padding="20"
-                                Margin="0,0,0,15">
+                                Style="{StaticResource App.Style.SoftTile}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
@@ -473,9 +455,7 @@
                         
                         <StackPanel Grid.Row="2" Margin="0,15,0,0">
                             
-                            <Border Background="#1AFFFFFF" 
-                                   CornerRadius="12" 
-                                   Padding="24">
+                            <Border Style="{StaticResource App.Style.SoftTile}" Padding="24" Margin="0">
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
@@ -609,10 +589,7 @@
                         
                         <StackPanel Grid.Row="2" Margin="0,15,0,0">
                             
-                            <Border Background="#1AFFFFFF" 
-                                   CornerRadius="12" 
-                                   Padding="20"
-                                   Margin="0,0,0,15">
+                            <Border Style="{StaticResource App.Style.SoftTile}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
@@ -642,10 +619,7 @@
                                 </Grid>
                             </Border>
 
-                            <Border Background="#1AFFFFFF" 
-                                   CornerRadius="12" 
-                                   Padding="20"
-                                   Margin="0,0,0,15">
+                            <Border Style="{StaticResource App.Style.SoftTile}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
@@ -675,11 +649,7 @@
                                 </Grid>
                             </Border>
 
-                            <Border Background="#2A3D0000" 
-                                   BorderBrush="#6AEF4444"
-                                   BorderThickness="1"
-                                   CornerRadius="12" 
-                                   Padding="20">
+                            <Border Style="{StaticResource App.Style.SoftTile.Destructive}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>

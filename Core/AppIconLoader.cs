@@ -1,113 +1,101 @@
 
-namespace ZephyrsElixir.Core
+namespace ZephyrsElixir.Core;
+public static class AppIconLoader
 {
-    public static class AppIconLoader
+    private static readonly ConcurrentDictionary<string, BitmapImage?> IconCache = new();
+    private static readonly int MaxConcurrent = Environment.ProcessorCount;
+    private static readonly SemaphoreSlim LoadSemaphore = new(MaxConcurrent);
+
+    public static async Task<BitmapImage?> LoadIconAsync(
+        string packageName,
+        CancellationToken cancellationToken = default)
     {
-        private static readonly ConcurrentDictionary<string, BitmapImage?> IconCache = new();
-        private static readonly int MaxConcurrent = Environment.ProcessorCount;
-        private static readonly SemaphoreSlim LoadSemaphore = new(MaxConcurrent);
-        private const string AgentIconUri = "http://localhost:8080/icon";
+        if (string.IsNullOrWhiteSpace(packageName))
+            return null;
 
-        public static async Task<BitmapImage?> LoadIconAsync(
-            string packageName,
-            CancellationToken cancellationToken = default)
+        if (IconCache.TryGetValue(packageName, out var cached))
+            return cached;
+
+        await LoadSemaphore.WaitAsync(cancellationToken);
+        try
         {
-            if (string.IsNullOrWhiteSpace(packageName))
-                return null;
-
-            if (IconCache.TryGetValue(packageName, out var cached))
+            if (IconCache.TryGetValue(packageName, out cached))
                 return cached;
 
-            await LoadSemaphore.WaitAsync(cancellationToken);
-            try
-            {
-                if (IconCache.TryGetValue(packageName, out cached))
-                    return cached;
+            var icon = await ExtractIconAsync(packageName, cancellationToken);
+            icon?.Freeze();
+            IconCache.TryAdd(packageName, icon);
 
-                var icon = await ExtractIconAsync(packageName, cancellationToken);
-                icon?.Freeze();
-                IconCache.TryAdd(packageName, icon);
-
-                return icon;
-            }
-            catch (OperationCanceledException)
-            {
-                IconCache.TryAdd(packageName, null);
-                return null;
-            }
-            catch
-            {
-                IconCache.TryAdd(packageName, null);
-                return null;
-            }
-            finally
-            {
-                LoadSemaphore.Release();
-            }
+            return icon;
         }
-
-        private static async Task<BitmapImage?> ExtractIconAsync(
-            string packageName,
-            CancellationToken cancellationToken)
+        catch (OperationCanceledException)
         {
-            var uri = $"{AgentIconUri}/{packageName}";
-            
-            try
+            IconCache.TryAdd(packageName, null);
+            return null;
+        }
+        catch
+        {
+            IconCache.TryAdd(packageName, null);
+            return null;
+        }
+        finally
+        {
+            LoadSemaphore.Release();
+        }
+    }
+
+    private static async Task<BitmapImage?> ExtractIconAsync(
+        string packageName,
+        CancellationToken cancellationToken)
+    {
+        var uri = $"{ZephyrsAgent.BaseUri}/icon/{packageName}";
+        
+        try
+        {
+            var response = await ZephyrsAgent.HttpClient.GetAsync(
+                uri,
+                HttpCompletionOption.ResponseHeadersRead,
+                cancellationToken);
+
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            var imageBytes = await response.Content.ReadAsByteArrayAsync(cancellationToken);
+
+            if (imageBytes == null || imageBytes.Length == 0)
+                return null;
+
+            using (var stream = new MemoryStream(imageBytes))
             {
-                var response = await ZephyrsAgent.HttpClient.GetAsync(
-                    uri,
-                    HttpCompletionOption.ResponseHeadersRead,
-                    cancellationToken);
-
-                if (!response.IsSuccessStatusCode)
-                    return null;
-
-                var imageBytes = await response.Content.ReadAsByteArrayAsync(cancellationToken);
-
-                if (imageBytes == null || imageBytes.Length == 0)
-                    return null;
-
-                using (var stream = new MemoryStream(imageBytes))
+                var bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.DecodePixelWidth = 44;
+                bitmap.StreamSource = stream;
+                
+                try
                 {
-                    var bitmap = new BitmapImage();
-                    bitmap.BeginInit();
-                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                    bitmap.DecodePixelWidth = 44;
-                    bitmap.StreamSource = stream;
-                    
-                    try
-                    {
-                        bitmap.EndInit();
-                        return bitmap;
-                    }
-                    catch (NotSupportedException)
-                    {
-                        return null;
-                    }
+                    bitmap.EndInit();
+                    return bitmap;
+                }
+                catch (NotSupportedException)
+                {
+                    return null;
                 }
             }
-            catch (TaskCanceledException)
-            {
-                return null;
-            }
-            catch
-            {
-                return null;
-            }
         }
-
-        public static void ClearCache()
+        catch (TaskCanceledException)
         {
-            IconCache.Clear();
+            return null;
         }
-
-        public static async Task PreloadIconsAsync(IEnumerable<string> packageNames, CancellationToken cancellationToken = default)
+        catch
         {
-            var tasks = packageNames
-                .Where(p => !IconCache.ContainsKey(p))
-                .Select(p => LoadIconAsync(p, cancellationToken));
-
-            await Task.WhenAll(tasks);
+            return null;
         }
+    }
+
+    public static void ClearCache()
+    {
+        IconCache.Clear();
     }
 }

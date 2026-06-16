@@ -177,10 +177,7 @@ public sealed class AdbLogger
 
         var sb = new StringBuilder(4096);
 
-        sb.AppendLine("════════════════════════════════════════════════════════════");
-        sb.AppendLine("  Zephyr's Elixir - Diagnostic Log");
-        sb.AppendLine($"  Generated: {DateTime.Now:yyyy-MM-dd HH:mm}");
-        sb.AppendLine("════════════════════════════════════════════════════════════");
+        sb.AppendLine($"Zephyr's Elixir — Diagnostic Log — {DateTime.Now:yyyy-MM-dd HH:mm}");
         sb.AppendLine();
 
         if (snapshot.Length == 0)
@@ -199,8 +196,6 @@ public sealed class AdbLogger
         if (stats.TryGetValue(LogLevel.Warning, out var warnings) && warnings > 0)
             sb.AppendLine($"  ⚡ {warnings} warning(s)");
         sb.AppendLine();
-        sb.AppendLine("────────────────────────────────────────────────────────────");
-        sb.AppendLine();
 
         DateTime? currentBlock = null;
         foreach (var entry in snapshot)
@@ -218,11 +213,6 @@ public sealed class AdbLogger
 
             sb.AppendLine(entry.ToString());
         }
-
-        sb.AppendLine();
-        sb.AppendLine("════════════════════════════════════════════════════════════");
-        sb.AppendLine("  End of Log");
-        sb.AppendLine("════════════════════════════════════════════════════════════");
 
         return sb.ToString();
     }

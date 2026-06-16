@@ -193,7 +193,7 @@
 
                                         <StackPanel Grid.Column="4" VerticalAlignment="Center" MinWidth="120">
                                             <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14" Foreground="White" TextTrimming="CharacterEllipsis"/>
-                                            <TextBlock Text="{Binding PackageName}" FontSize="11" Foreground="#B0B8C8" TextTrimming="CharacterEllipsis" Margin="0,2,0,0"/>
+                                            <TextBlock Text="{Binding PackageName}" FontSize="11" Foreground="{StaticResource App.Brush.Steel}" TextTrimming="CharacterEllipsis" Margin="0,2,0,0"/>
                                             <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
                                                 <Border Background="{Binding RiskBadgeBackground}" CornerRadius="3" Padding="6,2">
                                                     <TextBlock Text="{Binding RiskDisplay}" FontSize="10" Foreground="{Binding RiskColor}" FontWeight="SemiBold"/>
@@ -256,7 +256,7 @@
                                 <StackPanel Grid.Column="4" VerticalAlignment="Center">
                                     <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14" Foreground="White"/>
                                     <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                                        <TextBlock Text="{Binding PackageName}" FontSize="12" Foreground="#B0B8C8"/>
+                                        <TextBlock Text="{Binding PackageName}" FontSize="12" Foreground="{StaticResource App.Brush.Steel}"/>
                                         <TextBlock Text=" • " FontSize="12" Foreground="#50FFFFFF"/>
                                         <TextBlock Text="{Binding DateDisplay}" FontSize="12" Foreground="#90EE90"/>
                                     </StackPanel>
@@ -339,7 +339,7 @@
                     
                     <TextBlock x:Name="UninstallConfirmText" 
                                Text="{h:Translate Debloat_Uninstall_ConfirmText}"
-                               Foreground="#B0B8C8" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" Margin="0,10,0,24"/>
+                               Foreground="{StaticResource App.Brush.Steel}" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" Margin="0,10,0,24"/>
 
                     <Border Background="#15FFFFFF" CornerRadius="12" Padding="18" Margin="0,0,0,24" BorderBrush="{StaticResource App.Brush.Glass.Border}" BorderThickness="1">
                         <StackPanel>
@@ -375,188 +375,187 @@
                 </StackPanel>
             </h:ShadowCard>
         </Grid>
-    </Grid>
+        <Grid x:Name="AppDetailsOverlayReal" Visibility="Collapsed">
+            <h:ShadowCard Style="{StaticResource App.Style.OverlayCard}" Width="620" Height="Auto" MaxHeight="760" VerticalAlignment="Center">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="18"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="18"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="18"/>
+                        <RowDefinition Height="*" MinHeight="180"/>
+                    </Grid.RowDefinitions>
     
-    <Grid x:Name="AppDetailsOverlayReal" Grid.Row="0" Grid.RowSpan="3" Visibility="Collapsed" Background="#CC050A14">
-        <h:ShadowCard Style="{StaticResource App.Style.OverlayCard}" Width="620" Height="Auto" MaxHeight="760" VerticalAlignment="Center">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="18"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="18"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="18"/>
-                    <RowDefinition Height="*" MinHeight="180"/>
-                </Grid.RowDefinitions>
-
-                <Grid Grid.Row="0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="18"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Border CornerRadius="14" Background="#15FFFFFF" Padding="2">
-                        <Image Source="{Binding App.Icon}" Width="64" Height="64" RenderOptions.BitmapScalingMode="HighQuality"/>
-                    </Border>
-                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
-                        <TextBlock Text="{Binding App.Name}" FontSize="20" FontWeight="Bold" Foreground="White"/>
-                        <TextBlock Text="{Binding App.PackageName}" FontSize="13" Foreground="#B0B8C8" Margin="0,3,0,0"/>
-                        <Border Background="{StaticResource App.Brush.Glass.Border}" HorizontalAlignment="Left" CornerRadius="4" Padding="8,3" Margin="0,6,0,0">
-                            <TextBlock Text="{Binding App.Version}" FontSize="11" Foreground="#00BFFF" FontWeight="SemiBold"/>
-                        </Border>
-                    </StackPanel>
-                    <Button Grid.Column="3" Style="{StaticResource App.Style.WindowControl.Close}" Click="CloseDetails_Click" VerticalAlignment="Top"/>
-                </Grid>
-
-                <Border Grid.Row="2" Style="{StaticResource App.Style.GlassCard}" Padding="18" 
-                        BorderBrush="{Binding App.RiskColor}" BorderThickness="1">
-                    <Grid>
+                    <Grid Grid.Row="0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="16"/>
+                            <ColumnDefinition Width="18"/>
                             <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Border Width="44" Height="44" CornerRadius="22" Background="#15FFFFFF" VerticalAlignment="Top">
-                            <TextBlock Text="&#xE9CA;" FontFamily="Segoe MDL2 Assets" FontSize="20" 
-                                    Foreground="{Binding App.RiskColor}" 
-                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-
-                        <StackPanel Grid.Column="2">
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
-                                <TextBlock Text="{h:Translate Debloat_Detail_AiInsight}" FontSize="15" FontWeight="Bold" Foreground="White"/>
-                                <Border Background="{Binding App.RiskColor}" CornerRadius="4" Padding="8,2" Margin="10,0,0,0" VerticalAlignment="Center">
-                                    <TextBlock Text="{Binding App.RiskDisplay}" FontSize="10" FontWeight="Bold" Foreground="#101010"/>
-                                </Border>
-                            </StackPanel>
-
-                            <TextBlock Text="{Binding App.AiDescription}" 
-                                    FontSize="13" Foreground="#E0E0E0" TextWrapping="Wrap" LineHeight="19"/>
-
-                            <Grid Margin="0,12,0,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="{h:Translate Debloat_AppDetails_SafetyScore}" FontSize="11" Foreground="#B0B8C8"/>
-                                <TextBlock Grid.Column="2" Text="{Binding App.SafetyScore, StringFormat={}{0:0}%}" FontSize="11" Foreground="{Binding App.RiskColor}" FontWeight="Bold"/>
-                            </Grid>
-                            
-                            <ProgressBar Value="{Binding App.SafetyScore}" Maximum="100" Height="3" Margin="0,4,0,0" 
-                                        Foreground="{Binding App.RiskColor}" Background="#20FFFFFF" BorderThickness="0"/>
-                        </StackPanel>
-                    </Grid>
-                </Border>
-
-                <Border Grid.Row="4" Style="{StaticResource App.Style.GlassCard}" Padding="18">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="14"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="16"/>
-                            <ColumnDefinition Width="220"/>
                         </Grid.ColumnDefinitions>
-                        
-                        <TextBlock Text="&#xE8B9;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="{StaticResource App.Brush.Gold}" VerticalAlignment="Center"/>
-                        
+                        <Border CornerRadius="14" Background="#15FFFFFF" Padding="2">
+                            <Image Source="{Binding App.Icon}" Width="64" Height="64" RenderOptions.BitmapScalingMode="HighQuality"/>
+                        </Border>
                         <StackPanel Grid.Column="2" VerticalAlignment="Center">
-                            <TextBlock Text="{h:Translate Debloat_AppDetails_PerformanceProfile}" Foreground="White" 
-                                       FontWeight="SemiBold" FontSize="14"/>
-                            <TextBlock Text="{h:Translate Debloat_AppDetails_PerformanceProfile_Description}" Foreground="#90FFFFFF" FontSize="12" Margin="0,2,0,0"/>
+                            <TextBlock Text="{Binding App.Name}" FontSize="20" FontWeight="Bold" Foreground="White"/>
+                            <TextBlock Text="{Binding App.PackageName}" FontSize="13" Foreground="{StaticResource App.Brush.Steel}" Margin="0,3,0,0"/>
+                            <Border Background="{StaticResource App.Brush.Glass.Border}" HorizontalAlignment="Left" CornerRadius="4" Padding="8,3" Margin="0,6,0,0">
+                                <TextBlock Text="{Binding App.Version}" FontSize="11" Foreground="{StaticResource App.Brush.DeepSkyBlue}" FontWeight="SemiBold"/>
+                            </Border>
                         </StackPanel>
-                        
-                        <ComboBox Grid.Column="4" 
-                                  ItemsSource="{Binding BucketOptions}" 
-                                  SelectedValue="{Binding SelectedBucket, Mode=TwoWay}" 
-                                  SelectedValuePath="Key" 
-                                  Style="{StaticResource App.Style.ComboBox.Slim}">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Value}"/>
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
+                        <Button Grid.Column="3" Style="{StaticResource App.Style.WindowControl.Close}" Click="CloseDetails_Click" VerticalAlignment="Top"/>
                     </Grid>
-                </Border>
-
-                <Border Grid.Row="6" Style="{StaticResource App.Style.GlassCard}" Padding="0" ClipToBounds="True">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        
-                        <Border Padding="18,14" BorderBrush="{StaticResource App.Brush.Glass.Border}" BorderThickness="0,0,0,1" Background="#20000000">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="12"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
+    
+                    <Border Grid.Row="2" Style="{StaticResource App.Style.GlassCard}" Padding="18" 
+                            BorderBrush="{Binding App.RiskColor}" BorderThickness="1">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="16"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+    
+                            <Border Width="44" Height="44" CornerRadius="22" Background="#15FFFFFF" VerticalAlignment="Top">
+                                <TextBlock Text="&#xE9CA;" FontFamily="Segoe MDL2 Assets" FontSize="20" 
+                                        Foreground="{Binding App.RiskColor}" 
+                                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+    
+                            <StackPanel Grid.Column="2">
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                                    <TextBlock Text="{h:Translate Debloat_Detail_AiInsight}" FontSize="15" FontWeight="Bold" Foreground="White"/>
+                                    <Border Background="{Binding App.RiskColor}" CornerRadius="4" Padding="8,2" Margin="10,0,0,0" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding App.RiskDisplay}" FontSize="10" FontWeight="Bold" Foreground="#101010"/>
+                                    </Border>
+                                </StackPanel>
+    
+                                <TextBlock Text="{Binding App.AiDescription}" 
+                                        FontSize="13" Foreground="#E0E0E0" TextWrapping="Wrap" LineHeight="19"/>
+    
+                                <Grid Margin="0,12,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{h:Translate Debloat_AppDetails_SafetyScore}" FontSize="11" Foreground="{StaticResource App.Brush.Steel}"/>
+                                    <TextBlock Grid.Column="2" Text="{Binding App.SafetyScore, StringFormat={}{0:0}%}" FontSize="11" Foreground="{Binding App.RiskColor}" FontWeight="Bold"/>
+                                </Grid>
                                 
-                                <TextBlock Text="&#xE72E;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="{StaticResource App.Brush.DeepSkyBlue}" VerticalAlignment="Center"/>
-                                <TextBlock Grid.Column="2" Text="{h:Translate Debloat_AppDetails_Permissions}" FontSize="15" FontWeight="SemiBold" Foreground="White" VerticalAlignment="Center"/>
-                                
-                                <Button Grid.Column="4" 
-                                        Style="{StaticResource App.Style.Button.Inline.Destructive}"
-                                        Content="{h:Translate Debloat_AppDetails_RevokeAll}"
-                                        Tag="&#xE711;"
-                                        Click="RevokeAllPermissions_Click"
-                                        ToolTip="{h:Translate Debloat_AppDetails_RevokeAll_Tooltip}"
-                                        IsEnabled="{Binding HasGrantedPermissions}">
-                                </Button>
-                            </Grid>
-                        </Border>
-                        
-                        <Grid Grid.Row="1">
-                            <StackPanel Visibility="{Binding IsLoading, Converter={StaticResource App.Converter.BooleanToVisibility}}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="20">
-                                <ProgressBar IsIndeterminate="True" Width="180" Style="{StaticResource App.Style.ProgressBar}"/>
-                                <TextBlock Text="{h:Translate Debloat_AppDetails_AnalyzingManifest}" Foreground="#90FFFFFF" HorizontalAlignment="Center" Margin="0,12,0,0" FontSize="13"/>
+                                <ProgressBar Value="{Binding App.SafetyScore}" Maximum="100" Height="3" Margin="0,4,0,0" 
+                                            Foreground="{Binding App.RiskColor}" Background="#20FFFFFF" BorderThickness="0"/>
                             </StackPanel>
-                            <ScrollViewer Padding="0" MaxHeight="200">
-                                <ScrollViewer.Style>
-                                    <Style TargetType="ScrollViewer">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsLoading}" Value="True">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </ScrollViewer.Style>
-                                <ItemsControl ItemsSource="{Binding Permissions}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border Style="{StaticResource App.Style.PermissionItem}">
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                    </Grid.ColumnDefinitions>
-                                                    <Border Width="32" Height="32" CornerRadius="6" Background="#20FFFFFF">
-                                                        <TextBlock Text="{Binding Icon}" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#B0B8C8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                    </Border>
-                                                    <TextBlock Grid.Column="1" Text="{Binding DisplayName}" Foreground="White" FontSize="13" VerticalAlignment="Center" Margin="12,0,0,0"/>
-                                                    <CheckBox Grid.Column="2" IsChecked="{Binding IsGranted, Mode=TwoWay}" Style="{StaticResource App.Style.ToggleSwitch}"/>
-                                                </Grid>
-                                            </Border>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </ScrollViewer>
                         </Grid>
-                    </Grid>
-                </Border>
-            </Grid>
-        </h:ShadowCard>
+                    </Border>
+    
+                    <Border Grid.Row="4" Style="{StaticResource App.Style.GlassCard}" Padding="18">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="14"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="16"/>
+                                <ColumnDefinition Width="220"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <TextBlock Text="&#xE8B9;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="{StaticResource App.Brush.Gold}" VerticalAlignment="Center"/>
+                            
+                            <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                                <TextBlock Text="{h:Translate Debloat_AppDetails_PerformanceProfile}" Foreground="White" 
+                                           FontWeight="SemiBold" FontSize="14"/>
+                                <TextBlock Text="{h:Translate Debloat_AppDetails_PerformanceProfile_Description}" Foreground="#90FFFFFF" FontSize="12" Margin="0,2,0,0"/>
+                            </StackPanel>
+                            
+                            <ComboBox Grid.Column="4" 
+                                      ItemsSource="{Binding BucketOptions}" 
+                                      SelectedValue="{Binding SelectedBucket, Mode=TwoWay}" 
+                                      SelectedValuePath="Key" 
+                                      Style="{StaticResource App.Style.ComboBox.Slim}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Value}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </Grid>
+                    </Border>
+    
+                    <Border Grid.Row="6" Style="{StaticResource App.Style.GlassCard}" Padding="0" ClipToBounds="True">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            
+                            <Border Padding="18,14" BorderBrush="{StaticResource App.Brush.Glass.Border}" BorderThickness="0,0,0,1" Background="#20000000">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="12"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <TextBlock Text="&#xE72E;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="{StaticResource App.Brush.DeepSkyBlue}" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="2" Text="{h:Translate Debloat_AppDetails_Permissions}" FontSize="15" FontWeight="SemiBold" Foreground="White" VerticalAlignment="Center"/>
+                                    
+                                    <Button Grid.Column="4" 
+                                            Style="{StaticResource App.Style.Button.Inline.Destructive}"
+                                            Content="{h:Translate Debloat_AppDetails_RevokeAll}"
+                                            Tag="&#xE711;"
+                                            Click="RevokeAllPermissions_Click"
+                                            ToolTip="{h:Translate Debloat_AppDetails_RevokeAll_Tooltip}"
+                                            IsEnabled="{Binding HasGrantedPermissions}">
+                                    </Button>
+                                </Grid>
+                            </Border>
+                            
+                            <Grid Grid.Row="1">
+                                <StackPanel Visibility="{Binding IsLoading, Converter={StaticResource App.Converter.BooleanToVisibility}}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="20">
+                                    <ProgressBar IsIndeterminate="True" Width="180" Style="{StaticResource App.Style.ProgressBar}"/>
+                                    <TextBlock Text="{h:Translate Debloat_AppDetails_AnalyzingManifest}" Foreground="#90FFFFFF" HorizontalAlignment="Center" Margin="0,12,0,0" FontSize="13"/>
+                                </StackPanel>
+                                <ScrollViewer Padding="0" MaxHeight="200">
+                                    <ScrollViewer.Style>
+                                        <Style TargetType="ScrollViewer">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsLoading}" Value="True">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ScrollViewer.Style>
+                                    <ItemsControl ItemsSource="{Binding Permissions}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Style="{StaticResource App.Style.PermissionItem}">
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <Border Width="32" Height="32" CornerRadius="6" Background="#20FFFFFF">
+                                                            <TextBlock Text="{Binding Icon}" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{StaticResource App.Brush.Steel}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                        </Border>
+                                                        <TextBlock Grid.Column="1" Text="{Binding DisplayName}" Foreground="White" FontSize="13" VerticalAlignment="Center" Margin="12,0,0,0"/>
+                                                        <CheckBox Grid.Column="2" IsChecked="{Binding IsGranted, Mode=TwoWay}" Style="{StaticResource App.Style.ToggleSwitch}"/>
+                                                    </Grid>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </h:ShadowCard>
+        </Grid>
     </Grid>
 
 </Grid>

@@ -1,102 +1,105 @@
-namespace ZephyrsElixir.Core
+namespace ZephyrsElixir.Core;
+
+public sealed class UpdateInfo
 {
-    public sealed class UpdateInfo
+    public string Version { get; init; } = string.Empty;
+    public string DownloadUrl { get; init; } = string.Empty;
+    public string ReleaseNotes { get; init; } = string.Empty;
+}
+
+public static class Updater
+{
+    private const string UpdateJsonUrl = AppConfiguration.Urls.ZephyrUpdateJson;
+
+    private static readonly HttpClient HttpClient;
+
+    static Updater()
     {
-        public string Version { get; set; } = string.Empty;
-        public string DownloadUrl { get; set; } = string.Empty;
-        public string ReleaseNotes { get; set; } = string.Empty;
+        HttpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(20) };
+        var version = Assembly.GetExecutingAssembly().GetName().Version;
+        HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd($"ZephyrsElixir-Updater/{version}");
     }
 
-    public static class Updater
+    public static async Task CheckForUpdatesAsync(Window owner, CancellationToken ct = default)
     {
-        private const string UpdateJsonUrl = "https://zephyrselixir.com/zupdate.json";
+        UpdateInfo? remoteInfo = await GetUpdateInfoAsync(ct).ConfigureAwait(true);
 
-        private static readonly HttpClient HttpClient;
-        private static readonly JsonSerializerOptions JsonOpts = new() { PropertyNameCaseInsensitive = true };
+        if (remoteInfo is null || !IsNewVersionAvailable(remoteInfo))
+            return;
 
-        static Updater()
+        // Forced-update policy: outdated versions must not keep running.
+        // Declining ("Exit") closes the application; the dialog states the update is required.
+        if (DialogService.Instance.ShowUpdate(remoteInfo, owner))
+            await DownloadAndUpdateAsync(remoteInfo, ct).ConfigureAwait(true);
+        else
+            Application.Current.Shutdown();
+    }
+
+    private static async Task<UpdateInfo?> GetUpdateInfoAsync(CancellationToken ct = default)
+    {
+        try
         {
-            HttpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(20) };
-            var version = Assembly.GetExecutingAssembly().GetName().Version;
-            HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd($"ZephyrsElixir-Updater/{version}");
+            string json = await HttpClient.GetStringAsync(UpdateJsonUrl, ct).ConfigureAwait(false);
+            return JsonSerializer.Deserialize<UpdateInfo>(json, CoreJson.CaseInsensitive)!;
         }
-
-        public static async Task CheckForUpdatesAsync(Window owner)
+        catch (Exception ex)
         {
-            UpdateInfo? remoteInfo = await GetUpdateInfoAsync();
-
-            if (remoteInfo == null || !IsNewVersionAvailable(remoteInfo))
-                return;
-
-            bool userAccepted = DialogService.Instance.ShowUpdate(remoteInfo, owner);
-
-            if (userAccepted)
-                await DownloadAndUpdateAsync(remoteInfo);
-            else
-                Application.Current.Shutdown();
+            Debug.WriteLine($"Update check failed: {ex.Message}");
+            return null;
         }
+    }
 
-        private static async Task<UpdateInfo?> GetUpdateInfoAsync()
+    private static bool IsNewVersionAvailable(UpdateInfo remoteInfo)
+    {
+        try
         {
-            try
+            var currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
+            if (currentVersion is not null && Version.TryParse(remoteInfo.Version, out var remoteVersion))
             {
-                string json = await HttpClient.GetStringAsync(UpdateJsonUrl).ConfigureAwait(false);
-                return JsonSerializer.Deserialize<UpdateInfo>(json, JsonOpts)!;
+                return remoteVersion > currentVersion;
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Update check failed: {ex.Message}");
-                return null;
-            }
+            return false;
         }
-
-        private static bool IsNewVersionAvailable(UpdateInfo remoteInfo)
+        catch (Exception ex)
         {
-            try
-            {
-                var currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
-                if (currentVersion is not null && Version.TryParse(remoteInfo.Version, out var remoteVersion))
-                {
-                    return remoteVersion > currentVersion;
-                }
-                return false;
-            }
-            catch (Exception ex)
-            {
-                 Debug.WriteLine($"Error comparing versions: {ex.Message}");
-                 return false;
-            }
+             Debug.WriteLine($"Error comparing versions: {ex.Message}");
+             return false;
         }
-        
-        private static async Task DownloadAndUpdateAsync(UpdateInfo remoteInfo)
+    }
+    
+    private static async Task DownloadAndUpdateAsync(UpdateInfo remoteInfo, CancellationToken ct = default)
+    {
+        string tempInstallerName = $"ZephyrsElixir_Update_{remoteInfo.Version}.exe";
+        string tempInstallerPath = Path.Combine(Path.GetTempPath(), tempInstallerName);
+
+        try
         {
-            string tempInstallerName = $"ZephyrsElixir_Update_{remoteInfo.Version}.exe";
-            string tempInstallerPath = Path.Combine(Path.GetTempPath(), tempInstallerName);
-
-            try
+            // Stream straight to disk: the installer is ~70 MB, never buffer it in memory.
+            using (var response = await HttpClient.GetAsync(remoteInfo.DownloadUrl, HttpCompletionOption.ResponseHeadersRead, ct).ConfigureAwait(false))
             {
-                byte[] installerBytes = await HttpClient.GetByteArrayAsync(remoteInfo.DownloadUrl).ConfigureAwait(false);
-                await File.WriteAllBytesAsync(tempInstallerPath, installerBytes).ConfigureAwait(false);
-
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = tempInstallerPath,
-                    UseShellExecute = true
-                });
-
-                Application.Current.Shutdown();
+                response.EnsureSuccessStatusCode();
+                await using var fileStream = new FileStream(tempInstallerPath, FileMode.Create, FileAccess.Write, FileShare.None);
+                await response.Content.CopyToAsync(fileStream, ct).ConfigureAwait(false);
             }
-            catch (Exception ex)
+
+            using var process = Process.Start(new ProcessStartInfo
             {
-                var config = new DialogConfig
-                {
-                    Title = TranslationManager.Instance["Dialog_Title_Error"],
-                    Message = string.Format(TranslationManager.Instance["Update_DownloadFailed"], ex.Message),
-                    Type = DialogType.Error,
-                    Buttons = new[] { new DialogButton(TranslationManager.Instance["Common_Button_OK"], DialogAction.Primary, ButtonStyle.Primary) }
-                };
-                DialogService.Instance.ShowCustom(config);
-            }
+                FileName = tempInstallerPath,
+                UseShellExecute = true
+            });
+
+            Application.Current.Shutdown();
+        }
+        catch (Exception ex)
+        {
+            var config = new DialogConfig
+            {
+                Title = TranslationManager.Instance["Dialog_Title_Error"],
+                Message = string.Format(TranslationManager.Instance["Update_DownloadFailed"], ex.Message),
+                Type = DialogType.Error,
+                Buttons = new[] { new DialogButton(TranslationManager.Instance["Common_Button_OK"], DialogAction.Primary, ButtonStyle.Primary) }
+            };
+            DialogService.Instance.ShowCustom(config);
         }
     }
 }

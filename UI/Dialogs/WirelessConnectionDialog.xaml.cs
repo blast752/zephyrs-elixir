@@ -14,13 +14,19 @@ public sealed partial class WirelessConnectionDialog : Window
         public const int SuccessCloseDelayMs = 2500;
         public const int LoadingDotCount = 8;
         public const string FallbackNetworkPrefix = "192.168.1.";
+
+        // After a successful "adb pair", adb auto-connects to the paired device via mDNS;
+        // poll the device list so success is only reported when the device is really online.
+        public const int PostPairConnectAttempts = 5;
+        public const int PostPairConnectPollMs = 2000;
+        public const int MaxErrorDetailLength = 160;
     }
 
-    private readonly Func<string, Task> _executeAdbCommand;
+    private readonly Func<string, Task<string>> _executeAdbCommand;
     private readonly Action<string> _appendTerminal;
     private readonly string _networkPrefix;
 
-    public WirelessConnectionDialog(Func<string, Task> executeAdbCommand, Action<string> appendTerminal)
+    public WirelessConnectionDialog(Func<string, Task<string>> executeAdbCommand, Action<string> appendTerminal)
     {
         _executeAdbCommand = executeAdbCommand ?? throw new ArgumentNullException(nameof(executeAdbCommand));
         _appendTerminal = appendTerminal ?? throw new ArgumentNullException(nameof(appendTerminal));
@@ -157,24 +163,35 @@ public sealed partial class WirelessConnectionDialog : Window
         if (!ValidateInput(lastOctet, InputType.LastOctet))
             return false;
 
-        var fullIp = $"{_networkPrefix}{lastOctet}";
-        var port = Config.DefaultPort.ToString();
+        var endpoint = $"{_networkPrefix}{lastOctet}:{Config.DefaultPort}";
 
         ShowStatus(Strings.Wireless_Status_Connecting, StatusType.Progress);
         ConnectionProgress.Value = 75;
-        LogToTerminal($"[Android 10] {Strings.Wireless_Status_Connecting} {fullIp}:{port}...");
+        LogToTerminal($"[Android 10] {Strings.Wireless_Status_Connecting} {endpoint}...");
 
-        await _executeAdbCommand($"tcpip {port}");
-        LogToTerminal("TCP/IP mode enabled");
+        // "adb tcpip" needs a USB-connected device; surface its failure instead of pretending.
+        var tcpipOutput = await _executeAdbCommand($"tcpip {Config.DefaultPort}");
+        LogToTerminal(tcpipOutput);
+        if (IsAdbFailure(tcpipOutput))
+        {
+            ShowFailure(tcpipOutput);
+            return false;
+        }
 
         await Task.Delay(Config.ConnectionDelayMs);
 
-        await _executeAdbCommand($"connect {fullIp}:{port}");
-        LogToTerminal("Connection command sent");
+        // Success is "connected to ..." / "already connected to ..."; anything else is a failure.
+        var connectOutput = await _executeAdbCommand($"connect {endpoint}");
+        LogToTerminal(connectOutput);
+        if (!connectOutput.Contains("connected to", StringComparison.OrdinalIgnoreCase))
+        {
+            ShowFailure(connectOutput);
+            return false;
+        }
 
-        ShowStatus($"✔ {string.Format(Strings.Wireless_Status_ConnectionInitiated, $"{fullIp}:{port}")}", StatusType.Success);
+        ShowStatus($"✔ {string.Format(Strings.Wireless_Status_ConnectionInitiated, endpoint)}", StatusType.Success);
         ConnectionProgress.Value = 100;
-        
+
         return true;
     }
 
@@ -184,25 +201,84 @@ public sealed partial class WirelessConnectionDialog : Window
         var port = PairPortTextBox.Text?.Trim() ?? string.Empty;
         var code = PairCodeTextBox.Text?.Trim() ?? string.Empty;
 
-        if (!ValidateInput(lastOctet, InputType.LastOctet) || 
-            !ValidateInput(port, InputType.Port) || 
+        if (!ValidateInput(lastOctet, InputType.LastOctet) ||
+            !ValidateInput(port, InputType.Port) ||
             !ValidateInput(code, InputType.PairingCode))
             return false;
 
         var fullIp = $"{_networkPrefix}{lastOctet}";
 
         ShowStatus(Strings.Wireless_Status_Pairing, StatusType.Progress);
-        ConnectionProgress.Value = 75;
+        ConnectionProgress.Value = 60;
         LogToTerminal($"[Android 11+] {Strings.Wireless_Status_Pairing} {fullIp}:{port}...");
 
-        await _executeAdbCommand($"pair {fullIp}:{port} {code}");
-        LogToTerminal("Pairing command executed successfully");
+        var pairOutput = await _executeAdbCommand($"pair {fullIp}:{port} {code}");
+        LogToTerminal(pairOutput);
 
+        if (!pairOutput.Contains("Successfully paired", StringComparison.OrdinalIgnoreCase))
+        {
+            ShowFailure(pairOutput);
+            return false;
+        }
+
+        // Pairing alone does not connect: adb auto-connects to paired devices via mDNS.
+        // Poll the device list so the dialog only auto-closes when the device is truly online.
+        ShowStatus(Strings.Wireless_Status_Connecting, StatusType.Progress);
+        ConnectionProgress.Value = 85;
+
+        for (var attempt = 0; attempt < Config.PostPairConnectAttempts; attempt++)
+        {
+            await Task.Delay(Config.PostPairConnectPollMs);
+            var devices = await _executeAdbCommand("devices");
+            if (HasOnlineWirelessDevice(devices))
+            {
+                LogToTerminal("Device connected via wireless debugging.");
+                ShowStatus($"✔ {Strings.Wireless_Status_PairingComplete}", StatusType.Success);
+                ConnectionProgress.Value = 100;
+                SuccessMessage.Visibility = Visibility.Visible;
+                return true;
+            }
+        }
+
+        // Paired, but the auto-connect hasn't landed yet: report the pairing honestly and
+        // keep the dialog open so the user sees the next-step hint instead of a silent close.
         ShowStatus($"✔ {Strings.Wireless_Status_PairingComplete}", StatusType.Success);
         ConnectionProgress.Value = 100;
         SuccessMessage.Visibility = Visibility.Visible;
+        return false;
+    }
 
-        return true;
+    /// <summary>Online wireless entries are "ip:port&#9;device" (TCP) or "adb-SERIAL-…&#9;device" (mDNS).</summary>
+    private static bool HasOnlineWirelessDevice(string devicesOutput)
+    {
+        foreach (var line in devicesOutput.SplitLines())
+        {
+            var trimmed = line.Trim();
+            if (trimmed.StartsWith("List of", StringComparison.OrdinalIgnoreCase)) continue;
+            if (!trimmed.EndsWith("device", StringComparison.OrdinalIgnoreCase)) continue;
+            if (trimmed.Contains(':') || trimmed.StartsWith("adb-", StringComparison.Ordinal))
+                return true;
+        }
+        return false;
+    }
+
+    private static bool IsAdbFailure(string output) =>
+        output.Contains("error", StringComparison.OrdinalIgnoreCase) ||
+        output.Contains("failed", StringComparison.OrdinalIgnoreCase) ||
+        output.Contains("no devices", StringComparison.OrdinalIgnoreCase) ||
+        output.Contains("cannot", StringComparison.OrdinalIgnoreCase) ||
+        output.Contains("unable to", StringComparison.OrdinalIgnoreCase);
+
+    private void ShowFailure(string adbOutput)
+    {
+        var detail = adbOutput.Trim();
+        if (detail.Length > Config.MaxErrorDetailLength)
+            detail = detail[..(Config.MaxErrorDetailLength - 3)] + "...";
+        if (detail.Length == 0)
+            detail = "ADB";
+
+        ShowStatus($"❌ {string.Format(Strings.Wireless_Status_OperationFailed, detail)}", StatusType.Error);
+        ConnectionProgress.Value = 50;
     }
 
     private void LogToTerminal(string message) => _appendTerminal($"{message}\n");
@@ -305,14 +381,25 @@ public sealed partial class WirelessConnectionDialog : Window
     {
         try
         {
-            var firstValidAddress = NetworkInterface.GetAllNetworkInterfaces()
+            // Prefer the adapter that actually routes to the LAN: an IPv4 default gateway filters
+            // out virtual adapters (Hyper-V, VMware, VPN TAP) whose subnet would mislead the user.
+            // Among routed adapters, Wi-Fi wins — that's where the phone lives.
+            var best = NetworkInterface.GetAllNetworkInterfaces()
                 .Where(IsActiveNetworkInterface)
-                .SelectMany(ni => ni.GetIPProperties().UnicastAddresses)
-                .FirstOrDefault(IsValidIpv4Address);
+                .Select(ni => (Interface: ni, Props: ni.GetIPProperties()))
+                .Select(x => (
+                    x.Interface,
+                    HasGateway: x.Props.GatewayAddresses.Any(g =>
+                        g.Address.AddressFamily == AddressFamily.InterNetwork && !g.Address.Equals(IPAddress.Any)),
+                    Address: x.Props.UnicastAddresses.FirstOrDefault(IsValidIpv4Address)))
+                .Where(x => x.Address is not null)
+                .OrderByDescending(x => x.HasGateway)
+                .ThenByDescending(x => x.Interface.NetworkInterfaceType == NetworkInterfaceType.Wireless80211)
+                .FirstOrDefault();
 
-            if (firstValidAddress is not null)
+            if (best.Address is not null)
             {
-                var octets = firstValidAddress.Address.ToString().Split('.');
+                var octets = best.Address.Address.ToString().Split('.');
                 if (octets.Length == 4)
                 {
                     return $"{octets[0]}.{octets[1]}.{octets[2]}.";

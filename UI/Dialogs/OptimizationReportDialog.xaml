@@ -98,7 +98,7 @@
             </Border.Effect>
         </Border>
 
-        <Border Background="#FF0C1528" BorderBrush="#1AFFFFFF" BorderThickness="1" CornerRadius="16" ClipToBounds="True" Padding="20">
+        <Border Background="{StaticResource App.Brush.TitleBarBg}" BorderBrush="#1AFFFFFF" BorderThickness="1" CornerRadius="16" ClipToBounds="True" Padding="20">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -182,7 +182,7 @@
 
                                 <Border Style="{StaticResource SectionIconCircle}" Background="#1C007FFF">
                                     <TextBlock Text="&#xEBFC;" FontFamily="Segoe MDL2 Assets" FontSize="17"
-                                               Foreground="#00BFFF" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                               Foreground="{StaticResource App.Brush.DeepSkyBlue}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Border>
 
                                 <StackPanel Grid.Column="1" VerticalAlignment="Center">

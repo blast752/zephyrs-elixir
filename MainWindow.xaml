@@ -7,12 +7,10 @@
         xmlns:h="clr-namespace:ZephyrsElixir.UI.Helpers"
         mc:Ignorable="d"
         Title="Zephyr's Elixir"
-        Width="1400" Height="900"
-        MinWidth="1100" MinHeight="700"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
         ResizeMode="CanResize"
-        Background="#FF0E1A33"
+        Background="{StaticResource App.Brush.WindowBg}"
         StateChanged="OnWindowStateChanged"
         SourceInitialized="OnSourceInitialized">
 
@@ -25,21 +23,19 @@
     </Window.CommandBindings>
 
     <Window.Resources>
-        <Color x:Key="TitleBarBackgroundColor">#FF0C1528</Color>
         <Color x:Key="ButtonIconColor">#FFFFFFFF</Color>
         <Color x:Key="ButtonHoverColor">#FF2D3142</Color>
         <Color x:Key="ButtonPressColor">#FF1E2230</Color>
         <Color x:Key="CloseHoverColor">#FFE81123</Color>
         <Color x:Key="ClosePressColor">#FFC42B1C</Color>
-        <Color x:Key="WindowBorderColor">#FF1A2238</Color>
 
-        <SolidColorBrush x:Key="TitleBarBackground" Color="{StaticResource TitleBarBackgroundColor}"/>
+        <SolidColorBrush x:Key="TitleBarBackground" Color="{StaticResource App.Color.TitleBarBg}"/>
         <SolidColorBrush x:Key="ButtonIcon" Color="{StaticResource ButtonIconColor}"/>
         <SolidColorBrush x:Key="ButtonHover" Color="{StaticResource ButtonHoverColor}"/>
         <SolidColorBrush x:Key="ButtonPress" Color="{StaticResource ButtonPressColor}"/>
         <SolidColorBrush x:Key="CloseHoverBrush" Color="{StaticResource CloseHoverColor}"/>
         <SolidColorBrush x:Key="ClosePressBrush" Color="{StaticResource ClosePressColor}"/>
-        <SolidColorBrush x:Key="WindowBorder" Color="{StaticResource WindowBorderColor}"/>
+        <SolidColorBrush x:Key="WindowBorder" Color="{StaticResource App.Color.WindowBorder}"/>
 
         <ControlTemplate x:Key="WindowControlButtonTemplate" TargetType="Button">
             <Border x:Name="ButtonBorder"
@@ -82,7 +78,7 @@
     </Window.Resources>
 
     <Border x:Name="WindowBorder"
-            Background="#FF0E1A33"
+            Background="{StaticResource App.Brush.WindowBg}"
             BorderBrush="{StaticResource WindowBorder}"
             BorderThickness="1"
             CornerRadius="8">
@@ -162,7 +158,7 @@
                 </Grid.ColumnDefinitions>
 
                 <Border Grid.Column="0"
-                        Background="#FF0A1224">
+                        Background="{StaticResource App.Brush.SidebarBg}">
                     <shell:Sidebar x:Name="AppSidebar"
                                    NavigateRequested="OnSidebarNavigate"/>
                 </Border>
@@ -171,7 +167,7 @@
                            Fill="#1A1A1D"/>
 
                 <Border Grid.Column="2"
-                        Background="#FF0E1A33">
+                        Background="{StaticResource App.Brush.WindowBg}">
                     <ContentControl x:Name="ContentHost"
                                     HorizontalContentAlignment="Stretch"
                                     VerticalContentAlignment="Stretch"/>

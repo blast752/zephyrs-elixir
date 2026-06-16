@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="docBody" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#808080"/>
+      <stop offset="100%" stop-color="#606060"/>
+    </linearGradient>
+    <clipPath id="docClip">
+      <path d="M18 10 H68 L82 24 V82 Q82 90 74 90 H26 Q18 90 18 82 V18 Q18 10 26 10 Z"/>
+    </clipPath>
+  </defs>
+  <path d="M18 18 Q18 10 26 10 H68 L82 24 V82 Q82 90 74 90 H26 Q18 90 18 82 Z" fill="url(#docBody)"/>
+  <path d="M68 10 L82 24 H72 Q68 24 68 20 Z" fill="#484848"/>
+  <rect x="24" y="80" width="38" height="3" rx="2" ry="2" fill="white" opacity="0.50"/>
+  <rect x="24" y="70" width="44" height="3" rx="2" ry="2" fill="white" opacity="0.50"/>
+  <rect x="24" y="60" width="35" height="3" rx="2" ry="2" fill="white" opacity="0.50"/>
+  <rect x="22" y="14" width="30" height="18" rx="6" ry="6" fill="white" opacity="0.12" clip-path="url(#docClip)"/>
+</svg>

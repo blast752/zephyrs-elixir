@@ -1,5 +1,6 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
                     xmlns:helpers="clr-namespace:ZephyrsElixir.UI.Helpers"
                     xmlns:core="clr-namespace:ZephyrsElixir.Core">
 
@@ -13,6 +14,18 @@
     <Color x:Key="App.Color.Gold">#FFD000</Color>
     <Color x:Key="App.Color.DeepSkyBlue">#00BFFF</Color>
     <Color x:Key="App.Color.Crimson">#FF6B6B</Color>
+    <Color x:Key="App.Color.Steel">#B0B8C8</Color>
+    <Color x:Key="App.Color.LightBlue">#C8DCFF</Color>
+    <Color x:Key="App.Color.WindowBg">#FF0E1A33</Color>
+    <Color x:Key="App.Color.TitleBarBg">#FF0C1528</Color>
+    <Color x:Key="App.Color.SidebarBg">#FF0A1224</Color>
+    <Color x:Key="App.Color.WindowBorder">#FF1A2238</Color>
+
+    <SolidColorBrush x:Key="App.Brush.WindowBg" Color="{StaticResource App.Color.WindowBg}"/>
+    <SolidColorBrush x:Key="App.Brush.TitleBarBg" Color="{StaticResource App.Color.TitleBarBg}"/>
+    <SolidColorBrush x:Key="App.Brush.SidebarBg" Color="{StaticResource App.Color.SidebarBg}"/>
+    <SolidColorBrush x:Key="App.Brush.WindowBorder" Color="{StaticResource App.Color.WindowBorder}"/>
+    <SolidColorBrush x:Key="App.Brush.SoftTile" Color="#1AFFFFFF"/>
 
 <SolidColorBrush x:Key="App.Brush.Battery.Low" Color="#D2042D"/>
     <SolidColorBrush x:Key="App.Brush.Battery.Medium" Color="#F5A623"/>
@@ -26,6 +39,8 @@
     <SolidColorBrush x:Key="App.Brush.CheckedForeground" Color="{StaticResource App.Color.White}"/>
     <SolidColorBrush x:Key="App.Brush.NavButtonForeground" Color="{StaticResource App.Color.White80}"/>
     <SolidColorBrush x:Key="App.Brush.DeepSkyBlue" Color="{StaticResource App.Color.DeepSkyBlue}"/>
+    <SolidColorBrush x:Key="App.Brush.Steel" Color="{StaticResource App.Color.Steel}"/>
+    <SolidColorBrush x:Key="App.Brush.LightBlue" Color="{StaticResource App.Color.LightBlue}"/>
 
 <SolidColorBrush x:Key="App.Brush.Idle" Color="{StaticResource App.Color.White20}"/>
     <SolidColorBrush x:Key="App.Brush.Destructive.Idle" Color="#15FF2A2A"/>
@@ -36,6 +51,11 @@
 <LinearGradientBrush x:Key="App.Brush.IconCircle" StartPoint="0,0" EndPoint="1,1">
         <GradientStop Color="{StaticResource App.Color.Blue300}" Offset="0"/>
         <GradientStop Color="{StaticResource App.Color.Blue500}" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="FileManager.Brush.Folder" StartPoint="0,0" EndPoint="1,1" po:Freeze="True">
+        <GradientStop Color="#FFC862" Offset="0"/>
+        <GradientStop Color="#E69A22" Offset="1"/>
     </LinearGradientBrush>
 
     <LinearGradientBrush x:Key="App.Brush.Hover" StartPoint="0,0" EndPoint="1,1">
@@ -196,10 +216,10 @@
 
 <ControlTemplate x:Key="App.Template.GlassButton" TargetType="Button">
         <Grid>
-            <Border x:Name="container" 
-                    Background="{TemplateBinding Background}" 
-                    CornerRadius="16" 
-                    BorderThickness="2" 
+            <Border x:Name="container"
+                    Background="{TemplateBinding Background}"
+                    CornerRadius="16"
+                    BorderThickness="2"
                     BorderBrush="#00FFFFFF">
                 <Grid Margin="12,8">
                     <Grid.ColumnDefinitions>
@@ -207,21 +227,21 @@
                         <ColumnDefinition Width="10"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    
-                    <helpers:GlowIcon x:Name="iconCircle" 
-                            Size="36" CornerRadius="18" 
+
+                    <helpers:GlowIcon x:Name="iconCircle"
+                            Size="36" CornerRadius="18"
                             Background="{TemplateBinding BorderBrush}">
-                        <TextBlock x:Name="icon" 
-                                   Text="{TemplateBinding Tag}" 
-                                   Style="{StaticResource App.Style.Glyph}" 
-                                   HorizontalAlignment="Center" 
+                        <TextBlock x:Name="icon"
+                                   Text="{TemplateBinding Tag}"
+                                   Style="{StaticResource App.Style.Glyph}"
+                                   HorizontalAlignment="Center"
                                    VerticalAlignment="Center"/>
                     </helpers:GlowIcon>
-                    
-                    <TextBlock Grid.Column="2" 
-                               Text="{TemplateBinding Content}" 
-                               FontSize="15" FontWeight="SemiBold" 
-                               VerticalAlignment="Center" 
+
+                    <TextBlock Grid.Column="2"
+                               Text="{TemplateBinding Content}"
+                               FontSize="15" FontWeight="SemiBold"
+                               VerticalAlignment="Center"
                                Foreground="{TemplateBinding Foreground}"/>
                 </Grid>
             </Border>
@@ -233,6 +253,65 @@
             </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter TargetName="iconCircle" Property="GlowEffect" Value="{StaticResource App.Effect.IconCircleHover}"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter TargetName="container" Property="Opacity" Value="0.9"/>
+                <Setter TargetName="container" Property="RenderTransform">
+                    <Setter.Value>
+                        <ScaleTransform ScaleX="0.98" ScaleY="0.98" CenterX="100" CenterY="27"/>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <!-- Destructive variant: keeps a "ghost" Border behind the content so the DropShadowEffect
+         on hover never rasterises the button text (preserves ClearType on the label). -->
+    <ControlTemplate x:Key="App.Template.GlassButton.Destructive" TargetType="Button">
+        <Grid>
+            <Border x:Name="hoverShadow"
+                    CornerRadius="16"
+                    Background="{TemplateBinding Background}"
+                    Opacity="0"/>
+            <Border x:Name="container"
+                    Background="{TemplateBinding Background}"
+                    CornerRadius="16"
+                    BorderThickness="2"
+                    BorderBrush="#00FFFFFF">
+                <Grid Margin="12,8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <helpers:GlowIcon x:Name="iconCircle"
+                            Size="36" CornerRadius="18"
+                            Background="{TemplateBinding BorderBrush}">
+                        <TextBlock x:Name="icon"
+                                   Text="{TemplateBinding Tag}"
+                                   Style="{StaticResource App.Style.Glyph}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                    </helpers:GlowIcon>
+
+                    <TextBlock Grid.Column="2"
+                               Text="{TemplateBinding Content}"
+                               FontSize="15" FontWeight="SemiBold"
+                               VerticalAlignment="Center"
+                               Foreground="{TemplateBinding Foreground}"/>
+                </Grid>
+            </Border>
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter TargetName="container" Property="Opacity" Value="0.6"/>
+                <Setter TargetName="icon" Property="Foreground" Value="#AAFFFFFF"/>
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="iconCircle" Property="GlowEffect" Value="{StaticResource App.Effect.IconCircleHover}"/>
+                <Setter TargetName="hoverShadow" Property="Opacity" Value="1"/>
+                <Setter TargetName="hoverShadow" Property="Effect" Value="{StaticResource App.Effect.DestructiveHover}"/>
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
                 <Setter TargetName="container" Property="Opacity" Value="0.9"/>
@@ -269,11 +348,11 @@
         <Setter Property="Foreground" Value="#FFC0C0"/>
         <Setter Property="Background" Value="{StaticResource App.Brush.Destructive.Idle}"/>
         <Setter Property="BorderBrush" Value="{StaticResource App.Brush.Destructive.IconCircle}"/>
+        <Setter Property="Template" Value="{StaticResource App.Template.GlassButton.Destructive}"/>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Background" Value="{StaticResource App.Brush.Destructive.Hover}"/>
                 <Setter Property="Foreground" Value="White"/>
-                <Setter Property="Effect" Value="{StaticResource App.Effect.DestructiveHover}"/>
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
                 <Setter Property="Background" Value="{StaticResource App.Brush.Destructive.Pressed}"/>
@@ -381,7 +460,7 @@
 <Style x:Key="App.Style.Button.Link" TargetType="Button">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="Foreground" Value="#C8DCFF"/>
+        <Setter Property="Foreground" Value="{StaticResource App.Brush.LightBlue}"/>
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="Padding" Value="5,0"/>
         <Setter Property="Cursor" Value="Hand"/>
@@ -539,7 +618,7 @@
     </Style>
 
 <Style x:Key="App.Style.SegmentedRadioButton" TargetType="RadioButton">
-        <Setter Property="Foreground" Value="#B0B8C8"/>
+        <Setter Property="Foreground" Value="{StaticResource App.Brush.Steel}"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="FontSize" Value="14"/>
@@ -1153,6 +1232,21 @@
         </Setter>
     </Style>
 
+    <!-- Reusable "glass tile" for settings rows / advanced page cards. Replaces 9+ inline duplicates. -->
+    <Style x:Key="App.Style.SoftTile" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource App.Brush.SoftTile}"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Padding" Value="20"/>
+        <Setter Property="Margin" Value="0,0,0,15"/>
+    </Style>
+
+    <Style x:Key="App.Style.SoftTile.Destructive" TargetType="Border" BasedOn="{StaticResource App.Style.SoftTile}">
+        <Setter Property="Background" Value="#2A3D0000"/>
+        <Setter Property="BorderBrush" Value="#6AEF4444"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Margin" Value="0"/>
+    </Style>
+
 <Style x:Key="App.Style.StatusTag.Info" TargetType="Border">
         <Setter Property="Padding" Value="10,6"/>
         <Setter Property="CornerRadius" Value="14"/>
@@ -1198,7 +1292,7 @@
         </Setter>
     </Style>
 
-<Style x:Key="App.Style.OverlayCard" TargetType="{x:Type helpers:ShadowCard}">
+<Style x:Key="App.Style.OverlayCard" TargetType="{x:Type helpers:ShadowCard}" BasedOn="{StaticResource {x:Type helpers:ShadowCard}}">
         <Setter Property="Background" Value="#DC101828"/>
         <Setter Property="BorderBrush" Value="{StaticResource App.Brush.Glass.Border}"/>
         <Setter Property="BorderThickness" Value="1"/>
@@ -1455,8 +1549,8 @@
                                                Foreground="White"
                                                VerticalAlignment="Center"/>
                                     
-                                    <TextBlock Text="{TemplateBinding Subtitle}" 
-                                               Foreground="#B0B8C8" 
+                                    <TextBlock Text="{TemplateBinding Subtitle}"
+                                               Foreground="{StaticResource App.Brush.Steel}"
                                                FontSize="13" 
                                                Margin="0,4,0,0"
                                                TextWrapping="Wrap">

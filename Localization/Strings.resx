@@ -468,6 +468,12 @@
   <data name="Tools_ApkInstaller_Description" xml:space="preserve">
     <value>Install APK, XAPK, APKS &amp; APKM files</value>
   </data>
+  <data name="Tools_PerformanceMonitor_Title" xml:space="preserve">
+    <value>Performance Monitor</value>
+  </data>
+  <data name="Tools_PerformanceMonitor_Description" xml:space="preserve">
+    <value>Real-time CPU, RAM, network &amp; battery</value>
+  </data>
   <data name="Tools_ScreenMirror_Title" xml:space="preserve">
     <value>Screen Mirror</value>
   </data>
@@ -908,6 +914,11 @@
   <data name="Pro_Required_ScreenMirror" xml:space="preserve">
     <value>Screen Mirror is available with Pro.</value>
   </data>
+  <data name="Pro_Required_PerformanceMonitor" xml:space="preserve">
+    <value>Live Performance Monitor is available with Pro.
+
+Track CPU, RAM, network, battery temperature and FPS in real time, with full session recording and CSV export.</value>
+  </data>
   <data name="Pro_Required_MultiApk" xml:space="preserve">
     <value>Batch APK installation is a Pro feature.
 
@@ -930,8 +941,11 @@ Free plan allows one APK at a time.</value>
   <data name="Update_ReleaseNotes" xml:space="preserve">
     <value>Release notes:</value>
   </data>
-  <data name="Update_Button_Skip" xml:space="preserve">
-    <value>Skip</value>
+  <data name="Update_RequiredNotice" xml:space="preserve">
+    <value>This update is required. The application cannot be used until it is installed.</value>
+  </data>
+  <data name="Update_Button_Exit" xml:space="preserve">
+    <value>Exit</value>
   </data>
   <data name="Update_Button_UpdateNow" xml:space="preserve">
     <value>Update now</value>
@@ -2993,73 +3007,673 @@ Free plan allows one APK at a time.</value>
     <value>New</value>
   </data>
   <data name="Info_Changelog_New_1" xml:space="preserve">
-    <value>Brand new Help Center with quick start guide, FAQ, and step-by-step tutorials.</value>
+    <value>Live Performance Monitor (Pro): watch CPU, RAM, GPU, network, storage I/O, battery and FPS update in real time on smooth live graphs, with a live ranking of the apps using the most memory. Record a full session and export it to CSV for deeper analysis.</value>
   </data>
   <data name="Info_Changelog_New_2" xml:space="preserve">
-    <value>Integrated screen mirroring (Pro) with recording, screenshot capture, and physical control of the device.</value>
+    <value>Built-in File Manager: browse your device's storage like a desktop explorer — copy, move, rename, delete and edit permissions, with drag &amp; drop transfers in both directions, instant image and text preview, and a visual breakdown of where your space goes.</value>
   </data>
   <data name="Info_Changelog_New_3" xml:space="preserve">
-    <value>Open core architecture: the Pro module is now loaded as a separate, signed plugin.</value>
-  </data>
-  <data name="Info_Changelog_New_4" xml:space="preserve">
-    <value>Customizable animations with adjustable speed and the option to disable them entirely.</value>
-  </data>
-  <data name="Info_Changelog_New_5" xml:space="preserve">
-    <value>Wireless ADB connection wizard with automatic pairing on supported devices.</value>
-  </data>
-  <data name="Info_Changelog_New_6" xml:space="preserve">
-    <value>Extended power menu: reboot to recovery, bootloader, fastboot, and sideload.</value>
-  </data>
-  <data name="Info_Changelog_New_7" xml:space="preserve">
-    <value>AI-assisted package analysis to spot unwanted apps in just a few seconds.</value>
-  </data>
-  <data name="Info_Changelog_New_8" xml:space="preserve">
-    <value>Multi-APK and split bundle install (Pro) with signature verification.</value>
-  </data>
-  <data name="Info_Changelog_New_9" xml:space="preserve">
-    <value>Configurable DNS, captive portal, and Google Core Services controls.</value>
-  </data>
-  <data name="Info_Changelog_New_10" xml:space="preserve">
-    <value>Optimization report at the end of every session, with detailed action history.</value>
-  </data>
-  <data name="Info_Changelog_New_11" xml:space="preserve">
-    <value>Full Italian and English localization, ready to switch on the fly.</value>
-  </data>
-  <data name="Info_Changelog_New_12" xml:space="preserve">
-    <value>Modernized interface with rounded corners, glow effects, and smoother transitions.</value>
+    <value>Interactive ADB Shell: a true multi-tab terminal with command history, smart autocomplete, syntax highlighting, reusable snippets and one-click session export — the full power of ADB without ever leaving the app.</value>
   </data>
   <data name="Info_Changelog_Updated" xml:space="preserve">
     <value>Improved</value>
   </data>
   <data name="Info_Changelog_Updated_1" xml:space="preserve">
-    <value>Faster device detection and more reliable ADB communication.</value>
+    <value>Wireless connection (ADB over Wi-Fi) reworked from the ground up: honest, verified results at every step, automatic connection right after pairing, and smarter network detection — cable-free control that finally feels just like USB.</value>
   </data>
   <data name="Info_Changelog_Updated_2" xml:space="preserve">
-    <value>Reduced memory usage and faster startup time.</value>
+    <value>Fixed a range of bugs across the app for greater stability and reliability.</value>
   </data>
   <data name="Info_Changelog_Updated_3" xml:space="preserve">
-    <value>Refined the debloat list with cleaner package descriptions and more accurate categories.</value>
-  </data>
-  <data name="Info_Changelog_Updated_4" xml:space="preserve">
-    <value>Smoother optimization progress with real-time status and clearer log output.</value>
-  </data>
-  <data name="Info_Changelog_Updated_5" xml:space="preserve">
-    <value>Tooltips, labels, and dialog wording revised throughout the interface for clarity.</value>
-  </data>
-  <data name="Info_Changelog_Updated_6" xml:space="preserve">
-    <value>Hardened error handling: fewer unexpected crashes and more informative messages.</value>
-  </data>
-  <data name="Info_Changelog_Updated_7" xml:space="preserve">
-    <value>Streamlined Settings page with grouped options and a clearer reset flow.</value>
-  </data>
-  <data name="Info_Changelog_Updated_8" xml:space="preserve">
-    <value>Updated bundled scrcpy and ADB binaries to their latest stable releases.</value>
+    <value>Optimization and under-the-hood refinements: leaner device polling, faster routines and a more robust core for a smoother overall experience.</value>
   </data>
   <data name="Info_Changelog_Removed" xml:space="preserve">
     <value>Removed</value>
   </data>
   <data name="Info_Changelog_Removed_1" xml:space="preserve">
-    <value>Legacy debloat history format and a number of unused legacy resources.</value>
+    <value>Cleaned out dead and obsolete code for a lighter, faster and more maintainable application.</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- FILE MANAGER                                                       -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+
+  <data name="Tools_FileManager_Title" xml:space="preserve">
+    <value>File Manager</value>
+  </data>
+  <data name="Tools_FileManager_Description" xml:space="preserve">
+    <value>Browse, push &amp; pull device files</value>
+  </data>
+  <data name="Tools_AdbConsole_Title" xml:space="preserve">
+    <value>ADB Shell</value>
+  </data>
+  <data name="Tools_AdbConsole_Description" xml:space="preserve">
+    <value>Interactive multi-tab ADB shell console</value>
+  </data>
+  <data name="FileManager_Header_Title" xml:space="preserve">
+    <value>File Manager</value>
+  </data>
+  <data name="FileManager_Button_Back" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="FileManager_Button_Home" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="FileManager_Button_Up" xml:space="preserve">
+    <value>Up</value>
+  </data>
+  <data name="FileManager_Button_Refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="FileManager_Button_Go" xml:space="preserve">
+    <value>Go</value>
+  </data>
+  <data name="FileManager_Button_NewFolder" xml:space="preserve">
+    <value>New folder</value>
+  </data>
+  <data name="FileManager_Button_Push" xml:space="preserve">
+    <value>Push</value>
+  </data>
+  <data name="FileManager_Button_Pull" xml:space="preserve">
+    <value>Pull</value>
+  </data>
+  <data name="FileManager_Button_Cut" xml:space="preserve">
+    <value>Cut</value>
+  </data>
+  <data name="FileManager_Button_Copy" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="FileManager_Button_Paste" xml:space="preserve">
+    <value>Paste</value>
+  </data>
+  <data name="FileManager_Button_Rename" xml:space="preserve">
+    <value>Rename</value>
+  </data>
+  <data name="FileManager_Button_Chmod" xml:space="preserve">
+    <value>Chmod</value>
+  </data>
+  <data name="FileManager_Button_Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="FileManager_Menu_Open" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="FileManager_Menu_RenameEllipsis" xml:space="preserve">
+    <value>Rename...</value>
+  </data>
+  <data name="FileManager_Menu_ChmodEllipsis" xml:space="preserve">
+    <value>Change permissions...</value>
+  </data>
+  <data name="FileManager_Menu_PullEllipsis" xml:space="preserve">
+    <value>Pull to folder...</value>
+  </data>
+  <data name="FileManager_Menu_Properties" xml:space="preserve">
+    <value>Properties</value>
+  </data>
+  <data name="FileManager_Section_QuickAccess" xml:space="preserve">
+    <value>QUICK ACCESS</value>
+  </data>
+  <data name="FileManager_Section_Locations" xml:space="preserve">
+    <value>LOCATIONS</value>
+  </data>
+  <data name="FileManager_Section_Preview" xml:space="preserve">
+    <value>PREVIEW</value>
+  </data>
+  <data name="FileManager_Column_Name" xml:space="preserve">
+    <value>NAME</value>
+  </data>
+  <data name="FileManager_Column_Size" xml:space="preserve">
+    <value>SIZE</value>
+  </data>
+  <data name="FileManager_Column_Permissions" xml:space="preserve">
+    <value>PERMISSIONS</value>
+  </data>
+  <data name="FileManager_Column_Owner" xml:space="preserve">
+    <value>OWNER</value>
+  </data>
+  <data name="FileManager_Column_Modified" xml:space="preserve">
+    <value>MODIFIED</value>
+  </data>
+  <data name="FileManager_Bookmark_Downloads" xml:space="preserve">
+    <value>Downloads</value>
+  </data>
+  <data name="FileManager_Bookmark_Camera" xml:space="preserve">
+    <value>Camera</value>
+  </data>
+  <data name="FileManager_Bookmark_WhatsApp" xml:space="preserve">
+    <value>WhatsApp Media</value>
+  </data>
+  <data name="FileManager_Bookmark_Temp" xml:space="preserve">
+    <value>Temp (root)</value>
+  </data>
+  <data name="FileManager_Tree_InternalStorage" xml:space="preserve">
+    <value>Internal Storage</value>
+  </data>
+  <data name="FileManager_Tree_FilesystemRoot" xml:space="preserve">
+    <value>Filesystem Root</value>
+  </data>
+  <data name="FileManager_Tree_Temp" xml:space="preserve">
+    <value>Temp</value>
+  </data>
+  <data name="FileManager_Tree_Loading" xml:space="preserve">
+    <value>Loading…</value>
+  </data>
+  <data name="FileManager_PathBar_Tooltip" xml:space="preserve">
+    <value>Enter a path and press Enter to navigate</value>
+  </data>
+  <data name="FileManager_Tooltip_CancelAll" xml:space="preserve">
+    <value>Cancel all</value>
+  </data>
+  <data name="FileManager_Tooltip_DeviceSerial" xml:space="preserve">
+    <value>Connected device serial</value>
+  </data>
+  <data name="FileManager_Tooltip_NameColumn" xml:space="preserve">
+    <value>Full file name</value>
+  </data>
+  <data name="FileManager_Tooltip_OwnerColumn" xml:space="preserve">
+    <value>Owner / group</value>
+  </data>
+  <data name="FileManager_Tooltip_PreviewName" xml:space="preserve">
+    <value>Previewed file</value>
+  </data>
+  <data name="FileManager_Connection_None" xml:space="preserve">
+    <value>No device connected</value>
+  </data>
+  <data name="FileManager_Connection_Generic" xml:space="preserve">
+    <value>Device connected</value>
+  </data>
+  <data name="FileManager_Status_Waiting" xml:space="preserve">
+    <value>Waiting for device…</value>
+  </data>
+  <data name="FileManager_Status_NoDevice" xml:space="preserve">
+    <value>No device connected. Connect your device via ADB to browse files.</value>
+  </data>
+  <data name="FileManager_Status_Loading" xml:space="preserve">
+    <value>Loading…</value>
+  </data>
+  <data name="FileManager_Status_Empty" xml:space="preserve">
+    <value>This folder is empty.</value>
+  </data>
+  <data name="FileManager_Status_AdbError" xml:space="preserve">
+    <value>ADB device error: {0}</value>
+  </data>
+  <data name="FileManager_Status_Error" xml:space="preserve">
+    <value>Error: {0}</value>
+  </data>
+  <data name="FileManager_Prompt_NewFolder_Title" xml:space="preserve">
+    <value>New folder</value>
+  </data>
+  <data name="FileManager_Prompt_NewFolder_Label" xml:space="preserve">
+    <value>Folder name</value>
+  </data>
+  <data name="FileManager_Prompt_NewFolder_Default" xml:space="preserve">
+    <value>New folder</value>
+  </data>
+  <data name="FileManager_Prompt_Rename_Title" xml:space="preserve">
+    <value>Rename</value>
+  </data>
+  <data name="FileManager_Prompt_Rename_Label" xml:space="preserve">
+    <value>New name</value>
+  </data>
+  <data name="FileManager_Prompt_Chmod_Title" xml:space="preserve">
+    <value>Change permissions</value>
+  </data>
+  <data name="FileManager_Prompt_Chmod_LabelSingle" xml:space="preserve">
+    <value>New mode for "{0}" (e.g. 755, 0644)</value>
+  </data>
+  <data name="FileManager_Prompt_Chmod_LabelMulti" xml:space="preserve">
+    <value>New mode for {0} items (e.g. 755, 0644)</value>
+  </data>
+  <data name="FileManager_Prompt_Chmod_FormatsHint" xml:space="preserve">
+    <value>Accepted: octal (755), symbolic (rwxr-xr-x), or description (Owner: read/write, Group: read, Others: read).</value>
+  </data>
+  <data name="FileManager_Dialog_SelectPush" xml:space="preserve">
+    <value>Select files to push</value>
+  </data>
+  <data name="FileManager_Dialog_SelectDestination" xml:space="preserve">
+    <value>Select destination folder</value>
+  </data>
+  <data name="FileManager_Confirm_Delete_Single" xml:space="preserve">
+    <value>Delete "{0}"? This action cannot be undone.</value>
+  </data>
+  <data name="FileManager_Confirm_Delete_Multi" xml:space="preserve">
+    <value>Delete {0} items? This action cannot be undone.</value>
+  </data>
+  <data name="FileManager_Confirm_Delete_Title" xml:space="preserve">
+    <value>Delete files</value>
+  </data>
+  <data name="FileManager_Error_CreateFolder" xml:space="preserve">
+    <value>Create folder failed</value>
+  </data>
+  <data name="FileManager_Error_Rename" xml:space="preserve">
+    <value>Rename failed</value>
+  </data>
+  <data name="FileManager_Error_Chmod" xml:space="preserve">
+    <value>chmod completed with errors</value>
+  </data>
+  <data name="FileManager_Error_Delete" xml:space="preserve">
+    <value>Delete completed with errors</value>
+  </data>
+  <data name="FileManager_Error_Paste" xml:space="preserve">
+    <value>Paste completed with errors</value>
+  </data>
+  <data name="FileManager_Validate_NameEmpty" xml:space="preserve">
+    <value>Name cannot be empty.</value>
+  </data>
+  <data name="FileManager_Validate_NameSlash" xml:space="preserve">
+    <value>Name cannot contain '/'.</value>
+  </data>
+  <data name="FileManager_Validate_NameReserved" xml:space="preserve">
+    <value>Reserved name.</value>
+  </data>
+  <data name="FileManager_Validate_NameTooLong" xml:space="preserve">
+    <value>Name is too long.</value>
+  </data>
+  <data name="FileManager_Validate_ModeEmpty" xml:space="preserve">
+    <value>Mode cannot be empty.</value>
+  </data>
+  <data name="FileManager_Validate_ModeFormat" xml:space="preserve">
+    <value>Use 3 or 4 octal digits (e.g. 755, 0644).</value>
+  </data>
+  <data name="FileManager_Validate_ModeUnrecognised" xml:space="preserve">
+    <value>Mode not recognised. Use octal, symbolic, or descriptive form.</value>
+  </data>
+  <data name="FileManager_Validate_NoDevice_Message" xml:space="preserve">
+    <value>Connect your Android device via ADB before performing this action.</value>
+  </data>
+  <data name="FileManager_Validate_NoDevice_Title" xml:space="preserve">
+    <value>No device</value>
+  </data>
+  <data name="FileManager_DragOut_NoFolders" xml:space="preserve">
+    <value>Drag-out doesn't support folders. Use right-click → Pull to folder.</value>
+  </data>
+  <data name="FileManager_DragOut_TooLarge" xml:space="preserve">
+    <value>Selection too large for drag-out ({0}). Use right-click → Pull to folder.</value>
+  </data>
+  <data name="FileManager_DragHover_Title" xml:space="preserve">
+    <value>Drop files to push</value>
+  </data>
+  <data name="FileManager_Status_Items" xml:space="preserve">
+    <value>{0} item(s)</value>
+  </data>
+  <data name="FileManager_Status_Selected" xml:space="preserve">
+    <value>{0} selected ({1})</value>
+  </data>
+  <data name="FileManager_Clipboard_Cut" xml:space="preserve">
+    <value>Cut: {0} item(s)</value>
+  </data>
+  <data name="FileManager_Clipboard_Copy" xml:space="preserve">
+    <value>Copied: {0} item(s)</value>
+  </data>
+  <data name="FileManager_Preview_NotAvailable" xml:space="preserve">
+    <value>Preview is not available for this file type.</value>
+  </data>
+  <data name="FileManager_Preview_TooLarge" xml:space="preserve">
+    <value>File too large to preview ({0}).</value>
+  </data>
+  <data name="FileManager_Preview_FetchFailed" xml:space="preserve">
+    <value>Failed to fetch file for preview.</value>
+  </data>
+  <data name="FileManager_Preview_Error" xml:space="preserve">
+    <value>Preview error: {0}</value>
+  </data>
+  <data name="FileManager_Preview_TextTruncated" xml:space="preserve">
+    <value>[…truncated, file is larger than {0}]</value>
+  </data>
+  <data name="FileManager_Transfer_Count" xml:space="preserve">
+    <value>{0} transfer(s)</value>
+  </data>
+  <data name="FileManager_Properties_Title" xml:space="preserve">
+    <value>Properties</value>
+  </data>
+  <data name="FileManager_Properties_TypeDirectory" xml:space="preserve">
+    <value>Directory</value>
+  </data>
+  <data name="FileManager_Properties_TypeSymlink" xml:space="preserve">
+    <value>Symlink</value>
+  </data>
+  <data name="FileManager_Properties_TypeFile" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="FileManager_Perm_Header_Separator" xml:space="preserve">
+    <value>  ·  </value>
+  </data>
+  <data name="FileManager_Perm_Mode_Numeric_Hint" xml:space="preserve">
+    <value>755</value>
+  </data>
+  <data name="FileManager_Perm_Mode_Simplified_Hint" xml:space="preserve">
+    <value>Aa</value>
+  </data>
+  <data name="FileManager_Perm_Mode_Symbolic_Hint" xml:space="preserve">
+    <value>rwx</value>
+  </data>
+  <data name="FileManager_Properties_Name" xml:space="preserve">
+    <value>Name:</value>
+  </data>
+  <data name="FileManager_Properties_Path" xml:space="preserve">
+    <value>Path:</value>
+  </data>
+  <data name="FileManager_Properties_Type" xml:space="preserve">
+    <value>Type:</value>
+  </data>
+  <data name="FileManager_Properties_Size" xml:space="preserve">
+    <value>Size:</value>
+  </data>
+  <data name="FileManager_Properties_Permissions" xml:space="preserve">
+    <value>Permissions:</value>
+  </data>
+  <data name="FileManager_Properties_OwnerGroup" xml:space="preserve">
+    <value>Owner / Group:</value>
+  </data>
+  <data name="FileManager_Properties_Modified" xml:space="preserve">
+    <value>Modified:</value>
+  </data>
+  <data name="FileManager_Properties_LinkTarget" xml:space="preserve">
+    <value>Link target:</value>
+  </data>
+  <data name="FileManager_Properties_BytesUnit" xml:space="preserve">
+    <value>bytes</value>
+  </data>
+  <data name="FileManager_Common_Dash" xml:space="preserve">
+    <value>—</value>
+  </data>
+  <data name="FileManager_Status_Separator" xml:space="preserve">
+    <value>  ·  </value>
+  </data>
+  <data name="FileManager_Open_Confirm_Title" xml:space="preserve">
+    <value>Open file</value>
+  </data>
+  <data name="FileManager_Open_Confirm_LargeFile" xml:space="preserve">
+    <value>"{0}" is {1}. Pull and open with the default Windows application?</value>
+  </data>
+  <data name="FileManager_Open_Status_Preparing" xml:space="preserve">
+    <value>Preparing "{0}"…</value>
+  </data>
+  <data name="FileManager_Open_Failed_Title" xml:space="preserve">
+    <value>Open failed</value>
+  </data>
+  <data name="FileManager_Open_Failed_Pull" xml:space="preserve">
+    <value>Could not pull the file from the device.</value>
+  </data>
+  <data name="FileManager_Open_Failed_NoApp" xml:space="preserve">
+    <value>No application is associated with this file type.</value>
+  </data>
+  <data name="FileManager_Open_Failed_Generic" xml:space="preserve">
+    <value>Could not open the file: {0}</value>
+  </data>
+  <data name="FileManager_DragOut_PullFailed" xml:space="preserve">
+    <value>Drag-out failed: no files could be fetched from the device.</value>
+  </data>
+  <data name="FileManager_Permissions_Tooltip" xml:space="preserve">
+    <value>Cycle permission display mode</value>
+  </data>
+  <data name="FileManager_DragHover_Destination_Format" xml:space="preserve">
+    <value>→ {0}</value>
+  </data>
+  <data name="FileManager_Perm_None" xml:space="preserve">
+    <value>has no access</value>
+  </data>
+  <data name="FileManager_Perm_Rwx" xml:space="preserve">
+    <value>can read, write, and execute</value>
+  </data>
+  <data name="FileManager_Perm_Rw" xml:space="preserve">
+    <value>can read and write</value>
+  </data>
+  <data name="FileManager_Perm_Rx" xml:space="preserve">
+    <value>can read and execute</value>
+  </data>
+  <data name="FileManager_Perm_R" xml:space="preserve">
+    <value>can only read</value>
+  </data>
+  <data name="FileManager_Perm_Wx" xml:space="preserve">
+    <value>can write and execute</value>
+  </data>
+  <data name="FileManager_Perm_W" xml:space="preserve">
+    <value>can only write</value>
+  </data>
+  <data name="FileManager_Perm_X" xml:space="preserve">
+    <value>can only execute</value>
+  </data>
+  <data name="FileManager_Perm_Phrase_Everyone" xml:space="preserve">
+    <value>Everyone {0}.</value>
+  </data>
+  <data name="FileManager_Perm_Phrase_OwnerOnly" xml:space="preserve">
+    <value>Only the owner {0}.</value>
+  </data>
+  <data name="FileManager_Perm_Phrase_OwnerVsRest" xml:space="preserve">
+    <value>Owner {0}; group and others {1}.</value>
+  </data>
+  <data name="FileManager_Perm_Phrase_Full" xml:space="preserve">
+    <value>Owner {0}; group {1}; others {2}.</value>
+  </data>
+  <data name="FileManager_Transfer_Direction_Push" xml:space="preserve">
+    <value>Push</value>
+  </data>
+  <data name="FileManager_Transfer_Direction_Pull" xml:space="preserve">
+    <value>Pull</value>
+  </data>
+  <data name="FileManager_Transfer_Status_Pending" xml:space="preserve">
+    <value>Pending</value>
+  </data>
+  <data name="FileManager_Transfer_Status_Queued" xml:space="preserve">
+    <value>Queued</value>
+  </data>
+  <data name="FileManager_Transfer_Status_Done" xml:space="preserve">
+    <value>Done</value>
+  </data>
+  <data name="FileManager_Transfer_Status_Failed" xml:space="preserve">
+    <value>Failed</value>
+  </data>
+  <data name="FileManager_Transfer_Status_Canceled" xml:space="preserve">
+    <value>Canceled</value>
+  </data>
+  <data name="FileManager_Storage_Title" xml:space="preserve">
+    <value>Internal Storage</value>
+  </data>
+  <data name="FileManager_Storage_TotalUsed" xml:space="preserve">
+    <value>{0} used of {1}</value>
+  </data>
+  <data name="FileManager_Storage_Apps" xml:space="preserve">
+    <value>Apps</value>
+  </data>
+  <data name="FileManager_Storage_Media" xml:space="preserve">
+    <value>Media</value>
+  </data>
+  <data name="FileManager_Storage_Downloads" xml:space="preserve">
+    <value>Downloads</value>
+  </data>
+  <data name="FileManager_Storage_System" xml:space="preserve">
+    <value>System</value>
+  </data>
+  <data name="FileManager_Storage_Other" xml:space="preserve">
+    <value>Other</value>
+  </data>
+  <data name="FileManager_Storage_Free" xml:space="preserve">
+    <value>Free</value>
+  </data>
+  <data name="FileManager_Storage_Loading" xml:space="preserve">
+    <value>Reading storage…</value>
+  </data>
+  <data name="FileManager_Storage_Unavailable" xml:space="preserve">
+    <value>Storage info unavailable</value>
+  </data>
+  <data name="FileManager_Storage_Probe_Failed" xml:space="preserve">
+    <value>Storage details unavailable on this device.</value>
+  </data>
+  <data name="FileManager_Status_DeviceSerialFormat" xml:space="preserve">
+    <value>Serial: {0}</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- PERFORMANCE MONITOR (Pro)                                         -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+
+  <data name="Perf_Header" xml:space="preserve">
+    <value>Live Performance Monitor</value>
+  </data>
+  <data name="Perf_Subtitle" xml:space="preserve">
+    <value>Real-time CPU, RAM, network and battery of the connected device.</value>
+  </data>
+
+  <data name="Perf_Upsell_Title" xml:space="preserve">
+    <value>Unlock the Live Performance Monitor</value>
+  </data>
+  <data name="Perf_Upsell_Description" xml:space="preserve">
+    <value>Watch CPU, RAM, network throughput, battery level and temperature evolve in real time. Record sessions while gaming or stress-testing, export everything as CSV and correlate workload spikes with thermal behavior.</value>
+  </data>
+  <data name="Perf_Upsell_UpgradeButton" xml:space="preserve">
+    <value>Upgrade to Pro</value>
+  </data>
+
+  <data name="Perf_Metric_Cpu" xml:space="preserve">
+    <value>CPU</value>
+  </data>
+  <data name="Perf_Metric_Ram" xml:space="preserve">
+    <value>RAM</value>
+  </data>
+  <data name="Perf_Metric_Network" xml:space="preserve">
+    <value>Network</value>
+  </data>
+  <data name="Perf_Metric_Battery" xml:space="preserve">
+    <value>Battery</value>
+  </data>
+  <data name="Perf_Metric_Fps" xml:space="preserve">
+    <value>FPS</value>
+  </data>
+  <data name="Perf_Metric_Gpu" xml:space="preserve">
+    <value>GPU</value>
+  </data>
+  <data name="Perf_Metric_Storage" xml:space="preserve">
+    <value>Storage I/O</value>
+  </data>
+
+  <data name="Perf_TopProcesses_Header" xml:space="preserve">
+    <value>Top RAM processes</value>
+  </data>
+
+  <data name="Perf_NoDevice" xml:space="preserve">
+    <value>No device connected</value>
+  </data>
+  <data name="Perf_Fps_NA" xml:space="preserve">
+    <value>N/A</value>
+  </data>
+  <data name="Perf_Gpu_NA" xml:space="preserve">
+    <value>N/A</value>
+  </data>
+
+  <data name="Perf_Recording_Section" xml:space="preserve">
+    <value>Session recording</value>
+  </data>
+  <data name="Perf_Recording_Start" xml:space="preserve">
+    <value>Start recording</value>
+  </data>
+  <data name="Perf_Recording_Stop" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="Perf_Recording_New" xml:space="preserve">
+    <value>New session</value>
+  </data>
+  <data name="Perf_Recording_Export" xml:space="preserve">
+    <value>Export CSV</value>
+  </data>
+  <data name="Perf_Recording_Duration" xml:space="preserve">
+    <value>Duration</value>
+  </data>
+  <data name="Perf_Recording_Duration_Desc" xml:space="preserve">
+    <value>Auto-stop the session after the configured duration. Choose "Unlimited" for manual control.</value>
+  </data>
+  <data name="Perf_Recording_Duration_Unlimited" xml:space="preserve">
+    <value>Unlimited</value>
+  </data>
+  <data name="Perf_Recording_State_Idle" xml:space="preserve">
+    <value>IDLE</value>
+  </data>
+  <data name="Perf_Recording_State_Recording" xml:space="preserve">
+    <value>REC</value>
+  </data>
+  <data name="Perf_Recording_State_Stopped" xml:space="preserve">
+    <value>STOPPED</value>
+  </data>
+  <data name="Perf_Recording_SampleCount" xml:space="preserve">
+    <value>{0} samples</value>
+  </data>
+  <data name="Perf_Recording_Stopped_DeviceDisconnected" xml:space="preserve">
+    <value>Recording stopped: device disconnected.</value>
+  </data>
+  <data name="Perf_Recording_Stopped_DurationReached" xml:space="preserve">
+    <value>Recording stopped: configured duration reached.</value>
+  </data>
+
+  <data name="Perf_View_Live" xml:space="preserve">
+    <value>Live (60s window)</value>
+  </data>
+  <data name="Perf_View_Session" xml:space="preserve">
+    <value>Recorded session</value>
+  </data>
+
+  <data name="Perf_Export_Title" xml:space="preserve">
+    <value>Export performance session</value>
+  </data>
+  <data name="Perf_Export_Success_Title" xml:space="preserve">
+    <value>Export complete</value>
+  </data>
+  <data name="Perf_Export_Success_Msg" xml:space="preserve">
+    <value>Session exported to: {0}</value>
+  </data>
+  <data name="Perf_Export_Empty" xml:space="preserve">
+    <value>No samples to export. Start a session first.</value>
+  </data>
+
+  <data name="Perf_Stat_Min" xml:space="preserve">
+    <value>min {0}</value>
+  </data>
+  <data name="Perf_Stat_Max" xml:space="preserve">
+    <value>max {0}</value>
+  </data>
+  <data name="Perf_Stat_Avg" xml:space="preserve">
+    <value>avg {0}</value>
+  </data>
+  <data name="Eula_Title" xml:space="preserve">
+    <value>End-User License Agreement</value>
+  </data>
+  <data name="Eula_Accept" xml:space="preserve">
+    <value>I Accept</value>
+  </data>
+  <data name="Eula_Decline" xml:space="preserve">
+    <value>Decline &amp; Exit</value>
+  </data>
+  <data name="Eula_Intro" xml:space="preserve">
+    <value>This Agreement is between you (the "User") and blast752 (the "Provider", Italy). By installing or using Zephyr's Elixir you accept this EULA together with the full Terms &amp; Conditions and Privacy Policy available at the links below, which prevail in case of conflict.</value>
+  </data>
+  <data name="Eula_License" xml:space="preserve">
+    <value>Open core. The free application is open-source software under the Apache 2.0 license. The Pro version is a proprietary, closed-source module: your purchase grants a personal, non-transferable, revocable license valid for one (1) device at a time, transferable after deactivation.</value>
+  </data>
+  <data name="Eula_Restrictions" xml:space="preserve">
+    <value>Restrictions. You may not reverse engineer or circumvent the protections of the Pro module, share or resell your license key, or bypass the single-device binding, except where mandatorily permitted by law.</value>
+  </data>
+  <data name="Eula_Ai" xml:space="preserve">
+    <value>AI features. The app removal-risk analysis sends only the technical package names (e.g. com.example.app) to a third-party AI service (OpenAI) — never data that identifies you. The result is advisory only; the final decision is always yours.</value>
+  </data>
+  <data name="Eula_Risks" xml:space="preserve">
+    <value>Risks. The tool performs advanced ADB operations that may impair the device, cause data loss, or render it unusable. You act at your own risk; backing up your data is strongly recommended.</value>
+  </data>
+  <data name="Eula_Whop" xml:space="preserve">
+    <value>Purchase &amp; licensing. The Pro version is purchased through Whop (merchant of record), which issues the license key; the app validates it and works offline for up to 7 days. The software is provided "as is" to the extent permitted by law; statutory consumer guarantees are unaffected. Liability is capped at the amount paid in the last 12 months, save for mandatory rights.</value>
+  </data>
+  <data name="Eula_Withdrawal" xml:space="preserve">
+    <value>Right of withdrawal. Consumers have 14 days to withdraw; however, by activating the Pro module you request immediate performance and lose the right of withdrawal for that digital content. A voluntary refund applies to non-activated licenses and unresolved technical faults. Governing law: Italy, without prejudice to the mandatory protections of your country of residence.</value>
+  </data>
+  <data name="Eula_FullTerms" xml:space="preserve">
+    <value>Full Terms &amp; Conditions: </value>
+  </data>
+  <data name="Eula_FullPrivacy" xml:space="preserve">
+    <value>Full Privacy Policy: </value>
+  </data>
+  <data name="Debloat_Ai_Consent_Title" xml:space="preserve">
+    <value>Enable AI analysis?</value>
+  </data>
+  <data name="Debloat_Ai_Consent_Message" xml:space="preserve">
+    <value>To assess removal risk, the names of the installed app packages (e.g. com.example.app) are sent to a third-party AI service (OpenAI). No data that identifies you is sent, and the result is advisory only. Do you want to enable cloud AI analysis? You can change this later in Settings.</value>
   </data>
 
 </root>

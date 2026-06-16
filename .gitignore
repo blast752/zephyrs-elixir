@@ -482,3 +482,14 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# User Custom
+*.zip
+*.rar
+*.7zip
+*.bat
+*.ps1
+*.iss
+
+# Installer output
+InstallerOutput/

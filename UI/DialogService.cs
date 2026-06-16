@@ -203,6 +203,25 @@ public sealed class DialogService
     public void ShowChangelog(Window? owner = null)
         => ShowRichInfo("Info_Changelog_Title", CreateChangelogContent(), owner);
 
+    public bool ShowEula(Window? owner = null)
+    {
+        var config = new DialogConfig
+        {
+            Title = $"{GetString("Eula_Title")} (v{AppConfiguration.Legal.EulaVersion})",
+            Type = DialogType.RichContent,
+            Owner = owner ?? GetActiveWindow(),
+            Buttons = new[]
+            {
+                new DialogButton(GetString("Eula_Decline"), DialogAction.Cancel, ButtonStyle.Secondary),
+                new DialogButton(GetString("Eula_Accept"), DialogAction.Primary, ButtonStyle.Primary)
+            },
+            RichContent = CreateEulaContent()
+        };
+        var dialog = UnifiedDialog.Create(config);
+        dialog.ShowDialog();
+        return dialog.Result == DialogAction.Primary;
+    }
+
     private void ShowRichInfo(string titleKey, IEnumerable<Block> content, Window? owner)
     {
         var config = new DialogConfig
@@ -227,7 +246,7 @@ public sealed class DialogService
         yield return CreateParagraph(GetString("Info_License_Permission"));
         yield return CreateParagraph(GetString("Info_License_Conditions"));
         yield return CreateParagraph(GetString("Info_License_Disclaimer"));
-        yield return CreateParagraphWithLink(GetString("Info_License_MoreInfo"), "https://elixirsite.vercel.app/terms");
+        yield return CreateParagraphWithLink(GetString("Info_License_MoreInfo"), AppConfiguration.Legal.TermsUrl);
     }
 
     private static IEnumerable<Block> CreatePrivacyContent()
@@ -250,7 +269,7 @@ public sealed class DialogService
         }
         yield return list;
 
-        yield return CreateParagraphWithLink(GetString("Info_Privacy_MoreInfo"), "https://elixirsite.vercel.app/privacy");
+        yield return CreateParagraphWithLink(GetString("Info_Privacy_MoreInfo"), AppConfiguration.Legal.PrivacyUrl);
     }
 
     private static IEnumerable<Block> CreateChangelogContent()
@@ -259,16 +278,11 @@ public sealed class DialogService
         {
             ("Info_Changelog_New", "🆕", new[]
             {
-                "Info_Changelog_New_1", "Info_Changelog_New_2", "Info_Changelog_New_3",
-                "Info_Changelog_New_4", "Info_Changelog_New_5", "Info_Changelog_New_6",
-                "Info_Changelog_New_7", "Info_Changelog_New_8", "Info_Changelog_New_9",
-                "Info_Changelog_New_10", "Info_Changelog_New_11", "Info_Changelog_New_12"
+                "Info_Changelog_New_1", "Info_Changelog_New_2", "Info_Changelog_New_3"
             }),
             ("Info_Changelog_Updated", "🚀", new[]
             {
-                "Info_Changelog_Updated_1", "Info_Changelog_Updated_2", "Info_Changelog_Updated_3",
-                "Info_Changelog_Updated_4", "Info_Changelog_Updated_5", "Info_Changelog_Updated_6",
-                "Info_Changelog_Updated_7", "Info_Changelog_Updated_8"
+                "Info_Changelog_Updated_1", "Info_Changelog_Updated_2", "Info_Changelog_Updated_3"
             }),
             ("Info_Changelog_Removed", "❌", new[]
             {
@@ -298,6 +312,19 @@ public sealed class DialogService
 
             yield return list;
         }
+    }
+
+    private static IEnumerable<Block> CreateEulaContent()
+    {
+        yield return CreateParagraph(GetString("Eula_Intro"));
+        yield return CreateParagraph(GetString("Eula_License"));
+        yield return CreateParagraph(GetString("Eula_Restrictions"));
+        yield return CreateParagraph(GetString("Eula_Ai"));
+        yield return CreateParagraph(GetString("Eula_Risks"));
+        yield return CreateParagraph(GetString("Eula_Whop"));
+        yield return CreateParagraph(GetString("Eula_Withdrawal"));
+        yield return CreateParagraphWithLink(GetString("Eula_FullTerms"), AppConfiguration.Legal.TermsUrl);
+        yield return CreateParagraphWithLink(GetString("Eula_FullPrivacy"), AppConfiguration.Legal.PrivacyUrl);
     }
 
     #endregion
@@ -368,7 +395,7 @@ public sealed class DialogService
             Owner = owner ?? GetActiveWindow(),
             Buttons = new[]
             {
-                new DialogButton(GetString("Update_Button_Skip"), DialogAction.Cancel, ButtonStyle.Secondary),
+                new DialogButton(GetString("Update_Button_Exit"), DialogAction.Cancel, ButtonStyle.Secondary),
                 new DialogButton(GetString("Update_Button_UpdateNow"), DialogAction.Primary, ButtonStyle.Primary)
             },
             RichContent = CreateUpdateContent(updateInfo)
@@ -382,6 +409,7 @@ public sealed class DialogService
     private static IEnumerable<Block> CreateUpdateContent(UpdateInfo updateInfo)
     {
         yield return CreateParagraph(string.Format(GetString("Update_NewVersion"), updateInfo.Version));
+        yield return CreateParagraph(GetString("Update_RequiredNotice"));
         yield return CreateSectionTitle(GetString("Update_ReleaseNotes"));
         yield return CreateParagraph(updateInfo.ReleaseNotes);
     }

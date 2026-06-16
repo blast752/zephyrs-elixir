@@ -1,0 +1,16 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="audioGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFD000"/>
+      <stop offset="100%" stop-color="#CC9900"/>
+    </linearGradient>
+  </defs>
+  <rect x="10" y="10" width="80" height="80" rx="20" ry="20" fill="url(#audioGrad)"/>
+  <ellipse cx="50" cy="22" rx="32" ry="8" fill="white" opacity="0.20"/>
+  <circle cx="36" cy="68" r="7" fill="white"/>
+  <rect x="41" y="32" width="3" height="36" fill="white"/>
+  <path d="M 44 32 Q 56 38 54 50 Q 52 44 44 44 Z" fill="white"/>
+  <path d="M 60 50 Q 65 55 60 60" stroke="white" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
+  <path d="M 65 45 Q 73 55 65 65" stroke="white" stroke-width="2" fill="none" opacity="0.6" stroke-linecap="round"/>
+  <path d="M 70 40 Q 81 55 70 70" stroke="white" stroke-width="2" fill="none" opacity="0.35" stroke-linecap="round"/>
+</svg>

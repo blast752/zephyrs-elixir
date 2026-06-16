@@ -22,6 +22,8 @@ public sealed partial class Home : UserControl
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
+        Loaded -= OnLoaded;
+
         this.SubscribeToDeviceState(BtnOptimize);
 
         (Resources["Anim.Entry"] as Storyboard)?.Begin();
@@ -39,10 +41,11 @@ public sealed partial class Home : UserControl
 
     private void OnWirelessConnectionClick(object sender, RoutedEventArgs e)
     {
+        // The dialog parses each adb output itself; step-by-step lines go to the
+        // diagnostic log instead of interrupting the flow with modal popups.
         new WirelessConnectionDialog(
-            async args => await AdbExecutor.ExecuteCommandAsync(args),
-            msg => Dispatcher.Invoke(() => DialogService.Instance.ShowInfoDirect(
-                Strings.WirelessConnection_Log_Title, msg, Window.GetWindow(this))))
+            args => AdbExecutor.ExecuteCommandAsync(args),
+            msg => AdbLogger.Instance.LogInfo("Wireless", msg.Trim()))
         {
             Owner = Window.GetWindow(this)
         }.ShowDialog();

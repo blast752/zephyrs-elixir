@@ -1,0 +1,28 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1175E6"/>
+      <stop offset="100%" stop-color="#0D3A78"/>
+    </linearGradient>
+    <clipPath id="globeClip">
+      <circle cx="50" cy="44" r="28"/>
+    </clipPath>
+  </defs>
+<!--Background squircle-->
+  <rect x="5" y="5" width="90" height="90" rx="20" ry="20" fill="url(#bgGrad)"/>
+<!--Inner highlight gloss-->
+  <ellipse cx="50" cy="18" rx="30" ry="12" fill="white" opacity="0.15"/>
+<!--Globe outer circle-->
+  <circle cx="50" cy="44" r="28" fill="none" stroke="white" stroke-width="2"/>
+<!--Globe lines clipped to circle-->
+  <g clip-path="url(#globeClip)">
+<!--Equator line-->
+    <line x1="22" y1="44" x2="78" y2="44" stroke="white" stroke-width="1.5" opacity="0.7"/>
+<!--Left longitude arc-->
+    <path d="M50,16 C36,20 36,68 50,72" fill="none" stroke="white" stroke-width="1.5" opacity="0.7"/>
+<!--Right longitude arc-->
+    <path d="M50,16 C64,20 64,68 50,72" fill="none" stroke="white" stroke-width="1.5" opacity="0.7"/>
+  </g>
+<!--Code tag label-->
+  <text x="50" y="87" font-family="system-ui, sans-serif" font-size="11" font-weight="800" fill="white" text-anchor="middle" opacity="0.85">&lt;&gt;</text>
+</svg>

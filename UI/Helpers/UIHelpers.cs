@@ -96,6 +96,91 @@ public static class AppBrushes
     public static readonly Brush GradientRed     = UIHelpers.CreateGradientBrush("#FF6B6B", "#DC143C");
 }
 
+public static class AppIcons
+{
+    private static readonly ConcurrentDictionary<string, string> _pathRegistry;
+    private static readonly ConcurrentDictionary<string, ImageSource?> _imageCache;
+
+    static AppIcons()
+    {
+        _pathRegistry = new ConcurrentDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        _imageCache   = new ConcurrentDictionary<string, ImageSource?>(StringComparer.OrdinalIgnoreCase);
+
+        _pathRegistry["folder"]  = "Assets/Icons/folder.svg";
+        _pathRegistry["android"] = "Assets/Icons/android.svg";
+        _pathRegistry["pdf"]     = "Assets/Icons/pdf.svg";
+        _pathRegistry["config"]  = "Assets/Icons/config.svg";
+        _pathRegistry["image"]   = "Assets/Icons/image.svg";
+        _pathRegistry["text"]    = "Assets/Icons/text.svg";
+        _pathRegistry["video"]   = "Assets/Icons/video.svg";
+        _pathRegistry["archive"] = "Assets/Icons/archive.svg";
+        _pathRegistry["web"]     = "Assets/Icons/web.svg";
+        _pathRegistry["db"]     = "Assets/Icons/db.svg";
+        _pathRegistry["audio"]   = "Assets/Icons/audio.svg";
+
+    }
+
+    public static ImageSource? Get(string key)
+    {
+        if (!_pathRegistry.TryGetValue(key, out var path))
+            return null;
+
+        return _imageCache.GetOrAdd(key, _ => TryLoad(path));
+    }
+
+    public static void Register(string key, string assetRelativePath)
+    {
+        _pathRegistry[key] = assetRelativePath;
+        _imageCache.TryRemove(key, out _);
+    }
+
+    public static void Preload()
+    {
+        _ = Get("folder");
+        _ = Get("android");
+        _ = Get("pdf");
+        _ = Get("config");
+        _ = Get("image");
+        _ = Get("text");
+        _ = Get("video");
+        _ = Get("archive");
+        _ = Get("web");
+        _ = Get("db");
+        _ = Get("audio");
+
+
+    }
+
+    private static ImageSource? TryLoad(string relPath)
+    {
+        try
+        {
+            var uri = new Uri(relPath, UriKind.Relative);
+            var streamInfo = Application.GetResourceStream(uri);
+            if (streamInfo == null) return null;
+
+            var settings = new WpfDrawingSettings
+            {
+                IncludeRuntime = false,
+                TextAsGeometry = true,
+                OptimizePath = true,
+                EnsureViewboxSize = true
+            };
+            using var reader = new FileSvgReader(settings);
+            var drawing = reader.Read(streamInfo.Stream);
+            if (drawing == null) return null;
+
+            var image = new DrawingImage(drawing);
+            image.Freeze();
+            return image;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+}
+
 #endregion
 
 #region Custom Controls

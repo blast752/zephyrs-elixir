@@ -13,7 +13,7 @@
     </UserControl.DataContext>
 
     <UserControl.Resources>
-        <DropShadowEffect x:Key="GlowEffect" Color="#00BFFF" BlurRadius="24" ShadowDepth="0" Opacity="0.8"/>
+        <DropShadowEffect x:Key="GlowEffect" Color="{StaticResource App.Color.DeepSkyBlue}" BlurRadius="24" ShadowDepth="0" Opacity="0.8"/>
         <DropShadowEffect x:Key="SoftGlow" Color="#7FD4FF" BlurRadius="16" ShadowDepth="0" Opacity="0.6"/>
         <helpers:EqualityToVisibilityConverter x:Key="EqToVisibility"/>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
@@ -44,7 +44,7 @@
 
         <LinearGradientBrush x:Key="AccentGradientBrush" StartPoint="0,0" EndPoint="1,0">
             <GradientStop Color="#FFD700" Offset="0.0"/>
-            <GradientStop Color="#00BFFF" Offset="1.0"/>
+            <GradientStop Color="{StaticResource App.Color.DeepSkyBlue}" Offset="1.0"/>
         </LinearGradientBrush>
 
         <Style x:Key="CardContainer" TargetType="{x:Type helpers:ShadowCard}" BasedOn="{StaticResource {x:Type helpers:ShadowCard}}">
