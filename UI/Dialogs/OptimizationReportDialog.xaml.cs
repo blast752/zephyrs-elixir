@@ -2,9 +2,15 @@ namespace ZephyrsElixir.UI.Dialogs;
 
 public partial class OptimizationReportDialog : Window
 {
-    private static readonly Brush SuccessAccent = Freeze(new SolidColorBrush(Color.FromRgb(0, 200, 120)));
-    private static readonly Brush WarningAccent = Freeze(new SolidColorBrush(Color.FromRgb(255, 180, 50)));
-    private static readonly Brush ErrorAccent   = Freeze(new SolidColorBrush(Color.FromRgb(255, 90, 90)));
+    // One source per accent colour: the same value feeds the foreground brush (below) and the
+    // header glow in GetTheme, so the two can't drift apart.
+    private static readonly Color SuccessColor = Color.FromRgb(0, 200, 120);
+    private static readonly Color WarningColor = Color.FromRgb(255, 180, 50);
+    private static readonly Color ErrorColor   = Color.FromRgb(255, 90, 90);
+
+    private static readonly Brush SuccessAccent = Freeze(new SolidColorBrush(SuccessColor));
+    private static readonly Brush WarningAccent = Freeze(new SolidColorBrush(WarningColor));
+    private static readonly Brush ErrorAccent   = Freeze(new SolidColorBrush(ErrorColor));
 
     private static readonly Brush DetailGreen  = Freeze(new SolidColorBrush(Color.FromRgb(100, 200, 120)));
     private static readonly Brush DetailGray   = Freeze(new SolidColorBrush(Color.FromRgb(128, 140, 160)));
@@ -27,7 +33,7 @@ public partial class OptimizationReportDialog : Window
             "\uE73E",
             Strings.Report_Outcome_Success_Title,
             Strings.Report_Outcome_Success_Subtitle,
-            Color.FromRgb(0, 200, 120),
+            SuccessColor,
             AppBrushes.GradientGreen,
             Strings.Report_Button_Done, "\uE73E"),
 
@@ -35,7 +41,7 @@ public partial class OptimizationReportDialog : Window
             "\uE7BA",
             Strings.Report_Outcome_Partial_Title,
             string.Format(Strings.Report_Outcome_Partial_Subtitle, stepsCompleted, totalSteps),
-            Color.FromRgb(255, 180, 50),
+            WarningColor,
             UIHelpers.CreateGradientBrush("#FFB832", "#FF9500"),
             Strings.Dialog_Button_GotIt, "\uE7BA"),
 
@@ -43,7 +49,7 @@ public partial class OptimizationReportDialog : Window
             "\uEA39",
             Strings.Report_Outcome_Error_Title,
             Strings.Report_Outcome_Error_Subtitle,
-            Color.FromRgb(255, 90, 90),
+            ErrorColor,
             AppBrushes.GradientRed,
             Strings.Window_Tooltip_Close, "\uEA39"),
         

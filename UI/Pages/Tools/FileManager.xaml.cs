@@ -1514,10 +1514,10 @@ public sealed partial class FileManager : UserControl
 
             var segments = new List<StorageSegment>
             {
-                new(Strings.FileManager_Storage_Apps,      apps,        LeadingColor(AppBrushes.GradientApk)),
-                new(Strings.FileManager_Storage_Media,     media,       LeadingColor(AppBrushes.GradientApkm)),
-                new(Strings.FileManager_Storage_Downloads, downloads,   LeadingColor(AppBrushes.GradientCyan)),
-                new(Strings.FileManager_Storage_System,    systemBytes, LeadingColor(AppBrushes.GradientNavy)),
+                new(Strings.FileManager_Storage_Apps,      apps,        UIHelpers.LeadingColor(AppBrushes.GradientApk)),
+                new(Strings.FileManager_Storage_Media,     media,       UIHelpers.LeadingColor(AppBrushes.GradientApkm)),
+                new(Strings.FileManager_Storage_Downloads, downloads,   UIHelpers.LeadingColor(AppBrushes.GradientCyan)),
+                new(Strings.FileManager_Storage_System,    systemBytes, UIHelpers.LeadingColor(AppBrushes.GradientNavy)),
                 new(Strings.FileManager_Storage_Free,      freeBytes,   Color.FromArgb(0x40, 0xFF, 0xFF, 0xFF))
             };
 
@@ -1611,15 +1611,6 @@ public sealed partial class FileManager : UserControl
             UIHelpers.FormatBytes(total));
         StorageBarBrush = BuildSegmentedBarBrush(segments, total);
         IsStorageAvailable = true;
-    }
-
-    private static Color LeadingColor(Brush brush)
-    {
-        if (brush is GradientBrush gb && gb.GradientStops.Count > 0)
-            return gb.GradientStops[0].Color;
-        if (brush is SolidColorBrush sb)
-            return sb.Color;
-        return Color.FromArgb(0xFF, 0x80, 0x80, 0x80);
     }
 
     private static LinearGradientBrush BuildSegmentedBarBrush(IReadOnlyList<StorageSegment> segments, long total)

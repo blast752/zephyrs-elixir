@@ -46,6 +46,18 @@ public static class UIHelpers
         brush.Freeze();
         return brush;
     }
+
+    /// <summary>
+    /// The representative "leading" colour of a brush — the first stop of a gradient, the colour
+    /// of a solid brush, or a neutral grey fallback. Lets an accent/glow colour be derived from an
+    /// icon brush so the two can never drift out of sync (single source of truth for both).
+    /// </summary>
+    public static Color LeadingColor(Brush brush) => brush switch
+    {
+        GradientBrush { GradientStops.Count: > 0 } gradient => gradient.GradientStops[0].Color,
+        SolidColorBrush solid => solid.Color,
+        _ => Color.FromRgb(0x80, 0x80, 0x80)
+    };
 }
 
 #region Centralized Shell Utilities

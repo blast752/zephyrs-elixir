@@ -18,22 +18,22 @@ public sealed partial class PowerMenu : UserControl
 
         StandardOptions =
         [
-            new("reboot", "\uE777", () => Strings.PowerMenu_Option_Reboot, () => Strings.PowerMenu_Option_Reboot_Desc, AppBrushes.GradientGreen, Color.FromRgb(0, 214, 143)),
-            new("recovery", "\uE90F", () => Strings.PowerMenu_Option_Recovery, () => Strings.PowerMenu_Option_Recovery_Desc, AppBrushes.GradientApkm, Color.FromRgb(125, 100, 255)),
-            new("bootloader", "\uE835", () => Strings.PowerMenu_Option_Bootloader, () => Strings.PowerMenu_Option_Bootloader_Desc, AppBrushes.GradientApk, Color.FromRgb(99, 181, 255))
+            new("reboot", "\uE777", () => Strings.PowerMenu_Option_Reboot, () => Strings.PowerMenu_Option_Reboot_Desc, AppBrushes.GradientGreen),
+            new("recovery", "\uE90F", () => Strings.PowerMenu_Option_Recovery, () => Strings.PowerMenu_Option_Recovery_Desc, AppBrushes.GradientApkm),
+            new("bootloader", "\uE835", () => Strings.PowerMenu_Option_Bootloader, () => Strings.PowerMenu_Option_Bootloader_Desc, AppBrushes.GradientApk)
         ];
 
         AdvancedOptions =
         [
-            new("fastboot", "\uE943", () => Strings.PowerMenu_Option_Fastbootd, () => Strings.PowerMenu_Option_Fastbootd_Desc, AppBrushes.GradientCyan, Color.FromRgb(0, 191, 255)),
-            new("sideload", "\uE896", () => Strings.PowerMenu_Option_Sideload, () => Strings.PowerMenu_Option_Sideload_Desc, AppBrushes.GradientApks, Color.FromRgb(255, 208, 0)),
-            new("sideload_auto", "\uE8B5", () => Strings.PowerMenu_Option_SideloadAuto, () => Strings.PowerMenu_Option_SideloadAuto_Desc, AppBrushes.GradientOrange, Color.FromRgb(255, 159, 67)),
-            new("download", "\uE118", () => Strings.PowerMenu_Option_Download, () => Strings.PowerMenu_Option_Download_Desc, AppBrushes.GradientNavy, Color.FromRgb(17, 117, 230))
+            new("fastboot", "\uE943", () => Strings.PowerMenu_Option_Fastbootd, () => Strings.PowerMenu_Option_Fastbootd_Desc, AppBrushes.GradientCyan),
+            new("sideload", "\uE896", () => Strings.PowerMenu_Option_Sideload, () => Strings.PowerMenu_Option_Sideload_Desc, AppBrushes.GradientApks),
+            new("sideload_auto", "\uE8B5", () => Strings.PowerMenu_Option_SideloadAuto, () => Strings.PowerMenu_Option_SideloadAuto_Desc, AppBrushes.GradientOrange),
+            new("download", "\uE118", () => Strings.PowerMenu_Option_Download, () => Strings.PowerMenu_Option_Download_Desc, AppBrushes.GradientNavy)
         ];
 
         PowerOptions =
         [
-            new("power_off", "\uE7E8", () => Strings.PowerMenu_Option_PowerOff, () => Strings.PowerMenu_Option_PowerOff_Desc, AppBrushes.GradientRed, Color.FromRgb(255, 107, 107))
+            new("power_off", "\uE7E8", () => Strings.PowerMenu_Option_PowerOff, () => Strings.PowerMenu_Option_PowerOff_Desc, AppBrushes.GradientRed)
         ];
 
         _spinnerTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(16) };

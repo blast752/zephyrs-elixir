@@ -11,17 +11,17 @@ public sealed partial class Tools : UserControl
         _tools =
         [
             new("apk_installer", "\uE896", () => Strings.Tools_ApkInstaller_Title, () => Strings.Tools_ApkInstaller_Description,
-                AppBrushes.GradientApk, Color.FromRgb(99, 181, 255)),
+                AppBrushes.GradientApk),
             new("screen_mirror", "\uE7F4", () => Strings.Tools_ScreenMirror_Title, () => Strings.Tools_ScreenMirror_Description,
-                AppBrushes.GradientApkm, Color.FromRgb(125, 100, 255), true),
+                AppBrushes.GradientApkm, true),
             new("performance_monitor", "\uE9D9", () => Strings.Tools_PerformanceMonitor_Title, () => Strings.Tools_PerformanceMonitor_Description,
-                AppBrushes.GradientCyan, Color.FromRgb(0, 191, 255), true),
+                AppBrushes.GradientCyan, true),
             new("reboot", "\uE777", () => Strings.Tools_Reboot_Title, () => Strings.Tools_Reboot_Description,
-                AppBrushes.GradientOrange, Color.FromRgb(255, 159, 67), true),
+                AppBrushes.GradientOrange, true),
             new("file_manager", "\uED25", () => Strings.Tools_FileManager_Title, () => Strings.Tools_FileManager_Description,
-                AppBrushes.GradientCyan, Color.FromRgb(0, 191, 255)),
+                AppBrushes.GradientCyan),
             new("adb_shell", "\uE756", () => Strings.Tools_AdbConsole_Title, () => Strings.Tools_AdbConsole_Description,
-                AppBrushes.GradientGreen, Color.FromRgb(0, 214, 143)),
+                AppBrushes.GradientGreen),
         ];
 
         DataContext = this;
@@ -118,8 +118,8 @@ public sealed class ToolItem : MenuItemBase
     }
 
     public ToolItem(string key, string icon, Func<string> titleAccessor, Func<string> descriptionAccessor,
-                    Brush iconBrush, Color glowColor, bool baseEnabled = true)
-        : base(key, icon, titleAccessor, descriptionAccessor, iconBrush, glowColor)
+                    Brush iconBrush, bool baseEnabled = true)
+        : base(key, icon, titleAccessor, descriptionAccessor, iconBrush)
     {
         BaseEnabled = baseEnabled;
         _isEnabled = baseEnabled;

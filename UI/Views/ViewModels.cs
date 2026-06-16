@@ -320,14 +320,16 @@ public class MenuItemBase : ObservableObject
     public Color GlowColor { get; }
 
     public MenuItemBase(string key, string icon, Func<string> titleAccessor, Func<string> descriptionAccessor,
-                           Brush iconBrush, Color glowColor)
+                           Brush iconBrush)
     {
         Key = key;
         Icon = icon;
         _titleAccessor = titleAccessor;
         _descriptionAccessor = descriptionAccessor;
         IconBrush = iconBrush;
-        GlowColor = glowColor;
+        // The glow accent is always the icon brush's leading colour — derive it so the two
+        // can never drift apart, instead of every call site repeating the colour by hand.
+        GlowColor = UIHelpers.LeadingColor(iconBrush);
     }
 
     public void Refresh()
