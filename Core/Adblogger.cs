@@ -69,21 +69,15 @@ public sealed class AdbLogger
 
     public void LogAdbCommand(string command, string output, bool isError = false)
     {
-        var sanitizedCmd = SanitizeCommand(command);
-        AddEntry(LogLevel.Command, "ADB", $"adb {sanitizedCmd}");
+        AddEntry(LogLevel.Command, "ADB", $"adb {SanitizeCommand(command)}");
 
-        if (!string.IsNullOrWhiteSpace(output))
-        {
-            var cleanOutput = SanitizeOutput(output.Trim());
-            if (!string.IsNullOrEmpty(cleanOutput))
-            {
-                AddEntry(
-                    isError ? LogLevel.Error : LogLevel.Info,
-                    "ADB",
-                    isError ? "Command failed" : "Output",
-                    cleanOutput);
-            }
-        }
+        // Successful command output is high-volume and low-signal — record it only on failure,
+        // where the captured stderr/stdout is what actually helps diagnose the problem.
+        if (!isError || string.IsNullOrWhiteSpace(output)) return;
+
+        var cleanOutput = SanitizeOutput(output.Trim());
+        if (!string.IsNullOrEmpty(cleanOutput))
+            AddEntry(LogLevel.Error, "ADB", "Command failed", cleanOutput);
     }
 
     public void LogException(string category, Exception ex)
@@ -136,10 +130,29 @@ public sealed class AdbLogger
             _duplicateCount = 1;
 
             if (_entries.Count > MaxEntries)
-                _entries.RemoveAt(0);
+                EvictOldestLowPriority();
         }
 
         LogEntryAdded?.Invoke(this, newEntry);
+    }
+
+    /// <summary>
+    /// Capacity eviction that protects diagnostics: drops the oldest low-signal entry
+    /// (Info / Success / Command) so a burst of routine logging can never push Warnings or
+    /// Errors out of the buffer. Falls back to the oldest entry only when nothing but
+    /// Warnings/Errors remain. Never evicts the just-added tail (keeps the dedupe invariant).
+    /// </summary>
+    private void EvictOldestLowPriority()
+    {
+        for (var i = 0; i < _entries.Count - 1; i++)
+        {
+            if (_entries[i].Level is LogLevel.Info or LogLevel.Success or LogLevel.Command)
+            {
+                _entries.RemoveAt(i);
+                return;
+            }
+        }
+        _entries.RemoveAt(0);
     }
 
     #endregion

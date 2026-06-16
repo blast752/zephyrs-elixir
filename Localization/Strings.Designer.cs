@@ -529,6 +529,7 @@ namespace ZephyrsElixir.Localization
         public static string Window_Tooltip_Close => ResourceManager.GetString("Window_Tooltip_Close", resourceCulture);
         public static string Window_Tooltip_Maximize => ResourceManager.GetString("Window_Tooltip_Maximize", resourceCulture);
         public static string Window_Tooltip_Minimize => ResourceManager.GetString("Window_Tooltip_Minimize", resourceCulture);
+        public static string Window_Tooltip_Restore => ResourceManager.GetString("Window_Tooltip_Restore", resourceCulture);
         public static string WirelessConnection_Log_Title => ResourceManager.GetString("WirelessConnection_Log_Title", resourceCulture);
         public static string Wireless_Android10 => ResourceManager.GetString("Wireless_Android10", resourceCulture);
         public static string Wireless_Android11 => ResourceManager.GetString("Wireless_Android11", resourceCulture);

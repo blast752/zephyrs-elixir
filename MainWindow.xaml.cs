@@ -306,12 +306,12 @@ public sealed partial class MainWindow : Window
             Canvas.SetTop(front, 2);
             MaximizeIcon.Children.Add(back);
             MaximizeIcon.Children.Add(front);
-            MaximizeRestoreButton.ToolTip = "Restore";
+            MaximizeRestoreButton.ToolTip = Strings.Window_Tooltip_Restore;
         }
         else
         {
             MaximizeIcon.Children.Add(new Rectangle { Width = 10, Height = 10, Stroke = brush, StrokeThickness = 1 });
-            MaximizeRestoreButton.ToolTip = "Maximize";
+            MaximizeRestoreButton.ToolTip = Strings.Window_Tooltip_Maximize;
         }
     }
 

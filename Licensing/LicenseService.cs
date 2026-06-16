@@ -885,19 +885,6 @@ public sealed class LicenseService : IDisposable
         return key;
     }
 
-    private static byte[] ProtectKeyMaterial(byte[] data)
-    {
-        try
-        {
-            return ProtectedData.Protect(data, Encoding.UTF8.GetBytes(ProDllConfig.EncryptionEntropy), DataProtectionScope.CurrentUser);
-        }
-        catch
-        {
-            var hash = SHA256.HashData(data);
-            return hash;
-        }
-    }
-
     #endregion
 
     #region Pro DLL Fingerprint
@@ -1578,18 +1565,12 @@ public sealed class LicenseService : IDisposable
         }
     }
 
-    private static void Log(string context, string message)
-    {
-        var fullMessage = $"[License.{context}] {message}";
-        try 
-        { 
-            AdbLogger.Instance.LogInfo("License", fullMessage); 
-        }
-        catch 
-        { 
-            Debug.WriteLine(fullMessage); 
-        }
-    }
+    // License & Pro-DLL-guardian lifecycle is developer trace, not user-facing diagnostics:
+    // routed straight to Debug so it no longer floods the in-memory AdbLogger (it used to add
+    // 50+ routine entries per session, burying real ADB problems). Activation outcomes still
+    // reach the user via LicenseResult, and state transitions via the StateChanged event.
+    private static void Log(string context, string message) =>
+        Debug.WriteLine($"[License.{context}] {message}");
 
     private void ThrowIfDisposed()
     {

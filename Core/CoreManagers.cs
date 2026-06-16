@@ -204,31 +204,47 @@ public static class AiQuotaManager
 
 public static class AdbExecutor
 {
+    private const int MaxConcurrentCommands = 16;
+    private const int CommandTimeoutMs = 30_000;
+    private const string AdbExeName = "adb.exe";
+
     private static readonly string AdbPath;
-    private static readonly SemaphoreSlim Semaphore = new(16);
+    private static readonly SemaphoreSlim Semaphore = new(MaxConcurrentCommands);
 
     static AdbExecutor()
     {
-        var toolsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Tools", "adb", "adb.exe");
-        AdbPath = File.Exists(toolsPath) ? toolsPath : "adb.exe";
+        var toolsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AppConfiguration.Paths.AdbDir, AdbExeName);
+        AdbPath = File.Exists(toolsPath) ? toolsPath : AdbExeName;
     }
 
     public static string GetAdbPath() => AdbPath;
 
     public static async Task<string> ExecuteCommandAsync(string command, CancellationToken ct = default, Action<string>? onOutput = null, bool log = true)
     {
-        await Semaphore.WaitAsync(ct);
+        // ConfigureAwait(false): keeps the whole method off the captured (UI) context so the
+        // synchronous ExecuteCommand() wrapper can't deadlock if the semaphore is contended.
+        await Semaphore.WaitAsync(ct).ConfigureAwait(false);
         try
         {
             var result = await ExecuteCoreAsync(command, ct, onOutput);
             if (log)
-                AdbLogger.Instance.LogAdbCommand(command, result, result.StartsWith("Error:", StringComparison.OrdinalIgnoreCase));
+                AdbLogger.Instance.LogAdbCommand(command, result, IsLikelyFailure(result));
             return result;
         }
         finally { Semaphore.Release(); }
     }
 
     public static string ExecuteCommand(string command) => ExecuteCommandAsync(command).GetAwaiter().GetResult();
+
+    private static readonly string[] FailureMarkers =
+        { "error", "failure", "failed", "denied", "not found", "unauthorized", "no devices", "cannot", "unable", "exception" };
+
+    // Decides whether an adb result is worth keeping in diagnostics with its full output. Catches
+    // both the explicit "Error:" results this class emits and the stderr that most adb failures
+    // print, while letting routine successful output stay out of the log.
+    private static bool IsLikelyFailure(string result) =>
+        !string.IsNullOrEmpty(result) &&
+        FailureMarkers.Any(m => result.Contains(m, StringComparison.OrdinalIgnoreCase));
 
     private static async Task<string> ExecuteCoreAsync(string command, CancellationToken ct, Action<string>? onOutput = null)
     {
@@ -259,7 +275,7 @@ public static class AdbExecutor
         var errorTask = process.StandardError.ReadToEndAsync(ct);
 
         using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
-        cts.CancelAfter(30000);
+        cts.CancelAfter(CommandTimeoutMs);
         try { await process.WaitForExitAsync(cts.Token).ConfigureAwait(false); }
         catch (OperationCanceledException) when (!ct.IsCancellationRequested)
         { try { process.Kill(true); } catch { } return "Error: Command timeout."; }
@@ -813,9 +829,10 @@ public static class ZephyrsAgent
 {
     internal static readonly HttpClient HttpClient = new() { Timeout = TimeSpan.FromSeconds(10) };
 
+    private const string AgentPort = "8080";
     private const string Pkg = "com.zephyrselixir.agent";
     private const string Activity = $"{Pkg}/.StartServiceActivity";
-    internal const string BaseUri = "http://localhost:8080";
+    internal const string BaseUri = $"http://localhost:{AgentPort}";
     private const string VersionCheckUrl = AppConfiguration.Urls.ZephyrAgentVersion;
 
     private static bool _running;
@@ -859,7 +876,7 @@ public static class ZephyrsAgent
             }
 
             progress?.Report("Setting up connection...");
-            await AdbExecutor.ExecuteCommandAsync("forward tcp:8080 tcp:8080", ct);
+            await AdbExecutor.ExecuteCommandAsync($"forward tcp:{AgentPort} tcp:{AgentPort}", ct);
             await AdbExecutor.ExecuteCommandAsync($"shell am start -n {Activity}", ct);
             await Task.Delay(500, ct);
 

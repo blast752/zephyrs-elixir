@@ -964,6 +964,9 @@ Il piano Free permette un solo APK alla volta.</value>
   <data name="Window_Tooltip_Maximize" xml:space="preserve">
     <value>Ingrandisci</value>
   </data>
+  <data name="Window_Tooltip_Restore" xml:space="preserve">
+    <value>Ripristina</value>
+  </data>
   <data name="Window_Tooltip_Close" xml:space="preserve">
     <value>Chiudi</value>
   </data>

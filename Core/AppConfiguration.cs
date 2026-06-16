@@ -10,11 +10,11 @@ public static class AppConfiguration
 
     public static class Version
     {
-        public const string Application = "0.7.0";
-        public const string ApplicationFull = "0.7.0.0";
+        public const string Application = "0.7.5";
+        public const string ApplicationFull = "0.7.5.0";
         public const string Pro = "1.0.2";
         public const string ProFull = "1.0.2.0";
-        public const string InstallerProduct = "0.7.0.0";
+        public const string InstallerProduct = "0.7.5.0";
     }
 
     public static class Identity
