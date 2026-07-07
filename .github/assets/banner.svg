@@ -1,0 +1,117 @@
+<svg width="1280" height="320" viewBox="0 0 1280 320" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" role="img" aria-label="Zephyr's Elixir — free and open-source Android debloater and optimizer for Windows">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0B2041"/>
+      <stop offset="1" stop-color="#0A142D"/>
+    </linearGradient>
+    <linearGradient id="blueCyan" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#007FFF"/>
+      <stop offset="1" stop-color="#00BFFF"/>
+    </linearGradient>
+    <linearGradient id="swirl" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#007FFF" stop-opacity="0"/>
+      <stop offset="0.25" stop-color="#007FFF" stop-opacity="0.9"/>
+      <stop offset="0.75" stop-color="#00BFFF" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#00BFFF" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFD700"/>
+      <stop offset="1" stop-color="#FFA500"/>
+    </linearGradient>
+    <radialGradient id="glowCyan" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#00BFFF" stop-opacity="0.14"/>
+      <stop offset="1" stop-color="#00BFFF" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowBlue" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#007FFF" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#007FFF" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="screen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0F4C9A" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#0B2041" stop-opacity="0.9"/>
+    </linearGradient>
+    <path id="stream1" d="M 540 112 C 700 52, 860 196, 1005 138 C 1090 104, 1180 88, 1262 116"/>
+    <path id="stream2" d="M 520 186 C 690 252, 880 96, 1035 186 C 1120 235, 1200 232, 1266 198"/>
+    <path id="stream3" d="M 575 248 C 740 302, 905 216, 1048 254 C 1130 277, 1195 272, 1252 246"/>
+  </defs>
+
+  <!-- background -->
+  <rect x="1" y="1" width="1278" height="318" rx="20" fill="url(#bg)"/>
+  <ellipse cx="1040" cy="60" rx="320" ry="150" fill="url(#glowCyan)"/>
+  <ellipse cx="210" cy="290" rx="380" ry="170" fill="url(#glowBlue)"/>
+
+  <!-- wind streams -->
+  <use href="#stream1" stroke="url(#swirl)" stroke-width="3" stroke-linecap="round" opacity="0.75"/>
+  <use href="#stream2" stroke="url(#swirl)" stroke-width="2.2" stroke-linecap="round" opacity="0.55"/>
+  <use href="#stream3" stroke="url(#swirl)" stroke-width="1.6" stroke-linecap="round" opacity="0.4"/>
+
+  <!-- phone being swept clean by the zephyr -->
+  <g>
+    <rect x="1008" y="86" width="104" height="196" rx="18" fill="url(#screen)" stroke="#63B5FF" stroke-opacity="0.5" stroke-width="2"/>
+    <rect x="1042" y="98" width="36" height="5" rx="2.5" fill="#63B5FF" fill-opacity="0.45"/>
+    <rect x="1024" y="118" width="72" height="7" rx="3.5" fill="#63B5FF" fill-opacity="0.28"/>
+    <rect x="1024" y="134" width="52" height="7" rx="3.5" fill="#63B5FF" fill-opacity="0.2"/>
+    <rect x="1024" y="150" width="62" height="7" rx="3.5" fill="#63B5FF" fill-opacity="0.14"/>
+    <circle cx="1060" cy="216" r="26" fill="none" stroke="#00E676" stroke-opacity="0.8" stroke-width="2.5"/>
+    <path d="M 1049 216 L 1057 224 L 1072 207" stroke="#00E676" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </g>
+
+  <!-- bloat debris blown away -->
+  <g>
+    <rect x="1136" y="120" width="13" height="13" rx="3" fill="#6B7A99" fill-opacity="0.55" transform="rotate(18 1142 126)"/>
+    <rect x="1168" y="158" width="10" height="10" rx="2.5" fill="#6B7A99" fill-opacity="0.38" transform="rotate(-24 1173 163)"/>
+    <rect x="1196" y="112" width="8" height="8" rx="2" fill="#6B7A99" fill-opacity="0.24" transform="rotate(40 1200 116)"/>
+    <rect x="1188" y="212" width="9" height="9" rx="2" fill="#6B7A99" fill-opacity="0.3" transform="rotate(-12 1192 216)"/>
+  </g>
+
+  <!-- particles riding the wind -->
+  <circle r="3" fill="#00BFFF" opacity="0.9">
+    <animateMotion dur="7s" repeatCount="indefinite"><mpath xlink:href="#stream1"/></animateMotion>
+  </circle>
+  <circle r="2" fill="#63B5FF" opacity="0.7">
+    <animateMotion dur="7s" begin="2.4s" repeatCount="indefinite"><mpath xlink:href="#stream1"/></animateMotion>
+  </circle>
+  <circle r="2.5" fill="#00BFFF" opacity="0.8">
+    <animateMotion dur="8.5s" begin="1.2s" repeatCount="indefinite"><mpath xlink:href="#stream2"/></animateMotion>
+  </circle>
+  <circle r="2" fill="#B4DCFF" opacity="0.6">
+    <animateMotion dur="9.5s" begin="0.6s" repeatCount="indefinite"><mpath xlink:href="#stream3"/></animateMotion>
+  </circle>
+
+  <!-- gold sparkles -->
+  <g transform="translate(1148, 74)" fill="url(#gold)">
+    <path d="M0,-11 C2,-3 3,-2 11,0 C3,2 2,3 0,11 C-2,3 -3,2 -11,0 C-3,-2 -2,-3 0,-11 Z">
+      <animate attributeName="opacity" values="1;0.45;1" dur="3.2s" repeatCount="indefinite"/>
+    </path>
+  </g>
+  <g transform="translate(972, 258)" fill="url(#gold)" opacity="0.8">
+    <path d="M0,-6 C1.2,-1.8 1.8,-1.2 6,0 C1.8,1.2 1.2,1.8 0,6 C-1.2,1.8 -1.8,1.2 -6,0 C-1.8,-1.2 -1.2,-1.8 0,-6 Z">
+      <animate attributeName="opacity" values="0.8;0.3;0.8" dur="4.1s" begin="1.5s" repeatCount="indefinite"/>
+    </path>
+  </g>
+
+  <!-- copy -->
+  <g font-family="'Plus Jakarta Sans','Segoe UI',Roboto,Helvetica,Arial,sans-serif">
+    <text x="84" y="92" font-size="15" font-weight="700" letter-spacing="4" fill="#63B5FF">FREE &amp; OPEN-SOURCE · ANDROID × WINDOWS</text>
+    <text x="82" y="164" font-size="62" font-weight="800" fill="#FFFFFF">Zephyr’s <tspan fill="url(#blueCyan)">Elixir</tspan></text>
+    <text x="84" y="206" font-size="21" font-weight="500" fill="#B4DCFF" fill-opacity="0.92">Debloat &amp; optimize your Android from your PC — over ADB.</text>
+
+    <!-- chips -->
+    <g font-size="13" font-weight="700" letter-spacing="1.2">
+      <rect x="84" y="232" width="118" height="34" rx="17" fill="#00E676" fill-opacity="0.08" stroke="#00E676" stroke-opacity="0.45"/>
+      <circle cx="106" cy="249" r="4" fill="#00E676"/>
+      <text x="120" y="254" fill="#00E676">NO ROOT</text>
+
+      <rect x="214" y="232" width="168" height="34" rx="17" fill="#00BFFF" fill-opacity="0.08" stroke="#00BFFF" stroke-opacity="0.45"/>
+      <circle cx="236" cy="249" r="4" fill="#00BFFF"/>
+      <text x="250" y="254" fill="#00BFFF">ZERO TELEMETRY</text>
+
+      <rect x="394" y="232" width="158" height="34" rx="17" fill="#FFD700" fill-opacity="0.08" stroke="#FFD700" stroke-opacity="0.45"/>
+      <circle cx="416" cy="249" r="4" fill="#FFD700"/>
+      <text x="430" y="254" fill="#FFD700">PRO AVAILABLE</text>
+    </g>
+  </g>
+
+  <!-- frame -->
+  <rect x="1" y="1" width="1278" height="318" rx="20" stroke="#63B5FF" stroke-opacity="0.18" stroke-width="1.5"/>
+</svg>
