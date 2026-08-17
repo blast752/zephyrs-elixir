@@ -8,16 +8,20 @@ public partial class Sidebar : UserControl
         ["BtnHome"] = "Home",
         ["BtnOptimize"] = "Optimize",
         ["BtnDebloat"] = "Debloat",
+        ["BtnRecipes"] = "Recipes",
         ["BtnTools"] = "Tools",
         ["BtnAdvanced"] = "Advanced",
         ["BtnSettings"] = "Settings",
         ["BtnHelp"] = "Help"
     };
 
+    private sealed record DeviceListItem(string Name, string Serial, bool IsAuthorized, bool IsActive);
+
     public Sidebar()
     {
         InitializeComponent();
         Loaded += OnLoaded;
+        Unloaded += OnUnloaded;
         TranslationManager.Instance.LanguageChanged += OnLanguageChanged;
     }
 
@@ -29,8 +33,41 @@ public partial class Sidebar : UserControl
             onStatusChanged: OnDeviceStatusChanged,
             onInfoUpdated: UpdateDeviceInfo
         );
-        
+
+        DeviceManager.Instance.DevicesChanged += OnDevicesChanged;
         RefreshDeviceDisplay();
+        RefreshDeviceList(DeviceManager.Instance.Devices);
+    }
+
+    private void OnUnloaded(object sender, RoutedEventArgs e) =>
+        DeviceManager.Instance.DevicesChanged -= OnDevicesChanged;
+
+    private void OnDevicesChanged(object? sender, IReadOnlyList<AndroidDevice> devices) =>
+        Dispatcher.BeginInvoke(() => RefreshDeviceList(devices));
+
+    private void RefreshDeviceList(IReadOnlyList<AndroidDevice> devices)
+    {
+        var active = DeviceManager.Instance.ActiveSerial;
+        DeviceList.ItemsSource = devices
+            .Select(d => new DeviceListItem(d.Name, d.Serial, d.IsAuthorized, d.Serial == active))
+            .ToList();
+
+        NoDevicesText.Visibility = devices.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+        DeviceCountBadge.Visibility = devices.Count > 1 ? Visibility.Visible : Visibility.Collapsed;
+        DeviceCountText.Text = devices.Count.ToString(CultureInfo.InvariantCulture);
+    }
+
+    private void OnDevicePanelClick(object sender, RoutedEventArgs e)
+    {
+        RefreshDeviceList(DeviceManager.Instance.Devices);
+        DevicePopup.IsOpen = !DevicePopup.IsOpen;
+    }
+
+    private void OnDeviceItemClick(object sender, RoutedEventArgs e)
+    {
+        if ((sender as FrameworkElement)?.DataContext is DeviceListItem item)
+            DeviceManager.Instance.SetActiveDevice(item.Serial);
+        DevicePopup.IsOpen = false;
     }
 
     private void OnLanguageChanged(object? sender, EventArgs e)

@@ -1,0 +1,15 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<linearGradient id="linkGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+<stop offset="0%" stop-color="#7D64FF"/>
+<stop offset="100%" stop-color="#5A3FD9"/>
+</linearGradient>
+</defs>
+<rect x="10" y="10" width="80" height="80" rx="20" ry="20" fill="url(#linkGrad)"/>
+<ellipse cx="50" cy="21" rx="31" ry="8" fill="white" opacity="0.18"/>
+<g transform="rotate(45 50 52)">
+<rect x="26" y="49" width="30" height="18" rx="9" ry="9" fill="none" stroke="white" stroke-width="5" stroke-linejoin="round"/>
+<rect x="44" y="37" width="30" height="18" rx="9" ry="9" fill="none" stroke="white" stroke-width="5" stroke-linejoin="round"/>
+<path d="M44.63,49.32 A9,9 0 0,1 55.37,54.68" fill="none" stroke="white" stroke-width="5" stroke-linecap="round"/>
+</g>
+</svg>

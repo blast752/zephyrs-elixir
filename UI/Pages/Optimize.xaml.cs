@@ -4,9 +4,7 @@ public sealed partial class Optimize : UserControl
 {
     #region Constants & Configuration
 
-    private const int TotalSteps = 120;
-    private const int CacheIterations = 100;
-    private const long MemoryThresholdKb = 102400;
+    private const int TotalSteps = OptimizationEngine.TotalSteps;
     private const int MaxParticlesIdle = 8;
     private const int MaxParticlesActive = 20;
 
@@ -21,9 +19,9 @@ public sealed partial class Optimize : UserControl
     private CancellationTokenSource? _cts;
     private DateTime _startTime;
     private int _currentStep;
-    private bool _particlesInit;
     private bool _isRunning;
     private Storyboard? _pulseStoryboard;
+    private DispatcherTimer? _particleSpawnTimer, _particleStateTimer;
 
     #endregion
 
@@ -56,7 +54,12 @@ public sealed partial class Optimize : UserControl
         if (TryFindResource("Optimize.Storyboard.PulseGlow") is Storyboard sb)
             _pulseStoryboard = sb;
 
-        if (!_particlesInit) { InitializeParticleSystem(); _particlesInit = true; }
+        // The page instance survives navigation, so the particle field is built once and its two
+        // timers are simply parked while the page is away — never torn down, or the ambient
+        // animation would be gone for good after the first time the user leaves this page.
+        if (_particleSpawnTimer is null) InitializeParticleSystem();
+        _particleSpawnTimer?.Start();
+        _particleStateTimer?.Start();
     }
 
     private void OnUnloaded(object sender, RoutedEventArgs e)
@@ -64,6 +67,8 @@ public sealed partial class Optimize : UserControl
         _cts?.Cancel();
         _timer.Stop();
         StopPulseAnimation();
+        _particleSpawnTimer?.Stop();
+        _particleStateTimer?.Stop();
     }
 
     private void OnTimerTick(object? sender, EventArgs e) => 
@@ -101,13 +106,14 @@ public sealed partial class Optimize : UserControl
 
     private void UpdateProgress(int step)
     {
+        _currentStep = step;
         Dispatcher.Invoke(() =>
         {
             var clampedStep = Math.Min(step, TotalSteps);
             OptimizeProgress.Value = clampedStep;
             var percentage = Math.Min(step * 100.0 / TotalSteps, 100);
             ProgressText.Text = $"{percentage:0}%";
-            
+
             UpdateLiveStats();
         });
     }
@@ -143,9 +149,9 @@ public sealed partial class Optimize : UserControl
             OptimizeButton.Content = isStopMode 
                 ? Strings.Dialog_StopOptimization_StopButton 
                 : Strings.Optimize_Button_Start;
-            OptimizeButton.Tag = isStopMode ? "\uE711" : "\uE768";
+            OptimizeButton.Tag = isStopMode ? "close" : "play";
             
-            OptimizeIcon.Text = isStopMode ? "\uE768" : "\uE9F5";
+            OptimizeIcon.Kind = isStopMode ? "play" : "settings";
         });
     }
 
@@ -157,17 +163,17 @@ public sealed partial class Optimize : UserControl
             StatStorage.Text = UIHelpers.FormatSize(_report.StorageCleanedKb);
             StatApps.Text = _report.AppsForceKilled.Count.ToString();
             var (statusText, statusIcon) = _isRunning
-                ? (Strings.Optimize_LiveStatus_Running, "\uE895")
+                ? (Strings.Optimize_LiveStatus_Running, "sync")
                 : _report.Outcome switch
                 {
-                    OptimizationOutcome.Success => (Strings.Optimize_LiveStatus_Completed, "\uE73E"),
-                    OptimizationOutcome.Partial => (Strings.Optimize_LiveStatus_Interrupted, "\uE7BA"),
-                    OptimizationOutcome.Error   => (Strings.Optimize_LiveStatus_Failed,      "\uEA39"),
-                    _                           => (Strings.Optimize_LiveStatus_Completed,   "\uE73E")
+                    OptimizationOutcome.Success => (Strings.Optimize_LiveStatus_Completed, "check"),
+                    OptimizationOutcome.Partial => (Strings.Optimize_LiveStatus_Interrupted, "warning"),
+                    OptimizationOutcome.Error   => (Strings.Optimize_LiveStatus_Failed,      "error-circle"),
+                    _                           => (Strings.Optimize_LiveStatus_Completed,   "check")
                 };
 
             StatStatus.Text = statusText;
-            StatStatusIcon.Text = statusIcon;
+            StatStatusIcon.Kind = statusIcon;
         });
     }
 
@@ -252,34 +258,21 @@ public sealed partial class Optimize : UserControl
 
         DeviceManager.Instance.DeviceStatusChanged += OnDeviceStatus;
 
+        // Pin the whole run to the device that is active at start: a mid-run active-device switch
+        // must never mix optimization commands across phones, and the engine's disconnect guard
+        // then watches this specific serial instead of the global connection state.
+        var serial = DeviceManager.Instance.ActiveSerial;
+        var engine = new OptimizationEngine(serial.Length > 0 ? serial : null, _report)
+        {
+            Extreme = IsExtreme,
+            Log = LogToConsole,
+            StepChanged = UpdateStepLabel,
+            ProgressChanged = UpdateProgress
+        };
+
         try
         {
-            var ct = _cts!.Token;
-
-            await RunStep(ClearCacheAsync, ct);
-            await RunStep(ManageMemoryAsync, ct);
-            await RunStep(DeepCleanStorageAsync, ct);
-            await RunStep(OptimizeNetworkAsync, ct);
-            await RunStep(OptimizeSystemAsync, ct);
-            await RunStep(CompilePackagesAsync, ct);
-            await RunStep(OptimizeDexAsync, ct);
-
-            _report.Outcome = OptimizationOutcome.Success;
-            UpdateStepLabel(Strings.Common_Status_Success);
-            LogToConsole($"✓ {Strings.Common_Status_Success}\n");
-        }
-        catch (OperationCanceledException)
-        {
-            _report.Outcome = OptimizationOutcome.Partial;
-            UpdateStepLabel(Strings.Common_Button_Cancel);
-            LogToConsole($"⚠ {Strings.Optimize_Console_Interrupted}\n");
-        }
-        catch (Exception ex)
-        {
-            _report.Outcome = OptimizationOutcome.Error;
-            _report.ErrorMessage = ex.Message;
-            UpdateStepLabel(Strings.Common_Status_Error.Replace("{0}", ""));
-            LogToConsole($"✗ {ex.Message}\n");
+            await engine.RunAsync(_cts!.Token);
         }
         finally
         {
@@ -288,13 +281,6 @@ public sealed partial class Optimize : UserControl
         }
 
         ShowOptimizationReport();
-    }
-
-    private async Task RunStep(Func<CancellationToken, Task> step, CancellationToken ct)
-    {
-        GuardRunning(ct);
-        await step(ct);
-        _report.CompletedSteps++;
     }
 
     private void PrepareForOptimization()
@@ -312,7 +298,8 @@ public sealed partial class Optimize : UserControl
         ClearConsole();
         LogToConsole($"▶ {Strings.Optimize_Console_Starting}\n");
         _timer.Start();
-        
+
+        UpdateLiveStats();
         ShowStatsFooter();
         StartPulseAnimation();
     }
@@ -339,325 +326,6 @@ public sealed partial class Optimize : UserControl
 
         LogToConsole($"{Strings.Optimize_Console_Stopping}\n");
         _cts.Cancel();
-    }
-
-    #endregion
-
-    #region Optimization Tasks
-
-    private async Task ClearCacheAsync(CancellationToken ct)
-    {
-        for (int i = 1; i <= CacheIterations; i++)
-        {
-            UpdateStepLabel(string.Format(Strings.Optimize_Status_ClearingCache, i, CacheIterations));
-            
-            if (i % 20 == 0) 
-                LogToConsole($"{string.Format(Strings.Optimize_Console_CacheProgress, i)}\n");
-            
-            await RunAdbAsync("shell pm trim-caches 1000G", ct);
-            UpdateProgress(++_currentStep);
-            await Task.Delay(30, ct);
-        }
-        
-        _report.CacheCleared = true;
-        LogToConsole($"✓ {Strings.Optimize_Console_CacheCleared}\n");
-    }
-
-    private async Task ManageMemoryAsync(CancellationToken ct)
-    {
-        UpdateStepLabel(Strings.Optimize_Status_AnalyzingMemory);
-        LogToConsole($"{Strings.Optimize_Console_AnalyzingProcesses}\n");
-
-        var heavyApps = await GetHeavyAppsAsync(ct);
-        await RunAdbAsync("shell am kill-all", ct);
-        _report.ProcessesKilled++;
-        UpdateProgress(++_currentStep);
-
-        foreach (var (pkg, mem) in heavyApps.Take(10))
-        {
-            if (CloudIntelligenceManager.IsCriticalPackage(pkg)) continue;
-            
-            var appName = pkg.Split('.').Last();
-            UpdateStepLabel(string.Format(Strings.Optimize_Status_Stopping, appName));
-            LogToConsole($"{string.Format(Strings.Optimize_Console_ForceStoppingApp, pkg, $"{mem / 1024.0:F1}")}\n");
-            await RunAdbAsync($"shell am force-stop {pkg}", ct);
-            _report.AppsForceKilled.Add((pkg, mem));
-            _report.MemoryFreedKb += mem;
-        }
-        
-        UpdateProgress(++_currentStep);
-        LogToConsole($"✓ {string.Format(Strings.Optimize_Console_MemoryOptimized, $"{_report.MemoryFreedKb / 1024.0:F1}")}\n");
-
-        if (IsExtreme)
-        {
-            var result = await Pro.ExecuteAsync(ProCommandIds.ExtremeCachedAppsFreezer, ct: ct);
-            if (result.Success)
-                LogToConsole($"✓ {Strings.Optimize_Console_CachedAppsFreezer}\n");
-        }
-        
-        UpdateProgress(++_currentStep);
-    }
-
-    private async Task DeepCleanStorageAsync(CancellationToken ct)
-    {
-        UpdateStepLabel(Strings.Optimize_Status_DeepCleaning);
-        LogToConsole($"{Strings.Optimize_Console_StartingDeepClean}\n");
-
-        var cleanupOps = new (string? Path, string Command, string Description)[]
-        {
-            ("/data/local/tmp", "shell rm -rf /data/local/tmp/*", Strings.Optimize_Clean_TempFiles),
-            (null, "shell pm trim-caches 1000G", Strings.Optimize_Clean_PackageCaches),
-            ("/data/anr", "shell rm -rf /data/anr/*", Strings.Optimize_Clean_AnrTraces),
-            ("/data/tombstones", "shell rm -rf /data/tombstones/*", Strings.Optimize_Clean_CrashDumps),
-            (null, "shell logcat -c", Strings.Optimize_Clean_LogcatBuffer),
-            ("/data/system/dropbox", "shell rm -rf /data/system/dropbox/*", Strings.Optimize_Clean_SystemDropbox)
-        };
-
-        long storageBefore = await GetAvailableStorageAsync(ct);
-        long totalCleaned = 0;
-
-        foreach (var (path, cmd, desc) in cleanupOps)
-        {
-            UpdateStepLabel(string.Format(Strings.Optimize_Status_Cleaning, desc));
-            
-            var dirSize = path != null ? await GetDirectorySizeAsync(path, ct) : 0;
-            var result = await RunAdbAsync(cmd, ct);
-            
-            if (!result.Contains("Permission denied", StringComparison.OrdinalIgnoreCase))
-            {
-                if (path != null && dirSize > 0)
-                {
-                    totalCleaned += dirSize;
-                    LogToConsole($"✓ {desc} ({dirSize / 1024.0:F1} MB)\n");
-                }
-                else
-                {
-                    LogToConsole($"✓ {desc}\n");
-                }
-                _report.CleanedItems.Add(desc);
-            }
-            UpdateProgress(++_currentStep);
-        }
-
-        long storageAfter = await GetAvailableStorageAsync(ct);
-        if (storageAfter - storageBefore > 0) 
-            totalCleaned = storageAfter - storageBefore;
-
-        UpdateStepLabel(Strings.Optimize_Status_RunningTrim);
-        await RunAdbAsync("shell sm fstrim /data", ct);
-        
-        var sdkStr = await RunAdbAsync("shell getprop ro.build.version.sdk", ct);
-        if (int.TryParse(sdkStr.Trim(), out var sdk) && sdk < 29)
-            await RunAdbAsync("shell sm fstrim /cache", ct);
-        
-        UpdateProgress(++_currentStep);
-        
-        _report.TrimExecuted = true;
-        _report.StorageCleanedKb = totalCleaned;
-        LogToConsole($"✓ {string.Format(Strings.Optimize_Console_StorageComplete, $"{totalCleaned / 1024.0:F1}")}\n");
-    }
-
-    private async Task OptimizeNetworkAsync(CancellationToken ct)
-    {
-        UpdateStepLabel(Strings.Optimize_Status_OptimizingNetwork);
-        LogToConsole($"{Strings.Optimize_Console_ApplyingNetwork}\n");
-        
-        var networkSettings = new (string Key, string Value)[]
-        {
-            ("wifi_watchdog_poor_network_test_enabled", "0"),
-            ("network_recommendations_enabled", "0"),
-            ("wifi_scan_always_enabled", "0"),
-            ("ble_scan_always_enabled", "0")
-        };
-
-        foreach (var (key, val) in networkSettings)
-        {
-            await RunAdbAsync($"shell settings put global {key} {val}", ct);
-            UpdateProgress(++_currentStep);
-        }
-
-        _report.NetworkOptimized = true;
-        LogToConsole($"✓ {Strings.Optimize_Console_NetworkComplete}\n");
-    }
-
-    private async Task OptimizeSystemAsync(CancellationToken ct)
-    {
-        UpdateStepLabel(Strings.Optimize_Status_OptimizingSystem);
-
-        if (IsExtreme)
-        {
-            LogToConsole($"{Strings.Optimize_Console_MulticoreScheduler}\n");
-            await Pro.ExecuteAsync(ProCommandIds.ExtremeMulticoreScheduler, ct: ct);
-        }
-        UpdateProgress(++_currentStep);
-
-        LogToConsole($"{Strings.Optimize_Console_SettingAnimations}\n");
-        var animationSettings = new[] { "animator_duration_scale", "transition_animation_scale", "window_animation_scale" };
-        
-        foreach (var setting in animationSettings)
-        {
-            await RunAdbAsync($"shell settings put global {setting} 0.5", ct);
-            UpdateProgress(++_currentStep);
-        }
-
-        LogToConsole($"✓ {Strings.Optimize_Console_SystemOptimized}\n");
-    }
-
-    private async Task CompilePackagesAsync(CancellationToken ct)
-    {
-        var mode = "speed";
-        if (IsExtreme)
-        {
-            var result = await Pro.ExecuteAsync(ProCommandIds.ExtremeCompilationMode, ct: ct);
-            if (result.Success) mode = result.Message;
-        }
-        
-        UpdateStepLabel(IsExtreme ? Strings.Optimize_Status_ExtremeCompilation : Strings.Optimize_Status_CompilingPackages);
-        LogToConsole($"{string.Format(IsExtreme ? Strings.Optimize_Console_ExtremeCompilationStart : Strings.Optimize_Console_CompilationStart, mode)}\n");
-
-        GuardRunning(ct);
-        await AdbExecutor.ExecuteCommandAsync(
-            $"shell cmd package compile -m {mode} -f -a",
-            ct,
-            line =>
-            {
-                LogToConsole($"{line}\n");
-                var match = CompileOutputRegex().Match(line);
-                if (match.Success)
-                    UpdateStepLabel(string.Format(Strings.Optimize_Status_Compiling, match.Groups[1].Value.Split('.').Last()));
-            });
-        GuardRunning(ct);
-
-        UpdateProgress(++_currentStep);
-        _report.CompilationMode = mode;
-    }
-
-    private async Task OptimizeDexAsync(CancellationToken ct)
-    {
-        try
-        {
-            UpdateStepLabel(Strings.Optimize_Status_DexOptimization);
-            LogToConsole($"{Strings.Optimize_Console_SpoofingBattery}\n");
-            await RunAdbAsync("shell dumpsys battery set level 100", ct);
-
-            LogToConsole($"{Strings.Optimize_Console_RunningDex}\n");
-            await RunAdbAsync("shell cmd package bg-dexopt-job", ct);
-            UpdateProgress(++_currentStep);
-            _report.DexOptimized = true;
-        }
-        finally
-        {
-            if (DeviceManager.Instance.IsConnected)
-            {
-                LogToConsole($"{Strings.Optimize_Console_ResettingBattery}\n");
-                try
-                {
-                    await AdbExecutor.ExecuteCommandAsync("shell dumpsys battery reset", CancellationToken.None);
-                    LogToConsole($"✓ {Strings.Optimize_Console_BatteryReset}\n");
-                }
-                catch { }
-            }
-        }
-    }
-
-    #endregion
-
-    #region Memory Analysis Helpers
-
-    [GeneratedRegex(@"(com\.[\w\.]+|org\.[\w\.]+|net\.[\w\.]+).*?(?:lastPss|pss|mem)[=:\s]*([\d,]+)", RegexOptions.IgnoreCase | RegexOptions.Singleline)]
-    private static partial Regex ActivityProcessRegex();
-
-    [GeneratedRegex(@"on\s+([\w\.]+)$")]
-    private static partial Regex CompileOutputRegex();
-
-    private async Task<List<(string Package, long MemoryKb)>> GetHeavyAppsAsync(CancellationToken ct)
-    {
-        var memInfo = await RunAdbAsync("shell dumpsys meminfo", ct);
-        var result = MemInfoParser.ParseMemInfo(memInfo);
-
-        if (result.Count == 0)
-            result = ParseActivityProcesses(await RunAdbAsync("shell dumpsys activity processes", ct));
-
-        if (result.Count == 0)
-            result = ParsePsOutput(await RunAdbAsync("shell ps -A -o RSS,NAME", ct));
-
-        return result
-            .Where(x => x.MemoryKb > MemoryThresholdKb && !CloudIntelligenceManager.IsCriticalPackage(x.Package))
-            .OrderByDescending(x => x.MemoryKb)
-            .ToList();
-    }
-
-    private static List<(string Package, long MemoryKb)> ParseActivityProcesses(string output)
-    {
-        var result = new List<(string, long)>();
-        
-        foreach (Match match in ActivityProcessRegex().Matches(output))
-        {
-            var pkg = match.Groups[1].Value;
-            if (long.TryParse(match.Groups[2].Value.Replace(",", ""), out var kb))
-            {
-                var existing = result.FindIndex(r => r.Item1 == pkg);
-                if (existing >= 0)
-                    result[existing] = (pkg, Math.Max(result[existing].Item2, kb));
-                else
-                    result.Add((pkg, kb));
-            }
-        }
-        return result;
-    }
-
-    private static List<(string Package, long MemoryKb)> ParsePsOutput(string output) =>
-        output.Split('\n')
-            .Skip(1)
-            .Select(line => line.Trim().Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries))
-            .Where(parts => parts.Length >= 2 && 
-                           long.TryParse(parts[0], out _) && 
-                           parts[^1].Contains('.') &&
-                           (parts[^1].StartsWith("com.") || parts[^1].StartsWith("org.") || parts[^1].StartsWith("net.")))
-            .Select(parts => (parts[^1], long.Parse(parts[0])))
-            .ToList();
-
-    #endregion
-
-    #region Utility Methods
-    
-    private void GuardRunning(CancellationToken ct)
-    {
-        ct.ThrowIfCancellationRequested();
-        if (!DeviceManager.Instance.IsConnected)
-            throw new OperationCanceledException(Strings.Optimize_Console_DeviceDisconnected, ct);
-    }
-
-    private async Task<string> RunAdbAsync(string command, CancellationToken ct, bool log = false)
-    {
-        GuardRunning(ct);
-        var output = await AdbExecutor.ExecuteCommandAsync(command, ct);
-        GuardRunning(ct);
-        if (log && !string.IsNullOrWhiteSpace(output))
-            LogToConsole($"{output}\n");
-        return output;
-    }
-
-    private async Task<long> GetDirectorySizeAsync(string path, CancellationToken ct)
-    {
-        try
-        {
-            var output = await RunAdbAsync($"shell du -sk {path} 2>/dev/null", ct);
-            var parts = output.Trim().Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
-            return parts.Length > 0 && long.TryParse(parts[0], out var kb) ? kb : 0;
-        }
-        catch { return 0; }
-    }
-
-    private async Task<long> GetAvailableStorageAsync(CancellationToken ct)
-    {
-        try
-        {
-            var output = await RunAdbAsync("shell df /data | tail -1", ct);
-            var parts = output.Trim().Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
-            return parts.Length >= 4 && long.TryParse(parts[3], out var kb) ? kb : 0;
-        }
-        catch { return 0; }
     }
 
     #endregion
@@ -705,8 +373,8 @@ public sealed partial class Optimize : UserControl
         var wasRunning = false;
         var maxParticles = MaxParticlesIdle;
 
-        var spawnTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(800) };
-        var stateTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
+        var spawnTimer = _particleSpawnTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(800) };
+        var stateTimer = _particleStateTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
 
         stateTimer.Tick += (_, _) =>
         {
@@ -752,17 +420,6 @@ public sealed partial class Optimize : UserControl
         {
             for (int i = 0; i < 3; i++) SpawnParticle();
         }, DispatcherPriority.Loaded);
-
-        spawnTimer.Start();
-        stateTimer.Start();
-
-        ParticleCanvas.Unloaded += (_, _) =>
-        {
-            spawnTimer.Stop();
-            stateTimer.Stop();
-            ParticleCanvas.Children.Clear();
-            particles.Clear();
-        };
     }
 
     private void AnimateParticle(Rectangle particle, HashSet<Rectangle> particles, Random rng)

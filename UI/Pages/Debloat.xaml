@@ -7,6 +7,7 @@
              mc:Ignorable="d"
              d:DesignHeight="860" d:DesignWidth="1120"
              Background="Transparent"
+             PreviewKeyDown="OnRootPreviewKeyDown"
              x:Name="Root">
 
 <Grid Margin="30">
@@ -17,7 +18,7 @@
     </Grid.RowDefinitions>
 
     <h:PageHeader x:Name="PageHeaderControl" Grid.Row="0"
-                Icon="&#xE74D;"
+                Icon="delete"
                 Title="{h:Translate Debloat_Header}"
                 Subtitle="{h:Translate Debloat_Status_ConnectAndLoad}">
         <Grid>
@@ -50,7 +51,7 @@
                     Grid.Column="2" 
                     Style="{StaticResource App.Style.Button}" 
                     Content="{h:Translate Debloat_Button_LoadApps}" 
-                    Tag="&#xE895;"
+                    Tag="sync"
                     Click="LoadAppsButton_Click" 
                     IsEnabled="False" 
                     MinWidth="160"/>
@@ -89,14 +90,26 @@
                              Tag="{h:Translate Debloat_Search_Placeholder}"
                              Height="40"/>
 
-                    <StackPanel x:Name="FilterPanel" Grid.Column="2" 
-                                Orientation="Horizontal" 
+                    <StackPanel x:Name="FilterPanel" Grid.Column="2"
+                                Orientation="Horizontal"
                                 VerticalAlignment="Center"
                                 HorizontalAlignment="Right">
                         <RadioButton Content="{h:Translate Debloat_Filter_All}" IsChecked="True" Style="{StaticResource App.Style.RadioButton}" Checked="OnFilterChanged" GroupName="AppFilter" MinWidth="70" Height="40" MinHeight="0"/>
                         <RadioButton Content="{h:Translate Debloat_Filter_User}" Style="{StaticResource App.Style.RadioButton}" Checked="OnFilterChanged" GroupName="AppFilter" MinWidth="70" Height="40" MinHeight="0"/>
                         <RadioButton Content="{h:Translate Debloat_Filter_System}" Style="{StaticResource App.Style.RadioButton}" Checked="OnFilterChanged" GroupName="AppFilter" MinWidth="70" Height="40" MinHeight="0"/>
                         <RadioButton Content="{h:Translate Debloat_Filter_Disabled}" Style="{StaticResource App.Style.RadioButton}" Checked="OnFilterChanged" GroupName="AppFilter" MinWidth="70" Height="40" MinHeight="0"/>
+                        <ComboBox x:Name="SortCombo"
+                                  Width="180"
+                                  Margin="12,0,0,0"
+                                  VerticalAlignment="Center"
+                                  SelectedIndex="0"
+                                  SelectionChanged="OnSortChanged"
+                                  ToolTip="{h:Translate Debloat_Sort_Tooltip}"
+                                  Style="{StaticResource App.Style.ComboBox.Slim}">
+                            <ComboBoxItem Content="{h:Translate Debloat_Sort_Name}"/>
+                            <ComboBoxItem Content="{h:Translate Debloat_Sort_SafeFirst}"/>
+                            <ComboBoxItem Content="{h:Translate Debloat_Sort_RiskFirst}"/>
+                        </ComboBox>
                     </StackPanel>
                 </Grid>
 
@@ -108,9 +121,44 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="16"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <CheckBox x:Name="SelectAllCheckBox" Style="{StaticResource App.Style.GlassCheckBox}" Margin="15,0,0,0" Checked="OnSelectAllChecked" Unchecked="OnSelectAllUnchecked"/>
-                <TextBlock Grid.Column="2" x:Name="SelectAllTextBlock" Text="{h:Translate Debloat_SelectAll}" Foreground="White" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock x:Name="SelectAllTextBlock" Text="{h:Translate Debloat_SelectAll}" Foreground="White" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                    <Border x:Name="SelectedCountBadge"
+                            Background="#2A00BFFF"
+                            BorderBrush="{StaticResource App.Brush.DeepSkyBlue}"
+                            BorderThickness="1"
+                            CornerRadius="10"
+                            Padding="9,2"
+                            Margin="12,0,0,0"
+                            Visibility="Collapsed">
+                        <TextBlock x:Name="SelectedCountText" FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource App.Brush.DeepSkyBlue}" VerticalAlignment="Center"/>
+                    </Border>
+                </StackPanel>
+                <StackPanel Grid.Column="4" x:Name="PresetPanel" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Style="{StaticResource App.Style.Button.Inline}"
+                            Content="{h:Translate Debloat_Preset_Import}"
+                            Tag="import-file"
+                            Click="ImportPreset_Click"
+                            ToolTip="{h:Translate Debloat_Preset_Import_Tooltip}"
+                            Margin="0,0,8,0"/>
+                    <Button Style="{StaticResource App.Style.Button.Inline}"
+                            Content="{h:Translate Debloat_Preset_Export}"
+                            Tag="save"
+                            Click="ExportPreset_Click"
+                            ToolTip="{h:Translate Debloat_Preset_Export_Tooltip}"
+                            IsEnabled="{Binding ElementName=Root, Path=SelectedAppsCount, Converter={StaticResource App.Converter.IntToBool}}"
+                            Margin="0,0,8,0"/>
+                    <Button Style="{StaticResource App.Style.Button.Inline}"
+                            Content="{h:Translate Debloat_Preset_SaveAsRecipe}"
+                            Tag="library"
+                            Click="SaveAsRecipe_Click"
+                            ToolTip="{h:Translate Debloat_Preset_SaveAsRecipe_Tooltip}"
+                            IsEnabled="{Binding ElementName=Root, Path=SelectedAppsCount, Converter={StaticResource App.Converter.IntToBool}}"/>
+                </StackPanel>
             </Grid>
 
             <Grid Grid.Row="2">
@@ -163,32 +211,7 @@
                                                   Style="{StaticResource App.Style.GlassCheckBox}" VerticalAlignment="Center"/>
 
                                         <Border Grid.Column="2" Width="44" Height="44" CornerRadius="10" Background="#33FFFFFF" VerticalAlignment="Center">
-                                            <Grid>
-                                                <Image Source="/Assets/Icons/default.png" Width="44" Height="44" RenderOptions.BitmapScalingMode="HighQuality">
-                                                    <Image.Style>
-                                                        <Style TargetType="Image">
-                                                            <Setter Property="Visibility" Value="Visible"/>
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding Path=Icon, Converter={x:Static h:NullToVisibilityConverter.Instance}}" Value="Visible">
-                                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </Image.Style>
-                                                </Image>
-                                                <Image Source="{Binding Icon}" Width="44" Height="44" RenderOptions.BitmapScalingMode="HighQuality">
-                                                    <Image.Style>
-                                                        <Style TargetType="Image">
-                                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding Path=Icon, Converter={x:Static h:NullToVisibilityConverter.Instance}}" Value="Visible">
-                                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </Image.Style>
-                                                </Image>
-                                            </Grid>
+                                            <Image Source="{Binding Icon, TargetNullValue=/Assets/Icons/default.png}" Width="44" Height="44" RenderOptions.BitmapScalingMode="HighQuality"/>
                                         </Border>
 
                                         <StackPanel Grid.Column="4" VerticalAlignment="Center" MinWidth="120">
@@ -250,7 +273,7 @@
                                           VerticalAlignment="Center"/>
 
                                 <Border Grid.Column="2" Width="40" Height="40" CornerRadius="8" Background="#33FFFFFF" VerticalAlignment="Center">
-                                    <Image Source="{Binding Icon}" Width="40" Height="40" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    <Image Source="{Binding Icon, TargetNullValue=/Assets/Icons/default.png}" Width="40" Height="40" RenderOptions.BitmapScalingMode="HighQuality"/>
                                 </Border>
 
                                 <StackPanel Grid.Column="4" VerticalAlignment="Center">
@@ -266,7 +289,7 @@
                                     <Border Background="#20FFFFFF" CornerRadius="6" Padding="8,4" Margin="0,0,10,0"
                                              Visibility="{Binding HasBackup, Converter={StaticResource App.Converter.BooleanToVisibility}}">
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="&#xE896;" FontFamily="Segoe MDL2 Assets" FontSize="11" Foreground="#FFD700" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                            <h:Icon Kind="download" Size="13" Foreground="#FFD700" VerticalAlignment="Center" Margin="0,0,5,0"/>
                                             <TextBlock Text="{h:Translate Debloat_History_ApkSaved}" FontSize="11" Foreground="White" VerticalAlignment="Center"/>
                                         </StackPanel>
                                     </Border>
@@ -275,13 +298,13 @@
                                 <StackPanel Grid.Column="7" Orientation="Horizontal" VerticalAlignment="Center">
                                     <Button Style="{StaticResource App.Style.Button.Inline}" 
                                             Content="{h:Translate Debloat_Button_Restore}" 
-                                            Tag="&#xE777;"
+                                            Tag="restore"
                                             Click="RestoreApp_Click"
                                             Margin="0,0,8,0"/>
                                     
                                     <Button Style="{StaticResource App.Style.Button.Inline.Destructive}" 
                                             Content="{h:Translate Debloat_Button_Forget}" 
-                                            Tag="&#xE74D;"
+                                            Tag="delete"
                                             Click="DeleteHistory_Click"/>
                                 </StackPanel>
                             </Grid>
@@ -289,6 +312,14 @@
                     </ListView.ItemTemplate>
                 </ListView>
                 
+                <StackPanel x:Name="EmptyState" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False">
+                    <Border Width="76" Height="76" CornerRadius="38" Background="#12FFFFFF" BorderBrush="{StaticResource App.Brush.Glass.Border}" BorderThickness="1" HorizontalAlignment="Center">
+                        <h:Icon Kind="apps" Size="32" x:Name="EmptyStateIcon" Foreground="#5A7FA8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <TextBlock x:Name="EmptyStateTitle" FontSize="17" FontWeight="SemiBold" Foreground="White" HorizontalAlignment="Center" Margin="0,18,0,0"/>
+                    <TextBlock x:Name="EmptyStateText" FontSize="13" Foreground="{StaticResource App.Brush.Steel}" HorizontalAlignment="Center" TextAlignment="Center" MaxWidth="440" TextWrapping="Wrap" LineHeight="19" Margin="0,7,0,0"/>
+                </StackPanel>
+
                 <Border x:Name="LoadingIndicator" Visibility="Collapsed" Background="#B30E1A33" CornerRadius="12" BorderBrush="{StaticResource App.Brush.Glass.Border}" BorderThickness="1" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="40">
                     <StackPanel>
                         <ProgressBar IsIndeterminate="True" Width="200" Style="{StaticResource App.Style.ProgressBar}"/>
@@ -303,9 +334,9 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Border Grid.Row="0" Background="{StaticResource App.Brush.Glass.Border}" Height="1" Margin="0,0,0,20"/>
-                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button x:Name="ManageAppButton" Content="{h:Translate Debloat_Button_ManageApp}" Tag="&#xE713;"
-                            Click="ManageAppButton_Click" Margin="0,0,12,0" MinWidth="160">
+                <StackPanel x:Name="AppsActions" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button x:Name="ManageAppButton" Content="{h:Translate Debloat_Button_ManageApp}" Tag="settings"
+                            Click="ManageAppButton_Click" Margin="0,0,12,0" MinWidth="150">
                         <Button.Style>
                             <Style TargetType="Button" BasedOn="{StaticResource App.Style.Button}">
                                 <Setter Property="IsEnabled" Value="False"/>
@@ -317,22 +348,30 @@
                             </Style>
                         </Button.Style>
                     </Button>
-                    <Button x:Name="DisableButton" Style="{StaticResource App.Style.Button}" Content="{h:Translate Debloat_Button_DisableSelected}" Tag="&#xE74D;"
-                            Click="DisableButton_Click" Margin="0,0,12,0" MinWidth="160" IsEnabled="{Binding ElementName=Root, Path=SelectedAppsCount, Converter={StaticResource App.Converter.IntToBool}}"/>
-                    <Button x:Name="UninstallButton" Style="{StaticResource App.Style.Button.Destructive}" Content="{h:Translate Debloat_Button_UninstallSelected}" Tag="&#xE74D;"
-                            Click="UninstallButton_Click" MinWidth="160" IsEnabled="{Binding ElementName=Root, Path=SelectedAppsCount, Converter={StaticResource App.Converter.IntToBool}}"/>
+                    <Button x:Name="EnableButton" Style="{StaticResource App.Style.Button}" Content="{h:Translate Debloat_Button_EnableSelected}" Tag="check-circle"
+                            Click="EnableButton_Click" Margin="0,0,12,0" MinWidth="150" IsEnabled="{Binding ElementName=Root, Path=SelectedDisabledCount, Converter={StaticResource App.Converter.IntToBool}}"/>
+                    <Button x:Name="DisableButton" Style="{StaticResource App.Style.Button}" Content="{h:Translate Debloat_Button_DisableSelected}" Tag="error-circle"
+                            Click="DisableButton_Click" Margin="0,0,12,0" MinWidth="150" IsEnabled="{Binding ElementName=Root, Path=SelectedActiveCount, Converter={StaticResource App.Converter.IntToBool}}"/>
+                    <Button x:Name="UninstallButton" Style="{StaticResource App.Style.Button.Destructive}" Content="{h:Translate Debloat_Button_UninstallSelected}" Tag="delete"
+                            Click="UninstallButton_Click" MinWidth="150" IsEnabled="{Binding ElementName=Root, Path=SelectedAppsCount, Converter={StaticResource App.Converter.IntToBool}}"/>
+                </StackPanel>
+                <StackPanel x:Name="HistoryActions" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Visibility="Collapsed">
+                    <Button Style="{StaticResource App.Style.Button}" Content="{h:Translate Debloat_Restore_Selected}" Tag="restore"
+                            Click="RestoreSelected_Click" Margin="0,0,12,0" MinWidth="160" IsEnabled="{Binding ElementName=Root, Path=SelectedAppsCount, Converter={StaticResource App.Converter.IntToBool}}"/>
+                    <Button Style="{StaticResource App.Style.Button.Destructive}" Content="{h:Translate Debloat_Forget_Selected}" Tag="delete"
+                            Click="ForgetSelected_Click" MinWidth="160" IsEnabled="{Binding ElementName=Root, Path=SelectedAppsCount, Converter={StaticResource App.Converter.IntToBool}}"/>
                 </StackPanel>
             </Grid>
         </Grid>
     </h:ShadowCard>
 
-    <Grid x:Name="OverlayContainer" Grid.Row="0" Grid.RowSpan="3" Visibility="Collapsed" Background="#CC050A14">
+    <Grid x:Name="OverlayContainer" Grid.Row="0" Grid.RowSpan="3" Visibility="Collapsed" Background="#CC050A14" MouseLeftButtonDown="OverlayContainer_MouseDown">
         
         <Grid x:Name="UninstallConfirmOverlay" Visibility="Collapsed">
             <h:ShadowCard Style="{StaticResource App.Style.OverlayCard}" Width="520" VerticalAlignment="Center">
                 <StackPanel>
                     <Border Width="56" Height="56" CornerRadius="28" Background="#20DC143C" HorizontalAlignment="Center" Margin="0,0,0,18">
-                        <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="24" Foreground="#FF6B6B" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <h:Icon Kind="delete" Size="26" Foreground="#FF6B6B" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
                     
                     <TextBlock Text="{h:Translate Debloat_Uninstall_ConfirmTitle}" FontSize="20" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
@@ -344,7 +383,7 @@
                     <Border Background="#15FFFFFF" CornerRadius="12" Padding="18" Margin="0,0,0,24" BorderBrush="{StaticResource App.Brush.Glass.Border}" BorderThickness="1">
                         <StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                                <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" Foreground="{StaticResource App.Brush.Gold}" FontSize="16" VerticalAlignment="Center"/>
+                                <h:Icon Kind="refresh" Size="18" Foreground="{StaticResource App.Brush.Gold}" VerticalAlignment="Center"/>
                                 <TextBlock Text="{h:Translate Debloat_Uninstall_SafeguardTitle}" Foreground="{StaticResource App.Brush.Gold}" FontWeight="SemiBold" FontSize="13" Margin="10,0,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
                             <TextBlock Text="{h:Translate Debloat_Uninstall_SafeguardText}"
@@ -354,20 +393,24 @@
 
                     <StackPanel>
                         <Button Content="{h:Translate Debloat_Uninstall_BackupAndUninstall}" 
-                                Tag="&#xE896;"
+                                Tag="download"
                                 Style="{StaticResource App.Style.Button}"
                                 BorderBrush="{StaticResource App.Brush.Gold}"
                                 Click="ConfirmUninstallBackup_Click"
                                 Margin="0,0,0,8"/>
-                        
+
+                        <TextBlock x:Name="BackupTierHint" Text="{h:Translate Debloat_Uninstall_BackupProHint}" FontSize="11"
+                                   Foreground="{StaticResource App.Brush.Gold}" TextWrapping="Wrap" TextAlignment="Center"
+                                   Margin="0,0,0,10" Visibility="Collapsed"/>
+
                         <Button Content="{h:Translate Debloat_Uninstall_UninstallOnly}" 
-                                Tag="&#xE74D;"
+                                Tag="delete"
                                 Style="{StaticResource App.Style.Button.Destructive}"
                                 Click="ConfirmUninstallOnly_Click"
                                 Margin="0,0,0,8"/>
                         
                         <Button Content="{h:Translate Common_Button_Cancel}" 
-                                Tag="&#xE711;"
+                                Tag="close"
                                 Style="{StaticResource App.Style.Button}"
                                 Background="Transparent"
                                 Click="CancelUninstall_Click"/>
@@ -376,18 +419,20 @@
             </h:ShadowCard>
         </Grid>
         <Grid x:Name="AppDetailsOverlayReal" Visibility="Collapsed">
-            <h:ShadowCard Style="{StaticResource App.Style.OverlayCard}" Width="620" Height="Auto" MaxHeight="760" VerticalAlignment="Center">
+            <h:ShadowCard Style="{StaticResource App.Style.OverlayCard}" Width="620" Height="Auto" MaxHeight="780" VerticalAlignment="Center">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="18"/>
+                        <RowDefinition Height="14"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="18"/>
+                        <RowDefinition Height="14"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="18"/>
-                        <RowDefinition Height="*" MinHeight="180"/>
+                        <RowDefinition Height="14"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="14"/>
+                        <RowDefinition Height="*" MinHeight="170"/>
                     </Grid.RowDefinitions>
-    
+
                     <Grid Grid.Row="0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -396,7 +441,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <Border CornerRadius="14" Background="#15FFFFFF" Padding="2">
-                            <Image Source="{Binding App.Icon}" Width="64" Height="64" RenderOptions.BitmapScalingMode="HighQuality"/>
+                            <Image Source="{Binding App.Icon, TargetNullValue=/Assets/Icons/default.png}" Width="64" Height="64" RenderOptions.BitmapScalingMode="HighQuality"/>
                         </Border>
                         <StackPanel Grid.Column="2" VerticalAlignment="Center">
                             <TextBlock Text="{Binding App.Name}" FontSize="20" FontWeight="Bold" Foreground="White"/>
@@ -407,8 +452,21 @@
                         </StackPanel>
                         <Button Grid.Column="3" Style="{StaticResource App.Style.WindowControl.Close}" Click="CloseDetails_Click" VerticalAlignment="Top"/>
                     </Grid>
-    
-                    <Border Grid.Row="2" Style="{StaticResource App.Style.GlassCard}" Padding="18" 
+
+                    <StackPanel Grid.Row="2" Orientation="Horizontal">
+                        <Button Style="{StaticResource App.Style.Button.Inline}" Content="{h:Translate Debloat_QuickAction_Launch}" Tag="play"
+                                Click="LaunchApp_Click" Margin="0,0,8,0"/>
+                        <Button Style="{StaticResource App.Style.Button.Inline}" Content="{h:Translate Debloat_QuickAction_ForceStop}" Tag="stop"
+                                Click="ForceStopApp_Click" Margin="0,0,8,0"/>
+                        <Button Style="{StaticResource App.Style.Button.Inline}" Content="{h:Translate Debloat_QuickAction_AppInfo}" Tag="info"
+                                Click="OpenAppInfo_Click" Margin="0,0,8,0"/>
+                        <Button Style="{StaticResource App.Style.Button.Inline}" Content="{h:Translate Debloat_QuickAction_Extract}" Tag="download"
+                                Click="ExtractApk_Click" ToolTip="{h:Translate Debloat_QuickAction_Extract_Tooltip}" Margin="0,0,8,0"/>
+                        <Button Style="{StaticResource App.Style.Button.Inline.Destructive}" Content="{h:Translate Debloat_QuickAction_ClearData}" Tag="eraser"
+                                Click="ClearAppData_Click" ToolTip="{h:Translate Debloat_QuickAction_ClearData_Tooltip}"/>
+                    </StackPanel>
+
+                    <Border Grid.Row="4" Style="{StaticResource App.Style.GlassCard}" Padding="18"
                             BorderBrush="{Binding App.RiskColor}" BorderThickness="1">
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -418,9 +476,7 @@
                             </Grid.ColumnDefinitions>
     
                             <Border Width="44" Height="44" CornerRadius="22" Background="#15FFFFFF" VerticalAlignment="Top">
-                                <TextBlock Text="&#xE9CA;" FontFamily="Segoe MDL2 Assets" FontSize="20" 
-                                        Foreground="{Binding App.RiskColor}" 
-                                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <h:Icon Kind="thermometer" Size="22" Foreground="{Binding App.RiskColor}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
     
                             <StackPanel Grid.Column="2">
@@ -450,7 +506,7 @@
                         </Grid>
                     </Border>
     
-                    <Border Grid.Row="4" Style="{StaticResource App.Style.GlassCard}" Padding="18">
+                    <Border Grid.Row="6" Style="{StaticResource App.Style.GlassCard}" Padding="18">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
@@ -459,30 +515,36 @@
                                 <ColumnDefinition Width="16"/>
                                 <ColumnDefinition Width="220"/>
                             </Grid.ColumnDefinitions>
-                            
-                            <TextBlock Text="&#xE8B9;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="{StaticResource App.Brush.Gold}" VerticalAlignment="Center"/>
-                            
+
+                            <h:Icon Kind="layers" Size="20" Foreground="{StaticResource App.Brush.Gold}" VerticalAlignment="Center"/>
+
                             <StackPanel Grid.Column="2" VerticalAlignment="Center">
-                                <TextBlock Text="{h:Translate Debloat_AppDetails_PerformanceProfile}" Foreground="White" 
+                                <TextBlock Text="{h:Translate Debloat_AppDetails_PerformanceProfile}" Foreground="White"
                                            FontWeight="SemiBold" FontSize="14"/>
                                 <TextBlock Text="{h:Translate Debloat_AppDetails_PerformanceProfile_Description}" Foreground="#90FFFFFF" FontSize="12" Margin="0,2,0,0"/>
                             </StackPanel>
-                            
-                            <ComboBox Grid.Column="4" 
-                                      ItemsSource="{Binding BucketOptions}" 
-                                      SelectedValue="{Binding SelectedBucket, Mode=TwoWay}" 
-                                      SelectedValuePath="Key" 
-                                      Style="{StaticResource App.Style.ComboBox.Slim}">
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Value}"/>
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
+
+                            <Grid Grid.Column="4">
+                                <ComboBox ItemsSource="{Binding BucketOptions}"
+                                          SelectedValue="{Binding SelectedBucket, Mode=TwoWay}"
+                                          SelectedValuePath="Key"
+                                          Visibility="{Binding SupportsStandbyBucket, Converter={StaticResource App.Converter.BooleanToVisibility}}"
+                                          Style="{StaticResource App.Style.ComboBox.Slim}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Value}"/>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                                <Border Background="#15FFFFFF" CornerRadius="8" Padding="10,6" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                        Visibility="{Binding SupportsStandbyBucket, Converter={StaticResource App.Converter.InverseBoolToVisibility}}">
+                                    <TextBlock Text="{h:Translate Debloat_Bucket_Unsupported}" FontSize="11" Foreground="{StaticResource App.Brush.Steel}" VerticalAlignment="Center"/>
+                                </Border>
+                            </Grid>
                         </Grid>
                     </Border>
-    
-                    <Border Grid.Row="6" Style="{StaticResource App.Style.GlassCard}" Padding="0" ClipToBounds="True">
+
+                    <Border Grid.Row="8" Style="{StaticResource App.Style.GlassCard}" Padding="0" ClipToBounds="True">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -499,13 +561,13 @@
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     
-                                    <TextBlock Text="&#xE72E;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="{StaticResource App.Brush.DeepSkyBlue}" VerticalAlignment="Center"/>
+                                    <h:Icon Kind="lock" Size="20" Foreground="{StaticResource App.Brush.DeepSkyBlue}" VerticalAlignment="Center"/>
                                     <TextBlock Grid.Column="2" Text="{h:Translate Debloat_AppDetails_Permissions}" FontSize="15" FontWeight="SemiBold" Foreground="White" VerticalAlignment="Center"/>
                                     
                                     <Button Grid.Column="4" 
                                             Style="{StaticResource App.Style.Button.Inline.Destructive}"
                                             Content="{h:Translate Debloat_AppDetails_RevokeAll}"
-                                            Tag="&#xE711;"
+                                            Tag="close"
                                             Click="RevokeAllPermissions_Click"
                                             ToolTip="{h:Translate Debloat_AppDetails_RevokeAll_Tooltip}"
                                             IsEnabled="{Binding HasGrantedPermissions}">
@@ -540,7 +602,7 @@
                                                             <ColumnDefinition Width="Auto"/>
                                                         </Grid.ColumnDefinitions>
                                                         <Border Width="32" Height="32" CornerRadius="6" Background="#20FFFFFF">
-                                                            <TextBlock Text="{Binding Icon}" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{StaticResource App.Brush.Steel}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                            <h:Icon Kind="{Binding Icon}" Size="16" Foreground="{StaticResource App.Brush.Steel}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                         </Border>
                                                         <TextBlock Grid.Column="1" Text="{Binding DisplayName}" Foreground="White" FontSize="13" VerticalAlignment="Center" Margin="12,0,0,0"/>
                                                         <CheckBox Grid.Column="2" IsChecked="{Binding IsGranted, Mode=TwoWay}" Style="{StaticResource App.Style.ToggleSwitch}"/>

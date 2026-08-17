@@ -274,23 +274,14 @@ public sealed class DialogService
 
     private static IEnumerable<Block> CreateChangelogContent()
     {
-        var sections = new (string TitleKey, string Icon, string[] ItemKeys)[]
+        var sections = new (string TitleKey, string Icon, int ItemCount)[]
         {
-            ("Info_Changelog_New", "🆕", new[]
-            {
-                "Info_Changelog_New_1", "Info_Changelog_New_2", "Info_Changelog_New_3"
-            }),
-            ("Info_Changelog_Updated", "🚀", new[]
-            {
-                "Info_Changelog_Updated_1", "Info_Changelog_Updated_2", "Info_Changelog_Updated_3"
-            }),
-            ("Info_Changelog_Removed", "❌", new[]
-            {
-                "Info_Changelog_Removed_1"
-            })
+            ("Info_Changelog_New", "🆕", 4),
+            ("Info_Changelog_Updated", "🚀", 5),
+            ("Info_Changelog_Removed", "❌", 1)
         };
 
-        foreach (var (titleKey, icon, itemKeys) in sections)
+        foreach (var (titleKey, icon, itemCount) in sections)
         {
             yield return CreateChangelogSection($"{icon} {GetString(titleKey)}");
 
@@ -301,9 +292,9 @@ public sealed class DialogService
                 Foreground = TextBrush
             };
 
-            foreach (var key in itemKeys)
+            for (var i = 1; i <= itemCount; i++)
             {
-                list.ListItems.Add(new ListItem(new Paragraph(new Run(GetString(key)))
+                list.ListItems.Add(new ListItem(new Paragraph(new Run(GetString($"{titleKey}_{i}")))
                 {
                     Margin = new Thickness(0, 2, 0, 2),
                     FontSize = 13
@@ -319,6 +310,7 @@ public sealed class DialogService
         yield return CreateParagraph(GetString("Eula_Intro"));
         yield return CreateParagraph(GetString("Eula_License"));
         yield return CreateParagraph(GetString("Eula_Restrictions"));
+        yield return CreateParagraph(GetString("Eula_Community"));
         yield return CreateParagraph(GetString("Eula_Ai"));
         yield return CreateParagraph(GetString("Eula_Risks"));
         yield return CreateParagraph(GetString("Eula_Whop"));

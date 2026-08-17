@@ -1,0 +1,20 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="archiveGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FF9F43"/>
+      <stop offset="100%" stop-color="#E67E22"/>
+    </linearGradient>
+  </defs>
+  <rect x="10" y="10" width="80" height="80" rx="20" ry="20" fill="url(#archiveGrad)"/>
+  <ellipse cx="50" cy="21" rx="31" ry="8" fill="white" opacity="0.18"/>
+  <rect x="45" y="30" width="5" height="5" fill="white" opacity="0.95"/>
+  <rect x="50" y="35" width="5" height="5" fill="white" opacity="0.95"/>
+  <rect x="45" y="40" width="5" height="5" fill="white" opacity="0.95"/>
+  <rect x="50" y="45" width="5" height="5" fill="white" opacity="0.95"/>
+  <rect x="45" y="50" width="5" height="5" fill="white" opacity="0.95"/>
+  <rect x="47" y="55" width="6" height="3" fill="white" opacity="0.95"/>
+  <rect x="45" y="58" width="10" height="12" rx="3" ry="3" fill="white" opacity="0.95"/>
+  <circle cx="50" cy="64" r="2.5" fill="#E67E22"/>
+  <rect x="26" y="75" width="14" height="3" rx="1.5" ry="1.5" fill="white" opacity="0.45"/>
+  <rect x="60" y="75" width="14" height="3" rx="1.5" ry="1.5" fill="white" opacity="0.45"/>
+</svg>

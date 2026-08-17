@@ -69,11 +69,16 @@ public static class Updater
     
     private static async Task DownloadAndUpdateAsync(UpdateInfo remoteInfo, CancellationToken ct = default)
     {
-        string tempInstallerName = $"ZephyrsElixir_Update_{remoteInfo.Version}.exe";
+        string tempInstallerName = $"ZephyrsElixir_Update_{remoteInfo.Version.SanitizeFileName(16)}.exe";
         string tempInstallerPath = Path.Combine(Path.GetTempPath(), tempInstallerName);
 
         try
         {
+            // The installer is downloaded and then executed, so its URL — which comes from a remote
+            // manifest — is held to the same allow-list as the Pro module rather than trusted as-is.
+            if (!AppConfiguration.Urls.IsTrustedDownload(remoteInfo.DownloadUrl))
+                throw new InvalidOperationException(Strings.License_Error_InvalidSource);
+
             // Stream straight to disk: the installer is ~70 MB, never buffer it in memory.
             using (var response = await HttpClient.GetAsync(remoteInfo.DownloadUrl, HttpCompletionOption.ResponseHeadersRead, ct).ConfigureAwait(false))
             {

@@ -4,23 +4,25 @@ public sealed class HelpViewModel : INotifyPropertyChanged
 {
     private static class Icons
     {
-        public const string Home = "\uE8A5";
-        public const string Steps = "\uE7C3";
-        public const string Book = "\uE82D";
-        public const string Lightning = "\uE8B8";
-        public const string Document = "\uE8C8";
-        public const string Wrench = "\uE90F";
-        public const string Lightbulb = "\uEA80";
-        public const string Question = "\uE897";
-        public const string Info = "\uE77B";
-        public const string Keyboard = "\uE72E";
-        public const string Shield = "\uE72C";
-        public const string Star = "\uE946";
-        public const string Speed = "\uE8FD";
-        public const string Battery = "\uE8C1";
-        public const string Backup = "\uE753";
-        public const string Progress = "\uE8B7";
-        public const string Wireless = "\uEA92";
+        public const string Home = "home";
+        public const string Steps = "checklist";
+        public const string Book = "book";
+        public const string Lightning = "bolt";
+        public const string Document = "document";
+        public const string Wrench = "wrench";
+        public const string Lightbulb = "lightbulb";
+        public const string Question = "question";
+        public const string Info = "info";
+        public const string Keyboard = "keyboard";
+        public const string Shield = "shield";
+        public const string Star = "star";
+        public const string Speed = "gauge";
+        public const string Battery = "battery";
+        public const string Backup = "save";
+        public const string Console = "console";
+        public const string Wireless = "wireless";
+        public const string Recipe = "library";
+        public const string Vial = "vial";
     }
 
     private readonly TranslationManager _tm = TranslationManager.Instance;
@@ -125,6 +127,10 @@ public sealed class HelpViewModel : INotifyPropertyChanged
         new(_tm["Help_Faq_HowOften_Q"],          _tm["Help_Faq_HowOften_A"]),
         new(_tm["Help_Faq_Customize_Q"],         _tm["Help_Faq_Customize_A"]),
         new(_tm["Help_Faq_ExtremeVsStandard_Q"], _tm["Help_Faq_ExtremeVsStandard_A"]),
+        new(_tm["Help_Faq_Recipes_Q"],           _tm["Help_Faq_Recipes_A"]),
+        new(_tm["Help_Faq_Community_Q"],         _tm["Help_Faq_Community_A"]),
+        new(_tm["Help_Faq_Vials_Q"],             _tm["Help_Faq_Vials_A"]),
+        new(_tm["Help_Faq_MultiDevice_Q"],       _tm["Help_Faq_MultiDevice_A"]),
         new(_tm["Help_Faq_SomethingWrong_Q"],    _tm["Help_Faq_SomethingWrong_A"]),
         new(_tm["Help_Faq_Logs_Q"],              _tm["Help_Faq_Logs_A"]),
         new(_tm["Help_Faq_DataCollection_Q"],    _tm["Help_Faq_DataCollection_A"]),
@@ -138,8 +144,10 @@ public sealed class HelpViewModel : INotifyPropertyChanged
         new(Icons.Keyboard, _tm["Help_Tip_Shortcut_Title"],    _tm["Help_Tip_Shortcut_Body"]),
         new(Icons.Speed,    _tm["Help_Tip_Performance_Title"], _tm["Help_Tip_Performance_Body"]),
         new(Icons.Battery,  _tm["Help_Tip_Battery_Title"],     _tm["Help_Tip_Battery_Body"]),
-        new(Icons.Progress, _tm["Help_Tip_Console_Title"],     _tm["Help_Tip_Console_Body"]),
+        new(Icons.Console,  _tm["Help_Tip_Console_Title"],     _tm["Help_Tip_Console_Body"]),
         new(Icons.Backup,   _tm["Help_Tip_Backup_Title"],      _tm["Help_Tip_Backup_Body"]),
+        new(Icons.Recipe,   _tm["Help_Tip_Recipes_Title"],     _tm["Help_Tip_Recipes_Body"]),
+        new(Icons.Vial,     _tm["Help_Tip_Vials_Title"],       _tm["Help_Tip_Vials_Body"]),
         new(Icons.Wireless, _tm["Help_Tip_Wireless_Title"],    _tm["Help_Tip_Wireless_Body"]),
         new(Icons.Shield,   _tm["Help_Tip_Safety_Title"],      _tm["Help_Tip_Safety_Body"]),
         new(Icons.Star,     _tm["Help_Tip_Pro_Title"],         _tm["Help_Tip_Pro_Body"])

@@ -18,22 +18,22 @@ public sealed partial class PowerMenu : UserControl
 
         StandardOptions =
         [
-            new("reboot", "\uE777", () => Strings.PowerMenu_Option_Reboot, () => Strings.PowerMenu_Option_Reboot_Desc, AppBrushes.GradientGreen),
-            new("recovery", "\uE90F", () => Strings.PowerMenu_Option_Recovery, () => Strings.PowerMenu_Option_Recovery_Desc, AppBrushes.GradientApkm),
-            new("bootloader", "\uE835", () => Strings.PowerMenu_Option_Bootloader, () => Strings.PowerMenu_Option_Bootloader_Desc, AppBrushes.GradientApk)
+            new("reboot", "restore", () => Strings.PowerMenu_Option_Reboot, () => Strings.PowerMenu_Option_Reboot_Desc, AppBrushes.GradientGreen),
+            new("recovery", "wrench", () => Strings.PowerMenu_Option_Recovery, () => Strings.PowerMenu_Option_Recovery_Desc, AppBrushes.GradientApkm),
+            new("bootloader", "firmware", () => Strings.PowerMenu_Option_Bootloader, () => Strings.PowerMenu_Option_Bootloader_Desc, AppBrushes.GradientApk)
         ];
 
         AdvancedOptions =
         [
-            new("fastboot", "\uE943", () => Strings.PowerMenu_Option_Fastbootd, () => Strings.PowerMenu_Option_Fastbootd_Desc, AppBrushes.GradientCyan),
-            new("sideload", "\uE896", () => Strings.PowerMenu_Option_Sideload, () => Strings.PowerMenu_Option_Sideload_Desc, AppBrushes.GradientApks),
-            new("sideload_auto", "\uE8B5", () => Strings.PowerMenu_Option_SideloadAuto, () => Strings.PowerMenu_Option_SideloadAuto_Desc, AppBrushes.GradientOrange),
-            new("download", "\uE118", () => Strings.PowerMenu_Option_Download, () => Strings.PowerMenu_Option_Download_Desc, AppBrushes.GradientNavy)
+            new("fastboot", "braces", () => Strings.PowerMenu_Option_Fastbootd, () => Strings.PowerMenu_Option_Fastbootd_Desc, AppBrushes.GradientCyan),
+            new("sideload", "download", () => Strings.PowerMenu_Option_Sideload, () => Strings.PowerMenu_Option_Sideload_Desc, AppBrushes.GradientApks),
+            new("sideload_auto", "back-to-start", () => Strings.PowerMenu_Option_SideloadAuto, () => Strings.PowerMenu_Option_SideloadAuto_Desc, AppBrushes.GradientOrange),
+            new("download", "download", () => Strings.PowerMenu_Option_Download, () => Strings.PowerMenu_Option_Download_Desc, AppBrushes.GradientNavy)
         ];
 
         PowerOptions =
         [
-            new("power_off", "\uE7E8", () => Strings.PowerMenu_Option_PowerOff, () => Strings.PowerMenu_Option_PowerOff_Desc, AppBrushes.GradientRed)
+            new("power_off", "power", () => Strings.PowerMenu_Option_PowerOff, () => Strings.PowerMenu_Option_PowerOff_Desc, AppBrushes.GradientRed)
         ];
 
         _spinnerTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(16) };
@@ -52,6 +52,7 @@ public sealed partial class PowerMenu : UserControl
     {
         DeviceManager.Instance.DeviceStatusChanged += OnDeviceStatusChanged;
         TranslationManager.Instance.LanguageChanged += OnLanguageChanged;
+        this.SubscribeToActiveDevice(_ => UpdateDeviceStatus());
         UpdateDeviceStatus();
     }
 
@@ -251,7 +252,7 @@ public sealed partial class PowerMenu : UserControl
             ResultPanel.BorderBrush = success ? SuccessBorder : FailBorder;
             ResultPanel.BorderThickness = new Thickness(1);
 
-            ResultIcon.Text = success ? "\uE73E" : "\uE711";
+            ResultIcon.Kind = success ? "check" : "close";
             ResultIcon.Foreground = success ? SuccessIconBrush : FailIconBrush;
 
             ResultText.Text = message;

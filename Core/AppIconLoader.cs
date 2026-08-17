@@ -3,8 +3,10 @@ namespace ZephyrsElixir.Core;
 public static class AppIconLoader
 {
     private static readonly ConcurrentDictionary<string, BitmapImage?> IconCache = new();
-    private static readonly int MaxConcurrent = Environment.ProcessorCount;
-    private static readonly SemaphoreSlim LoadSemaphore = new(MaxConcurrent);
+    private static readonly SemaphoreSlim LoadSemaphore = new(Environment.ProcessorCount);
+
+    private static string CacheKey(string packageName) =>
+        $"{DeviceManager.SharedActiveSerial}|{packageName}";
 
     public static async Task<BitmapImage?> LoadIconAsync(
         string packageName,
@@ -13,29 +15,28 @@ public static class AppIconLoader
         if (string.IsNullOrWhiteSpace(packageName))
             return null;
 
-        if (IconCache.TryGetValue(packageName, out var cached))
+        var key = CacheKey(packageName);
+        if (IconCache.TryGetValue(key, out var cached))
             return cached;
 
         await LoadSemaphore.WaitAsync(cancellationToken);
         try
         {
-            if (IconCache.TryGetValue(packageName, out cached))
+            if (IconCache.TryGetValue(key, out cached))
                 return cached;
 
             var icon = await ExtractIconAsync(packageName, cancellationToken);
             icon?.Freeze();
-            IconCache.TryAdd(packageName, icon);
-
+            IconCache.TryAdd(key, icon);
             return icon;
         }
         catch (OperationCanceledException)
         {
-            IconCache.TryAdd(packageName, null);
             return null;
         }
         catch
         {
-            IconCache.TryAdd(packageName, null);
+            IconCache.TryAdd(key, null);
             return null;
         }
         finally
@@ -48,12 +49,10 @@ public static class AppIconLoader
         string packageName,
         CancellationToken cancellationToken)
     {
-        var uri = $"{ZephyrsAgent.BaseUri}/icon/{packageName}";
-        
         try
         {
-            var response = await ZephyrsAgent.HttpClient.GetAsync(
-                uri,
+            using var response = await ZephyrsAgent.HttpClient.GetAsync(
+                $"{ZephyrsAgent.BaseUri}/icon/{packageName}",
                 HttpCompletionOption.ResponseHeadersRead,
                 cancellationToken);
 
@@ -61,41 +60,25 @@ public static class AppIconLoader
                 return null;
 
             var imageBytes = await response.Content.ReadAsByteArrayAsync(cancellationToken);
-
-            if (imageBytes == null || imageBytes.Length == 0)
+            if (imageBytes is not { Length: > 0 })
                 return null;
 
-            using (var stream = new MemoryStream(imageBytes))
-            {
-                var bitmap = new BitmapImage();
-                bitmap.BeginInit();
-                bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                bitmap.DecodePixelWidth = 44;
-                bitmap.StreamSource = stream;
-                
-                try
-                {
-                    bitmap.EndInit();
-                    return bitmap;
-                }
-                catch (NotSupportedException)
-                {
-                    return null;
-                }
-            }
+            using var stream = new MemoryStream(imageBytes);
+            var bitmap = new BitmapImage();
+            bitmap.BeginInit();
+            bitmap.CacheOption = BitmapCacheOption.OnLoad;
+            bitmap.DecodePixelWidth = 96;
+            bitmap.StreamSource = stream;
+            bitmap.EndInit();
+            return bitmap;
         }
-        catch (TaskCanceledException)
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
         {
-            return null;
+            throw;
         }
         catch
         {
             return null;
         }
-    }
-
-    public static void ClearCache()
-    {
-        IconCache.Clear();
     }
 }

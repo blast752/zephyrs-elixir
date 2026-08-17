@@ -15,7 +15,7 @@
             <RowDefinition Height="Auto"/> <RowDefinition Height="24"/>   <RowDefinition Height="*"/>    </Grid.RowDefinitions>
 
         <h:PageHeader Grid.Row="0"
-                    Icon="&#xE713;"
+                    Icon="settings"
                     Title="{h:Translate Settings_Header}"
                     Subtitle="{h:Translate Settings_Subtitle_New}"/>
 
@@ -26,7 +26,7 @@
             
             <StackPanel x:Name="MainContainer">
 
-                <h:SettingsSection Icon="&#xE713;"
+                <h:SettingsSection Icon="settings"
                                          Header="{h:Translate Settings_General_Header}" 
                                          AnimationDelay="100">
                     <StackPanel>
@@ -53,21 +53,30 @@
                                     MinWidth="140" 
                                     Height="40">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock Text="&#xE930;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#90EE90" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <h:Icon Kind="check-circle" Size="16" Foreground="#90EE90" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                     <TextBlock Text="{h:Translate Settings_Updates_Status_AlwaysOn}" FontSize="14" FontWeight="SemiBold" Foreground="White" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Border>
                         </h:SettingItem>
 
-                        <h:SettingItem Title="{h:Translate Settings_Adb_Title}" 
-                                             Description="{h:Translate Settings_Adb_Description}" 
-                                             Margin="0"> <Border x:Name="AdbStatusContainer" 
+                        <h:SettingItem Title="{h:Translate Settings_AiAnalysis_Title}"
+                                             Description="{h:Translate Settings_AiAnalysis_Description}">
+                            <CheckBox x:Name="AiAnalysisToggle"
+                                      Style="{StaticResource App.Style.ToggleSwitch}"
+                                      HorizontalAlignment="Right"
+                                      Click="OnAiAnalysisToggled"/>
+                        </h:SettingItem>
+
+                        <h:SettingItem Title="{h:Translate Settings_Adb_Title}"
+                                             Description="{h:Translate Settings_Adb_Description}"
+                                             Margin="0">
+                            <Border x:Name="AdbStatusContainer"
                                     Style="{StaticResource App.Style.StatusTag.Info}"
                                     HorizontalAlignment="Right" 
                                     MinWidth="140"
                                     Height="40">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock Text="&#xE756;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#87CEFA" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <h:Icon Kind="console" Size="16" Foreground="#87CEFA" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                     <TextBlock x:Name="AdbVersionText" FontSize="14" FontWeight="SemiBold" Foreground="White" VerticalAlignment="Center" Text="{h:Translate Settings_Adb_Status_Checking}"/>
                                 </StackPanel>
                             </Border>
@@ -75,14 +84,14 @@
                     </StackPanel>
                 </h:SettingsSection>
                 
-                <h:SettingsSection Icon="&#xE71D;"
+                <h:SettingsSection Icon="apps"
                                          Header="{h:Translate Settings_App_Header}" 
                                          AnimationDelay="200">
                     <StackPanel>
                         <h:SettingItem Title="{h:Translate Settings_Export_Title}" 
                                              Description="{h:Translate Settings_Export_Description}">
                             <Button Content="{h:Translate Settings_Export_Button}" 
-                                    Tag="&#xE8A1;"
+                                    Tag="report"
                                     Style="{StaticResource App.Style.SettingsControl}"
                                     Click="OnExportLogsClick"/>
                         </h:SettingItem>
@@ -91,7 +100,7 @@
                                              Description="{h:Translate Settings_Reset_Description}" 
                                              Margin="0">
                             <Button Content="{h:Translate Settings_Reset_Button}" 
-                                    Tag="&#xE777;"
+                                    Tag="restore"
                                     Style="{StaticResource App.Style.SettingsControl}"
                                     BorderBrush="{StaticResource App.Brush.Destructive.IconCircle}"
                                     Foreground="#FFC0C0"
@@ -104,21 +113,21 @@
                         <h:SettingItem Title="{h:Translate Settings_ProLicense_Title}" 
                                        Description="{h:Translate Settings_ProLicense_Description}">
                             <Button Content="{h:Translate Settings_ProLicense_Button}" 
-                                    Tag="&#xE8D7;"
+                                    Tag="key"
                                     Style="{StaticResource App.Style.SettingsControl}"
                                     Click="OnProLicenseClick"/>
                         </h:SettingItem>
                     </StackPanel>
                 </h:SettingsSection>
 
-                <h:SettingsSection Icon="&#xE897;"
+                <h:SettingsSection Icon="question"
                                          Header="{h:Translate Settings_About_Header}" 
                                          AnimationDelay="300">
                     <StackPanel>
                         <h:SettingItem Title="{h:Translate Settings_License_Title}" 
                                              Description="{h:Translate Settings_License_Description}">
                             <Button Content="{h:Translate Settings_License_Button}" 
-                                    Tag="&#xE8B7;"
+                                    Tag="page"
                                     Style="{StaticResource App.Style.SettingsControl}"
                                     Click="OnLicenseClick"/>
                         </h:SettingItem>
@@ -127,7 +136,7 @@
                                              Description="{h:Translate Settings_Privacy_Description}" 
                                              Margin="0">
                             <Button Content="{h:Translate Settings_Privacy_Button}" 
-                                    Tag="&#xE72E;"
+                                    Tag="lock"
                                     Style="{StaticResource App.Style.SettingsControl}"
                                     Click="OnPrivacyClick"/>
                         </h:SettingItem>

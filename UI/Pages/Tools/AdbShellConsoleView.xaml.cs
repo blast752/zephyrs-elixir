@@ -229,6 +229,12 @@ public sealed partial class AdbShellConsoleView : UserControl
                     e.Handled = true;
                 }
                 break;
+
+            case Key.L when Keyboard.Modifiers == ModifierKeys.Control:
+                Active?.ClearOutput();
+                UpdateEmptyHint();
+                e.Handled = true;
+                break;
         }
     }
 
@@ -333,8 +339,9 @@ public sealed partial class AdbShellConsoleView : UserControl
             foreach (var item in saved)
             {
                 if (string.IsNullOrWhiteSpace(item.Name) || string.IsNullOrWhiteSpace(item.Command)) continue;
-                _userSnippets.Add(item);
-                Snippets.Add(item);
+                var snippet = item with { IsUserDefined = true };
+                _userSnippets.Add(snippet);
+                Snippets.Add(snippet);
             }
         }
         catch { /* best-effort load, coherent with project convention */ }
@@ -367,13 +374,22 @@ public sealed partial class AdbShellConsoleView : UserControl
         var command = SnippetCmdBox.Text?.Trim() ?? string.Empty;
         if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(command)) return;
 
-        var snippet = new SnippetItem(name, command);
+        var snippet = new SnippetItem(name, command) { IsUserDefined = true };
         Snippets.Add(snippet);
         _userSnippets.Add(snippet);
         SaveSnippets();
 
         SnippetNameBox.Clear();
         SnippetCmdBox.Clear();
+    }
+
+    private void OnDeleteSnippetClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is not FrameworkElement { Tag: SnippetItem { IsUserDefined: true } snippet }) return;
+        _userSnippets.Remove(snippet);
+        Snippets.Remove(snippet);
+        SaveSnippets();
+        e.Handled = true;
     }
 
     #endregion
@@ -429,17 +445,22 @@ public sealed partial class AdbShellConsoleView : UserControl
 
         if (activeChanged)
         {
-            OutputBox.ScrollToEnd();
+            // Follow the tail only while the user is already there; never yank them back down
+            // while they are scrolled up reading earlier output.
+            if (OutputBox.VerticalOffset + OutputBox.ViewportHeight >= OutputBox.ExtentHeight - 32)
+                OutputBox.ScrollToEnd();
             UpdateEmptyHint();
         }
     }
 
     #endregion
 
-    // ───────────────────────────── Nested models ─────────────────────────────
 
-    /// <summary>A named ADB snippet (built-in or user-defined). Persisted as JSON.</summary>
-    public sealed record SnippetItem(string Name, string Command);
+    /// <summary>A named ADB snippet. Only user-defined ones are persisted and deletable.</summary>
+    public sealed record SnippetItem(string Name, string Command)
+    {
+        [JsonIgnore] public bool IsUserDefined { get; init; }
+    }
 
     /// <summary>
     /// One console tab: owns the long-lived <c>adb shell</c> process, its output document,
@@ -450,6 +471,7 @@ public sealed partial class AdbShellConsoleView : UserControl
         private enum LineKind { Stdout, Stderr, Success, System }
 
         private const int MaxInlines = 12000;
+        private const int MaxRawChars = 1_500_000;
 
         private static readonly SolidColorBrush StdoutBrush  = UIHelpers.FrozenSolid(0xE0, 0xE0, 0xE0);
         private static readonly SolidColorBrush StderrBrush  = UIHelpers.FrozenSolid(0xFF, 0x6B, 0x6B);
@@ -491,7 +513,12 @@ public sealed partial class AdbShellConsoleView : UserControl
         {
             try
             {
-                var psi = new ProcessStartInfo(AdbExecutor.GetAdbPath(), "shell")
+                // Pin the session to the device that is active right now: with several phones
+                // connected a bare "adb shell" refuses to start ("more than one device/emulator").
+                var serial = DeviceManager.Instance.ActiveSerial;
+                var arguments = string.IsNullOrEmpty(serial) ? "shell" : $"-s {serial} shell";
+
+                var psi = new ProcessStartInfo(AdbExecutor.GetAdbPath(), arguments)
                 {
                     RedirectStandardInput = true,
                     RedirectStandardOutput = true,
@@ -512,7 +539,9 @@ public sealed partial class AdbShellConsoleView : UserControl
                 _process.BeginOutputReadLine();
                 _process.BeginErrorReadLine();
 
-                Enqueue("adb shell session started.", LineKind.System);
+                Enqueue(string.IsNullOrEmpty(serial)
+                    ? "adb shell session started."
+                    : $"adb shell session started on {serial}.", LineKind.System);
             }
             catch (Exception ex)
             {
@@ -540,6 +569,17 @@ public sealed partial class AdbShellConsoleView : UserControl
 
         public void Send(string command)
         {
+            if (_disposed) return;
+
+            // Sessions die when the device disconnects or the user types "exit"; instead of a dead
+            // tab, transparently respawn the shell so the next command just works.
+            if (_process is not { HasExited: false })
+            {
+                Enqueue("[shell not running — restarting session]", LineKind.System);
+                ReleaseProcess();
+                Start();
+            }
+
             Enqueue("$ " + command, LineKind.System);
             try
             {
@@ -605,6 +645,8 @@ public sealed partial class AdbShellConsoleView : UserControl
             _paragraph.Inlines.Add(new Run(text) { Foreground = brush });
             _paragraph.Inlines.Add(new LineBreak());
             _raw.AppendLine(text);
+            if (_raw.Length > MaxRawChars)
+                _raw.Remove(0, _raw.Length - MaxRawChars);
 
             if (_paragraph.Inlines.Count > MaxInlines)
             {
@@ -620,11 +662,21 @@ public sealed partial class AdbShellConsoleView : UserControl
             _raw.Clear();
         }
 
+        // Whole-word match so "ok" doesn't light up "token" or "look" in green.
         private static bool ContainsSuccess(string line)
         {
             foreach (var word in SuccessWords)
-                if (line.IndexOf(word, StringComparison.OrdinalIgnoreCase) >= 0)
-                    return true;
+            {
+                var idx = line.IndexOf(word, StringComparison.OrdinalIgnoreCase);
+                while (idx >= 0)
+                {
+                    var end = idx + word.Length;
+                    if ((idx == 0 || !char.IsLetterOrDigit(line[idx - 1])) &&
+                        (end >= line.Length || !char.IsLetterOrDigit(line[end])))
+                        return true;
+                    idx = line.IndexOf(word, end, StringComparison.OrdinalIgnoreCase);
+                }
+            }
             return false;
         }
 
@@ -632,7 +684,11 @@ public sealed partial class AdbShellConsoleView : UserControl
         {
             if (_disposed) return;
             _disposed = true;
+            ReleaseProcess();
+        }
 
+        private void ReleaseProcess()
+        {
             var process = _process;
             _process = null;
             if (process == null) return;

@@ -1,0 +1,15 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<linearGradient id="pdfGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+<stop offset="0%" stop-color="#FF6B6B"/>
+<stop offset="100%" stop-color="#DC143C"/>
+</linearGradient>
+</defs>
+<path d="M 14,8 L 62,8 L 78,24 L 78,92 L 14,92 Z" fill="url(#pdfGrad)"/>
+<polygon points="62,8 78,24 62,24" fill="#B01030"/>
+<rect x="16" y="10" width="30" height="11" rx="5" fill="white" opacity="0.15"/>
+<rect x="28" y="42" width="35" height="3" rx="2" fill="white" opacity="0.95"/>
+<rect x="22" y="54" width="45" height="3" rx="2" fill="white" opacity="0.70"/>
+<rect x="22" y="65" width="45" height="3" rx="2" fill="white" opacity="0.70"/>
+<text x="46" y="88" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="800" fill="white" opacity="0.90">PDF</text>
+</svg>

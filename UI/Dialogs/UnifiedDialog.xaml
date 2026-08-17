@@ -120,8 +120,7 @@
                         h:WindowClose.Result="False"/>
                 
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0">
-                    <TextBlock x:Name="HeaderIcon" FontFamily="Segoe MDL2 Assets" FontSize="18"
-                               VerticalAlignment="Center" Margin="0,0,10,0"/>
+                    <h:Icon x:Name="HeaderIcon" Size="20" Margin="0,0,10,0"/>
                     <TextBlock x:Name="HeaderTitle" FontSize="16" FontWeight="SemiBold"
                                VerticalAlignment="Center">
                         <TextBlock.Foreground>

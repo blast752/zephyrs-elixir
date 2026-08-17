@@ -340,8 +340,14 @@ public sealed partial class ApkInstaller : UserControl
             };
 
             process.Start();
+            // Drain stderr concurrently: aapt2 floods it on malformed APKs, and a full pipe with
+            // no reader deadlocks the stdout ReadToEnd below.
+            _ = process.StandardError.ReadToEndAsync();
             var output = process.StandardOutput.ReadToEnd();
-            process.WaitForExit(5000);
+            if (!process.WaitForExit(5000))
+            {
+                try { process.Kill(true); } catch { }
+            }
 
             var pkgMatch = PkgNameRegex.Match(output);
             if (pkgMatch.Success) info = info with { PackageName = pkgMatch.Groups[1].Value };
@@ -564,7 +570,12 @@ public sealed partial class ApkInstaller : UserControl
     private async Task<(bool Success, string Output)> ExecuteAdbInstallAsync(string args, ApkPackage package, CancellationToken token)
     {
         var output = new StringBuilder();
-        var tcs = new TaskCompletionSource<bool>();
+
+        // This install runs its own adb process (for live progress streaming), so the -s target
+        // AdbExecutor normally injects must be added here too: with several devices connected a
+        // bare "adb install" fails with "more than one device/emulator".
+        var serial = DeviceManager.Instance.ActiveSerial;
+        if (!string.IsNullOrEmpty(serial)) args = $"-s {serial} {args}";
 
         var adbPath = AdbExecutor.GetAdbPath();
         using var process = new Process
@@ -577,11 +588,10 @@ public sealed partial class ApkInstaller : UserControl
                 CreateNoWindow = true,
                 StandardOutputEncoding = Encoding.UTF8,
                 StandardErrorEncoding = Encoding.UTF8
-            },
-            EnableRaisingEvents = true
+            }
         };
 
-        await using var _ = token.Register(() => { try { process.Kill(true); } catch { } tcs.TrySetCanceled(); });
+        await using var _ = token.Register(() => { try { process.Kill(true); } catch { } });
 
         process.OutputDataReceived += (_, e) =>
         {
@@ -596,35 +606,24 @@ public sealed partial class ApkInstaller : UserControl
         };
 
         process.ErrorDataReceived += (_, e) => { if (e.Data != null) output.AppendLine(e.Data); };
-        process.Exited += (_, _) => tcs.TrySetResult(process.ExitCode == 0);
 
         process.Start();
         process.BeginOutputReadLine();
         process.BeginErrorReadLine();
 
-        var success = await tcs.Task;
-        var result = output.ToString();
-        return (success && !result.Contains("Failure"), result);
-    }
+        // WaitForExitAsync also waits for both redirected streams to reach EOF. The Exited event
+        // does not: adb exits 0 while printing "Failure [INSTALL_FAILED_…]", so completing on
+        // Exited could read an empty buffer and report a rejected install as a success.
+        await process.WaitForExitAsync(token);
+        token.ThrowIfCancellationRequested();
 
-    private static readonly (string Pattern, string Message)[] InstallErrors =
-    {
-        ("INSTALL_FAILED_ALREADY_EXISTS", "App already installed"),
-        ("INSTALL_FAILED_INVALID_APK", "Invalid APK file"),
-        ("INSTALL_FAILED_INSUFFICIENT_STORAGE", "Not enough storage"),
-        ("INSTALL_FAILED_DUPLICATE_PACKAGE", "Package already exists"),
-        ("INSTALL_FAILED_UPDATE_INCOMPATIBLE", "Incompatible update"),
-        ("INSTALL_FAILED_VERSION_DOWNGRADE", "Cannot downgrade"),
-        ("INSTALL_PARSE_FAILED_NO_CERTIFICATES", "APK not signed"),
-        ("INSTALL_FAILED_TEST_ONLY", "Test-only APK"),
-        ("INSTALL_FAILED_OLDER_SDK", "Requires newer Android"),
-        ("INSTALL_FAILED_MISSING_SPLIT", "Missing split APK")
-    };
+        var result = output.ToString();
+        return (process.ExitCode == 0 && !result.Contains("Failure", StringComparison.OrdinalIgnoreCase), result);
+    }
 
     private static string ParseInstallError(string output)
     {
-        foreach (var (pattern, message) in InstallErrors)
-            if (output.Contains(pattern, StringComparison.Ordinal)) return message;
+        if (AdbErrorCatalog.Explain(output) is { } explanation) return explanation;
         var match = FailureRegex.Match(output);
         return match.Success ? match.Groups[1].Value : "Installation failed";
     }
@@ -672,7 +671,7 @@ public sealed partial class ApkInstaller : UserControl
         {
             InstallButton.Style = (Style)FindResource(isStop ? "App.Style.Button.Destructive" : "App.Style.Button");
             InstallButton.Content = isStop ? Strings.Common_Button_Cancel : Strings.ApkInstaller_InstallAll;
-            InstallButton.Tag = isStop ? "\uE711" : "\uE896";
+            InstallButton.Tag = isStop ? "close" : "download";
         });
     }
 
@@ -760,8 +759,8 @@ public sealed class ApkPackage : INotifyPropertyChanged
 
     public string TypeIcon => PackageType switch
     {
-        PackageType.Apk => "\uE8F1",
-        _ => "\uE8F4"
+        PackageType.Apk => "library",
+        _ => "document-add"
     };
     
     public string TypeLetter => PackageType switch

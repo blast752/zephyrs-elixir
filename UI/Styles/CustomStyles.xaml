@@ -11,11 +11,11 @@
     <Color x:Key="App.Color.White">#FFFFFFFF</Color>
     <Color x:Key="App.Color.White80">#CCFFFFFF</Color>
     <Color x:Key="App.Color.White20">#33FFFFFF</Color>
-    <Color x:Key="App.Color.Gold">#FFD000</Color>
+    <Color x:Key="App.Color.Gold">#FFD700</Color>
     <Color x:Key="App.Color.DeepSkyBlue">#00BFFF</Color>
     <Color x:Key="App.Color.Crimson">#FF6B6B</Color>
     <Color x:Key="App.Color.Steel">#B0B8C8</Color>
-    <Color x:Key="App.Color.LightBlue">#C8DCFF</Color>
+    <Color x:Key="App.Color.LightBlue">#B4DCFF</Color>
     <Color x:Key="App.Color.WindowBg">#FF0E1A33</Color>
     <Color x:Key="App.Color.TitleBarBg">#FF0C1528</Color>
     <Color x:Key="App.Color.SidebarBg">#FF0A1224</Color>
@@ -51,6 +51,15 @@
 <LinearGradientBrush x:Key="App.Brush.IconCircle" StartPoint="0,0" EndPoint="1,1">
         <GradientStop Color="{StaticResource App.Color.Blue300}" Offset="0"/>
         <GradientStop Color="{StaticResource App.Color.Blue500}" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- Signature "elixir" gradient for the flagship Recipes nav item: a warm gold that melts into
+         alchemist violet, so the hero feature reads as premium and unmistakably different from the
+         cool-blue icons around it. -->
+    <LinearGradientBrush x:Key="App.Brush.Recipes.IconCircle" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#FFCB52" Offset="0"/>
+        <GradientStop Color="#FF8A3D" Offset="0.5"/>
+        <GradientStop Color="#A85CFF" Offset="1"/>
     </LinearGradientBrush>
 
     <LinearGradientBrush x:Key="FileManager.Brush.Folder" StartPoint="0,0" EndPoint="1,1" po:Freeze="True">
@@ -117,9 +126,12 @@
                       Color="{StaticResource App.Color.Gold}" 
                       BlurRadius="10" ShadowDepth="0" Opacity="0.9"/>
 
-    <DropShadowEffect x:Key="App.Effect.GoldGlow.Medium" 
-                      Color="{StaticResource App.Color.Gold}" 
+    <DropShadowEffect x:Key="App.Effect.GoldGlow.Medium"
+                      Color="{StaticResource App.Color.Gold}"
                       BlurRadius="12" ShadowDepth="0" Opacity="0.6"/>
+
+    <DropShadowEffect x:Key="App.Effect.Recipes.Glow"
+                      Color="#FFB020" BlurRadius="15" ShadowDepth="0" Opacity="0.7"/>
 
     <DropShadowEffect x:Key="App.Effect.DestructiveHover" 
                       Color="#DC143C" BlurRadius="12" 
@@ -141,19 +153,13 @@
     <BooleanToVisibilityConverter x:Key="App.Converter.BooleanToVisibility"/>
     <x:Static Member="helpers:PercentageToScaleConverter.Instance" x:Key="App.Converter.PercentageToScale"/>
     <x:Static Member="helpers:BatteryWidthConverter.Instance" x:Key="App.Converter.BatteryWidthConverter"/>
+    <x:Static Member="helpers:SizeToScaleConverter.Instance" x:Key="App.Converter.SizeToScale"/>
     <x:Static Member="helpers:WidthToColumnsConverter.Instance" x:Key="App.Converter.WidthToColumns"/>
     <x:Static Member="helpers:InverseBoolToVisibilityConverter.Instance" x:Key="App.Converter.InverseBoolToVisibility"/>
     <x:Static Member="helpers:CapitalizeConverter.Instance" x:Key="App.Converter.Capitalize"/>
     <x:Static Member="helpers:SmartTruncateConverter.Instance" x:Key="App.Converter.SmartTruncate"/>
 
-<Style x:Key="App.Style.Glyph" TargetType="TextBlock">
-        <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
-        <Setter Property="FontSize" Value="18"/>
-        <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="Foreground" Value="White"/>
-    </Style>
-
-    <Style x:Key="App.Style.SectionHeader" TargetType="TextBlock">
+<Style x:Key="App.Style.SectionHeader" TargetType="TextBlock">
         <Setter Property="FontSize" Value="20"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="Foreground" Value="White"/>
@@ -231,11 +237,10 @@
                     <helpers:GlowIcon x:Name="iconCircle"
                             Size="36" CornerRadius="18"
                             Background="{TemplateBinding BorderBrush}">
-                        <TextBlock x:Name="icon"
-                                   Text="{TemplateBinding Tag}"
-                                   Style="{StaticResource App.Style.Glyph}"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"/>
+                        <helpers:Icon x:Name="icon"
+                                      Kind="{TemplateBinding Tag}"
+                                      Size="19"
+                                      Foreground="White"/>
                     </helpers:GlowIcon>
 
                     <TextBlock Grid.Column="2"
@@ -288,11 +293,10 @@
                     <helpers:GlowIcon x:Name="iconCircle"
                             Size="36" CornerRadius="18"
                             Background="{TemplateBinding BorderBrush}">
-                        <TextBlock x:Name="icon"
-                                   Text="{TemplateBinding Tag}"
-                                   Style="{StaticResource App.Style.Glyph}"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"/>
+                        <helpers:Icon x:Name="icon"
+                                      Kind="{TemplateBinding Tag}"
+                                      Size="19"
+                                      Foreground="White"/>
                     </helpers:GlowIcon>
 
                     <TextBlock Grid.Column="2"
@@ -374,13 +378,11 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 
-                <TextBlock x:Name="icon" 
-                           Text="{TemplateBinding Tag}" 
-                           FontFamily="Segoe MDL2 Assets"
-                           FontSize="12" 
-                           Foreground="{TemplateBinding Foreground}"
-                           VerticalAlignment="Center"/>
-                
+                <helpers:Icon x:Name="icon"
+                              Kind="{TemplateBinding Tag}"
+                              Size="14"
+                              Foreground="{TemplateBinding Foreground}"/>
+
                 <TextBlock Grid.Column="2" 
                            Text="{TemplateBinding Content}" 
                            FontSize="12" 
@@ -486,16 +488,12 @@
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Width" Value="32"/>
         <Setter Property="Height" Value="32"/>
+        <Setter Property="Foreground" Value="#CCFFFFFF"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border Background="{TemplateBinding Background}" CornerRadius="6">
-                        <TextBlock Text="&#xE8BB;" 
-                                   FontFamily="Segoe MDL2 Assets" 
-                                   FontSize="12" 
-                                   Foreground="#CCFFFFFF"
-                                   VerticalAlignment="Center" 
-                                   HorizontalAlignment="Center"/>
+                        <helpers:Icon Kind="close" Size="14" Foreground="{TemplateBinding Foreground}"/>
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
@@ -523,6 +521,7 @@
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Foreground" Value="{StaticResource App.Brush.NavButtonForeground}"/>
         <Setter Property="Background" Value="{StaticResource App.Brush.Idle}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource App.Brush.IconCircle}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ToggleButton">
@@ -538,16 +537,24 @@
                                     <ColumnDefinition Width="10"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <Border x:Name="iconCircle" 
-                                        Width="36" Height="36" 
-                                        CornerRadius="18" 
-                                        Background="{StaticResource App.Brush.IconCircle}">
-                                    <TextBlock x:Name="icon" 
-                                               Text="{TemplateBinding Tag}" 
-                                               Style="{StaticResource App.Style.Glyph}" 
-                                               HorizontalAlignment="Center" 
-                                               VerticalAlignment="Center"/>
-                                </Border>
+                                <Grid>
+                                    <Border x:Name="iconCircle"
+                                            Width="36" Height="36"
+                                            CornerRadius="18"
+                                            Background="{TemplateBinding BorderBrush}">
+                                        <helpers:Icon Kind="{TemplateBinding Tag}"
+                                                      Size="19"
+                                                      Foreground="White"/>
+                                    </Border>
+                                    <Path x:Name="sparkle"
+                                          Width="13" Height="13"
+                                          HorizontalAlignment="Right" VerticalAlignment="Top"
+                                          Margin="0,-4,-4,0" Visibility="Collapsed"
+                                          Stretch="Uniform"
+                                          Fill="{StaticResource App.Brush.Gold}"
+                                          Effect="{StaticResource App.Effect.GoldGlow.Small}"
+                                          Data="M7,0 L8.7,5.3 L14,7 L8.7,8.7 L7,14 L5.3,8.7 L0,7 L5.3,5.3 Z"/>
+                                </Grid>
                                 <TextBlock Grid.Column="2" 
                                            Text="{TemplateBinding Content}" 
                                            FontSize="15" FontWeight="SemiBold" 
@@ -574,6 +581,10 @@
                             <Setter TargetName="container" Property="BorderBrush" Value="#19FFFFFF"/>
                             <Setter TargetName="goldFocus" Property="Opacity" Value="1"/>
                             <Setter Property="Foreground" Value="{StaticResource App.Brush.CheckedForeground}"/>
+                        </Trigger>
+                        <Trigger Property="helpers:NavButton.IsFeatured" Value="True">
+                            <Setter TargetName="iconCircle" Property="Effect" Value="{StaticResource App.Effect.Recipes.Glow}"/>
+                            <Setter TargetName="sparkle" Property="Visibility" Value="Visible"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -1346,12 +1357,10 @@
         <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
 
-<Style x:Key="License.Style.Spinner" TargetType="TextBlock">
-        <Setter Property="Text" Value="&#xE117;"/>
-        <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
-        <Setter Property="FontSize" Value="28"/>
+<Style x:Key="License.Style.Spinner" TargetType="{x:Type helpers:Icon}">
+        <Setter Property="Kind" Value="sync"/>
+        <Setter Property="Size" Value="30"/>
         <Setter Property="Foreground" Value="{StaticResource App.Brush.DeepSkyBlue}"/>
-        <Setter Property="HorizontalAlignment" Value="Center"/>
         <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
         <Setter Property="RenderTransform">
             <Setter.Value>
@@ -1362,7 +1371,7 @@
             <EventTrigger RoutedEvent="Loaded">
                 <BeginStoryboard>
                     <Storyboard RepeatBehavior="Forever">
-                        <DoubleAnimation Storyboard.TargetProperty="(TextBlock.RenderTransform).(RotateTransform.Angle)"
+                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
                                          From="0" To="360" Duration="0:0:1"/>
                     </Storyboard>
                 </BeginStoryboard>
@@ -1453,12 +1462,9 @@
                                         CornerRadius="12" 
                                         Background="#1AFFFFFF" 
                                         Margin="0,0,16,0">
-                                    <TextBlock Text="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}}"
-                                               FontFamily="Segoe MDL2 Assets"
-                                               FontSize="20"
-                                               Foreground="{StaticResource App.Brush.DeepSkyBlue}"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"/>
+                                    <helpers:Icon Kind="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}}"
+                                                  Size="21"
+                                                  Foreground="{StaticResource App.Brush.DeepSkyBlue}"/>
                                 </Border>
                                 
                                 <TextBlock Text="{Binding Header, RelativeSource={RelativeSource TemplatedParent}}"
@@ -1534,13 +1540,11 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
-                                <TextBlock Grid.Column="0" 
-                                           Text="{TemplateBinding Icon}"
-                                           FontFamily="Segoe MDL2 Assets" 
-                                           FontSize="28" 
-                                           Foreground="{StaticResource App.Brush.DeepSkyBlue}"
-                                           VerticalAlignment="Center"
-                                           Margin="0,0,16,0"/>
+                                <helpers:Icon Grid.Column="0"
+                                              Kind="{TemplateBinding Icon}"
+                                              Size="30"
+                                              Foreground="{StaticResource App.Brush.DeepSkyBlue}"
+                                              Margin="0,0,16,0"/>
 
                                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                     <TextBlock Text="{TemplateBinding Title}" 
@@ -1574,5 +1578,71 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <!-- Centralized idle "float" for the mascot — a gentle vertical bob. Any Image or
+         FrameworkElement that wears this style breathes without per-page storyboards. -->
+    <Style x:Key="App.Style.Mascot.Float" TargetType="FrameworkElement">
+        <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <TranslateTransform/>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                         From="-6" To="6" Duration="0:0:2.6" AutoReverse="True"
+                                         RepeatBehavior="Forever" EasingFunction="{StaticResource App.Easing.Smooth}"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Slow aura pulse for the level badge / mascot halo. -->
+    <Style x:Key="App.Style.Aura.Pulse" TargetType="FrameworkElement">
+        <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <ScaleTransform/>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                                         From="0.9" To="1.12" Duration="0:0:2.8" AutoReverse="True"
+                                         RepeatBehavior="Forever" EasingFunction="{StaticResource App.Easing.Smooth}"/>
+                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                                         From="0.9" To="1.12" Duration="0:0:2.8" AutoReverse="True"
+                                         RepeatBehavior="Forever" EasingFunction="{StaticResource App.Easing.Smooth}"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <LinearGradientBrush x:Key="App.Brush.Rank" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="{StaticResource App.Color.Gold}" Offset="0"/>
+        <GradientStop Color="#FF9500" Offset="1"/>
+    </LinearGradientBrush>
+
+    <RadialGradientBrush x:Key="App.Brush.Mascot.Halo" Center="0.5,0.55" GradientOrigin="0.5,0.5">
+        <GradientStop Color="#5A00BFFF" Offset="0"/>
+        <GradientStop Color="Transparent" Offset="1"/>
+    </RadialGradientBrush>
+
+    <LinearGradientBrush x:Key="App.Brush.Rank.Track" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Color="#FFD700" Offset="0"/>
+        <GradientStop Color="#00BFFF" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="App.Brush.BrewBar" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Color="#2600BFFF" Offset="0"/>
+        <GradientStop Color="#1AFFD700" Offset="1"/>
+    </LinearGradientBrush>
 
 </ResourceDictionary>

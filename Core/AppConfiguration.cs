@@ -12,9 +12,12 @@ public static class AppConfiguration
     {
         public const string Application = "0.7.5";
         public const string ApplicationFull = "0.7.5.0";
-        public const string Pro = "1.0.3";
-        public const string ProFull = "1.0.3.0";
-        public const string InstallerProduct = "0.7.5.0";
+        public const string Pro = "1.0.4";
+        public const string ProFull = "1.0.4.0";
+
+        // The installer no longer carries a version of its own: ZephyrsElixirInstaller_V2.iss
+        // reads it off the published ZephyrsElixir.exe, so this is always ApplicationFull.
+        public const string InstallerProduct = ApplicationFull;
     }
 
     public static class Identity
@@ -31,7 +34,15 @@ public static class AppConfiguration
     {
         public const string FirewallRuleInbound = "ZephyrsElixir ADB Inbound";
         public const string FirewallRuleOutbound = "ZephyrsElixir ADB Outbound";
-        public const string RegUninstallKeyV1 = "Zephyrs Elixir_is1";
+
+        // Pre-GUID releases registered under their app name and cannot be upgraded in
+        // place, so the installer uninstalls these keys before writing the new build.
+        public static readonly IReadOnlyList<string> RegUninstallKeysLegacy = new[]
+        {
+            "Zephyrs Elixir_is1",
+            "Sonics Elixir_is1",
+            "SonicsElixir_is1"
+        };
     }
 
     #endregion
@@ -65,11 +76,11 @@ public static class AppConfiguration
         public static readonly string CsprojMain = $@"{SolutionRoot}\ZephyrsElixir\ZephyrsElixir.csproj";
         public static readonly string CsprojPro = $@"{SolutionRoot}\ZephyrsElixir.Pro\ZephyrsElixir.Pro.csproj";
         public static readonly string ProBinDir = $@"{SolutionRoot}\ZephyrsElixir.Pro\bin\Release\net8.0-windows\win-x64";
-        public static readonly string ProDllDestDir = @"C:\Users\Administrator\Desktop\PortableGit\elixirsite\pro";
-        public static readonly string LicenseIndexJs = @"C:\Users\Administrator\Desktop\PortableGit\elixirsite\api\license\index.js";
+        public static readonly string ProDllDestDir = $@"{SolutionRoot}\elixirsite\pro";
+        public static readonly string LicenseIndexJs = $@"{SolutionRoot}\elixirsite\api\license\index.js";
         public static readonly string AdbInstallDir = @"{app}\Tools\adb";
 
-        public const string DefaultInstallDir = @"{commonpf}\Zephyrs Elixir";
+        public const string DefaultInstallDir = @"{autopf}\Zephyrs Elixir";
         public const string InstallerOutputDir = "InstallerOutput";
         public const string OutputBaseFilenameTemplate = "ZephyrsElixir_x64_v";
         public const string NetTargetV1 = "net6.0-windows";
@@ -83,17 +94,48 @@ public static class AppConfiguration
         public const string ScrcpyGitHubApi = "https://api.github.com/repos/Genymobile/scrcpy/releases/latest";
         public const string HttpUserAgent = "ZephyrsElixir";
         public const string HttpAcceptHeader = "application/vnd.github+json";
-        public const string CloudApiAnalyzeFull = "https://elixirsite.vercel.app/api/analyze";
+        public const string CloudApiAnalyzeFull = "https://zephyrselixir.com/api/analyze";
         public const string ZephyrAgentVersion = "https://zephyrselixir.com/agent-version.txt";
         public const string ZephyrUpdateJson = "https://zephyrselixir.com/zupdate.json";
+        public const string RecipesApi = "https://zephyrselixir.com/api/recipes";
+
+        // Every binary the app downloads and then executes or loads — the installer and the Pro
+        // module — must come from one of these hosts over HTTPS. The URLs themselves arrive from a
+        // remote manifest, so this list is what keeps a tampered manifest from pointing elsewhere.
+        public static readonly IReadOnlySet<string> TrustedDownloadHosts = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "zephyrselixir.com",
+            "www.zephyrselixir.com",
+            "cdn.zephyrselixir.com",
+            "dl.zephyrselixir.com"
+        };
+
+        public static bool IsTrustedDownload(string? url) =>
+            Uri.TryCreate(url, UriKind.Absolute, out var uri) &&
+            uri.Scheme == Uri.UriSchemeHttps &&
+            TrustedDownloadHosts.Contains(uri.Host);
+    }
+
+    // Single source of truth for the private-DNS providers offered across the app
+    // (Advanced page and recipe editor share this list).
+    public static class Dns
+    {
+        public static readonly IReadOnlyList<(string Name, string Hostname)> Providers = new (string, string)[]
+        {
+            ("NextDNS", "dns.nextdns.io"),
+            ("AdGuard", "dns.adguard-dns.com"),
+            ("Cloudflare", "1dot1dot1dot1.cloudflare-dns.com"),
+            ("Google", "dns.google"),
+            ("Quad9", "dns.quad9.net")
+        };
     }
 
     // Single source of truth for legal documents (version, date, public URLs, controller).
     public static class Legal
     {
-        public const string DocumentsVersion = "1.0";
-        public const string EffectiveDate    = "2026-06-15";
-        public const string EulaVersion      = "1.0";   // bump to force EULA re-acceptance
+        public const string DocumentsVersion = "1.1";
+        public const string EffectiveDate    = "2026-07-26";
+        public const string EulaVersion      = "1.1";   // bump to force EULA re-acceptance
         public const string PrivacyUrl       = "https://zephyrselixir.com/privacy";
         public const string TermsUrl         = "https://zephyrselixir.com/terms";
         public const string ControllerName   = "blast752";

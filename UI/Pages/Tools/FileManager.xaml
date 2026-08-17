@@ -81,13 +81,7 @@
                                 <Border x:Name="iconBadge"
                                         Width="22" Height="22" CornerRadius="11"
                                         Background="{StaticResource App.Brush.IconCircle}">
-                                    <TextBlock x:Name="arrow"
-                                               Text="&#xE74A;"
-                                               FontFamily="Segoe MDL2 Assets" FontSize="12"
-                                               Foreground="White"
-                                               TextOptions.TextRenderingMode="ClearType"
-                                               TextOptions.TextFormattingMode="Display"
-                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <h:Icon Kind="arrow-up" Size="14" x:Name="arrow" Foreground="White" TextOptions.TextRenderingMode="ClearType" TextOptions.TextFormattingMode="Display" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Border>
                                 <TextBlock x:Name="label" Grid.Column="1"
                                            Text="{TemplateBinding Content}"
@@ -141,13 +135,9 @@
             <Setter Property="BorderThickness" Value="0"/>
         </Style>
 
-        <Style x:Key="FileManager.Style.BadgeGlyph" TargetType="TextBlock">
-            <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
+        <Style x:Key="FileManager.Style.BadgeGlyph" TargetType="{x:Type h:Icon}">
+            <Setter Property="Size" Value="16"/>
             <Setter Property="Foreground" Value="White"/>
-            <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="TextOptions.TextRenderingMode" Value="ClearType"/>
-            <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
         </Style>
 
         <Style x:Key="FileManager.Style.HeaderToggle" TargetType="Button">
@@ -260,12 +250,7 @@
                                         <ToggleButton.Template>
                                             <ControlTemplate TargetType="ToggleButton">
                                                 <Border Background="Transparent" Width="18" Height="18">
-                                                    <TextBlock x:Name="chev" Text="&#xE76C;"
-                                                               FontFamily="Segoe MDL2 Assets" FontSize="9"
-                                                               Foreground="#7B8CA8"
-                                                               HorizontalAlignment="Center"
-                                                               VerticalAlignment="Center"
-                                                               RenderTransformOrigin="0.5,0.5"/>
+                                                    <h:Icon Kind="chevron-right" Size="11" x:Name="chev" Foreground="#7B8CA8" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5"/>
                                                 </Border>
                                                 <ControlTemplate.Triggers>
                                                     <Trigger Property="IsChecked" Value="True">
@@ -467,11 +452,7 @@
             <StackPanel Orientation="Horizontal" Margin="0,2">
                 <Grid Width="18" Height="18" VerticalAlignment="Center">
                     <Image Source="{Binding NodeImage}" Stretch="Uniform"/>
-                    <TextBlock Text="{Binding Icon}"
-                               FontFamily="Segoe MDL2 Assets" FontSize="13"
-                               Foreground="{StaticResource App.Brush.DeepSkyBlue}"
-                               HorizontalAlignment="Center" VerticalAlignment="Center"
-                               Visibility="{Binding HasNodeImage, Converter={StaticResource App.Converter.InverseBoolToVisibility}}"/>
+                    <h:Icon Kind="{Binding Icon}" Size="15" Foreground="{StaticResource App.Brush.DeepSkyBlue}" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding HasNodeImage, Converter={StaticResource App.Converter.InverseBoolToVisibility}}"/>
                 </Grid>
                 <TextBlock Text="{Binding Name}" Margin="8,0,0,0" VerticalAlignment="Center"
                            Foreground="White" FontSize="13"/>
@@ -500,14 +481,13 @@
                     </Grid.ColumnDefinitions>
 
                     <Button Style="{StaticResource App.Style.Button.Inline}"
-                            Content="{h:Translate FileManager_Button_Back}" Tag="&#xE72B;"
+                            Content="{h:Translate FileManager_Button_Back}" Tag="arrow-left"
                             Command="{Binding CloseCommand}"/>
 
                     <h:GlowIcon Grid.Column="2" Size="48" CornerRadius="14"
                                 Background="{StaticResource App.Brush.IconCircle}"
                                 GlowEffect="{StaticResource FileManager.Effect.AccentGlow}">
-                        <TextBlock Text="&#xED25;" FontFamily="Segoe MDL2 Assets" FontSize="22"
-                                   Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <h:Icon Kind="folder-open" Size="24" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </h:GlowIcon>
 
                     <StackPanel Grid.Column="3" Margin="14,0,0,0" VerticalAlignment="Center">
@@ -535,10 +515,10 @@
 
                     <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Center">
                         <Button Style="{StaticResource App.Style.Button.Inline}" Margin="0,0,6,0"
-                                Content="{h:Translate FileManager_Button_Home}" Tag="&#xE80F;"
+                                Content="{h:Translate FileManager_Button_Home}" Tag="home"
                                 Command="{Binding GoHomeCommand}"/>
                         <Button Style="{StaticResource App.Style.Button.Inline}"
-                                Content="{h:Translate FileManager_Button_Refresh}" Tag="&#xE72C;"
+                                Content="{h:Translate FileManager_Button_Refresh}" Tag="refresh"
                                 Command="{Binding RefreshCommand}"/>
                     </StackPanel>
                 </Grid>
@@ -579,8 +559,8 @@
                                                         </Grid.ColumnDefinitions>
                                                         <Border Width="32" Height="32" CornerRadius="8"
                                                                 Background="{Binding Brush}">
-                                                            <TextBlock Text="{Binding Icon}" FontSize="14"
-                                                                       Style="{StaticResource FileManager.Style.BadgeGlyph}"/>
+                                                            <h:Icon Kind="{Binding Icon}"
+                                                                    Style="{StaticResource FileManager.Style.BadgeGlyph}"/>
                                                         </Border>
                                                         <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
                                                             <TextBlock Text="{Binding Name}" FontSize="13"
@@ -724,7 +704,7 @@
                                              ToolTip="{h:Translate FileManager_PathBar_Tooltip}"/>
                                     <Button Grid.Column="4"
                                             Style="{StaticResource App.Style.Button.Inline}"
-                                            Content="{h:Translate FileManager_Button_Go}" Tag="&#xE72A;"
+                                            Content="{h:Translate FileManager_Button_Go}" Tag="arrow-right"
                                             Height="38"
                                             Command="{Binding GoToInputPathCommand}"/>
                                 </Grid>
@@ -736,14 +716,25 @@
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Text="{Binding StatusMessage}"
                                                Foreground="#A0B8C8" FontSize="12" VerticalAlignment="Center"/>
                                     <TextBlock Grid.Column="1"
                                                Text="{Binding ClipboardSummary}"
                                                Foreground="{StaticResource App.Brush.DeepSkyBlue}" FontSize="12" FontWeight="SemiBold"
-                                               VerticalAlignment="Center"
+                                               VerticalAlignment="Center" Margin="0,0,14,0"
                                                Visibility="{Binding HasClipboard, Converter={StaticResource App.Converter.BooleanToVisibility}}"/>
+                                    <Grid Grid.Column="2" Width="210">
+                                        <TextBox x:Name="FilterBox"
+                                                 Style="{StaticResource App.Style.TextBox.Glass}"
+                                                 Height="30" Padding="28,0,10,0" FontSize="12"
+                                                 VerticalContentAlignment="Center"
+                                                 Tag="{h:Translate FileManager_Filter_Placeholder}"
+                                                 Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"
+                                                 KeyDown="OnFilterKeyDown"/>
+                                        <h:Icon Kind="search" Size="13" Foreground="#7B8CA8" IsHitTestVisible="False" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                                    </Grid>
                                 </Grid>
                             </Border>
 
@@ -757,6 +748,7 @@
                                           AllowDrop="True"
                                           MouseDoubleClick="OnGridDoubleClick"
                                           SelectionChanged="OnGridSelectionChanged"
+                                          PreviewKeyDown="OnGridPreviewKeyDown"
                                           PreviewMouseLeftButtonDown="OnGridMouseDown"
                                           PreviewMouseMove="OnGridMouseMove"
                                           DragEnter="OnGridDragOver"
@@ -773,8 +765,8 @@
                                                         <Border CornerRadius="8"
                                                                 Background="{Binding TypeBrush}"
                                                                 Visibility="{Binding HasTypeImage, Converter={StaticResource App.Converter.InverseBoolToVisibility}}">
-                                                            <TextBlock Text="{Binding TypeIcon}" FontSize="14"
-                                                                       Style="{StaticResource FileManager.Style.BadgeGlyph}"/>
+                                                            <h:Icon Kind="{Binding TypeIcon}"
+                                                                    Style="{StaticResource FileManager.Style.BadgeGlyph}"/>
                                                         </Border>
                                                         <Image Source="{Binding TypeImage}" Stretch="Uniform" Margin="4"/>
                                                     </Grid>
@@ -811,10 +803,7 @@
                                                                        FontSize="10" FontWeight="SemiBold"
                                                                        Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
                                                                        VerticalAlignment="Center"/>
-                                                            <TextBlock Text="&#xE15D;"
-                                                                       FontFamily="Segoe MDL2 Assets" FontSize="9"
-                                                                       Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
-                                                                       Margin="6,0,0,0" VerticalAlignment="Center"/>
+                                                            <h:Icon Kind="volume" Size="11" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Margin="6,0,0,0" VerticalAlignment="Center"/>
                                                         </StackPanel>
                                                     </Button>
                                                 </DataTemplate>
@@ -893,9 +882,7 @@
                                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="40">
                                         <Border Width="72" Height="72" CornerRadius="20"
                                                 Background="#15FFFFFF" HorizontalAlignment="Center">
-                                            <TextBlock Text="&#xE7BA;" FontFamily="Segoe MDL2 Assets" FontSize="32"
-                                                       Foreground="#7B8CA8"
-                                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            <h:Icon Kind="warning" Size="34" Foreground="#7B8CA8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                         </Border>
                                         <TextBlock Text="{Binding EmptyStateMessage}"
                                                    Foreground="#A0B8C8" FontSize="14"
@@ -938,7 +925,7 @@
                                     <Button Grid.Column="1" Style="{StaticResource App.Style.Button.IconOnly}"
                                             Command="{Binding ClosePreviewCommand}"
                                             VerticalAlignment="Top">
-                                        <TextBlock Text="&#xE10A;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
+                                        <h:Icon Kind="close" Size="14"/>
                                     </Button>
                                 </Grid>
 
@@ -963,9 +950,7 @@
 
                                         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center"
                                                     Visibility="{Binding HasPreviewError, Converter={StaticResource App.Converter.BooleanToVisibility}}">
-                                            <TextBlock Text="&#xE7BA;" FontFamily="Segoe MDL2 Assets"
-                                                       FontSize="32" Foreground="#FFA1A1"
-                                                       HorizontalAlignment="Center"/>
+                                            <h:Icon Kind="warning" Size="34" Foreground="#FFA1A1" HorizontalAlignment="Center"/>
                                             <TextBlock Text="{Binding PreviewError}" Foreground="#FFA1A1"
                                                        FontSize="12" TextWrapping="Wrap" MaxWidth="240"
                                                        HorizontalAlignment="Center" TextAlignment="Center"
@@ -995,8 +980,7 @@
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <Border Width="34" Height="34" CornerRadius="10"
                                 Background="{Binding ConnectionStatusBrush}">
-                            <TextBlock Text="&#xE839;" FontFamily="Segoe MDL2 Assets" FontSize="15"
-                                       Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <h:Icon Kind="wireless" Size="17" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <StackPanel Margin="12,0,16,0" VerticalAlignment="Center">
                             <TextBlock Text="{Binding ConnectionStatusText}" Foreground="White"
@@ -1010,43 +994,61 @@
 
                     <WrapPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center">
                         <Button Style="{StaticResource FileManager.Style.ToolbarButton}"
-                                Content="{h:Translate FileManager_Button_NewFolder}" Tag="&#xE8F4;"
+                                Content="{h:Translate FileManager_Button_NewFolder}" Tag="document-add"
                                 Command="{Binding CreateDirectoryCommand}"/>
                         <Button Style="{StaticResource FileManager.Style.ToolbarButton}"
-                                Content="{h:Translate FileManager_Button_Push}" Tag="&#xE898;"
+                                Content="{h:Translate FileManager_Button_Push}" Tag="upload"
                                 Command="{Binding UploadCommand}"/>
                         <Button Style="{StaticResource FileManager.Style.ToolbarButton}"
-                                Content="{h:Translate FileManager_Button_Pull}" Tag="&#xE896;"
+                                Content="{h:Translate FileManager_Button_Pull}" Tag="download"
                                 Command="{Binding PullToFolderCommand}"/>
                         <Border Style="{StaticResource FileManager.Style.ToolbarSeparator}"/>
                         <Button Style="{StaticResource FileManager.Style.ToolbarButton}"
-                                Content="{h:Translate FileManager_Button_Cut}" Tag="&#xE8C6;"
+                                Content="{h:Translate FileManager_Button_Cut}" Tag="cut"
                                 Command="{Binding CutSelectionCommand}"/>
                         <Button Style="{StaticResource FileManager.Style.ToolbarButton}"
-                                Content="{h:Translate FileManager_Button_Copy}" Tag="&#xE8C8;"
+                                Content="{h:Translate FileManager_Button_Copy}" Tag="copy"
                                 Command="{Binding CopySelectionCommand}"/>
                         <Button Style="{StaticResource FileManager.Style.ToolbarButton}"
-                                Content="{h:Translate FileManager_Button_Paste}" Tag="&#xE77F;"
+                                Content="{h:Translate FileManager_Button_Paste}" Tag="paste"
                                 Command="{Binding PasteCommand}"/>
                         <Border Style="{StaticResource FileManager.Style.ToolbarSeparator}"/>
                         <Button Style="{StaticResource FileManager.Style.ToolbarButton}"
-                                Content="{h:Translate FileManager_Button_Rename}" Tag="&#xE8AC;"
+                                Content="{h:Translate FileManager_Button_Rename}" Tag="rename"
                                 Command="{Binding RenameCommand}"/>
                         <Button Style="{StaticResource FileManager.Style.ToolbarButton}"
-                                Content="{h:Translate FileManager_Button_Chmod}" Tag="&#xE73E;"
+                                Content="{h:Translate FileManager_Button_Chmod}" Tag="check"
                                 Command="{Binding ChangePermissionsCommand}"/>
                         <Button Style="{StaticResource FileManager.Style.ToolbarButton.Destructive}"
-                                Content="{h:Translate FileManager_Button_Delete}" Tag="&#xE74D;"
+                                Content="{h:Translate FileManager_Button_Delete}" Tag="delete"
                                 Command="{Binding DeleteCommand}"/>
                     </WrapPanel>
 
                     <Border Grid.Column="2" Margin="16,0,0,0" MaxWidth="240"
                             Visibility="{Binding HasActiveTransfers, Converter={StaticResource App.Converter.BooleanToVisibility}}"
                             Background="#10FFFFFF" CornerRadius="10" BorderBrush="#1AFFFFFF" BorderThickness="1"
-                            Padding="12,6">
+                            Padding="12,6" ToolTipService.ShowDuration="30000">
+                        <Border.ToolTip>
+                            <ItemsControl ItemsSource="{Binding Transfers}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" Margin="0,2">
+                                            <Border Width="8" Height="8" CornerRadius="4"
+                                                    Background="{Binding StatusBrush}" VerticalAlignment="Center"/>
+                                            <TextBlock Text="{Binding DirectionLabel}" Foreground="#9FB4CC"
+                                                       FontSize="11" Margin="7,0,0,0" VerticalAlignment="Center"/>
+                                            <TextBlock Text="{Binding DisplayName}" Foreground="White"
+                                                       FontSize="11" Margin="7,0,0,0" MaxWidth="220"
+                                                       TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                                            <TextBlock Text="{Binding ProgressDisplay}" Foreground="#9FB4CC"
+                                                       FontSize="11" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Border.ToolTip>
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock Text="&#xE895;" FontFamily="Segoe MDL2 Assets" FontSize="14"
-                                       Foreground="{StaticResource App.Brush.DeepSkyBlue}" VerticalAlignment="Center"/>
+                            <h:Icon Kind="sync" Size="16" Foreground="{StaticResource App.Brush.DeepSkyBlue}" VerticalAlignment="Center"/>
                             <StackPanel Margin="10,0" VerticalAlignment="Center">
                                 <TextBlock Text="{Binding ActiveTransferCountText}"
                                            Foreground="White" FontSize="11"/>
@@ -1057,7 +1059,7 @@
                             <Button Style="{StaticResource App.Style.Button.IconOnly}"
                                     Command="{Binding CancelAllTransfersCommand}"
                                     ToolTip="{h:Translate FileManager_Tooltip_CancelAll}">
-                                <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
+                                <h:Icon Kind="close" Size="14"/>
                             </Button>
                         </StackPanel>
                     </Border>
@@ -1079,9 +1081,7 @@
                         <Border Width="100" Height="100" CornerRadius="28"
                                 Background="{StaticResource App.Brush.IconCircle}"
                                 HorizontalAlignment="Center">
-                            <TextBlock Text="&#xE898;" FontFamily="Segoe MDL2 Assets" FontSize="44"
-                                       Foreground="White"
-                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <h:Icon Kind="upload" Size="46" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <TextBlock Text="{h:Translate FileManager_DragHover_Title}" Foreground="White"
                                    FontSize="26" FontWeight="Bold" Margin="0,20,0,0"

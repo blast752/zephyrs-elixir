@@ -18,7 +18,7 @@
                     <Setter Property="Fill" Value="#60FFFFFF"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Status}" Value="Installing">
-                    <Setter Property="Fill" Value="#FFD000"/>
+                    <Setter Property="Fill" Value="#FFD700"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Status}" Value="Success">
                     <Setter Property="Fill" Value="#00D68F"/>
@@ -55,7 +55,7 @@
                 </Grid.ColumnDefinitions>
 
                 <Button Style="{StaticResource App.Style.Button.Inline}"
-                        Content="{h:Translate ApkInstaller_Button_Back}" Tag="&#xE72B;"
+                        Content="{h:Translate ApkInstaller_Button_Back}" Tag="arrow-left"
                         Click="OnBackClick"
                         VerticalAlignment="Center"/>
 
@@ -69,12 +69,12 @@
                 <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
                     <Button x:Name="BrowseButton"
                             Style="{StaticResource App.Style.Button}"
-                            Content="{h:Translate ApkInstaller_Button_Browse}" Tag="&#xE8E5;"
+                            Content="{h:Translate ApkInstaller_Button_Browse}" Tag="import-file"
                             Click="OnBrowseClick"
                             Margin="0,0,12,0"/>
                     <Button x:Name="ClearButton"
                             Style="{StaticResource App.Style.Button.Inline.Destructive}"
-                            Content="{h:Translate ApkInstaller_Button_ClearAll}" Tag="&#xE74D;"
+                            Content="{h:Translate ApkInstaller_Button_ClearAll}" Tag="delete"
                             Click="OnClearClick"
                             Visibility="Collapsed"/>
                 </StackPanel>
@@ -116,9 +116,7 @@
                                 <DropShadowEffect BlurRadius="20" ShadowDepth="0" 
                                                   Color="{StaticResource App.Color.DeepSkyBlue}" Opacity="0.4"/>
                             </h:GlowIcon.GlowEffect>
-                            <TextBlock Text="&#xE896;" FontFamily="Segoe MDL2 Assets" 
-                                       FontSize="36" Foreground="White"
-                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <h:Icon Kind="download" Size="38" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </h:GlowIcon>
                         
                         <TextBlock Text="{h:Translate ApkInstaller_DropHere}" 
@@ -135,8 +133,8 @@
                             <Border Background="#2000D68F" CornerRadius="8" Padding="12,6" Margin="4,0">
                                 <TextBlock Text=".XAPK" FontSize="12" FontWeight="SemiBold" Foreground="#00D68F"/>
                             </Border>
-                            <Border Background="#20FFD000" CornerRadius="8" Padding="12,6" Margin="4,0">
-                                <TextBlock Text=".APKS" FontSize="12" FontWeight="SemiBold" Foreground="#FFD000"/>
+                            <Border Background="#20FFD700" CornerRadius="8" Padding="12,6" Margin="4,0">
+                                <TextBlock Text=".APKS" FontSize="12" FontWeight="SemiBold" Foreground="#FFD700"/>
                             </Border>
                             <Border Background="#207D64FF" CornerRadius="8" Padding="12,6" Margin="4,0">
                                 <TextBlock Text=".APKM" FontSize="12" FontWeight="SemiBold" Foreground="#7D64FF"/>
@@ -187,9 +185,7 @@
 
                                             <Grid>
                                                 <Border Width="36" Height="36" CornerRadius="10" Background="{Binding TypeBrush}">
-                                                    <TextBlock Text="{Binding TypeIcon}" FontFamily="Segoe MDL2 Assets" 
-                                                               FontSize="16" Foreground="White"
-                                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    <h:Icon Kind="{Binding TypeIcon}" Size="18" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                 </Border>
                                                 <Border Width="14" Height="14" CornerRadius="7" 
                                                         Background="{Binding TypeBrush}"
@@ -258,7 +254,7 @@
 
                                             <Button Grid.Column="5" 
                                                     Style="{StaticResource App.Style.Button.Inline.Destructive}"
-                                                    Content="" Tag="&#xE74D;"
+                                                    Content="" Tag="delete"
                                                     Width="32" Height="32" MinWidth="32"
                                                     Click="OnRemovePackage"
                                                     ToolTip="{h:Translate ApkInstaller_Tooltip_Remove}"
@@ -287,16 +283,13 @@
                         <Border CornerRadius="20" Background="Transparent">
                             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                                 <Grid HorizontalAlignment="Center">
-                                    <TextBlock Text="&#xE896;" FontFamily="Segoe MDL2 Assets" 
-                                               FontSize="64" Foreground="{StaticResource App.Brush.DeepSkyBlue}"
-                                               IsHitTestVisible="False">
-                                        <TextBlock.Effect>
-                                            <DropShadowEffect BlurRadius="20" ShadowDepth="0" 
+                                    <h:Icon Kind="download" Size="66" Foreground="{StaticResource App.Brush.DeepSkyBlue}"
+                                            IsHitTestVisible="False">
+                                        <h:Icon.Effect>
+                                            <DropShadowEffect BlurRadius="20" ShadowDepth="0"
                                                               Color="{StaticResource App.Color.DeepSkyBlue}" Opacity="0.6"/>
-                                        </TextBlock.Effect>
-                                    </TextBlock>
-                                    <TextBlock Text="&#xE896;" FontFamily="Segoe MDL2 Assets" 
-                                               FontSize="64" Foreground="{StaticResource App.Brush.DeepSkyBlue}"/>
+                                        </h:Icon.Effect>
+                                    </h:Icon>
                                 </Grid>
                                 <TextBlock Text="{h:Translate ApkInstaller_ReleaseToAdd}" 
                                            FontSize="24" FontWeight="Bold" Foreground="White"
@@ -320,8 +313,7 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="&#xE8F1;" FontFamily="Segoe MDL2 Assets" FontSize="14"
-                               Foreground="#70B0B8C8" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                    <h:Icon Kind="library" Size="16" Foreground="#70B0B8C8" VerticalAlignment="Center" Margin="0,0,10,0"/>
                     <TextBlock x:Name="SummaryText" 
                                Text="{h:Translate ApkInstaller_NoPackages}" 
                                FontSize="13" Foreground="#B0B8C8" VerticalAlignment="Center"/>
@@ -351,7 +343,7 @@
 
                 <Button x:Name="InstallButton" Grid.Column="3"
                         Style="{StaticResource App.Style.Button}"
-                        Content="{h:Translate ApkInstaller_InstallAll}" Tag="&#xE896;"
+                        Content="{h:Translate ApkInstaller_InstallAll}" Tag="download"
                         MinWidth="150"
                         Click="OnInstallClick"
                         IsEnabled="False"/>

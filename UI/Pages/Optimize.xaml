@@ -69,9 +69,7 @@
                                     <DropShadowEffect BlurRadius="16" ShadowDepth="0" 
                                                     Color="{StaticResource App.Color.Blue300}" Opacity="0.5"/>
                                 </h:GlowIcon.GlowEffect>
-                                <TextBlock Text="&#xE8EA;"
-                                        Style="{StaticResource App.Style.Glyph}" 
-                                        FontSize="22" HorizontalAlignment="Center"/>
+                                <h:Icon Kind="phone" Size="24" Foreground="White"/>
                             </h:GlowIcon>
                             <Ellipse x:Name="ConnectionIndicator" 
                                     Width="14" Height="14" 
@@ -140,9 +138,7 @@
                                         Content="{h:Translate Optimize_Timer_Tooltip}"/>
                             </Border.ToolTip>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="&#xE916;"
-                                        Style="{StaticResource App.Style.Glyph}"
-                                        FontSize="15" Foreground="#1E1E1E" Margin="0,0,8,0"/>
+                                <h:Icon Kind="stopwatch" Size="17" Foreground="#1E1E1E" Margin="0,0,8,0"/>
                                 <TextBlock x:Name="TimerText" Text="00:00:00" 
                                         FontSize="18" FontWeight="Bold" 
                                         FontFamily="Cascadia Code, Consolas"
@@ -153,7 +149,7 @@
                     
                     <Button x:Name="DeviceInfoButton" Grid.Column="4"
                             Style="{StaticResource App.Style.Button}"
-                            Content="{h:Translate Optimize_Button_DeviceInfo}" Tag="&#xE946;"
+                            Content="{h:Translate Optimize_Button_DeviceInfo}" Tag="info"
                             Click="OnDeviceInfoClick" MinWidth="150">
                         <Button.ToolTip>
                             <ToolTip Style="{StaticResource App.Style.Tooltip}" 
@@ -228,9 +224,7 @@
                             <h:GlowIcon Size="68" CornerRadius="34"
                                     Background="{StaticResource App.Brush.IconCircle}"
                                     GlowEffect="{StaticResource App.Effect.IconCircleBlueGlow}">
-                                <TextBlock x:Name="OptimizeIcon" Text="&#xE9F5;"
-                                           Style="{StaticResource App.Style.Glyph}"
-                                           FontSize="30" HorizontalAlignment="Center"/>
+                                <h:Icon x:Name="OptimizeIcon" Kind="settings" Size="32" Foreground="White"/>
                             </h:GlowIcon>
                         </Grid>
                         
@@ -281,10 +275,9 @@
                                       h:LicenseGuard.RequiredTier="Pro" 
                                       Style="{StaticResource App.Style.ToggleSwitch.Extreme}">
                                 <StackPanel Orientation="Horizontal">
-                                    <Grid VerticalAlignment="Center" Margin="0,0,10,0">
-                                        <TextBlock Text="&#xE945;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{StaticResource App.Brush.Gold}" Effect="{StaticResource App.Effect.GoldGlow.Small}" IsHitTestVisible="False"/>
-                                        <TextBlock Text="&#xE945;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{StaticResource App.Brush.Gold}"/>
-                                    </Grid>
+                                    <h:Icon Kind="bolt" Size="16" Margin="0,0,10,0"
+                                            Foreground="{StaticResource App.Brush.Gold}"
+                                            Effect="{StaticResource App.Effect.GoldGlow.Small}"/>
                                     <TextBlock Text="{h:Translate Optimize_ExtremeMode_Label}" 
                                                FontSize="13" FontWeight="SemiBold" 
                                                Foreground="#C8D8E8" VerticalAlignment="Center"/>
@@ -294,7 +287,7 @@
                         
                         <Button x:Name="OptimizeButton" Grid.Row="4"
                                 Style="{StaticResource App.Style.Button}"
-                                Content="{h:Translate Optimize_Button_Start}" Tag="&#xE768;"
+                                Content="{h:Translate Optimize_Button_Start}" Tag="play"
                                 MinWidth="200" MinHeight="56"
                                 HorizontalAlignment="Center"
                                 Click="OnOptimizeClick">
@@ -330,10 +323,9 @@
                             <Border Grid.Row="0" Background="#10FFD700" Padding="16,12">
                                 <Grid>
                                     <StackPanel Orientation="Horizontal">
-                                        <Grid Margin="0,0,10,0" VerticalAlignment="Center">
-                                            <TextBlock Text="&#xE756;" Style="{StaticResource App.Style.Glyph}" FontSize="14" Foreground="{StaticResource App.Brush.Gold}" Effect="{StaticResource App.Effect.GoldGlow.Small}" IsHitTestVisible="False"/>
-                                            <TextBlock Text="&#xE756;" Style="{StaticResource App.Style.Glyph}" FontSize="14" Foreground="{StaticResource App.Brush.Gold}"/>
-                                        </Grid>
+                                        <h:Icon Kind="console" Size="16" Margin="0,0,10,0"
+                                                Foreground="{StaticResource App.Brush.Gold}"
+                                                Effect="{StaticResource App.Effect.GoldGlow.Small}"/>
                                         <TextBlock Text="{h:Translate Optimize_Console_Header}" FontSize="13" FontWeight="SemiBold" Foreground="#D0E0F0" VerticalAlignment="Center"/>
                                     </StackPanel>
                                     
@@ -385,10 +377,7 @@
                     </Grid.ColumnDefinitions>
                     
                     <StackPanel Grid.Column="0" HorizontalAlignment="Center">
-                        <TextBlock Text="&#xE7F4;" 
-                                   Style="{StaticResource App.Style.Glyph}"
-                                   FontSize="20" Foreground="{StaticResource App.Brush.DeepSkyBlue}" 
-                                   HorizontalAlignment="Center" Margin="0,0,0,6"/>
+                        <h:Icon Kind="display" Size="22" Foreground="{StaticResource App.Brush.DeepSkyBlue}" HorizontalAlignment="Center" Margin="0,0,0,6"/>
                         <TextBlock x:Name="StatMemory" Text="0 MB" 
                                    FontSize="16" FontWeight="Bold" Foreground="White" 
                                    HorizontalAlignment="Center"/>
@@ -399,10 +388,7 @@
                     <Rectangle Grid.Column="1" Width="1" Fill="#20FFFFFF" Margin="0,4"/>
                     
                     <StackPanel Grid.Column="2" HorizontalAlignment="Center">
-                        <TextBlock Text="&#xE74D;" 
-                                   Style="{StaticResource App.Style.Glyph}"
-                                   FontSize="20" Foreground="#7ED321" 
-                                   HorizontalAlignment="Center" Margin="0,0,0,6"/>
+                        <h:Icon Kind="delete" Size="22" Foreground="#7ED321" HorizontalAlignment="Center" Margin="0,0,0,6"/>
                         <TextBlock x:Name="StatStorage" Text="0 MB" 
                                    FontSize="16" FontWeight="Bold" Foreground="White" 
                                    HorizontalAlignment="Center"/>
@@ -413,10 +399,7 @@
                     <Rectangle Grid.Column="3" Width="1" Fill="#20FFFFFF" Margin="0,4"/>
                     
                     <StackPanel Grid.Column="4" HorizontalAlignment="Center">
-                        <TextBlock Text="&#xE71E;" 
-                                   Style="{StaticResource App.Style.Glyph}"
-                                   FontSize="20" Foreground="#F5A623" 
-                                   HorizontalAlignment="Center" Margin="0,0,0,6"/>
+                        <h:Icon Kind="search" Size="22" Foreground="#F5A623" HorizontalAlignment="Center" Margin="0,0,0,6"/>
                         <TextBlock x:Name="StatApps" Text="0" 
                                    FontSize="16" FontWeight="Bold" Foreground="White" 
                                    HorizontalAlignment="Center"/>
@@ -427,10 +410,7 @@
                     <Rectangle Grid.Column="5" Width="1" Fill="#20FFFFFF" Margin="0,4"/>
                     
                     <StackPanel Grid.Column="6" HorizontalAlignment="Center">
-                        <TextBlock x:Name="StatStatusIcon" Text="&#xE73E;" 
-                                   Style="{StaticResource App.Style.Glyph}"
-                                   FontSize="20" Foreground="{StaticResource App.Brush.Gold}" 
-                                   HorizontalAlignment="Center" Margin="0,0,0,6"/>
+                        <h:Icon Kind="check" Size="22" x:Name="StatStatusIcon" Foreground="{StaticResource App.Brush.Gold}" HorizontalAlignment="Center" Margin="0,0,0,6"/>
                         <TextBlock x:Name="StatStatus" Text="Ready" 
                                    FontSize="16" FontWeight="Bold" Foreground="White" 
                                    HorizontalAlignment="Center"/>

@@ -1,6 +1,7 @@
 namespace ZephyrsElixir;
 public sealed partial class MainWindow : Window
 {
+    private readonly Dictionary<string, Func<FrameworkElement>> _screenFactories;
     private readonly Dictionary<string, FrameworkElement> _screens;
     private IntPtr _handle;
     private HwndSource? _hwnd;
@@ -10,6 +11,7 @@ public sealed partial class MainWindow : Window
     public MainWindow()
     {
         _screens = new(StringComparer.OrdinalIgnoreCase);
+        _screenFactories = new(StringComparer.OrdinalIgnoreCase);
 
         InitializeComponent();
 
@@ -329,27 +331,43 @@ public sealed partial class MainWindow : Window
         if (AppSidebar is not null) AppSidebar.SelectedKey = key;
     }
 
+    /// <summary>
+    /// Screens are registered as factories and built the first time they are opened — parsing every
+    /// page's XAML up front is by far the largest cost between launching and seeing a window, and
+    /// most sessions never visit all of them. Once built, an instance is kept for the rest of the
+    /// session so navigating back preserves whatever state the page holds.
+    /// </summary>
     private void BuildScreens()
     {
-        _screens["Home"] = new Home(NavigateTo);
-        _screens["Optimize"] = new Optimize();
-        _screens["Debloat"] = new Debloat();
-        _screens["Tools"] = new Tools();
-        _screens["Advanced"] = new Advanced();
-        _screens["Settings"] = new Settings();
-        _screens[AppConfiguration.Window.HelpScreenKey] = new HelpView();
-        foreach (var s in _screens.Values) s.Visibility = Visibility.Collapsed;
+        _screenFactories["Home"] = () => new Home(NavigateTo);
+        _screenFactories["Optimize"] = () => new Optimize();
+        _screenFactories["Debloat"] = () => new Debloat();
+        _screenFactories["Recipes"] = () => new Recipes();
+        _screenFactories["Tools"] = () => new Tools();
+        _screenFactories["Advanced"] = () => new Advanced();
+        _screenFactories["Settings"] = () => new Settings();
+        _screenFactories[AppConfiguration.Window.HelpScreenKey] = () => new HelpView();
     }
 
+    private FrameworkElement? Screen(string key)
+    {
+        if (_screens.TryGetValue(key, out var existing)) return existing;
+        if (!_screenFactories.TryGetValue(key, out var factory)) return null;
+
+        var screen = factory();
+        _screens[key] = screen;
+        return screen;
+    }
 
     private void ShowScreen(string key)
     {
-        if (!_screens.TryGetValue(key, out var target)) return;
+        if (!_screenFactories.ContainsKey(key)) return;
 
         Dispatcher.BeginInvoke(DispatcherPriority.Render, () =>
         {
-            foreach (var s in _screens.Values) s.Visibility = s == target ? Visibility.Visible : Visibility.Collapsed;
-            if (ContentHost.Content != target) ContentHost.Content = target;
+            if (Screen(key) is not { } target || ReferenceEquals(ContentHost.Content, target)) return;
+            target.Visibility = Visibility.Visible;
+            ContentHost.Content = target;
         });
     }
 

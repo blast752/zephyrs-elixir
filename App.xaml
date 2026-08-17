@@ -12,7 +12,6 @@
 
             <FontFamily x:Key="AppFontFamily">Plus Jakarta Sans, Segoe UI, Sans-Serif</FontFamily>
             <FontFamily x:Key="AppMonospaceFont">Cascadia Code, Consolas, Courier New</FontFamily>
-            <FontFamily x:Key="AppIconFont">Segoe Fluent Icons, Segoe MDL2 Assets</FontFamily>
 
             <Style TargetType="Window">
                 <Setter Property="UseLayoutRounding" Value="True"/>

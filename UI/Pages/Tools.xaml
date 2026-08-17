@@ -12,7 +12,7 @@
         </Grid.RowDefinitions>
 
         <h:PageHeader Grid.Row="0"
-                            Icon="&#xE90F;"
+                            Icon="wrench"
                             Title="{h:Translate Tools_Header}"
                             Subtitle="{h:Translate Tools_Subtitle}"/>
 
@@ -58,12 +58,7 @@
                                                                     <DropShadowEffect BlurRadius="12" ShadowDepth="0" 
                                                                                       Color="{Binding GlowColor}" Opacity="0.5"/>
                                                                 </h:GlowIcon.GlowEffect>
-                                                                <TextBlock Text="{Binding Icon}" 
-                                                                           FontFamily="Segoe MDL2 Assets" 
-                                                                           FontSize="24" 
-                                                                           Foreground="White"
-                                                                           HorizontalAlignment="Center" 
-                                                                           VerticalAlignment="Center"/>
+                                                                <h:Icon Kind="{Binding Icon}" Size="26" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                             </h:GlowIcon>
                                                             <TextBlock Text="{Binding Title}" 
                                                                        FontSize="14" 

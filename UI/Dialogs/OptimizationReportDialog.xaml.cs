@@ -30,28 +30,28 @@ public partial class OptimizationReportDialog : Window
     private static OutcomeTheme GetTheme(OptimizationOutcome outcome, int stepsCompleted, int totalSteps) => outcome switch
     {
         OptimizationOutcome.Success => new(
-            "\uE73E",
+            "check",
             Strings.Report_Outcome_Success_Title,
             Strings.Report_Outcome_Success_Subtitle,
             SuccessColor,
             AppBrushes.GradientGreen,
-            Strings.Report_Button_Done, "\uE73E"),
+            Strings.Report_Button_Done, "check"),
 
         OptimizationOutcome.Partial => new(
-            "\uE7BA",
+            "warning",
             Strings.Report_Outcome_Partial_Title,
             string.Format(Strings.Report_Outcome_Partial_Subtitle, stepsCompleted, totalSteps),
             WarningColor,
             UIHelpers.CreateGradientBrush("#FFB832", "#FF9500"),
-            Strings.Dialog_Button_GotIt, "\uE7BA"),
+            Strings.Dialog_Button_GotIt, "warning"),
 
         OptimizationOutcome.Error => new(
-            "\uEA39",
+            "error-circle",
             Strings.Report_Outcome_Error_Title,
             Strings.Report_Outcome_Error_Subtitle,
             ErrorColor,
             AppBrushes.GradientRed,
-            Strings.Window_Tooltip_Close, "\uEA39"),
+            Strings.Window_Tooltip_Close, "error-circle"),
         
         _ => GetTheme(OptimizationOutcome.Success, stepsCompleted, totalSteps)
     };
@@ -68,7 +68,7 @@ public partial class OptimizationReportDialog : Window
     {
         var theme = GetTheme(r.Outcome, r.CompletedSteps, r.TotalSteps);
 
-        HeaderIcon.Text = theme.Icon;
+        HeaderIcon.Kind = theme.Icon;
         IconCircle.Background = theme.IconBackground;
         IconGlow.Background = theme.IconBackground;
 

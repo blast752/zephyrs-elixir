@@ -32,9 +32,7 @@
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <Border Width="44" Height="44" CornerRadius="12" Margin="0,0,16,0"
                                 Background="{DynamicResource App.Brush.IconCircle}">
-                            <TextBlock Text="&#xE8D7;" FontFamily="Segoe MDL2 Assets" FontSize="20"
-                                       Foreground="{DynamicResource App.Brush.CheckedForeground}" 
-                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <h:Icon Kind="key" Size="22" Foreground="{DynamicResource App.Brush.CheckedForeground}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <StackPanel VerticalAlignment="Center">
                             <StackPanel Orientation="Horizontal">
@@ -61,9 +59,7 @@
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
                                 <Border x:Name="bg" Background="Transparent" CornerRadius="8">
-                                    <TextBlock Text="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="12"
-                                               Foreground="{DynamicResource App.Brush.NavButtonForeground}" 
-                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <h:Icon Kind="close" Size="14" Foreground="{DynamicResource App.Brush.NavButtonForeground}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Border>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
@@ -87,8 +83,7 @@
                         </Border.BorderBrush>
                         <StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
-                                <TextBlock Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="18"
-                                           Foreground="{DynamicResource App.Brush.DeepSkyBlue}" Margin="0,0,10,0"/>
+                                <h:Icon Kind="check" Size="20" Foreground="{DynamicResource App.Brush.DeepSkyBlue}" Margin="0,0,10,0"/>
                                 <TextBlock Text="{h:Translate License_Dialog_ProActive}" FontSize="16" FontWeight="SemiBold"
                                            Foreground="{DynamicResource App.Brush.DeepSkyBlue}"/>
                             </StackPanel>
@@ -158,10 +153,19 @@
                                 CornerRadius="12" Padding="16" Margin="0,0,0,20">
                             <StackPanel>
                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                                    <TextBlock Text="&#xE945;" FontFamily="Segoe MDL2 Assets" FontSize="14"
-                                            Foreground="{DynamicResource App.Brush.DeepSkyBlue}" Width="24"/>
+                                    <h:Icon Kind="chart" Size="16" Foreground="{DynamicResource App.Brush.DeepSkyBlue}" Width="24"/>
                                     <StackPanel>
-                                        <TextBlock Text="{h:Translate License_Feature_ExtremeMode}" 
+                                        <TextBlock Text="{h:Translate License_Feature_PerformanceMonitor}"
+                                                Foreground="{DynamicResource App.Brush.CheckedForeground}" FontSize="13" FontWeight="Medium"/>
+                                        <TextBlock Text="{h:Translate License_Feature_PerformanceMonitor_Desc}"
+                                                Foreground="{DynamicResource App.Brush.NavButtonForeground}" FontSize="11" Opacity="0.7"/>
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                    <h:Icon Kind="bolt" Size="16" Foreground="{DynamicResource App.Brush.DeepSkyBlue}" Width="24"/>
+                                    <StackPanel>
+                                        <TextBlock Text="{h:Translate License_Feature_ExtremeMode}"
                                                 Foreground="{DynamicResource App.Brush.CheckedForeground}" FontSize="13" FontWeight="Medium"/>
                                         <TextBlock Text="{h:Translate License_Feature_ExtremeMode_Desc}" 
                                                 Foreground="{DynamicResource App.Brush.NavButtonForeground}" FontSize="11" Opacity="0.7"/>
@@ -169,8 +173,7 @@
                                 </StackPanel>
                                 
                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                                    <TextBlock Text="&#xE7F4;" FontFamily="Segoe MDL2 Assets" FontSize="14"
-                                            Foreground="{DynamicResource App.Brush.DeepSkyBlue}" Width="24"/>
+                                    <h:Icon Kind="display" Size="16" Foreground="{DynamicResource App.Brush.DeepSkyBlue}" Width="24"/>
                                     <StackPanel>
                                         <TextBlock Text="{h:Translate License_Feature_ScreenMirror}" 
                                                 Foreground="{DynamicResource App.Brush.CheckedForeground}" FontSize="13" FontWeight="Medium"/>
@@ -180,10 +183,9 @@
                                 </StackPanel>
                                 
                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                                    <TextBlock Text="&#xE9D9;" FontFamily="Segoe MDL2 Assets" FontSize="14"
-                                            Foreground="{DynamicResource App.Brush.DeepSkyBlue}" Width="24"/>
+                                    <h:Icon Kind="thermometer" Size="16" Foreground="{DynamicResource App.Brush.DeepSkyBlue}" Width="24"/>
                                     <StackPanel>
-                                        <TextBlock Text="{h:Translate License_Feature_AIAnalysis}" 
+                                        <TextBlock Text="{h:Translate License_Feature_AIAnalysis}"
                                                 Foreground="{DynamicResource App.Brush.CheckedForeground}" FontSize="13" FontWeight="Medium"/>
                                         <TextBlock Text="{h:Translate License_Feature_AIAnalysis_Desc}" 
                                                 Foreground="{DynamicResource App.Brush.NavButtonForeground}" FontSize="11" Opacity="0.7"/>
@@ -191,8 +193,7 @@
                                 </StackPanel>
                                 
                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                                    <TextBlock Text="&#xE72E;" FontFamily="Segoe MDL2 Assets" FontSize="14"
-                                            Foreground="{DynamicResource App.Brush.DeepSkyBlue}" Width="24"/>
+                                    <h:Icon Kind="lock" Size="16" Foreground="{DynamicResource App.Brush.DeepSkyBlue}" Width="24"/>
                                     <StackPanel>
                                         <TextBlock Text="{h:Translate License_Feature_PrivacySuite}" 
                                                 Foreground="{DynamicResource App.Brush.CheckedForeground}" FontSize="13" FontWeight="Medium"/>
@@ -202,8 +203,7 @@
                                 </StackPanel>
                                 
                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                                    <TextBlock Text="&#xE8F1;" FontFamily="Segoe MDL2 Assets" FontSize="14"
-                                            Foreground="{DynamicResource App.Brush.DeepSkyBlue}" Width="24"/>
+                                    <h:Icon Kind="library" Size="16" Foreground="{DynamicResource App.Brush.DeepSkyBlue}" Width="24"/>
                                     <StackPanel>
                                         <TextBlock Text="{h:Translate License_Feature_BackupAPK}" 
                                                 Foreground="{DynamicResource App.Brush.CheckedForeground}" FontSize="13" FontWeight="Medium"/>
@@ -213,8 +213,7 @@
                                 </StackPanel>
                                 
                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                                    <TextBlock Text="&#xE8FB;" FontFamily="Segoe MDL2 Assets" FontSize="14"
-                                            Foreground="{DynamicResource App.Brush.DeepSkyBlue}" Width="24"/>
+                                    <h:Icon Kind="check" Size="16" Foreground="{DynamicResource App.Brush.DeepSkyBlue}" Width="24"/>
                                     <StackPanel>
                                         <TextBlock Text="{h:Translate License_Feature_PrioritySupport}" 
                                                 Foreground="{DynamicResource App.Brush.CheckedForeground}" FontSize="13" FontWeight="Medium"/>
@@ -301,9 +300,7 @@
                             CornerRadius="8" Padding="16,14" Margin="0,24,0,0">
                         <StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,12">
-                                <TextBlock Text="&#xE72E;" FontFamily="Segoe MDL2 Assets" FontSize="12"
-                                           Foreground="{DynamicResource App.Brush.NavButtonForeground}" 
-                                           Margin="0,0,8,0" VerticalAlignment="Center" Opacity="0.7"/>
+                                <h:Icon Kind="lock" Size="14" Foreground="{DynamicResource App.Brush.NavButtonForeground}" Margin="0,0,8,0" VerticalAlignment="Center" Opacity="0.7"/>
                                 <TextBlock Text="{h:Translate License_Dialog_PrivacyNote}" 
                                            FontSize="11" Foreground="{DynamicResource App.Brush.NavButtonForeground}" Opacity="0.7"/>
                             </StackPanel>
@@ -325,9 +322,7 @@
                                     <Button.Template>
                                         <ControlTemplate TargetType="Button">
                                             <Border x:Name="bg" Background="Transparent" CornerRadius="6">
-                                                <TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="11"
-                                                           Foreground="{DynamicResource App.Brush.DeepSkyBlue}" 
-                                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                <h:Icon Kind="copy" Size="13" Foreground="{DynamicResource App.Brush.DeepSkyBlue}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
                                             <ControlTemplate.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
@@ -350,7 +345,7 @@
                     <SolidColorBrush Color="{DynamicResource App.Color.Blue900}" Opacity="0.9"/>
                 </Border.Background>
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="280">
-                    <TextBlock Style="{DynamicResource License.Style.Spinner}"/>
+                    <h:Icon Style="{DynamicResource License.Style.Spinner}"/>
                     
                     <TextBlock Text="{Binding ActivationStatusMessage}" 
                                Foreground="{DynamicResource App.Brush.CheckedForeground}" 

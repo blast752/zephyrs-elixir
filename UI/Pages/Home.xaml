@@ -137,18 +137,18 @@
                         </Grid>
 
                         <TextBlock Text="{h:Translate Home_Subtitle}"
-                                   FontSize="18" Foreground="#C8DCFF" Opacity="0.8"
+                                   FontSize="18" Foreground="#B4DCFF" Opacity="0.8"
                                    TextAlignment="Center" TextWrapping="Wrap"
                                    MaxWidth="450" Margin="0,0,0,35"/>
 
                         <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center">
                             <Button x:Name="BtnOptimize"
-                                    Content="{h:Translate Home_Button_StartOptimization}" Tag="&#xE777;"
+                                    Content="{h:Translate Home_Button_StartOptimization}" Tag="restore"
                                     ToolTip="{h:Translate Home_Button_StartOptimization_Tooltip}"
                                     Click="OnStartOptimizationClick"
                                     Style="{StaticResource App.Style.Button}" Margin="5"/>
                             <Button x:Name="BtnWireless"
-                                    Content="{h:Translate Home_Button_WirelessConnection}" Tag="&#xE839;"
+                                    Content="{h:Translate Home_Button_WirelessConnection}" Tag="wireless"
                                     ToolTip="{h:Translate Home_Button_WirelessConnection_Tooltip}"
                                     Click="OnWirelessConnectionClick"
                                     Style="{StaticResource App.Style.Button}" Margin="5"/>
@@ -189,9 +189,7 @@
                                 Click="OnBannerCloseClick"
                                 Style="{StaticResource App.Style.Button.IconOnly}"
                                 VerticalAlignment="Top">
-                            <TextBlock Text="&#xE8BB;"
-                                       FontFamily="Segoe MDL2 Assets"
-                                       FontSize="12" Foreground="#B4FFFFFF"/>
+                            <h:Icon Kind="close" Size="14" Foreground="#B4FFFFFF"/>
                         </Button>
                     </Grid>
                 </Border>
@@ -206,13 +204,10 @@
                     </Border.RenderTransform>
 
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="&#xE946;"
-                                   FontFamily="Segoe MDL2 Assets"
-                                   FontSize="14" Foreground="#B0B8C8"
-                                   VerticalAlignment="Center" Margin="2,0,8,0"/>
+                        <h:Icon Kind="info" Size="16" Foreground="#B0B8C8" VerticalAlignment="Center" Margin="2,0,8,0"/>
                         <TextBlock x:Name="TxtVersion" 
-                                   FontSize="14" Foreground="#C8DCFF" VerticalAlignment="Center"/>
-                        <Border Width="1" Height="16" Background="#50C8DCFF" Margin="12,0"/>
+                                   FontSize="14" Foreground="#B4DCFF" VerticalAlignment="Center"/>
+                        <Border Width="1" Height="16" Background="#50B4DCFF" Margin="12,0"/>
                         <Button Content="{h:Translate Home_Changelog}" Click="OnChangelogClick"
                                 Style="{StaticResource App.Style.Button.Link}"/>
                     </StackPanel>

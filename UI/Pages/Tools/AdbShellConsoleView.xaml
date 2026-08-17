@@ -19,13 +19,10 @@
             <Setter Property="Margin" Value="2,0,0,10"/>
         </Style>
 
-        <!-- "New tab" pill: light glyph, subtle accent on hover (never black). -->
         <Style x:Key="Console.Style.TabAction" TargetType="Button">
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Width" Value="30"/>
             <Setter Property="Height" Value="30"/>
-            <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
-            <Setter Property="FontSize" Value="13"/>
             <Setter Property="Foreground" Value="#9FB4CC"/>
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Template">
@@ -33,10 +30,7 @@
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="bd" Background="{TemplateBinding Background}" CornerRadius="7"
                                 BorderThickness="1" BorderBrush="Transparent">
-                            <TextBlock x:Name="glyph" Text="{TemplateBinding Content}"
-                                       FontFamily="Segoe MDL2 Assets" FontSize="{TemplateBinding FontSize}"
-                                       Foreground="{TemplateBinding Foreground}"
-                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <h:Icon x:Name="glyph" Kind="{TemplateBinding Content}" Size="16" Foreground="{TemplateBinding Foreground}"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
@@ -58,18 +52,13 @@
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Width" Value="18"/>
             <Setter Property="Height" Value="18"/>
-            <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
-            <Setter Property="FontSize" Value="9"/>
             <Setter Property="Foreground" Value="#8093A8"/>
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="bd" Background="{TemplateBinding Background}" CornerRadius="9">
-                            <TextBlock x:Name="glyph" Text="{TemplateBinding Content}"
-                                       FontFamily="Segoe MDL2 Assets" FontSize="{TemplateBinding FontSize}"
-                                       Foreground="{TemplateBinding Foreground}"
-                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <h:Icon x:Name="glyph" Kind="{TemplateBinding Content}" Size="11" Foreground="{TemplateBinding Foreground}"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
@@ -100,7 +89,6 @@
             <Setter Property="Padding" Value="10,0"/>
         </Style>
 
-        <!-- Editable tab header + close button -->
         <Style x:Key="Console.Style.TabItem" TargetType="TabItem">
             <Setter Property="Template">
                 <Setter.Value>
@@ -148,7 +136,7 @@
                                 <TextBlock x:Name="TabLabel" Text="{Binding Title}"
                                            Foreground="#E8EEF6" FontSize="13" FontWeight="SemiBold"
                                            VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
-                                           MouseLeftButtonDown="OnTabLabelMouseDown" ToolTip="Double-click to rename"/>
+                                           MouseLeftButtonDown="OnTabLabelMouseDown" ToolTip="{h:Translate Console_Tooltip_Rename}"/>
                                 <TextBox x:Name="TabEditor" Visibility="Collapsed"
                                          Text="{Binding Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                          Background="#33000000" BorderThickness="0" Padding="2,0"
@@ -156,15 +144,14 @@
                                          VerticalContentAlignment="Center"
                                          KeyDown="OnTabEditorKeyDown" LostFocus="OnTabEditorCommit"/>
                             </Grid>
-                            <Button Content="&#xE8BB;" Style="{StaticResource Console.Style.TabClose}"
-                                    Click="OnCloseTabClick" Tag="{Binding}" ToolTip="Close tab"/>
+                            <Button Content="close" Style="{StaticResource Console.Style.TabClose}"
+                                    Click="OnCloseTabClick" Tag="{Binding}" ToolTip="{h:Translate Console_Tooltip_CloseTab}"/>
                         </StackPanel>
                     </DataTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
 
-        <!-- Autocomplete suggestion item (ListBox container) -->
         <Style x:Key="Console.Style.AutoItem" TargetType="ListBoxItem">
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="Padding" Value="12,6"/>
@@ -187,7 +174,6 @@
             </Setter>
         </Style>
 
-        <!-- Snippet list entry -->
         <Style x:Key="Console.Style.SnippetButton" TargetType="Button">
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -221,7 +207,6 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Header -->
         <h:ShadowCard Grid.Row="0" Padding="24" ShadowEffect="{StaticResource App.Effect.PageShadow}">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -234,8 +219,7 @@
                     <h:GlowIcon Size="48" CornerRadius="24"
                             Background="{StaticResource Console.Brush.Accent}"
                             GlowEffect="{StaticResource Console.Effect.Glow}">
-                        <TextBlock Text="&#xE756;" FontFamily="Segoe MDL2 Assets" FontSize="22"
-                                   Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <h:Icon Kind="console" Size="24" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </h:GlowIcon>
                     <StackPanel Margin="16,0,0,0" VerticalAlignment="Center">
                         <TextBlock Text="{h:Translate Tools_AdbConsole_Title}" FontSize="24" FontWeight="Bold" Foreground="White"/>
@@ -245,16 +229,15 @@
                 </StackPanel>
 
                 <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Button Style="{StaticResource App.Style.Button.Inline}" Tag="&#xE74E;" Content="Export"
+                    <Button Style="{StaticResource App.Style.Button.Inline}" Tag="save" Content="{h:Translate Console_Button_Export}"
                             Click="OnExportClick" Margin="0,0,8,0"/>
-                    <Button Style="{StaticResource App.Style.Button.Inline}" Tag="&#xE894;" Content="Clear"
-                            Click="OnClearClick" Margin="0,0,12,0"/>
-                    <Button Style="{StaticResource App.Style.WindowControl.Close}" Click="OnCloseClick" ToolTip="Close"/>
+                    <Button Style="{StaticResource App.Style.Button.Inline}" Tag="close" Content="{h:Translate Console_Button_Clear}"
+                            ToolTip="Ctrl+L" Click="OnClearClick" Margin="0,0,12,0"/>
+                    <Button Style="{StaticResource App.Style.WindowControl.Close}" Click="OnCloseClick" ToolTip="{h:Translate Window_Tooltip_Close}"/>
                 </StackPanel>
             </Grid>
         </h:ShadowCard>
 
-        <!-- Body -->
         <h:ShadowCard Grid.Row="2" Padding="0" ShadowEffect="{StaticResource App.Effect.PageShadow}">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -262,7 +245,6 @@
                     <ColumnDefinition Width="300"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- Console column -->
                 <Grid Margin="20">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -270,7 +252,6 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <!-- Tab strip + add button on a shared baseline bar -->
                     <Grid Grid.Row="0" Margin="0,0,0,12">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -280,11 +261,10 @@
                         <Border Grid.ColumnSpan="3" Height="1" VerticalAlignment="Bottom" Background="#1FFFFFFF"/>
                         <TabControl x:Name="Tabs" Grid.Column="0" Style="{StaticResource Console.Style.TabStrip}"
                                     ItemsSource="{Binding Sessions}" SelectionChanged="OnTabSelectionChanged"/>
-                        <Button Grid.Column="1" Content="&#xE710;" Style="{StaticResource Console.Style.TabAction}"
-                                Click="OnAddTabClick" ToolTip="New tab" VerticalAlignment="Bottom" Margin="2,0,0,2"/>
+                        <Button Grid.Column="1" Content="add" Style="{StaticResource Console.Style.TabAction}"
+                                Click="OnAddTabClick" ToolTip="{h:Translate Console_Tooltip_NewTab}" VerticalAlignment="Bottom" Margin="2,0,0,2"/>
                     </Grid>
 
-                    <!-- Output -->
                     <Border Grid.Row="1" CornerRadius="10" Background="#2607101E" BorderBrush="#1FFFFFFF" BorderThickness="1">
                         <Grid>
                             <RichTextBox x:Name="OutputBox" IsReadOnly="True" IsDocumentEnabled="True"
@@ -294,24 +274,20 @@
                                          VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"/>
                             <StackPanel x:Name="EmptyHint" IsHitTestVisible="False"
                                         HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <TextBlock Text="&#xE756;" FontFamily="Segoe MDL2 Assets" FontSize="44"
-                                           Foreground="#3F6E94" HorizontalAlignment="Center"/>
-                                <TextBlock Text="Interactive ADB shell" Foreground="#8AA6C2" FontSize="15"
+                                <h:Icon Kind="console" Size="46" Foreground="#3F6E94" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{h:Translate Console_Empty_Title}" Foreground="#8AA6C2" FontSize="15"
                                            FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,14,0,0"/>
-                                <TextBlock Text="Type a command below, or pick a snippet on the right"
+                                <TextBlock Text="{h:Translate Console_Empty_Text}"
                                            Foreground="#5E7794" FontSize="12" HorizontalAlignment="Center" Margin="0,4,0,0"/>
                             </StackPanel>
                         </Grid>
                     </Border>
 
-                    <!-- Input + autocomplete -->
                     <Grid Grid.Row="2" Margin="0,14,0,0">
                         <TextBox x:Name="InputBox" Style="{StaticResource Console.Style.Input}" Padding="38,0,12,0"
-                                 Tag="Type an adb shell command — Enter to run, Tab to autocomplete, &#8593;/&#8595; for history"
+                                 Tag="{h:Translate Console_Input_Placeholder}"
                                  PreviewKeyDown="OnInputPreviewKeyDown"/>
-                        <TextBlock Text="&#xE76C;" FontFamily="Segoe MDL2 Assets" FontSize="11"
-                                   Foreground="{StaticResource App.Brush.DeepSkyBlue}" IsHitTestVisible="False"
-                                   VerticalAlignment="Center" HorizontalAlignment="Left" Margin="17,0,0,0"/>
+                        <h:Icon Kind="chevron-right" Size="13" Foreground="{StaticResource App.Brush.DeepSkyBlue}" IsHitTestVisible="False" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="17,0,0,0"/>
                         <Popup x:Name="AutoPopup" PlacementTarget="{Binding ElementName=InputBox}" Placement="Top"
                                AllowsTransparency="True" StaysOpen="False" MinWidth="240">
                             <Border Background="#F01E2D4B" BorderBrush="{StaticResource App.Brush.DeepSkyBlue}"
@@ -325,7 +301,6 @@
                     </Grid>
                 </Grid>
 
-                <!-- Snippet panel -->
                 <Border Grid.Column="1" Background="#08FFFFFF" BorderBrush="#15FFFFFF" BorderThickness="1,0,0,0">
                     <Grid Margin="20">
                         <Grid.RowDefinitions>
@@ -334,7 +309,7 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Row="0" Text="SNIPPETS" Style="{StaticResource Console.Style.CategoryHeader}"/>
+                        <TextBlock Grid.Row="0" Text="{h:Translate Console_Section_Snippets}" Style="{StaticResource Console.Style.CategoryHeader}"/>
 
                         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                             <ItemsControl ItemsSource="{Binding Snippets}" Margin="0,0,12,0">
@@ -343,13 +318,25 @@
                                         <Button Style="{StaticResource Console.Style.SnippetButton}"
                                                 Click="OnSnippetClick" Tag="{Binding Command}"
                                                 ToolTip="{Binding Command}">
-                                            <StackPanel>
-                                                <TextBlock Text="{Binding Name}" Foreground="White"
-                                                           FontSize="13" FontWeight="SemiBold"/>
-                                                <TextBlock Text="{Binding Command}" Foreground="#80FFFFFF"
-                                                           FontFamily="{StaticResource AppMonospaceFont}" FontSize="11"
-                                                           TextTrimming="CharacterEllipsis" Margin="0,2,0,0"/>
-                                            </StackPanel>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding Name}" Foreground="White"
+                                                               FontSize="13" FontWeight="SemiBold"/>
+                                                    <TextBlock Text="{Binding Command}" Foreground="#80FFFFFF"
+                                                               FontFamily="{StaticResource AppMonospaceFont}" FontSize="11"
+                                                               TextTrimming="CharacterEllipsis" Margin="0,2,0,0"/>
+                                                </StackPanel>
+                                                <Button Grid.Column="1" Content="delete"
+                                                        Style="{StaticResource Console.Style.TabClose}"
+                                                        VerticalAlignment="Center" Margin="6,0,0,0"
+                                                        Click="OnDeleteSnippetClick" Tag="{Binding}"
+                                                        ToolTip="{h:Translate Console_Tooltip_DeleteSnippet}"
+                                                        Visibility="{Binding IsUserDefined, Converter={StaticResource App.Converter.BooleanToVisibility}}"/>
+                                            </Grid>
                                         </Button>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
@@ -358,12 +345,12 @@
 
                         <StackPanel Grid.Row="2" Margin="0,16,0,0">
                             <Border Height="1" Background="#15FFFFFF" Margin="0,0,0,16"/>
-                            <TextBlock Text="ADD SNIPPET" Style="{StaticResource Console.Style.CategoryHeader}"/>
+                            <TextBlock Text="{h:Translate Console_Section_AddSnippet}" Style="{StaticResource Console.Style.CategoryHeader}"/>
                             <TextBox x:Name="SnippetNameBox" Style="{StaticResource Console.Style.SmallInput}"
-                                     Tag="Name" Margin="0,0,0,6"/>
+                                     Tag="{h:Translate Console_Snippet_NamePlaceholder}" Margin="0,0,0,6"/>
                             <TextBox x:Name="SnippetCmdBox" Style="{StaticResource Console.Style.SmallInput}"
-                                     Tag="adb command" Margin="0,0,0,8"/>
-                            <Button Style="{StaticResource App.Style.Button.Inline}" Tag="&#xE710;" Content="Save snippet"
+                                     Tag="{h:Translate Console_Snippet_CommandPlaceholder}" Margin="0,0,0,8"/>
+                            <Button Style="{StaticResource App.Style.Button.Inline}" Tag="add" Content="{h:Translate Console_Button_SaveSnippet}"
                                     Click="OnAddSnippetClick" HorizontalAlignment="Stretch"/>
                         </StackPanel>
                     </Grid>

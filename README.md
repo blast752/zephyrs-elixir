@@ -4,8 +4,9 @@
 
 ### Take full control of your Android — from your PC. 🌀
 
-Strip out bloatware, let AI expose the apps quietly tracking you, and unlock real
-performance — all over ADB, with **no root, no account, and zero telemetry**.
+Strip out bloatware, let AI expose the apps quietly tracking you, then bottle your whole
+setup into a recipe you can pour over any phone in one tap — all over ADB, with
+**no root, no account, and zero telemetry**.
 
 <br>
 
@@ -39,7 +40,7 @@ Like a zephyr, it's light — and like an elixir, it leaves your device feeling 
 |  |  |  |
 |:---:|:---:|:---:|
 | 💚 **100% Free Core** | 🔓 **No Root Required** | ⚖️ **Apache-2.0 Open Source** |
-| Ten full tools, free forever — no ads, no tracking | Works over plain ADB on any Android with USB debugging | The entire desktop app you're reading about is in this repo |
+| Thirteen full tools, free forever — no ads, no tracking | Works over plain ADB on any Android 7.0+ with USB debugging | The entire desktop app you're reading about is in this repo |
 
 <a id="features"></a>
 
@@ -47,14 +48,17 @@ Like a zephyr, it's light — and like an elixir, it leaves your device feeling 
 
 | Tool | What it does |
 |------|--------------|
-| 🗑️ **Complete Debloater** | Disable, uninstall or restore any user or system app without root — and the **History tab** reinstalls anything you change your mind about, in one click. |
+| 🗑️ **Complete Debloater** | Disable, uninstall, re-enable or restore any app without root — plus launch, force-stop, extract the APK or wipe the data of any of them. The **History tab** brings back anything you change your mind about, one app or a hundred at a time. |
 | ⚡ **120-Step Optimizer** | One button runs a seven-stage pipeline — cache, memory, deep storage, network, system tuning, package compile and DEX — with **every ADB command streamed live** to the console. |
+| 🧪 **Zephyr's Recipes** | Bundle an optimization, a debloat list, your tweaks and a stack of APKs into one recipe, then pour it over every phone you own in a single tap. Export it, or share it in the **community library**. |
+| ⏳ **Time Vials** | Your settings are bottled before every optimization, recipe and tweak. Open a vial to see exactly what changed — and pour any single setting back. |
 | 🤖 **AI Bloatware Intelligence** | A cloud AI rates every app **Safe, Caution or Critical** and exposes the spyware, ad-injectors and telemetry hiding in your system apps. 25 free scans a day. |
-| 🛡️ **Private DNS** | Switch to NextDNS, AdGuard, Cloudflare, Google or Quad9 with live latency pings — block ads and trackers network-wide in two clicks. |
+| 🛡️ **Private DNS** | Switch to NextDNS, AdGuard, Cloudflare, Google or Quad9 with live latency pings — or your own hostname — and block ads and trackers network-wide in two clicks. |
 | 📡 **Wireless ADB** | Cut the cable. Full Wi-Fi control with Android 10 legacy mode and the Android 11+ pairing-code protocol — set up in ~30 seconds. |
-| 📦 **APK Installer** | Install APK, XAPK, APKS and APKM files directly, with automatic extraction for split-APK and bundle formats. |
-| 📁 **File Manager** | Browse your device's storage and push or pull files straight from your PC — no third-party app required. |
-| ⌨️ **ADB Shell Console** | A built-in, multi-tab interactive ADB shell for power users who want to run commands by hand. |
+| 🔀 **Multi-Device Control** | Plug in as many phones as you like and switch between them from the sidebar. Every page follows the active device — and a recipe runs on all of them at once. |
+| 📦 **APK Installer** | Install APK, XAPK, APKS and APKM files directly, with automatic extraction for split-APK and bundle formats — and plain-language answers when Android refuses one. |
+| 📁 **File Manager** | Browse your device's storage like a desktop explorer: copy, move, rename, delete, drag files both ways, filter as you type and see where your space went. |
+| ⌨️ **ADB Shell Console** | A built-in, multi-tab interactive ADB shell with history, saved snippets and one-click session export. |
 | 🔌 **Power Options** | Reboot to system, recovery, bootloader or fastbootd — and sideload OTA packages — without memorizing a single key combo. |
 | 🎬 **Animation Control** | Drag one slider to speed up every system animation in lockstep, or switch them off for a UI that feels instant. |
 
@@ -66,13 +70,14 @@ For those who want the storm, not just the breeze. Pro is delivered as a **separ
 
 | Pro feature | What it unlocks |
 |-------------|-----------------|
-| 📊 **Performance Monitor** | Real-time CPU, RAM, network and battery telemetry in a live dashboard. |
+| 📊 **Performance Monitor** | CPU, RAM, **GPU, FPS**, network, storage and battery moving live — with the apps eating your memory ranked alongside, and a CSV export of the whole session. |
 | ⚡ **Extreme Mode** | A deeper optimization pass: kills services, freezes cached apps, enables the multi-core scheduler and speed-compiles every package. |
-| 🖥️ **Screen Mirror** | Low-latency mirroring with full mouse-and-keyboard control of your phone from the desktop. |
+| 🖥️ **Screen Mirror** | Low-latency mirroring with full mouse-and-keyboard control — locked to the device you picked, however many are plugged in. |
 | 🎥 **Screen Recording** | Capture your device screen in high quality, straight from the mirror window. |
 | 🛡️ **Privacy Suite** | One-click toggles to disable Safety Core, reset your Ad ID, block captive portals, rein in Play Services and switch off RAM expansion. |
-| 💾 **APK Backup** | Automatically back up an app's APK to your PC before you uninstall it. |
+| 💾 **APK Backup** | Automatically back up an app's APK — split bundles included — to your PC before you uninstall it. |
 | 📥 **Multi-APK Install** | Queue and install multiple APKs — and split-APK bundles — in a single operation. |
+| 🧪 **Pro Recipe Steps** | Extreme Mode, the privacy toggles and multi-APK installs, usable as steps inside your recipes. |
 | 🤖 **Unlimited AI Scans** | No daily cap on AI bloatware analysis, plus priority support. |
 
 <div align="center">
@@ -106,6 +111,7 @@ For those who want the storm, not just the breeze. Pro is delivered as a **separ
 2. On your phone, enable **Developer Options → USB debugging** *(tap Build Number 7 times — the [guide](https://www.zephyrselixir.com/guide) walks you through it with pictures)*.
 3. Plug in, accept the **"Allow USB debugging?"** prompt on the phone, and you're connected.
 4. Pick your potion: 🗑️ **Debloat**, ⚡ **Optimize**, or explore the 🧰 **Tools**.
+5. Happy with the result? Bottle it as a 🧪 **recipe** — the next phone takes one tap.
 
 ### 🔧 Build from source
 
@@ -148,8 +154,9 @@ flowchart LR
 
 | Component | What it is | License |
 |-----------|------------|---------|
-| **Desktop app** (this repo) | The complete WPF application: debloater, optimizer, tools, licensing bridge, localization | Apache-2.0 ✅ |
+| **Desktop app** (this repo) | The complete WPF application: debloater, optimizer, recipe engine, tools, licensing bridge, localization | Apache-2.0 ✅ |
 | **ZephyrsAgent** | On-device helper the app deploys over ADB for richer device data | Bundled with the app |
+| **Recipe marketplace API** | Serverless endpoint backing the community library — the client that talks to it lives in this repo | Hosted service |
 | **Pro module** | Performance Monitor, Screen Mirror & co. — distributed via [zephyrselixir.com](https://www.zephyrselixir.com/purchase) | Proprietary ⭐ |
 
 **Why open core?** You can audit every command the free app ever sends to your phone — a tool that promises *zero telemetry* should let you check. Pro funds the development of both.
@@ -191,7 +198,7 @@ The debloater keeps a **History tab** — anything you disable or uninstall can 
 <summary><b>Which devices are supported?</b></summary>
 <br>
 
-Any Android phone or tablet that supports USB debugging — Samsung, Xiaomi, OnePlus, Pixel, Motorola, and everything in between. Wireless ADB needs Android 10+ (pairing-code flow on Android 11+).
+Any Android 7.0 or newer phone or tablet that supports USB debugging — Samsung, Xiaomi, OnePlus, Pixel, Motorola, and everything in between. Wireless ADB needs Android 10+ (pairing-code flow on Android 11+).
 </details>
 
 <details>
@@ -205,7 +212,21 @@ The **entire free application** — everything described in the free toolkit abo
 <summary><b>What data does it collect?</b></summary>
 <br>
 
-The app has **zero telemetry, no ads, and needs no account**. The only network calls it makes are the ones that serve you: the optional cloud AI scan, update checks, and the Pro license check if you buy Pro. See the <a href="https://www.zephyrselixir.com/privacy">privacy policy</a>.
+The app has **zero telemetry, no ads, and needs no account**. The only network calls it makes are the ones that serve you: the optional cloud AI scan, update checks, the Pro license check if you buy Pro, and the community recipe library if you open that tab. Your recipes and your Time Vials stay on your PC unless you press **Share**. See the <a href="https://www.zephyrselixir.com/privacy">privacy policy</a>.
+</details>
+
+<details>
+<summary><b>What is a recipe?</b></summary>
+<br>
+
+A small `.zerecipe` file describing what you want done to a phone: an optimization, apps to uninstall or disable, tweaks like Private DNS and animation speed, and APKs to install. Press **Run**, pick your devices, and it replays all of it in order — on several phones in parallel if you like. Export it, import it, or publish it to the community library; Pro only gates three ingredients (Extreme mode, the privacy toggles, multi-APK installs), and a recipe using them still runs without Pro — those steps are reported as skipped.
+</details>
+
+<details>
+<summary><b>What are Time Vials?</b></summary>
+<br>
+
+Automatic snapshots of the device's system settings, bottled before every optimization, recipe and advanced tweak. Open one to see exactly what changed since then and pour any single setting back. Fifteen are kept per device, on your PC only, and the handful of keys that would cut the ADB connection (USB debugging among them) are shown but never rewritten.
 </details>
 
 ## 💙 Support the Project

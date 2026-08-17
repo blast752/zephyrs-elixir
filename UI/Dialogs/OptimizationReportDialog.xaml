@@ -119,8 +119,7 @@
                             <Border.RenderTransform>
                                 <ScaleTransform x:Name="IconScale" ScaleX="1" ScaleY="1"/>
                             </Border.RenderTransform>
-                            <TextBlock x:Name="HeaderIcon" FontFamily="Segoe MDL2 Assets" FontSize="36"
-                                       Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <h:Icon x:Name="HeaderIcon" Size="38" Foreground="White"/>
                         </Border>
                     </Grid>
 
@@ -181,8 +180,7 @@
                                 </Grid.ColumnDefinitions>
 
                                 <Border Style="{StaticResource SectionIconCircle}" Background="#1C007FFF">
-                                    <TextBlock Text="&#xEBFC;" FontFamily="Segoe MDL2 Assets" FontSize="17"
-                                               Foreground="{StaticResource App.Brush.DeepSkyBlue}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <h:Icon Kind="touch" Size="19" Foreground="{StaticResource App.Brush.DeepSkyBlue}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Border>
 
                                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
@@ -212,8 +210,7 @@
                                 </Grid.ColumnDefinitions>
 
                                 <Border Style="{StaticResource SectionIconCircle}" Background="#1CFFD700">
-                                    <TextBlock Text="&#xEDA2;" FontFamily="Segoe MDL2 Assets" FontSize="17"
-                                               Foreground="#FFD700" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <h:Icon Kind="ram" Size="19" Foreground="#FFD700" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Border>
 
                                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
@@ -242,8 +239,7 @@
                                 </Grid.ColumnDefinitions>
 
                                 <Border Style="{StaticResource SectionIconCircle}" Background="#1C00E676">
-                                    <TextBlock Text="&#xE839;" FontFamily="Segoe MDL2 Assets" FontSize="17"
-                                               Foreground="#00E676" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <h:Icon Kind="wireless" Size="19" Foreground="#00E676" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Border>
 
                                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
@@ -263,8 +259,7 @@
                                 </Grid.ColumnDefinitions>
 
                                 <Border Style="{StaticResource SectionIconCircle}" Background="#1CA855F7">
-                                    <TextBlock Text="&#xE943;" FontFamily="Segoe MDL2 Assets" FontSize="17"
-                                               Foreground="#A855F7" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <h:Icon Kind="braces" Size="19" Foreground="#A855F7" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Border>
 
                                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
@@ -288,7 +283,7 @@
 
                 <Button x:Name="DoneButton" Grid.Row="3"
                         Style="{StaticResource App.Style.Button}"
-                        Content="{h:Translate Report_Button_Done}" Tag="&#xE73E;"
+                        Content="{h:Translate Report_Button_Done}" Tag="check"
                         MinWidth="160" Margin="0,16,0,0"
                         HorizontalAlignment="Center"
                         h:WindowClose.Result="True"/>

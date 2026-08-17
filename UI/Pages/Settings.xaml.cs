@@ -13,15 +13,21 @@ public partial class Settings : UserControl
 
     private async void OnSettingsLoaded(object sender, RoutedEventArgs e)
     {
+        AiAnalysisToggle.IsChecked = AiConsent.IsEnabled();
+
         if (_cachedAdbVersion != null && _cachedAdbStatusStyle != null)
         {
             AdbVersionText.Text = _cachedAdbVersion;
             AdbStatusContainer.Style = _cachedAdbStatusStyle;
             return;
         }
-        
+
         await CheckAdbVersionAsync();
     }
+
+    // Writing the choice here also settles the pending consent, so Debloat stops asking on first use.
+    private void OnAiAnalysisToggled(object sender, RoutedEventArgs e)
+        => AiConsent.SetEnabled(((CheckBox)sender).IsChecked == true);
     
     private async Task CheckAdbVersionAsync()
     {

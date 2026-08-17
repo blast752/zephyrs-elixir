@@ -50,79 +50,194 @@
             <StackPanel Grid.Row="1" Margin="18,0">
                 <ToggleButton x:Name="BtnHome" 
                               Style="{StaticResource App.Style.ToggleButton}" 
-                              Tag="&#xE80F;"
+                              Tag="home"
                               Content="{Binding [Sidebar_Nav_Home], Source={x:Static loc:TranslationManager.Instance}}" 
                               IsChecked="{Binding SelectedKey, Converter={StaticResource StringEq}, ConverterParameter=Home}"
                               Click="OnNavigationClick"/>
                 <ToggleButton x:Name="BtnOptimize"
                               Style="{StaticResource App.Style.ToggleButton}"
-                              Tag="&#xE777;"
+                              Tag="restore"
                               Content="{Binding [Sidebar_Nav_Optimize], Source={x:Static loc:TranslationManager.Instance}}"
                               IsChecked="{Binding SelectedKey, Converter={StaticResource StringEq}, ConverterParameter=Optimize}"
                               Click="OnNavigationClick"/>
                 <ToggleButton x:Name="BtnDebloat"
-                              Style="{StaticResource App.Style.ToggleButton}" 
-                              Tag="&#xE74D;"
-                              Content="{Binding [Sidebar_Nav_Debloat], Source={x:Static loc:TranslationManager.Instance}}" 
+                              Style="{StaticResource App.Style.ToggleButton}"
+                              Tag="delete"
+                              Content="{Binding [Sidebar_Nav_Debloat], Source={x:Static loc:TranslationManager.Instance}}"
                               IsChecked="{Binding SelectedKey, Converter={StaticResource StringEq}, ConverterParameter=Debloat}"
+                              Click="OnNavigationClick"/>
+                <ToggleButton x:Name="BtnRecipes"
+                              Style="{StaticResource App.Style.ToggleButton}"
+                              Tag="library"
+                              BorderBrush="{StaticResource App.Brush.Recipes.IconCircle}"
+                              h:NavButton.IsFeatured="True"
+                              Content="{Binding [Sidebar_Nav_Recipes], Source={x:Static loc:TranslationManager.Instance}}"
+                              IsChecked="{Binding SelectedKey, Converter={StaticResource StringEq}, ConverterParameter=Recipes}"
                               Click="OnNavigationClick"/>
                 <ToggleButton x:Name="BtnTools" 
                               Style="{StaticResource App.Style.ToggleButton}" 
-                              Tag="&#xE74C;"
+                              Tag="wrench"
                               Content="{Binding [Sidebar_Nav_Tools], Source={x:Static loc:TranslationManager.Instance}}" 
                               IsChecked="{Binding SelectedKey, Converter={StaticResource StringEq}, ConverterParameter=Tools}"
                               Click="OnNavigationClick"/>
-                <ToggleButton x:Name="BtnAdvanced" 
-                              Style="{StaticResource App.Style.ToggleButton}" 
-                              Tag="&#xE74D;"
-                              Content="{Binding [Sidebar_Nav_Advanced], Source={x:Static loc:TranslationManager.Instance}}" 
+                <ToggleButton x:Name="BtnAdvanced"
+                              Style="{StaticResource App.Style.ToggleButton}"
+                              Tag="chip"
+                              Content="{Binding [Sidebar_Nav_Advanced], Source={x:Static loc:TranslationManager.Instance}}"
                               IsChecked="{Binding SelectedKey, Converter={StaticResource StringEq}, ConverterParameter=Advanced}"
                               Click="OnNavigationClick"/>
                 <ToggleButton x:Name="BtnSettings" 
                               Style="{StaticResource App.Style.ToggleButton}" 
-                              Tag="&#xE713;"
+                              Tag="settings"
                               Content="{Binding [Sidebar_Nav_Settings], Source={x:Static loc:TranslationManager.Instance}}" 
                               IsChecked="{Binding SelectedKey, Converter={StaticResource StringEq}, ConverterParameter=Settings}"
                               Click="OnNavigationClick"/>
                 <ToggleButton x:Name="BtnHelp" 
                               Style="{StaticResource App.Style.ToggleButton}" 
-                              Tag="&#xE897;"
+                              Tag="question"
                               Content="{Binding [Sidebar_Nav_Help], Source={x:Static loc:TranslationManager.Instance}}" 
                               IsChecked="{Binding SelectedKey, Converter={StaticResource StringEq}, ConverterParameter=Help}"
                               Click="OnNavigationClick"/>
             </StackPanel>
             
-            <Border Grid.Row="2" Style="{StaticResource Sidebar.Style.DevicePanel}">
-                <StackPanel Orientation="Horizontal" 
-                            VerticalAlignment="Center" 
-                            HorizontalAlignment="Center">
-                    <TextBlock Text="{Binding DeviceStatusText}" 
-                               Style="{StaticResource Sidebar.Style.DeviceText}"/>
-                    
-                    <Canvas Width="54" Height="24" Margin="10,0,0,0">
-                        <Border Canvas.Left="0" Canvas.Top="2"
-                                Width="50" Height="20" 
-                                BorderThickness="2" 
-                                BorderBrush="White" 
-                                CornerRadius="4" 
-                                Background="#33000000">
-                            <Grid Margin="2">
-                                <Rectangle RadiusX="2" RadiusY="2"
-                                           Fill="{Binding DeviceBattery, Converter={StaticResource BatteryBrush}}">
-                                    <Rectangle.RenderTransform>
-                                        <ScaleTransform ScaleX="{Binding DeviceBattery, Converter={StaticResource App.Converter.PercentageToScale}}"
-                                                       ScaleY="1"/>
-                                    </Rectangle.RenderTransform>
-                                </Rectangle>
-                            </Grid>
-                        </Border>
-                        <Border Canvas.Left="51" Canvas.Top="7"
-                                Width="4" Height="10" 
-                                Background="White" 
-                                CornerRadius="0,2,2,0"/>
-                    </Canvas>
-                </StackPanel>
-            </Border>
+            <Grid Grid.Row="2">
+                <Button x:Name="DevicePanelButton"
+                        Click="OnDevicePanelClick"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Cursor="Hand"
+                        ToolTip="{Binding [Devices_Switch_Tooltip], Source={x:Static loc:TranslationManager.Instance}}">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="PanelHost" Background="Transparent">
+                                <ContentPresenter/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="PanelHost" Property="Background" Value="#10FFFFFF"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                    <Border Style="{StaticResource Sidebar.Style.DevicePanel}" Background="Transparent">
+                        <StackPanel Orientation="Horizontal"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Center">
+                            <Border x:Name="DeviceCountBadge"
+                                    Background="{StaticResource App.Brush.DeepSkyBlue}"
+                                    CornerRadius="9" MinWidth="18" Height="18"
+                                    Margin="0,0,8,0" Padding="5,0"
+                                    Visibility="Collapsed"
+                                    VerticalAlignment="Center">
+                                <TextBlock x:Name="DeviceCountText" Text="2" FontSize="10" FontWeight="Bold"
+                                           Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+
+                            <TextBlock Text="{Binding DeviceStatusText}"
+                                       Style="{StaticResource Sidebar.Style.DeviceText}"/>
+
+                            <Canvas Width="54" Height="24" Margin="10,0,0,0">
+                                <Border Canvas.Left="0" Canvas.Top="2"
+                                        Width="50" Height="20"
+                                        BorderThickness="2"
+                                        BorderBrush="White"
+                                        CornerRadius="4"
+                                        Background="#33000000">
+                                    <Grid Margin="2">
+                                        <Rectangle RadiusX="2" RadiusY="2"
+                                                   Fill="{Binding DeviceBattery, Converter={StaticResource BatteryBrush}}">
+                                            <Rectangle.RenderTransform>
+                                                <ScaleTransform ScaleX="{Binding DeviceBattery, Converter={StaticResource App.Converter.PercentageToScale}}"
+                                                               ScaleY="1"/>
+                                            </Rectangle.RenderTransform>
+                                        </Rectangle>
+                                    </Grid>
+                                </Border>
+                                <Border Canvas.Left="51" Canvas.Top="7"
+                                        Width="4" Height="10"
+                                        Background="White"
+                                        CornerRadius="0,2,2,0"/>
+                            </Canvas>
+                        </StackPanel>
+                    </Border>
+                </Button>
+
+                <Popup x:Name="DevicePopup"
+                       PlacementTarget="{Binding ElementName=DevicePanelButton}"
+                       Placement="Top"
+                       StaysOpen="False"
+                       AllowsTransparency="True"
+                       PopupAnimation="Fade">
+                    <Border Background="#F20C1528"
+                            BorderBrush="{StaticResource App.Brush.Glass.Border}"
+                            BorderThickness="1"
+                            CornerRadius="10"
+                            Padding="8"
+                            MinWidth="256">
+                        <StackPanel>
+                            <TextBlock Text="{Binding [Devices_Popup_Title], Source={x:Static loc:TranslationManager.Instance}}"
+                                       FontSize="11" FontWeight="SemiBold" Foreground="#90FFFFFF" Margin="8,4,8,8"/>
+                            <ItemsControl x:Name="DeviceList">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Button Click="OnDeviceItemClick"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Cursor="Hand"
+                                                HorizontalContentAlignment="Stretch"
+                                                IsEnabled="{Binding IsAuthorized}">
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border x:Name="RowHost" Background="Transparent" CornerRadius="8" Padding="10,8">
+                                                        <ContentPresenter/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="RowHost" Property="Background" Value="#18FFFFFF"/>
+                                                        </Trigger>
+                                                        <Trigger Property="IsEnabled" Value="False">
+                                                            <Setter TargetName="RowHost" Property="Opacity" Value="0.55"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="10"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="10"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Ellipse Width="8" Height="8" VerticalAlignment="Center">
+                                                    <Ellipse.Style>
+                                                        <Style TargetType="Ellipse">
+                                                            <Setter Property="Fill" Value="#FF9F43"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding IsAuthorized}" Value="True">
+                                                                    <Setter Property="Fill" Value="#00D68F"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Ellipse.Style>
+                                                </Ellipse>
+                                                <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding Name}" FontSize="12" FontWeight="SemiBold" Foreground="White" TextTrimming="CharacterEllipsis"/>
+                                                    <TextBlock Text="{Binding Serial}" FontSize="10" Foreground="#8090A8" TextTrimming="CharacterEllipsis" Margin="0,1,0,0"/>
+                                                </StackPanel>
+                                                <h:Icon Kind="check" Size="14" Grid.Column="4" Foreground="{StaticResource App.Brush.DeepSkyBlue}" VerticalAlignment="Center" Visibility="{Binding IsActive, Converter={StaticResource App.Converter.BooleanToVisibility}}"/>
+                                            </Grid>
+                                        </Button>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <TextBlock x:Name="NoDevicesText"
+                                       Text="{Binding [DeviceStatus_NoDevice], Source={x:Static loc:TranslationManager.Instance}}"
+                                       FontSize="12" Foreground="#8090A8" Margin="10,4,10,8" Visibility="Collapsed"/>
+                        </StackPanel>
+                    </Border>
+                </Popup>
+            </Grid>
         </Grid>
     </Border>
 </UserControl>

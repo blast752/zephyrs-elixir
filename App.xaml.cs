@@ -18,12 +18,15 @@ public partial class App : Application
         CultureInfo.CurrentUICulture = CultureInfo.InvariantCulture;
 
         InitLogging();
-        AppIcons.Preload();
 
         var win = new MainWindow();
         MainWindow = win;
         win.Show();
         win.Activate();
+
+        // SVG icons are only needed once the File Manager is opened, and every one of them is
+        // frozen on load, so warming the cache off the startup path costs the window nothing.
+        _ = Task.Run(AppIcons.Preload);
 
         // First-run legal acceptance (EULA). Blocks until accepted; declining exits the app.
         if (!LegalConsent.IsAccepted())

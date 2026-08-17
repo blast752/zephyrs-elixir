@@ -1,4 +1,3 @@
-// System
 global using System;
 global using System.Collections.Concurrent;
 global using System.Collections.Generic;
@@ -44,7 +43,6 @@ global using System.Windows.Shapes;
 global using System.Windows.Shell;
 global using System.Windows.Threading;
 
-// Third-party
 global using CommunityToolkit.Mvvm.ComponentModel;
 global using CommunityToolkit.Mvvm.Input;
 global using Microsoft.Win32;
@@ -53,7 +51,6 @@ global using SharpVectors.Dom.Svg;
 global using SharpVectors.Renderers.Wpf;
 global using SharpVectors.Runtime;
 
-// Project
 global using ZephyrsElixir.Core;
 global using ZephyrsElixir.Licensing;
 global using ZephyrsElixir.Localization;
@@ -63,6 +60,5 @@ global using ZephyrsElixir.UI.Helpers;
 global using ZephyrsElixir.UI.Pages;
 global using ZephyrsElixir.UI.Views;
 
-// Aliases
 global using Path = System.IO.Path;
 global using WpfPath = System.Windows.Shapes.Path;

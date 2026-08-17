@@ -15,7 +15,6 @@
     <UserControl.Resources>
         <DropShadowEffect x:Key="GlowEffect" Color="{StaticResource App.Color.DeepSkyBlue}" BlurRadius="24" ShadowDepth="0" Opacity="0.8"/>
         <DropShadowEffect x:Key="SoftGlow" Color="#7FD4FF" BlurRadius="16" ShadowDepth="0" Opacity="0.6"/>
-        <helpers:EqualityToVisibilityConverter x:Key="EqToVisibility"/>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
 
         <Style x:Key="SlideFadeOnVisible" TargetType="StackPanel">
@@ -177,13 +176,7 @@
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
                                             
-                                            <TextBlock Grid.Column="0"
-                                                      Text="{Binding Icon}"
-                                                      FontFamily="Segoe MDL2 Assets"
-                                                      FontSize="16"
-                                                      Foreground="#FFC8D8FF"
-                                                      VerticalAlignment="Center"
-                                                      Margin="0,0,12,0"/>
+                                            <helpers:Icon Kind="{Binding Icon}" Size="18" Grid.Column="0" Foreground="#FFC8D8FF" VerticalAlignment="Center" Margin="0,0,12,0"/>
                                             
                                             <TextBlock Grid.Column="1"
                                                       Text="{Binding Title}"
@@ -234,7 +227,7 @@
                         <Border Style="{StaticResource HighlightBox}">
                             <StackPanel>
                                 <TextBlock Style="{StaticResource H3}">
-                                    <Run Text="&#xE946;" FontFamily="Segoe MDL2 Assets"/><Run Text="  "/><Run Text="{Binding [Help_Welcome_Power_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                    <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="info" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_Welcome_Power_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 </TextBlock>
                                 <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Welcome_Power_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                             </StackPanel>
@@ -243,7 +236,7 @@
                         <Border Style="{StaticResource HighlightBox}">
                             <StackPanel>
                                 <TextBlock Style="{StaticResource H3}">
-                                    <Run Text="&#xE7C3;" FontFamily="Segoe MDL2 Assets"/><Run Text="  "/><Run Text="{Binding [Help_Welcome_Transparency_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                    <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="document" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_Welcome_Transparency_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 </TextBlock>
                                 <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Welcome_Transparency_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                             </StackPanel>
@@ -252,7 +245,7 @@
                         <Border Style="{StaticResource HighlightBox}">
                             <StackPanel>
                                 <TextBlock Style="{StaticResource H3}">
-                                    <Run Text="&#xE72C;" FontFamily="Segoe MDL2 Assets"/><Run Text="  "/><Run Text="{Binding [Help_Welcome_Reversibility_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                    <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="refresh" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_Welcome_Reversibility_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 </TextBlock>
                                 <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Welcome_Reversibility_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                             </StackPanel>
@@ -261,7 +254,7 @@
                         <Border Style="{StaticResource HighlightBox}">
                             <StackPanel>
                                 <TextBlock Style="{StaticResource H3}">
-                                    <Run Text="&#xEA8F;" FontFamily="Segoe MDL2 Assets"/><Run Text="  "/><Run Text="{Binding [Help_Welcome_NoRoot_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                    <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="bell" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_Welcome_NoRoot_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 </TextBlock>
                                 <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Welcome_NoRoot_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                             </StackPanel>
@@ -270,7 +263,7 @@
                         <Border Style="{StaticResource HighlightBox}">
                             <StackPanel>
                                 <TextBlock Style="{StaticResource H3}">
-                                    <Run Text="&#xE8D7;" FontFamily="Segoe MDL2 Assets"/><Run Text="  "/><Run Text="{Binding [Help_Welcome_Privacy_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                    <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="key" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_Welcome_Privacy_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 </TextBlock>
                                 <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Welcome_Privacy_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                             </StackPanel>
@@ -303,7 +296,7 @@
                         <Border Style="{StaticResource HighlightBox}">
                             <StackPanel>
                                 <TextBlock Style="{StaticResource H3}">
-                                    <Run Text="&#xE7C3;" FontFamily="Segoe MDL2 Assets"/><Run Text="  "/><Run Text="{Binding [Help_FirstSteps_StepByStep_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                    <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="document" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_FirstSteps_StepByStep_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 </TextBlock>
                                 <TextBlock Style="{StaticResource Body}" Margin="0,8,0,4" Text="{Binding [Help_FirstSteps_Step1], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4" Text="{Binding [Help_FirstSteps_Step2], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
@@ -321,7 +314,7 @@
                         <helpers:ShadowCard Style="{StaticResource HintBox}">
                             <StackPanel>
                                 <TextBlock Style="{StaticResource Body}" FontWeight="SemiBold" Foreground="White">
-                                    <Run Text="&#xE946;" FontFamily="Segoe MDL2 Assets"/><Run Text="  "/><Run Text="{Binding [Help_FirstSteps_Cable_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                    <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="info" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_FirstSteps_Cable_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 </TextBlock>
                                 <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_FirstSteps_Cable_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                             </StackPanel>
@@ -355,7 +348,7 @@
                         <Border Style="{StaticResource HighlightBox}">
                             <StackPanel>
                                 <TextBlock Style="{StaticResource H3}">
-                                    <Run Text="&#xE839;" FontFamily="Segoe MDL2 Assets"/><Run Text="  "/><Run Text="{Binding [Help_FirstSteps_WirelessSetup_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                    <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="wireless" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_FirstSteps_WirelessSetup_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 </TextBlock>
                                 <TextBlock Style="{StaticResource Body}" Margin="0,8,0,4" Text="{Binding [Help_FirstSteps_WStep1], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4" Text="{Binding [Help_FirstSteps_WStep2], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
@@ -368,7 +361,7 @@
                         <helpers:ShadowCard Style="{StaticResource HintBox}">
                             <StackPanel>
                                 <TextBlock Style="{StaticResource Body}" FontWeight="SemiBold" Foreground="White">
-                                    <Run Text="&#xE73E;" FontFamily="Segoe MDL2 Assets"/><Run Text="  "/><Run Text="{Binding [Help_FirstSteps_AllSet_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                    <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="check" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_FirstSteps_AllSet_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 </TextBlock>
                                 <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_FirstSteps_AllSet_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                             </StackPanel>
@@ -400,7 +393,7 @@
                         <TextBlock Style="{StaticResource H2}" Text="{Binding [Help_Basics_Interface_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
 
                         <TextBlock Style="{StaticResource H3}">
-                            <Run Text="&#xE8EA;" FontFamily="Segoe MDL2 Assets"/><Run Text="  "/><Run Text="{Binding [Help_Basics_Sidebar_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                            <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="phone" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_Basics_Sidebar_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                         </TextBlock>
                         <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Basics_Sidebar_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
 
@@ -409,6 +402,8 @@
                                 <TextBlock Style="{StaticResource Body}" Margin="0,0,0,6" Text="{Binding [Help_Basics_Sidebar_Home], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 <TextBlock Style="{StaticResource Body}" Margin="0,0,0,6" Text="{Binding [Help_Basics_Sidebar_Optimize], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 <TextBlock Style="{StaticResource Body}" Margin="0,0,0,6" Text="{Binding [Help_Basics_Sidebar_Debloat], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,6" Text="{Binding [Help_Basics_Sidebar_Recipes], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,6" Text="{Binding [Help_Basics_Sidebar_Tools], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 <TextBlock Style="{StaticResource Body}" Margin="0,0,0,6" Text="{Binding [Help_Basics_Sidebar_Advanced], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 <TextBlock Style="{StaticResource Body}" Margin="0,0,0,6" Text="{Binding [Help_Basics_Sidebar_Settings], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Basics_Sidebar_Help], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
@@ -418,14 +413,19 @@
                         <TextBlock Style="{StaticResource Body}" Margin="0,12,0,0" Text="{Binding [Help_Basics_Sidebar_Device], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
 
                         <TextBlock Style="{StaticResource H3}">
-                            <Run Text="&#xE756;" FontFamily="Segoe MDL2 Assets"/><Run Text="  "/><Run Text="{Binding [Help_Basics_Console_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                            <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="devices" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_Basics_MultiDevice_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                        </TextBlock>
+                        <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Basics_MultiDevice_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+
+                        <TextBlock Style="{StaticResource H3}">
+                            <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="console" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_Basics_Console_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                         </TextBlock>
                         <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Basics_Console_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
 
                         <helpers:ShadowCard Style="{StaticResource HintBox}">
                             <StackPanel>
                                 <TextBlock Style="{StaticResource Body}" FontWeight="SemiBold" Foreground="White">
-                                    <Run Text="&#xE946;" FontFamily="Segoe MDL2 Assets"/><Run Text="  "/><Run Text="{Binding [Help_Basics_Console_Tip_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                    <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="info" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_Basics_Console_Tip_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 </TextBlock>
                                 <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Basics_Console_Tip_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                             </StackPanel>
@@ -437,7 +437,7 @@
                         <Border Style="{StaticResource HighlightBox}">
                             <StackPanel>
                                 <TextBlock Style="{StaticResource H3}">
-                                    <Run Text="&#xE945;" FontFamily="Segoe MDL2 Assets"/><Run Text="  "/><Run Text="{Binding [Help_Basics_Cat_Performance_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                    <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="bolt" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_Basics_Cat_Performance_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 </TextBlock>
                                 <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Basics_Cat_Performance_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                             </StackPanel>
@@ -446,7 +446,7 @@
                         <Border Style="{StaticResource HighlightBox}">
                             <StackPanel>
                                 <TextBlock Style="{StaticResource H3}">
-                                    <Run Text="&#xE83F;" FontFamily="Segoe MDL2 Assets"/><Run Text="  "/><Run Text="{Binding [Help_Basics_Cat_Battery_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                    <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="battery" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_Basics_Cat_Battery_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 </TextBlock>
                                 <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Basics_Cat_Battery_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                             </StackPanel>
@@ -455,7 +455,7 @@
                         <Border Style="{StaticResource HighlightBox}">
                             <StackPanel>
                                 <TextBlock Style="{StaticResource H3}">
-                                    <Run Text="&#xE8A0;" FontFamily="Segoe MDL2 Assets"/><Run Text="  "/><Run Text="{Binding [Help_Basics_Cat_Network_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                    <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="import" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_Basics_Cat_Network_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 </TextBlock>
                                 <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Basics_Cat_Network_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                             </StackPanel>
@@ -464,7 +464,7 @@
                         <Border Style="{StaticResource HighlightBox}">
                             <StackPanel>
                                 <TextBlock Style="{StaticResource H3}">
-                                    <Run Text="&#xE8D7;" FontFamily="Segoe MDL2 Assets"/><Run Text="  "/><Run Text="{Binding [Help_Basics_Cat_Privacy_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                    <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="key" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_Basics_Cat_Privacy_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 </TextBlock>
                                 <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Basics_Cat_Privacy_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                             </StackPanel>
@@ -476,7 +476,7 @@
                         <helpers:ShadowCard Style="{StaticResource HintBox}">
                             <StackPanel>
                                 <TextBlock Style="{StaticResource Body}" FontWeight="SemiBold" Foreground="White">
-                                    <Run Text="&#xE7BA;" FontFamily="Segoe MDL2 Assets"/><Run Text="  "/><Run Text="{Binding [Help_Basics_Extreme_Hint_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                    <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="warning" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_Basics_Extreme_Hint_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 </TextBlock>
                                 <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Basics_Extreme_Hint_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                             </StackPanel>
@@ -510,8 +510,7 @@
                             <StackPanel>
                                 <Grid Margin="0,0,0,12">
                                     <helpers:GlowIcon Size="40" CornerRadius="20" HorizontalAlignment="Left" Background="{StaticResource AccentGradientBrush}" GlowEffect="{StaticResource SoftGlow}">
-                                        <TextBlock Text="&#xE839;" FontFamily="Segoe MDL2 Assets" FontSize="20" 
-                                                  Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <helpers:Icon Kind="wireless" Size="22" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </helpers:GlowIcon>
                                     <TextBlock Style="{StaticResource H3}" Margin="50,0,0,0" VerticalAlignment="Center" Text="{Binding [Help_Quick_Step1_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 </Grid>
@@ -524,8 +523,7 @@
                             <StackPanel>
                                 <Grid Margin="0,0,0,12">
                                     <helpers:GlowIcon Size="40" CornerRadius="20" HorizontalAlignment="Left" Background="{StaticResource AccentGradientBrush}" GlowEffect="{StaticResource SoftGlow}">
-                                        <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="20" 
-                                                  Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <helpers:Icon Kind="play" Size="22" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </helpers:GlowIcon>
                                     <TextBlock Style="{StaticResource H3}" Margin="50,0,0,0" VerticalAlignment="Center" Text="{Binding [Help_Quick_Step2_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 </Grid>
@@ -538,8 +536,7 @@
                             <StackPanel>
                                 <Grid Margin="0,0,0,12">
                                     <helpers:GlowIcon Size="40" CornerRadius="20" HorizontalAlignment="Left" Background="{StaticResource AccentGradientBrush}" GlowEffect="{StaticResource SoftGlow}">
-                                        <TextBlock Text="&#xE8AB;" FontFamily="Segoe MDL2 Assets" FontSize="20" 
-                                                  Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <helpers:Icon Kind="swap" Size="22" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </helpers:GlowIcon>
                                     <TextBlock Style="{StaticResource H3}" Margin="50,0,0,0" VerticalAlignment="Center" Text="{Binding [Help_Quick_Step3_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 </Grid>
@@ -552,8 +549,7 @@
                             <StackPanel>
                                 <Grid Margin="0,0,0,12">
                                     <helpers:GlowIcon Size="40" CornerRadius="20" HorizontalAlignment="Left" Background="{StaticResource AccentGradientBrush}" GlowEffect="{StaticResource SoftGlow}">
-                                        <TextBlock Text="&#xE7BA;" FontFamily="Segoe MDL2 Assets" FontSize="20" 
-                                                  Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <helpers:Icon Kind="warning" Size="22" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </helpers:GlowIcon>
                                     <TextBlock Style="{StaticResource H3}" Margin="50,0,0,0" VerticalAlignment="Center" Text="{Binding [Help_Quick_Step4_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 </Grid>
@@ -565,7 +561,7 @@
                         <helpers:ShadowCard Style="{StaticResource HintBox}">
                             <StackPanel>
                                 <TextBlock Style="{StaticResource Body}" FontWeight="SemiBold" Foreground="White">
-                                    <Run Text="&#xEA80;" FontFamily="Segoe MDL2 Assets"/><Run Text="  "/><Run Text="{Binding [Help_Quick_Next_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                    <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="lightbulb" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_Quick_Next_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 </TextBlock>
                                 <TextBlock Style="{StaticResource Body}" Margin="0,8,0,0" Text="{Binding [Help_Quick_Next_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                             </StackPanel>
@@ -582,7 +578,7 @@
                         <TextBlock Style="{StaticResource BodyLarge}" Margin="0,10,0,0" Text="{Binding [Help_Guide_Intro], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
 
                         <TextBlock Style="{StaticResource H2}">
-                            <Run Text="&#xE80F;" FontFamily="Segoe MDL2 Assets"/><Run Text="  "/><Run Text="{Binding [Help_Guide_Home_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                            <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="home" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_Guide_Home_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                         </TextBlock>
                         <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Guide_Home_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
 
@@ -609,7 +605,7 @@
                         </Border>
 
                         <TextBlock Style="{StaticResource H2}">
-                            <Run Text="&#xE777;" FontFamily="Segoe MDL2 Assets"/><Run Text="  "/><Run Text="{Binding [Help_Guide_Optimize_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                            <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="restore" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_Guide_Optimize_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                         </TextBlock>
                         <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Guide_Optimize_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
 
@@ -621,7 +617,9 @@
                                 <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4" Text="{Binding [Help_Guide_Optimize_Cat2], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4" Text="{Binding [Help_Guide_Optimize_Cat3], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4" Text="{Binding [Help_Guide_Optimize_Cat4], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
-                                <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Guide_Optimize_Cat5], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4" Text="{Binding [Help_Guide_Optimize_Cat5], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4" Text="{Binding [Help_Guide_Optimize_Cat6], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Guide_Optimize_Cat7], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                             </StackPanel>
                         </Border>
 
@@ -647,14 +645,14 @@
                         <helpers:ShadowCard Style="{StaticResource HintBox}">
                             <StackPanel>
                                 <TextBlock Style="{StaticResource Body}" FontWeight="SemiBold" Foreground="White">
-                                    <Run Text="&#xE946;" FontFamily="Segoe MDL2 Assets"/><Run Text="  "/><Run Text="{Binding [Help_Guide_Optimize_Hint_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                    <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="info" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_Guide_Optimize_Hint_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 </TextBlock>
                                 <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Guide_Optimize_Hint_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                             </StackPanel>
                         </helpers:ShadowCard>
 
                         <TextBlock Style="{StaticResource H2}">
-                            <Run Text="&#xE74D;" FontFamily="Segoe MDL2 Assets"/><Run Text="  "/><Run Text="{Binding [Help_Guide_Debloat_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                            <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="delete" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_Guide_Debloat_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                         </TextBlock>
                         <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Guide_Debloat_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
 
@@ -682,21 +680,98 @@
                         <helpers:ShadowCard Style="{StaticResource HintBox}">
                             <StackPanel>
                                 <TextBlock Style="{StaticResource Body}" FontWeight="SemiBold" Foreground="White">
-                                    <Run Text="&#xE7BA;" FontFamily="Segoe MDL2 Assets"/><Run Text="  "/><Run Text="{Binding [Help_Guide_Debloat_Hint_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                    <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="warning" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_Guide_Debloat_Hint_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 </TextBlock>
                                 <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Guide_Debloat_Hint_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                             </StackPanel>
                         </helpers:ShadowCard>
 
                         <TextBlock Style="{StaticResource H2}">
-                            <Run Text="&#xE74D;" FontFamily="Segoe MDL2 Assets"/><Run Text="  "/><Run Text="{Binding [Help_Guide_Advanced_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                            <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="library" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_Guide_Recipes_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                        </TextBlock>
+                        <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Guide_Recipes_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}" Text="{Binding [Help_Guide_Recipes_Build_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Guide_Recipes_Build_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}" Text="{Binding [Help_Guide_Recipes_Run_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Guide_Recipes_Run_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}" Text="{Binding [Help_Guide_Recipes_Community_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Guide_Recipes_Community_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                            </StackPanel>
+                        </Border>
+
+                        <helpers:ShadowCard Style="{StaticResource HintBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource Body}" FontWeight="SemiBold" Foreground="White">
+                                    <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="warning" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_Guide_Recipes_Hint_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Guide_Recipes_Hint_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                            </StackPanel>
+                        </helpers:ShadowCard>
+
+                        <TextBlock Style="{StaticResource H2}">
+                            <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="open-external" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_Guide_Tools_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                        </TextBlock>
+                        <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Guide_Tools_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}" Text="{Binding [Help_Guide_Tools_Apk_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Guide_Tools_Apk_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}" Text="{Binding [Help_Guide_Tools_Files_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Guide_Tools_Files_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}" Text="{Binding [Help_Guide_Tools_Shell_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Guide_Tools_Shell_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}" Text="{Binding [Help_Guide_Tools_Power_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Guide_Tools_Power_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                            </StackPanel>
+                        </Border>
+
+                        <helpers:ShadowCard Style="{StaticResource HintBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource Body}" FontWeight="SemiBold" Foreground="White">
+                                    <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="info" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_Guide_Tools_Pro_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Guide_Tools_Pro_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                            </StackPanel>
+                        </helpers:ShadowCard>
+
+                        <TextBlock Style="{StaticResource H2}">
+                            <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="delete" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_Guide_Advanced_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                         </TextBlock>
                         <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Guide_Advanced_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
 
                         <Border Style="{StaticResource HighlightBox}">
                             <StackPanel>
                                 <TextBlock Style="{StaticResource H3}">
-                                    <Run Text="&#xE8A0;" FontFamily="Segoe MDL2 Assets"/><Run Text="  "/><Run Text="{Binding [Help_Guide_DNS_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                    <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="import" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_Guide_DNS_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 </TextBlock>
                                 <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Guide_DNS_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                             </StackPanel>
@@ -705,7 +780,7 @@
                         <Border Style="{StaticResource HighlightBox}">
                             <StackPanel>
                                 <TextBlock Style="{StaticResource H3}">
-                                    <Run Text="&#xE7C3;" FontFamily="Segoe MDL2 Assets"/><Run Text="  "/><Run Text="{Binding [Help_Guide_Animation_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                    <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="document" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_Guide_Animation_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 </TextBlock>
                                 <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Guide_Animation_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                             </StackPanel>
@@ -714,14 +789,23 @@
                         <Border Style="{StaticResource HighlightBox}">
                             <StackPanel>
                                 <TextBlock Style="{StaticResource H3}">
-                                    <Run Text="&#xE72C;" FontFamily="Segoe MDL2 Assets"/><Run Text="  "/><Run Text="{Binding [Help_Guide_ResetAll_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                    <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="clock" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_Guide_Vials_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Guide_Vials_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource HighlightBox}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">
+                                    <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="refresh" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_Guide_ResetAll_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 </TextBlock>
                                 <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Guide_ResetAll_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                             </StackPanel>
                         </Border>
 
                         <TextBlock Style="{StaticResource H2}">
-                            <Run Text="&#xE713;" FontFamily="Segoe MDL2 Assets"/><Run Text="  "/><Run Text="{Binding [Help_Guide_Settings_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                            <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="settings" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_Guide_Settings_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                         </TextBlock>
 
                         <Border Style="{StaticResource HighlightBox}">
@@ -748,7 +832,7 @@
                         <helpers:ShadowCard Style="{StaticResource HintBox}">
                             <StackPanel>
                                 <TextBlock Style="{StaticResource Body}" FontWeight="SemiBold" Foreground="White">
-                                    <Run Text="&#xEA80;" FontFamily="Segoe MDL2 Assets"/><Run Text="  "/><Run Text="{Binding [Help_Guide_Explore_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                    <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="lightbulb" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_Guide_Explore_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 </TextBlock>
                                 <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Guide_Explore_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                             </StackPanel>
@@ -833,7 +917,7 @@
                         <helpers:ShadowCard Style="{StaticResource HintBox}">
                             <StackPanel>
                                 <TextBlock Style="{StaticResource Body}" FontWeight="SemiBold" Foreground="White">
-                                    <Run Text="&#xE946;" FontFamily="Segoe MDL2 Assets"/><Run Text="  "/><Run Text="{Binding [Help_Trouble_ExportLogs_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                    <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="info" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_Trouble_ExportLogs_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 </TextBlock>
                                 <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Trouble_ExportLogs_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                             </StackPanel>
@@ -849,7 +933,7 @@
                         <helpers:ShadowCard Style="{StaticResource HintBox}">
                             <StackPanel>
                                 <TextBlock Style="{StaticResource Body}" FontWeight="SemiBold" Foreground="White">
-                                    <Run Text="&#xE8AB;" FontFamily="Segoe MDL2 Assets"/><Run Text="  "/><Run Text="{Binding [Help_Trouble_StillNeed_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                    <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="swap" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_Trouble_StillNeed_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 </TextBlock>
                                 <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Trouble_StillNeed_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                             </StackPanel>
@@ -874,8 +958,7 @@
                                                 <helpers:GlowIcon Size="32" CornerRadius="16" HorizontalAlignment="Left"
                                                        Background="{StaticResource AccentGradientBrush}"
                                                        GlowEffect="{StaticResource SoftGlow}">
-                                                    <TextBlock Text="{Binding Icon}" FontFamily="Segoe MDL2 Assets" FontSize="16" 
-                                                              Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    <helpers:Icon Kind="{Binding Icon}" Size="18" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                 </helpers:GlowIcon>
                                                 <TextBlock Text="{Binding Title}" Style="{StaticResource H3}" 
                                                           Margin="42,0,0,0" VerticalAlignment="Center"/>
@@ -890,7 +973,7 @@
                         <helpers:ShadowCard Style="{StaticResource HintBox}">
                             <StackPanel>
                                 <TextBlock Style="{StaticResource Body}" FontWeight="SemiBold" Foreground="White">
-                                    <Run Text="&#xEA80;" FontFamily="Segoe MDL2 Assets"/><Run Text="  "/><Run Text="{Binding [Help_Tips_Shortcut_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                    <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="lightbulb" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_Tips_Shortcut_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 </TextBlock>
                                 <TextBlock Style="{StaticResource Body}" Margin="0,8,0,0" Text="{Binding [Help_Tips_Shortcut_Body], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                             </StackPanel>
@@ -919,7 +1002,7 @@
                                     <Border Style="{StaticResource HighlightBox}">
                                         <StackPanel>
                                             <TextBlock Style="{StaticResource H3}">
-                                                <Run Text="&#xE11B;" FontFamily="Segoe MDL2 Assets"/><Run Text="  "/>
+                                                <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="question" Size="16"/></InlineUIContainer><Run Text="  "/>
                                                 <Run Text="{Binding Question}"/>
                                             </TextBlock>
                                             <TextBlock Text="{Binding Answer}" Style="{StaticResource Body}" Margin="0,8,0,0"/>
@@ -946,7 +1029,7 @@
                         <Border Style="{StaticResource HighlightBox}">
                             <StackPanel>
                                 <TextBlock Style="{StaticResource H3}">
-                                    <Run Text="&#xE946;" FontFamily="Segoe MDL2 Assets"/><Run Text="  "/><Run Text="{Binding [Help_About_Tech_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                    <InlineUIContainer BaselineAlignment="Center"><helpers:Icon Kind="info" Size="16"/></InlineUIContainer><Run Text="  "/><Run Text="{Binding [Help_About_Tech_Title], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 </TextBlock>
                                 <TextBlock Style="{StaticResource Body}" Margin="0,8,0,4" Text="{Binding [Help_About_Tech_BuiltWith], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4" Text="{Binding [Help_About_Tech_Architecture], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
@@ -1034,18 +1117,7 @@
                     Orientation="Horizontal" 
                     HorizontalAlignment="Center" 
                     Margin="0,35,0,45">
-            <Grid VerticalAlignment="Center">
-                <TextBlock Text="&#xE897;" 
-                         FontFamily="Segoe MDL2 Assets" 
-                         FontSize="36" 
-                         Foreground="White" 
-                         Effect="{StaticResource GlowEffect}" 
-                         IsHitTestVisible="False"/>
-                <TextBlock Text="&#xE897;" 
-                         FontFamily="Segoe MDL2 Assets" 
-                         FontSize="36" 
-                         Foreground="White"/>
-            </Grid>
+            <helpers:Icon Kind="question" Size="52" Foreground="White" Effect="{StaticResource GlowEffect}"/>
             <TextBlock Margin="14,0,0,0" 
                      Style="{StaticResource H1}" 
                      FontSize="50" 
@@ -1068,12 +1140,7 @@
                     Padding="14">
                 <StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
-                        <TextBlock Text="&#xE946;" 
-                                 FontFamily="Segoe MDL2 Assets" 
-                                 FontSize="14"
-                                 Foreground="#FFD700"
-                                 VerticalAlignment="Center"
-                                 Margin="0,0,8,0"/>
+                        <helpers:Icon Kind="info" Size="16" Foreground="#FFD700" VerticalAlignment="Center" Margin="0,0,8,0"/>
                         <TextBlock FontSize="13"
                                  FontWeight="SemiBold"
                                  Foreground="White"

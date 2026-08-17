@@ -51,7 +51,7 @@ public sealed partial class UnifiedDialog : Window
     private void Configure(DialogConfig config)
     {
         HeaderTitle.Text = config.Title;
-        HeaderIcon.Text = GetIconForType(config.Type);
+        HeaderIcon.Kind = GetIconForType(config.Type);
         HeaderIcon.Foreground = GetIconBrush(config.Type);
 
         ConfigureContent(config);
@@ -113,13 +113,13 @@ public sealed partial class UnifiedDialog : Window
 
     private static string GetIconForType(DialogType type) => type switch
     {
-        DialogType.Info or DialogType.RichContent => "\uE946",
-        DialogType.Success     => "\uE73E",
-        DialogType.Warning     => "\uE7BA",
-        DialogType.Error       => "\uEA39",
-        DialogType.Question    => "\uE897",
-        DialogType.ProRequired => "\uE735",
-        _                      => "\uE946"
+        DialogType.Info or DialogType.RichContent => "info",
+        DialogType.Success     => "check",
+        DialogType.Warning     => "warning",
+        DialogType.Error       => "error-circle",
+        DialogType.Question    => "question",
+        DialogType.ProRequired => "star",
+        _                      => "info"
     };
 
     private static Brush GetIconBrush(DialogType type) => type switch

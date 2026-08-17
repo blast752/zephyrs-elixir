@@ -156,7 +156,7 @@ public static class ProLoader
                 LicenseService.Instance.CleanupTempDll();
 
                 var initialized = instance.Initialize(
-                    adbExecutor: (cmd, ct) => AdbExecutor.ExecuteCommandAsync(cmd, ct),
+                    adbExecutor: (cmd, ct) => AdbExecutor.ExecuteModuleAsync(cmd, ct),
                     licenseStateProvider: () => LicenseService.Instance.CurrentState,
                     deviceFingerprint: LicenseService.Instance.DeviceFingerprint);
 

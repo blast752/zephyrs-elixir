@@ -35,7 +35,6 @@
         <SolidColorBrush x:Key="ButtonPress" Color="{StaticResource ButtonPressColor}"/>
         <SolidColorBrush x:Key="CloseHoverBrush" Color="{StaticResource CloseHoverColor}"/>
         <SolidColorBrush x:Key="ClosePressBrush" Color="{StaticResource ClosePressColor}"/>
-        <SolidColorBrush x:Key="WindowBorder" Color="{StaticResource App.Color.WindowBorder}"/>
 
         <ControlTemplate x:Key="WindowControlButtonTemplate" TargetType="Button">
             <Border x:Name="ButtonBorder"
@@ -79,7 +78,7 @@
 
     <Border x:Name="WindowBorder"
             Background="{StaticResource App.Brush.WindowBg}"
-            BorderBrush="{StaticResource WindowBorder}"
+            BorderBrush="{StaticResource App.Brush.WindowBorder}"
             BorderThickness="1"
             CornerRadius="8">
         <Grid>
@@ -142,10 +141,11 @@
                             Click="OnCloseClick"
                             Template="{StaticResource CloseButtonTemplate}"
                             ToolTip="{h:Translate Window_Tooltip_Close}">
-                        <TextBlock Text="&#xE8BB;"
-                                   FontFamily="{StaticResource AppIconFont}"
-                                   FontSize="10"
-                                   Foreground="{StaticResource ButtonIcon}"/>
+                        <Canvas Width="10" Height="10">
+                            <Path Data="M0,0 L10,10 M10,0 L0,10"
+                                  Stroke="{StaticResource ButtonIcon}"
+                                  StrokeThickness="1"/>
+                        </Canvas>
                     </Button>
                 </StackPanel>
             </Grid>

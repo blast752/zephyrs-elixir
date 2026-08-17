@@ -1,0 +1,19 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<linearGradient id="imageGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+<stop offset="0%" stop-color="#7D64FF"/>
+<stop offset="100%" stop-color="#5A3FD9"/>
+</linearGradient>
+<clipPath id="imageClip">
+<rect x="26" y="32" width="48" height="40" rx="6" ry="6"/>
+</clipPath>
+</defs>
+<rect x="10" y="10" width="80" height="80" rx="20" ry="20" fill="url(#imageGrad)"/>
+<ellipse cx="50" cy="21" rx="31" ry="8" fill="white" opacity="0.18"/>
+<g clip-path="url(#imageClip)">
+<circle cx="40" cy="44" r="5" fill="white"/>
+<polygon points="38,72 54,55 70,72" fill="white" opacity="0.55"/>
+<polygon points="26,72 44,50 56,62 64,54 74,72" fill="white" opacity="0.95"/>
+</g>
+<rect x="26" y="32" width="48" height="40" rx="6" ry="6" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
