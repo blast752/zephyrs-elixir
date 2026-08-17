@@ -18,6 +18,7 @@ public sealed class LicenseService : IDisposable
     private readonly HttpClient _downloadHttp;
     private readonly SemaphoreSlim _lock = new(1, 1);
     private readonly SemaphoreSlim _dllLock = new(1, 1);
+    private readonly object _stateLock = new();
     private readonly string _cachePath;
     private readonly string _deviceId;
     private readonly JsonSerializerOptions _jsonOptions;
@@ -29,6 +30,8 @@ public sealed class LicenseService : IDisposable
     private bool _initialized;
     private string? _cachedProDllVersion;
     private string? _cachedProDllHash;
+    private string? _signature;
+    private long _signedAt;
 
     private FileSystemWatcher? _dllWatcher;
     private Timer? _dllGuardianTimer;
@@ -47,14 +50,14 @@ public sealed class LicenseService : IDisposable
 
     public LicenseState CurrentState
     {
-        get { lock (this) return _state; }
+        get { lock (_stateLock) return _state; }
         private set
         {
             LicenseState old;
             LicenseChangeReason reason;
-            lock (this) 
-            { 
-                old = _state; 
+            lock (_stateLock)
+            {
+                old = _state;
                 _state = value;
                 reason = DetermineChangeReason(old, value);
             }
@@ -72,6 +75,31 @@ public sealed class LicenseService : IDisposable
 
     public bool IsPro => CurrentState.EffectiveTier >= LicenseTier.Pro;
     public string DeviceFingerprint => _deviceId;
+
+    /// <summary>
+    /// The signed licence tuple a cloud endpoint can verify to grant Pro treatment, or null when
+    /// this install has no active Pro licence or has never completed an online validation.
+    /// </summary>
+    public ProEntitlementProof? ProEntitlement
+    {
+        get
+        {
+            var state = CurrentState;
+            if (state.EffectiveTier < LicenseTier.Pro || _signedAt == 0 ||
+                string.IsNullOrEmpty(_signature) || string.IsNullOrEmpty(state.LicenseKey))
+                return null;
+
+            return new ProEntitlementProof(
+                state.NormalizedKey,
+                (int)state.Tier,
+                state.ExpiresAt.HasValue
+                    ? new DateTimeOffset(DateTime.SpecifyKind(state.ExpiresAt.Value, DateTimeKind.Utc)).ToUnixTimeSeconds()
+                    : null,
+                _signedAt,
+                _signature);
+        }
+    }
+
     public bool IsInitialized => _initialized;
     public string? LocalProDllVersion => _cachedProDllVersion;
 
@@ -239,7 +267,7 @@ public sealed class LicenseService : IDisposable
             }
 
             CurrentState = newState;
-            await SaveCacheAsync(newState, response.Signature);
+            await SaveCacheAsync(newState, response.Signature, response.Timestamp);
             
             progress?.Report(new ActivationProgress(ActivationPhase.Complete, 100));
             
@@ -345,7 +373,7 @@ public sealed class LicenseService : IDisposable
                 }
                 
                 CurrentState = newState;
-                await SaveCacheAsync(newState, response.Signature);
+                await SaveCacheAsync(newState, response.Signature, response.Timestamp);
                 Log("Validate", $"Valid! Status: {newState.Status}, Dll: {newState.DllState}");
             }
             else if (response?.Valid == false)
@@ -372,7 +400,7 @@ public sealed class LicenseService : IDisposable
                         LastError = response.Error,
                         LastValidated = DateTime.UtcNow
                     };
-                    await SaveCacheAsync(CurrentState, null);
+                    await SaveCacheAsync(CurrentState, null, 0);
                     Log("Validate", $"License status: {status}");
                 }
                 else if (status is LicenseStatus.PastDue)
@@ -384,16 +412,24 @@ public sealed class LicenseService : IDisposable
                         LastError = Strings.License_Error_PaymentPastDue,
                         LastValidated = DateTime.UtcNow
                     };
-                    await SaveCacheAsync(CurrentState, null);
+                    await SaveCacheAsync(CurrentState, null, 0);
                     Log("Validate", "Payment past due");
                 }
                 else
                 {
-                    DeleteProDllFiles();
-                    CurrentState = LicenseState.Free with { LastError = response.Error };
-                    DeleteCache();
-                    _cachedProDllVersion = null;
-                    _cachedProDllHash = null;
+                    // Unbound, device conflict, an inactive membership, or a status this build does not
+                    // model yet. The licence is real — it just is not usable on this machine right now.
+                    // Keeping Tier and LicenseKey lets EffectiveTier fall to Free, so Pro stays locked
+                    // without destroying the key, the cache or a DLL the customer already paid for.
+                    CurrentState = CurrentState with
+                    {
+                        Status = status,
+                        IsOffline = false,
+                        LastError = Strings.License_Error_ReactivationRequired,
+                        LastValidated = DateTime.UtcNow
+                    };
+                    await SaveCacheAsync(CurrentState, null, 0);
+                    Log("Validate", $"Reactivation required (server status: {response.Status})");
                 }
             }
             else
@@ -467,7 +503,7 @@ public sealed class LicenseService : IDisposable
             if (result.Success)
             {
                 CurrentState = CurrentState with { DllState = ProDllState.Ready };
-                await SaveCacheAsync(CurrentState, response.Signature);
+                await SaveCacheAsync(CurrentState, response.Signature, response.Timestamp);
                 progress?.Report(new ActivationProgress(ActivationPhase.Complete, 100));
                 Log("RetryDll", "Pro DLL downloaded successfully on retry");
             }
@@ -770,16 +806,7 @@ public sealed class LicenseService : IDisposable
         return ms.ToArray();
     }
 
-    private static bool ValidateDownloadUrl(string url)
-    {
-        if (!Uri.TryCreate(url, UriKind.Absolute, out var uri))
-            return false;
-
-        if (uri.Scheme != Uri.UriSchemeHttps)
-            return false;
-
-        return ProDllConfig.AllowedDownloadDomains.Contains(uri.Host);
-    }
+    private static bool ValidateDownloadUrl(string url) => AppConfiguration.Urls.IsTrustedDownload(url);
 
     private static (bool Ok, string? Error) CheckDiskSpace(long requiredBytes)
     {
@@ -1089,6 +1116,8 @@ public sealed class LicenseService : IDisposable
 
             _cachedProDllVersion = cached.ProDllVersion;
             _cachedProDllHash = cached.ProDllHash;
+            _signature = cached.Signature;
+            _signedAt = cached.SignedAt;
 
             CurrentState = new LicenseState
             {
@@ -1112,12 +1141,15 @@ public sealed class LicenseService : IDisposable
         }
     }
 
-    private async Task SaveCacheAsync(LicenseState state, string? signature)
+    private async Task SaveCacheAsync(LicenseState state, string? signature, long signedAt)
     {
         try
         {
             var normalizedKey = state.NormalizedKey;
-            
+
+            _signature = signature;
+            _signedAt = signedAt;
+
             var cached = new CachedLicense
             {
                 NormalizedKey = normalizedKey,
@@ -1126,6 +1158,7 @@ public sealed class LicenseService : IDisposable
                 ExpiresAt = state.ExpiresAt,
                 CachedAt = DateTime.UtcNow,
                 Signature = signature,
+                SignedAt = signedAt,
                 DeviceId = _deviceId,
                 Version = LicenseConfig.CacheVersion,
                 ProDllVersion = _cachedProDllVersion,

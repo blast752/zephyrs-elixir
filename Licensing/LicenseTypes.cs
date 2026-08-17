@@ -52,12 +52,7 @@ public static class ProDllConfig
     public static string FingerprintPath => Path.Combine(ProDirectory, FingerprintFileName);
     public static string TempDllPath => Path.Combine(ProDirectory, TempDllFileName);
 
-    public static readonly IReadOnlySet<string> AllowedDownloadDomains = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-    {
-        "cdn.zephyrselixir.com",
-        "zephyrselixir.com",
-        "dl.zephyrselixir.com"
-    };
+    public static readonly IReadOnlySet<string> AllowedDownloadDomains = AppConfiguration.Urls.TrustedDownloadHosts;
 
     public const int DownloadConnectTimeoutSeconds = 10;
     public const int DownloadReadTimeoutSeconds = 60;
@@ -123,6 +118,9 @@ public enum LicenseStatus
     Suspended = 13,
     Refunded = 14,
     Blocked = 15,
+    Unbound = 16,
+    DeviceConflict = 17,
+    Inactive = 18,
     Invalid = 20
 }
 
@@ -385,8 +383,13 @@ public sealed record LicenseResponse
         "suspended" => LicenseStatus.Suspended,
         "refunded" => LicenseStatus.Refunded,
         "blocked" => LicenseStatus.Blocked,
+        "unbound" => LicenseStatus.Unbound,
+        "device_conflict" => LicenseStatus.DeviceConflict,
+        "inactive" => LicenseStatus.Inactive,
         "invalid" => LicenseStatus.Invalid,
-        _ => Valid ? LicenseStatus.Active : LicenseStatus.Invalid
+        // An unmodelled status must never fall through to Invalid: that branch revokes the licence
+        // permanently, and the server is free to introduce a status this build has never seen.
+        _ => Valid ? LicenseStatus.Active : LicenseStatus.Unknown
     };
 }
 
@@ -410,6 +413,11 @@ internal sealed record CachedLicense
     public DateTime? ExpiresAt { get; init; }
     public DateTime CachedAt { get; init; }
     public string? Signature { get; init; }
+
+    // Deliberately outside the checksum: it only feeds the server-side entitlement proof, where a
+    // tampered value simply fails the HMAC, and leaving the checksum shape alone keeps every cache
+    // already written in the field valid.
+    public long SignedAt { get; init; }
     public string? Checksum { get; init; }
     public int Version { get; init; } = LicenseConfig.CacheVersion;
     public string? DeviceId { get; init; }
@@ -426,6 +434,13 @@ internal sealed record CachedLicense
         Version >= LicenseConfig.CacheVersion &&
         Checksum == ComputeChecksum(NormalizedKey, Tier, Status, ExpiresAt, Signature, deviceId, ProDllVersion);
 }
+
+/// <summary>
+/// The signed licence tuple the licensing API returned, replayed to cloud endpoints that must tell
+/// Pro from Free without a round trip to Whop. The server re-computes the HMAC over
+/// key:tier:expiresAt:timestamp, so nothing here can be forged by the client.
+/// </summary>
+public sealed record ProEntitlementProof(string Key, int Tier, long? ExpiresAt, long Timestamp, string Signature);
 
 #endregion
 

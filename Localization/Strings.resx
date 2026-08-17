@@ -416,6 +416,9 @@
   <data name="Debloat_Uninstall_UninstallOnly" xml:space="preserve">
     <value>Uninstall only</value>
   </data>
+  <data name="Debloat_Uninstall_BackupProHint" xml:space="preserve">
+    <value>APK backup before uninstalling is a Pro feature.</value>
+  </data>
   <data name="Debloat_Uninstall_WarningCritical" xml:space="preserve">
     <value>WARNING: {0} CRITICAL app(s) selected!</value>
   </data>
@@ -450,7 +453,7 @@
     <value>Frozen</value>
   </data>
   <data name="Debloat_AI_QuotaExhausted" xml:space="preserve">
-    <value>Daily limit reached</value>
+    <value>Daily limit reached — {0} free scans a day</value>
   </data>
   <!-- ═══════════════════════════════════════════════════════════════════ -->
   <!-- TOOLS                                                              -->
@@ -472,7 +475,7 @@
     <value>Performance Monitor</value>
   </data>
   <data name="Tools_PerformanceMonitor_Description" xml:space="preserve">
-    <value>Real-time CPU, RAM, network &amp; battery</value>
+    <value>Real-time CPU, RAM, GPU, FPS, network &amp; battery</value>
   </data>
   <data name="Tools_ScreenMirror_Title" xml:space="preserve">
     <value>Screen Mirror</value>
@@ -544,7 +547,7 @@
     <value>Reset</value>
   </data>
   <data name="Advanced_Button_ResetAll" xml:space="preserve">
-    <value>Undo all session changes</value>
+    <value>Reset all</value>
   </data>
   <data name="Advanced_Button_ApplyAnimations" xml:space="preserve">
     <value>Apply to device</value>
@@ -559,7 +562,7 @@
     <value>Processing...</value>
   </data>
   <data name="Advanced_Status_ResettingAll" xml:space="preserve">
-    <value>Reverting all session changes...</value>
+    <value>Reverting every change...</value>
   </data>
   <data name="Advanced_SafetyCore_Title" xml:space="preserve">
     <value>Disable Google SafetyCore</value>
@@ -721,19 +724,19 @@
     <value>Resetting compilation...</value>
   </data>
   <data name="Advanced_ResetAll_Title" xml:space="preserve">
-    <value>Undo All Session Changes</value>
+    <value>Reset All</value>
   </data>
   <data name="Advanced_ResetAll_Description" xml:space="preserve">
-    <value>No changes made this session.</value>
+    <value>Nothing to undo — this device is as you found it.</value>
   </data>
   <data name="Advanced_ResetAll_Description_WithCount" xml:space="preserve">
-    <value>{0} change(s) made this session.</value>
+    <value>{0} change(s) waiting to be undone.</value>
   </data>
   <data name="Advanced_ResetAll_Confirm" xml:space="preserve">
-    <value>Undo ALL changes from this session? DNS, animations, privacy settings — everything will be reverted.</value>
+    <value>Undo EVERYTHING Zephyr's Elixir changed on this device? Optimizations, DNS, animations and privacy toggles all go back to how you found them. Apps you uninstalled are not affected — restore those from History.</value>
   </data>
   <data name="Advanced_ResetAll_Success" xml:space="preserve">
-    <value>All session changes reverted. Device restored to its previous state.</value>
+    <value>Every change reverted. The device is back to how you found it.</value>
   </data>
 
   <!-- ═══════════════════════════════════════════════════════════════════ -->
@@ -759,7 +762,7 @@
     <value>Language</value>
   </data>
   <data name="Settings_Language_Description" xml:space="preserve">
-    <value>Pick your preferred language. A restart is needed to apply the change.</value>
+    <value>Choose the language of the interface — English or Italiano. The change applies immediately, with no restart.</value>
   </data>
   <data name="Settings_Updates_Title" xml:space="preserve">
     <value>Automatic Updates</value>
@@ -769,6 +772,12 @@
   </data>
   <data name="Settings_Updates_Status_AlwaysOn" xml:space="preserve">
     <value>Always on</value>
+  </data>
+  <data name="Settings_AiAnalysis_Title" xml:space="preserve">
+    <value>AI analysis</value>
+  </data>
+  <data name="Settings_AiAnalysis_Description" xml:space="preserve">
+    <value>Rates how risky each app is to remove in Debloat. Package names (e.g. com.example.app) are sent to a third-party AI service; no data that identifies you is sent and the result is advisory only.</value>
   </data>
   <data name="Settings_Adb_Title" xml:space="preserve">
     <value>ADB Version</value>
@@ -869,6 +878,12 @@
   <!-- LICENSE / PRO                                                      -->
   <!-- ═══════════════════════════════════════════════════════════════════ -->
 
+  <data name="License_Feature_PerformanceMonitor" xml:space="preserve">
+    <value>Live Performance Monitor</value>
+  </data>
+  <data name="License_Feature_PerformanceMonitor_Desc" xml:space="preserve">
+    <value>CPU, RAM, GPU, FPS and battery in real time</value>
+  </data>
   <data name="License_Feature_ExtremeMode" xml:space="preserve">
     <value>Extreme Optimization</value>
   </data>
@@ -917,12 +932,17 @@
   <data name="Pro_Required_PerformanceMonitor" xml:space="preserve">
     <value>Live Performance Monitor is available with Pro.
 
-Track CPU, RAM, network, battery temperature and FPS in real time, with full session recording and CSV export.</value>
+Track CPU, RAM, GPU, real FPS, network, storage I/O and battery temperature as they happen, with full session recording and CSV export.</value>
   </data>
   <data name="Pro_Required_MultiApk" xml:space="preserve">
     <value>Batch APK installation is a Pro feature.
 
 Free plan allows one APK at a time.</value>
+  </data>
+  <data name="Pro_Required_ApkBackup" xml:space="preserve">
+    <value>Backing up an APK before uninstalling is a Pro feature.
+
+Uninstalling without a backup stays free, and the History tab can still restore any system app the device kept.</value>
   </data>
   <data name="Pro_Required_Upgrade_Question" xml:space="preserve">
     <value>Upgrade to Pro?</value>
@@ -1074,7 +1094,7 @@ Free plan allows one APK at a time.</value>
     <value>Simple Connection Mode</value>
   </data>
   <data name="Wireless_SimpleMode_Step" xml:space="preserve">
-    <value>Enable Developer Options → Wireless Debugging</value>
+    <value>Plug the device in over USB once, with USB debugging enabled</value>
   </data>
   <data name="Wireless_SimpleMode_SameNetwork" xml:space="preserve">
     <value>Make sure your device and PC are on the same network</value>
@@ -1301,6 +1321,9 @@ Free plan allows one APK at a time.</value>
   </data>
   <data name="License_Error_PaymentPastDue" xml:space="preserve">
     <value>Payment past due — please update your payment method</value>
+  </data>
+  <data name="License_Error_ReactivationRequired" xml:space="preserve">
+    <value>This license is not active on this computer. Activate it again to restore Pro — your key and downloaded module are kept.</value>
   </data>
   <data name="License_Error_ServerUnreachable" xml:space="preserve">
     <value>Unable to reach license server</value>
@@ -1960,7 +1983,7 @@ Free plan allows one APK at a time.</value>
     <value>Always reversible</value>
   </data>
   <data name="Help_Welcome_Reversibility_Body" xml:space="preserve">
-    <value>Changes made in the Advanced section are tracked individually. Animation scales, private DNS, compilation mode, spoofed battery level — each has a dedicated Reset button, and a single Reset All brings everything back to the factory defaults Android ships with.</value>
+    <value>Every change is tracked individually: animation speed, private DNS and the privacy toggles each have their own Reset, and Reset all walks back everything Optimize and Advanced ever changed on this device — even after you close and reopen the app. On top of that, a Time Vial bottles your system settings before every operation, so you can always see what moved, and pour it back.</value>
   </data>
   <data name="Help_Welcome_NoRoot_Title" xml:space="preserve">
     <value>No root, no bootloader unlock</value>
@@ -1972,7 +1995,7 @@ Free plan allows one APK at a time.</value>
     <value>Offline by design</value>
   </data>
   <data name="Help_Welcome_Privacy_Body" xml:space="preserve">
-    <value>The app works entirely on your machine. No account, no analytics, no background telemetry. The only network calls made are for license validation (if you activate Pro) and for optional cloud package intelligence when you open app details in the Debloat screen.</value>
+    <value>The app works entirely on your machine. No account, no analytics, no background telemetry. The only network calls it makes are update checks, license validation (if you activate Pro), optional cloud package intelligence when you open app details in Debloat, and the community library when you open that tab. Your recipes and your Time Vials never leave this PC unless you press Share.</value>
   </data>
   <data name="Help_Welcome_Philosophy_Title" xml:space="preserve">
     <value>The philosophy</value>
@@ -2068,7 +2091,7 @@ Free plan allows one APK at a time.</value>
     <value>Optional: go wireless</value>
   </data>
   <data name="Help_FirstSteps_Wireless_Body" xml:space="preserve">
-    <value>Once the first USB handshake is done, Android 11 and newer can keep the ADB session running over Wi-Fi. No cable required from then on.</value>
+    <value>Once the first USB handshake is done, the ADB session can keep running over Wi-Fi. The dialog asks which Android version you're on and picks the right method: a six-digit pairing code on Android 11 and newer, the classic port-based handshake on Android 10 and below. Either way, no cable is needed from then on.</value>
   </data>
   <data name="Help_FirstSteps_WirelessSetup_Title" xml:space="preserve">
     <value>Wireless setup in 30 seconds</value>
@@ -2128,7 +2151,7 @@ Free plan allows one APK at a time.</value>
     <value>The sidebar</value>
   </data>
   <data name="Help_Basics_Sidebar_Body" xml:space="preserve">
-    <value>The dark rail on the left is your navigation. Seven entries, always visible:</value>
+    <value>The dark rail on the left is your navigation. Eight entries, always visible:</value>
   </data>
   <data name="Help_Basics_Sidebar_Home" xml:space="preserve">
     <value>• Home — landing page, quick actions, device status.</value>
@@ -2140,7 +2163,7 @@ Free plan allows one APK at a time.</value>
     <value>• Debloat — list, disable, uninstall and review user or system apps.</value>
   </data>
   <data name="Help_Basics_Sidebar_Advanced" xml:space="preserve">
-    <value>• Advanced — granular tuning: private DNS, animation scales, compilation mode, and more.</value>
+    <value>• Advanced — granular tuning: private DNS, animation speed, Time Vials, and more.</value>
   </data>
   <data name="Help_Basics_Sidebar_Settings" xml:space="preserve">
     <value>• Settings — language, ADB status, diagnostic log export, license management.</value>
@@ -2221,10 +2244,10 @@ Free plan allows one APK at a time.</value>
     <value>2. Open Advanced and press Reset on the specific setting that's bothering you (DNS, animations, compilation, etc).</value>
   </data>
   <data name="Help_Basics_Safety_Step3" xml:space="preserve">
-    <value>3. Still not right? Hit Reset All in Advanced — this walks back every change Zephyr's Elixir ever made to this device.</value>
+    <value>3. Still not right? Press Reset all in Advanced — it undoes every change Optimize and Advanced ever made to this device, putting each setting back to the value it actually had before, not to a guessed default.</value>
   </data>
   <data name="Help_Basics_Safety_Restore" xml:space="preserve">
-    <value>For apps that were disabled in Debloat, the History tab keeps a record of every uninstall and lets you reinstall them at any time.</value>
+    <value>Anything you disabled can be switched back on from the Disabled filter in Debloat, and the History tab keeps a record of every uninstall, so you can restore it — one app or the whole list — at any time.</value>
   </data>
   <data name="Help_Quick_Title" xml:space="preserve">
     <value>Quick Guide</value>
@@ -2272,7 +2295,7 @@ Free plan allows one APK at a time.</value>
     <value>What to explore next</value>
   </data>
   <data name="Help_Quick_Next_Body" xml:space="preserve">
-    <value>Open Debloat to strip out apps you never use. Open Advanced to dial in private DNS, animation speed, or — on Pro — shut down the more opinionated parts of Google Play Services. The Complete Guide walks through every screen in detail.</value>
+    <value>Open Debloat to strip out apps you never use. Open Advanced to dial in private DNS, animation speed, or — on Pro — shut down the more opinionated parts of Google Play Services. Then turn what you just did into a recipe, so the next phone takes one tap. The Complete Guide walks through every screen in detail.</value>
   </data>
   <data name="Help_Guide_Title" xml:space="preserve">
     <value>Complete Guide</value>
@@ -2299,7 +2322,7 @@ Free plan allows one APK at a time.</value>
     <value>Opens the guided wireless ADB pairing dialog. Enter the IP, port, and six-digit code from Developer options → Wireless debugging and Zephyr's Elixir handles the rest.</value>
   </data>
   <data name="Help_Guide_Home_Wireless_Req" xml:space="preserve">
-    <value>Requires Android 11 or newer on the device and the PC to be on the same network.</value>
+    <value>The pairing-code flow needs Android 11 or newer; on Android 10 and below the dialog switches to the classic method, which asks for the device's IP after one USB handshake. In both cases the phone and the PC must be on the same network.</value>
   </data>
   <data name="Help_Guide_Home_Changelog_Title" xml:space="preserve">
     <value>What's new</value>
@@ -2332,7 +2355,13 @@ Free plan allows one APK at a time.</value>
     <value>4. Network tuning — DNS resolver warm-up and background scan throttling.</value>
   </data>
   <data name="Help_Guide_Optimize_Cat5" xml:space="preserve">
-    <value>5. System tuning, package compilation, and DEX optimization — the final three stages that re-tune scheduler hints and force-compile installed packages so cold starts feel faster.</value>
+    <value>5. System tuning — re-tunes scheduler hints and battery policies.</value>
+  </data>
+  <data name="Help_Guide_Optimize_Cat6" xml:space="preserve">
+    <value>6. Package compilation — force-compiles installed packages so cold starts feel faster.</value>
+  </data>
+  <data name="Help_Guide_Optimize_Cat7" xml:space="preserve">
+    <value>7. DEX optimization — a final pass over the Dalvik/ART caches.</value>
   </data>
   <data name="Help_Guide_Extreme_Title" xml:space="preserve">
     <value>Extreme mode (Pro)</value>
@@ -2383,25 +2412,25 @@ Free plan allows one APK at a time.</value>
     <value>Filtering and search</value>
   </data>
   <data name="Help_Guide_Debloat_Filter_Body" xml:space="preserve">
-    <value>The filter tabs split apps by type: User, System, or Disabled. A free-text search bar narrows results by name or package. Tick the checkboxes to build a multi-selection — the count in the header updates live.</value>
+    <value>The filter tabs split apps by type: User, System, or Disabled. A free-text search bar narrows results by name or package, and the sort menu reorders them alphabetically, safest first, or riskiest first. Tick the checkboxes to build a multi-selection — the count in the header updates live, and the summary line keeps track of how many apps are system, user or disabled.</value>
   </data>
   <data name="Help_Guide_Debloat_Actions_Title" xml:space="preserve">
-    <value>Disable, uninstall, or inspect</value>
+    <value>Disable, uninstall, re-enable or inspect</value>
   </data>
   <data name="Help_Guide_Debloat_Actions_Body" xml:space="preserve">
-    <value>With apps selected, three actions are available: Disable (pm disable-user) keeps the APK on disk but stops the app from running, Uninstall (pm uninstall --user 0) removes it for the current user, and Manage opens a details panel with permissions, standby bucket, and cloud-powered safety analysis.</value>
+    <value>With apps selected you can Disable (pm disable-user), which keeps the APK on disk but stops the app from running; Uninstall (pm uninstall --user 0), which removes it for the current user; or Enable, which brings back anything you disabled — one app or a whole selection at a time. Manage opens a details panel with permissions, standby bucket and cloud-powered safety analysis, plus quick actions to launch, force-stop or inspect the app, extract its APK, and clear its data. Package lists can be imported and exported, and any selection can be saved as a recipe.</value>
   </data>
   <data name="Help_Guide_Debloat_Hint_Title" xml:space="preserve">
     <value>The History tab</value>
   </data>
   <data name="Help_Guide_Debloat_Hint_Body" xml:space="preserve">
-    <value>Every uninstall is logged with its package name, version, icon, and timestamp. Reinstalling is one click — on Pro, APKs are backed up locally first, so you can reinstall later even if the device is offline.</value>
+    <value>Every uninstall is logged with its package name, version, icon, and timestamp. Reinstalling is one click — on Pro, the original APK is saved locally first, so restoring still works even when the app is no longer on the Play Store.</value>
   </data>
   <data name="Help_Guide_Advanced_Title" xml:space="preserve">
     <value>Advanced</value>
   </data>
   <data name="Help_Guide_Advanced_Body" xml:space="preserve">
-    <value>Individual, fine-grained knobs. Every setting here has its own Reset button, and there's a Reset All at the top that rewinds every change you've ever made through the app.</value>
+    <value>Individual, fine-grained knobs. Every setting here has its own Reset button, Reset all rewinds everything Optimize and Advanced ever changed on this device, and the Time Vials shelf keeps a snapshot taken before each operation.</value>
   </data>
   <data name="Help_Guide_DNS_Title" xml:space="preserve">
     <value>Private DNS</value>
@@ -2419,7 +2448,7 @@ Free plan allows one APK at a time.</value>
     <value>Reset all</value>
   </data>
   <data name="Help_Guide_ResetAll_Body" xml:space="preserve">
-    <value>One button, full rewind. Every DNS override, animation tweak, compilation setting, spoofed battery value, and Pro-only privacy change goes back to Android defaults. The app shows a confirmation dialog before doing anything destructive.</value>
+    <value>One button, full rewind. Every optimization, DNS override, animation tweak, package compilation, spoofed battery level and Pro privacy toggle goes back to how the device was before Zephyr's Elixir first touched it. The count is kept per device and survives closing the app, and a confirmation dialog always comes first. Settings are poured back from the vial bottled before the very first change, so they return to your real previous values — and anything you changed on the phone yourself in the meantime is left exactly as it is. Uninstalled apps are the one thing it never touches: those come back from the History tab in Debloat.</value>
   </data>
   <data name="Help_Guide_Settings_Title" xml:space="preserve">
     <value>Settings</value>
@@ -2446,7 +2475,7 @@ Free plan allows one APK at a time.</value>
     <value>One more thing</value>
   </data>
   <data name="Help_Guide_Explore_Body" xml:space="preserve">
-    <value>Tools (the sidebar's fourth entry) hosts the APK Installer, the Power Menu for reboots and fastboot/recovery entry, and — on Pro — the low-latency Screen Mirror. It's worth a visit after you've gotten comfortable with the main screens.</value>
+    <value>When a device ends up exactly the way you like it, open Recipes and bottle it: the same optimization, the same apps removed, the same tweaks — ready to pour over the next phone, or over five at once, with a single tap.</value>
   </data>
   <data name="Help_Trouble_Title" xml:space="preserve">
     <value>Troubleshooting</value>
@@ -2497,7 +2526,7 @@ Free plan allows one APK at a time.</value>
     <value>I disabled something I shouldn't have</value>
   </data>
   <data name="Help_Trouble_DisabledCritical_Body" xml:space="preserve">
-    <value>Open the History tab in Debloat and hit Reinstall on the affected package. Disabled apps are never actually removed — pm enable is one click away. The cloud safety analysis flags packages tagged as Critical up front, exactly to prevent this situation.</value>
+    <value>Open the History tab in Debloat and press Restore on the affected package, or select several and restore them together. Disabled apps are never actually removed: switch on the Disabled filter, select them, and Enable brings them straight back. The cloud safety analysis flags packages tagged as Critical up front, exactly to prevent this situation.</value>
   </data>
   <data name="Help_Trouble_Advanced_Title" xml:space="preserve">
     <value>Advanced issues</value>
@@ -2527,7 +2556,7 @@ Free plan allows one APK at a time.</value>
     <value>Reset everything</value>
   </data>
   <data name="Help_Trouble_Reset_Body" xml:space="preserve">
-    <value>Advanced → Reset All undoes every change Zephyr's Elixir has ever applied to this device. It's the nuclear option, and it's completely safe — all it does is restore Android's out-of-box defaults for the settings the app touches.</value>
+    <value>Advanced → Reset all undoes every change Zephyr's Elixir applied to this device through Optimize and Advanced, no matter when you made it. It is the big red button, and it is safe: all it does is put back the values the device had before, read from the snapshot bottled at the time. When you want finer control, a Time Vial lets you pour back one setting at a time.</value>
   </data>
   <data name="Help_Trouble_StillNeed_Title" xml:space="preserve">
     <value>Still need a hand?</value>
@@ -2575,7 +2604,7 @@ Free plan allows one APK at a time.</value>
     <value>History = undo</value>
   </data>
   <data name="Help_Tip_Backup_Body" xml:space="preserve">
-    <value>The History tab inside Debloat records every uninstall with its package name, version, icon, and timestamp. A single click reinstalls. Pro users also get the original APK backed up locally, so reinstallation works even when the Play Store doesn't.</value>
+    <value>The History tab inside Debloat records every uninstall with its package name, version, icon and timestamp. A single click restores it, and you can restore or forget several at once. Pro users also get the original APK backed up locally — split bundles included — so restoring works even when the Play Store no longer has the app.</value>
   </data>
   <data name="Help_Tip_Wireless_Title" xml:space="preserve">
     <value>Go cable-free after day one</value>
@@ -2587,13 +2616,13 @@ Free plan allows one APK at a time.</value>
     <value>Nothing here is destructive</value>
   </data>
   <data name="Help_Tip_Safety_Body" xml:space="preserve">
-    <value>Every operation Zephyr's Elixir performs is individually reversible. Worst case, Advanced → Reset All returns the device to defaults. You have room to experiment.</value>
+    <value>Every operation Zephyr's Elixir performs is individually reversible. Worst case, Advanced → Reset all rewinds every one of them at once, and Time Vials let you pick apart a single change. You have room to experiment.</value>
   </data>
   <data name="Help_Tip_Pro_Title" xml:space="preserve">
     <value>Pro is an unlock, not a rewrite</value>
   </data>
   <data name="Help_Tip_Pro_Body" xml:space="preserve">
-    <value>Free already ships the complete seven-stage Optimize pipeline, full Debloat, wireless ADB, private DNS, animation tuning, APK installer, and the power menu. Pro adds Extreme optimization, Screen Mirror, multi-APK install, APK local backup, unlimited cloud safety analysis, and the privacy pack (Safety Core, Ad ID reset, captive portal off, Google Core Control, virtual RAM off). Same app, deeper knobs.</value>
+    <value>Free already ships the complete seven-stage Optimize pipeline, full Debloat, recipes with the community library, Time Vials, multi-device control, wireless ADB, private DNS, animation tuning, the APK installer, the file manager, the shell and the power menu. Pro adds Extreme optimization, the Performance Monitor, Screen Mirror and recording, multi-APK install, local APK backup, unlimited cloud safety analysis and the privacy pack. Same app, deeper knobs.</value>
   </data>
   <data name="Help_Faq_Title" xml:space="preserve">
     <value>Frequently Asked Questions</value>
@@ -2626,7 +2655,7 @@ Free plan allows one APK at a time.</value>
     <value>Which Android versions are supported?</value>
   </data>
   <data name="Help_Faq_AndroidVersions_A" xml:space="preserve">
-    <value>Android 8 (Oreo) and newer for USB connections. Wireless debugging requires Android 11 or newer, because that's when Google added the pairing-code flow the app uses. Everything in between is fully supported.</value>
+    <value>Android 7.0 and newer over USB. Wireless works on both sides of Android 11: the pairing-code flow on Android 11 and up, the classic port-based handshake on Android 10 and below. A few details adapt to the device — restoring an uninstalled app without a saved APK, for instance, needs Android 8 or newer — and the app tells you when that happens.</value>
   </data>
   <data name="Help_Faq_SystemReq_Q" xml:space="preserve">
     <value>What do I need on the PC?</value>
@@ -2638,7 +2667,7 @@ Free plan allows one APK at a time.</value>
     <value>Can I use this wirelessly?</value>
   </data>
   <data name="Help_Faq_Wireless_A" xml:space="preserve">
-    <value>Yes, on Android 11 or newer. Open Wireless connection from the Home page, enter the IP, port, and six-digit pairing code shown on the phone, and the app handles the rest. Once paired, the cable becomes optional.</value>
+    <value>Yes. Open Wireless connection from the Home page and pick your Android version. On Android 11 and newer you enter the IP, port and six-digit pairing code shown on the phone; on Android 10 and below you plug in over USB once and just enter the device's IP. The app handles the rest, and from then on the cable is optional.</value>
   </data>
   <data name="Help_Faq_NotDetected_Q" xml:space="preserve">
     <value>My device isn't detected — what now?</value>
@@ -2668,7 +2697,7 @@ Free plan allows one APK at a time.</value>
     <value>Can I pick which stages run?</value>
   </data>
   <data name="Help_Faq_Customize_A" xml:space="preserve">
-    <value>The one-button Optimize is intentionally fixed — it's designed to be safe on every device in that exact order. For granular control, Advanced lets you tweak DNS, animation speed, compilation mode, and battery level independently, with per-setting reset buttons.</value>
+    <value>The one-button Optimize is intentionally fixed — it is designed to be safe on every device, in that exact order. For granular control, Advanced lets you set private DNS and animation speed independently, each with its own reset. And if you want your own sequence, build a recipe: it runs exactly the steps you chose, on as many devices as you like.</value>
   </data>
   <data name="Help_Faq_ExtremeVsStandard_Q" xml:space="preserve">
     <value>What's the difference between Standard and Extreme?</value>
@@ -2692,13 +2721,13 @@ Free plan allows one APK at a time.</value>
     <value>Does Zephyr's Elixir collect any data?</value>
   </data>
   <data name="Help_Faq_DataCollection_A" xml:space="preserve">
-    <value>No analytics, no telemetry, no user tracking. The only network traffic the app generates is license validation (if Pro is activated) and optional cloud package safety analysis when you open app details in Debloat. Both flows are documented in the privacy policy under Settings.</value>
+    <value>No analytics, no telemetry, no user tracking. The only network traffic the app generates is update checks, license validation (if Pro is activated), optional cloud package safety analysis when you open app details in Debloat, and the community library when you open that tab. Your recipes and your Time Vials stay on this PC unless you press Share. Everything is documented in the privacy policy under Settings.</value>
   </data>
   <data name="Help_Faq_ProFeatures_Q" xml:space="preserve">
     <value>What does Pro actually unlock?</value>
   </data>
   <data name="Help_Faq_ProFeatures_A" xml:space="preserve">
-    <value>Extreme optimization with cached apps freezer and multi-core scheduler, Screen Mirror with low-latency streaming, multi-APK install, local APK backup on every uninstall, unlimited cloud safety analysis (Free is capped at 25 per day), and the privacy pack: Android Safety Core off, advertising ID reset, captive portal disabled, Google Core Control disabled, and per-vendor virtual-RAM disable (Samsung, Xiaomi, OnePlus, Oppo, Vivo, Huawei). Pro is a signed, separately downloaded module — the free app works unchanged without it.</value>
+    <value>Extreme optimization with cached apps freezer and multi-core scheduler; the Performance Monitor, with live CPU, RAM, GPU, FPS, network, storage and battery readings you can record to CSV; Screen Mirror with low-latency streaming, desktop control and recording; multi-APK install; local APK backup on every uninstall; unlimited cloud safety analysis (Free is capped at 25 per day); and the privacy pack: Android Safety Core off, advertising ID reset, captive portal disabled, Google Core Control disabled, and per-vendor virtual-RAM disable (Samsung, Xiaomi, OnePlus, Oppo, Vivo, Huawei). Extreme mode, the privacy toggles and multi-APK installs also work as recipe steps. Pro is a signed, separately downloaded module — the free app works unchanged without it.</value>
   </data>
   <data name="Help_Faq_ActivatePro_Q" xml:space="preserve">
     <value>How do I activate a Pro license?</value>
@@ -3010,31 +3039,40 @@ Free plan allows one APK at a time.</value>
     <value>New</value>
   </data>
   <data name="Info_Changelog_New_1" xml:space="preserve">
-    <value>Live Performance Monitor (Pro): watch CPU, RAM, GPU, network, storage I/O, battery and FPS update in real time on smooth live graphs, with a live ranking of the apps using the most memory. Record a full session and export it to CSV for deeper analysis.</value>
+    <value>Zephyr's Recipes: bottle an optimization, the apps you strip out, your DNS and animation tweaks and a stack of APKs into a single recipe — then pour it over every phone you own in one tap. Export it, or share it in the community library and brew what others have perfected.</value>
   </data>
   <data name="Info_Changelog_New_2" xml:space="preserve">
-    <value>Built-in File Manager: browse your device's storage like a desktop explorer — copy, move, rename, delete and edit permissions, with drag &amp; drop transfers in both directions, instant image and text preview, and a visual breakdown of where your space goes.</value>
+    <value>Time Vials: before every optimization, every recipe and every advanced tweak, your device's settings are quietly bottled. Uncork a vial to see exactly what changed, and pour any single setting back — the undo button Android never gave you.</value>
   </data>
   <data name="Info_Changelog_New_3" xml:space="preserve">
-    <value>Interactive ADB Shell: a true multi-tab terminal with command history, smart autocomplete, syntax highlighting, reusable snippets and one-click session export — the full power of ADB without ever leaving the app.</value>
+    <value>Multi-device control: plug in as many phones as you like and switch between them from the sidebar. Every page follows the device you pick, and a recipe can run on all of them at once.</value>
+  </data>
+  <data name="Info_Changelog_New_4" xml:space="preserve">
+    <value>The Alchemist's Journey: every recipe you pour earns a brew, and brews earn rank — from Novice Brewer to Grand Elixirist, right at the top of the Recipes page.</value>
   </data>
   <data name="Info_Changelog_Updated" xml:space="preserve">
     <value>Improved</value>
   </data>
   <data name="Info_Changelog_Updated_1" xml:space="preserve">
-    <value>Wireless connection (ADB over Wi-Fi) reworked from the ground up: honest, verified results at every step, automatic connection right after pairing, and smarter network detection — cable-free control that finally feels just like USB.</value>
+    <value>Debloat, rebuilt: disable, uninstall or re-enable as many apps as you like in one pass, sort them by name or by AI risk, launch, force-stop, extract the APK or wipe the data of any app in a click, and import or export package lists. Split-APK apps are backed up and reinstalled properly.</value>
   </data>
   <data name="Info_Changelog_Updated_2" xml:space="preserve">
-    <value>Fixed a range of bugs across the app for greater stability and reliability.</value>
+    <value>Errors that explain themselves: when Android refuses an install, an uninstall or a restore, you get the reason in plain language instead of a raw ADB dump.</value>
   </data>
   <data name="Info_Changelog_Updated_3" xml:space="preserve">
-    <value>Optimization and under-the-hood refinements: leaner device polling, faster routines and a more robust core for a smoother overall experience.</value>
+    <value>Tools, polished: save shell commands as snippets and export a whole session, filter a crowded folder as you type, see where your storage actually went, and transfer large files without hitting a timeout.</value>
+  </data>
+  <data name="Info_Changelog_Updated_4" xml:space="preserve">
+    <value>Advanced and Performance Monitor (Pro): point Private DNS at your own hostname and it is remembered, virtual RAM now confirms on the device that it really was switched off, and real FPS and GPU load join the live readings.</value>
+  </data>
+  <data name="Info_Changelog_Updated_5" xml:space="preserve">
+    <value>Reset all, for real: the undo in Advanced now covers everything Optimize and Advanced changed, and it is remembered per device across restarts. Settings are poured back from the vial bottled before your first change, so they return to your own previous values — and whatever you changed on the phone yourself is left alone.</value>
   </data>
   <data name="Info_Changelog_Removed" xml:space="preserve">
     <value>Removed</value>
   </data>
   <data name="Info_Changelog_Removed_1" xml:space="preserve">
-    <value>Cleaned out dead and obsolete code for a lighter, faster and more maintainable application.</value>
+    <value>Dead code removed, colours and styles centralised, and both translations reviewed line by line — a lighter, tidier app in English and Italian alike.</value>
   </data>
 
   <!-- ═══════════════════════════════════════════════════════════════════ -->
@@ -3515,14 +3553,14 @@ Free plan allows one APK at a time.</value>
     <value>Live Performance Monitor</value>
   </data>
   <data name="Perf_Subtitle" xml:space="preserve">
-    <value>Real-time CPU, RAM, network and battery of the connected device.</value>
+    <value>Real-time CPU, RAM, GPU, FPS, network, storage and battery of the connected device.</value>
   </data>
 
   <data name="Perf_Upsell_Title" xml:space="preserve">
     <value>Unlock the Live Performance Monitor</value>
   </data>
   <data name="Perf_Upsell_Description" xml:space="preserve">
-    <value>Watch CPU, RAM, network throughput, battery level and temperature evolve in real time. Record sessions while gaming or stress-testing, export everything as CSV and correlate workload spikes with thermal behavior.</value>
+    <value>Watch CPU, RAM, GPU load, real FPS, network throughput, storage I/O, battery level and temperature evolve in real time, alongside a live ranking of the apps eating your memory. Record sessions while gaming or stress-testing, export everything as CSV and correlate workload spikes with thermal behavior.</value>
   </data>
   <data name="Perf_Upsell_UpgradeButton" xml:space="preserve">
     <value>Upgrade to Pro</value>
@@ -3654,8 +3692,11 @@ Free plan allows one APK at a time.</value>
   <data name="Eula_Restrictions" xml:space="preserve">
     <value>Restrictions. You may not reverse engineer or circumvent the protections of the Pro module, share or resell your license key, or bypass the single-device binding, except where mandatorily permitted by law.</value>
   </data>
+  <data name="Eula_Community" xml:space="preserve">
+    <value>Community recipes. The app includes an optional community library, and nothing leaves your PC unless you choose to publish it. You stay the author of what you share and grant the Provider a non-exclusive, worldwide, royalty-free licence to host and distribute it for as long as it remains published; you may withdraw it at any time. You may not publish recipes built to damage a device, personal data, unlawful, misleading or infringing content, or spam. The library is not pre-moderated: recipes written by other users carry no guarantee — read their steps before running them — and the Provider may remove any recipe that breaches these terms.</value>
+  </data>
   <data name="Eula_Ai" xml:space="preserve">
-    <value>AI features. The app removal-risk analysis sends only the technical package names (e.g. com.example.app) to a third-party AI service (OpenAI) — never data that identifies you. The result is advisory only; the final decision is always yours.</value>
+    <value>AI features. The app removal-risk analysis sends only the technical package names (e.g. com.example.app) to a third-party AI service (OpenAI) — never data that identifies you. The request also carries the same pseudonymous installation identifier used for licensing, so that the free daily allowance can be counted; it stops at our service and never reaches the AI provider. The result is advisory only; the final decision is always yours.</value>
   </data>
   <data name="Eula_Risks" xml:space="preserve">
     <value>Risks. The tool performs advanced ADB operations that may impair the device, cause data loss, or render it unusable. You act at your own risk; backing up your data is strongly recommended.</value>
@@ -3679,4 +3720,961 @@ Free plan allows one APK at a time.</value>
     <value>To assess removal risk, the names of the installed app packages (e.g. com.example.app) are sent to a third-party AI service (OpenAI). No data that identifies you is sent, and the result is advisory only. Do you want to enable cloud AI analysis? You can change this later in Settings.</value>
   </data>
 
+  <data name="Sidebar_Nav_Recipes" xml:space="preserve">
+    <value>Recipes</value>
+  </data>
+  <data name="Devices_Switch_Tooltip" xml:space="preserve">
+    <value>Switch active device</value>
+  </data>
+  <data name="Devices_Popup_Title" xml:space="preserve">
+    <value>Connected devices</value>
+  </data>
+  <data name="Devices_Unauthorized" xml:space="preserve">
+    <value>Unauthorized</value>
+  </data>
+  <data name="Recipes_Header" xml:space="preserve">
+    <value>Zephyr's Recipes</value>
+  </data>
+  <data name="Recipes_Subtitle" xml:space="preserve">
+    <value>Bundle optimization, debloat and tweaks into one-tap automations</value>
+  </data>
+  <data name="Recipes_Subtitle_Count" xml:space="preserve">
+    <value>{0} recipe(s) in your library</value>
+  </data>
+  <data name="Recipes_Tab_Library" xml:space="preserve">
+    <value>My Library</value>
+  </data>
+  <data name="Recipes_Tab_Community" xml:space="preserve">
+    <value>Community</value>
+  </data>
+  <data name="Recipes_Button_New" xml:space="preserve">
+    <value>New Recipe</value>
+  </data>
+  <data name="Recipes_Button_Import" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="Recipes_Button_Run" xml:space="preserve">
+    <value>Run</value>
+  </data>
+  <data name="Recipes_Button_Add" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="Recipes_Button_AddApk" xml:space="preserve">
+    <value>Add APK…</value>
+  </data>
+  <data name="Recipes_Button_Save" xml:space="preserve">
+    <value>Save Recipe</value>
+  </data>
+  <data name="Recipes_Button_RunNow" xml:space="preserve">
+    <value>Run Now</value>
+  </data>
+  <data name="Recipes_Button_Stop" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="Recipes_Button_Done" xml:space="preserve">
+    <value>Done</value>
+  </data>
+  <data name="Recipes_Button_Get" xml:space="preserve">
+    <value>Get</value>
+  </data>
+  <data name="Recipes_Button_Retry" xml:space="preserve">
+    <value>Retry</value>
+  </data>
+  <data name="Recipes_Button_FromDevice" xml:space="preserve">
+    <value>From device</value>
+  </data>
+  <data name="Recipes_Empty_Title" xml:space="preserve">
+    <value>No recipes yet</value>
+  </data>
+  <data name="Recipes_Empty_Text" xml:space="preserve">
+    <value>Create your first recipe to bundle optimization, debloat, tweaks and app installs into a one-tap automation.</value>
+  </data>
+  <data name="Recipes_Community_SearchPlaceholder" xml:space="preserve">
+    <value>Search community recipes…</value>
+  </data>
+  <data name="Recipes_Community_Loading" xml:space="preserve">
+    <value>Loading community recipes…</value>
+  </data>
+  <data name="Recipes_Community_Offline" xml:space="preserve">
+    <value>Couldn't reach the community. Check your connection and try again.</value>
+  </data>
+  <data name="Recipes_Community_Empty" xml:space="preserve">
+    <value>No recipes found.</value>
+  </data>
+  <data name="Recipes_Sort_Top" xml:space="preserve">
+    <value>Top</value>
+  </data>
+  <data name="Recipes_Sort_Recent" xml:space="preserve">
+    <value>Recent</value>
+  </data>
+  <data name="Recipes_Sort_MostUsed" xml:space="preserve">
+    <value>Most Used</value>
+  </data>
+  <data name="Recipes_Tooltip_Edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="Recipes_Tooltip_Duplicate" xml:space="preserve">
+    <value>Duplicate</value>
+  </data>
+  <data name="Recipes_Tooltip_Export" xml:space="preserve">
+    <value>Export to file</value>
+  </data>
+  <data name="Recipes_Tooltip_Share" xml:space="preserve">
+    <value>Share to community</value>
+  </data>
+  <data name="Recipes_Tooltip_Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Recipes_Tooltip_Like" xml:space="preserve">
+    <value>Like</value>
+  </data>
+  <data name="Recipes_Tooltip_Downloads" xml:space="preserve">
+    <value>Downloads</value>
+  </data>
+  <data name="Recipes_Tooltip_TimesApplied" xml:space="preserve">
+    <value>Times applied</value>
+  </data>
+  <data name="Recipes_Tooltip_Refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="Recipes_Editor_TitleNew" xml:space="preserve">
+    <value>New Recipe</value>
+  </data>
+  <data name="Recipes_Editor_TitleEdit" xml:space="preserve">
+    <value>Edit Recipe</value>
+  </data>
+  <data name="Recipes_Editor_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Recipes_Editor_NamePlaceholder" xml:space="preserve">
+    <value>e.g. S26 Performance</value>
+  </data>
+  <data name="Recipes_Editor_Author" xml:space="preserve">
+    <value>Author</value>
+  </data>
+  <data name="Recipes_Editor_AuthorPlaceholder" xml:space="preserve">
+    <value>Your name (optional)</value>
+  </data>
+  <data name="Recipes_Editor_Description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="Recipes_Editor_DescriptionPlaceholder" xml:space="preserve">
+    <value>What does this recipe do?</value>
+  </data>
+  <data name="Recipes_Editor_Style" xml:space="preserve">
+    <value>Icon &amp; color</value>
+  </data>
+  <data name="Recipes_Step_Optimization" xml:space="preserve">
+    <value>Optimization</value>
+  </data>
+  <data name="Recipes_Step_Optimization_Description" xml:space="preserve">
+    <value>Run the full optimization pipeline</value>
+  </data>
+  <data name="Recipes_Step_Debloat" xml:space="preserve">
+    <value>Debloat</value>
+  </data>
+  <data name="Recipes_Step_Debloat_Description" xml:space="preserve">
+    <value>Remove or disable selected apps</value>
+  </data>
+  <data name="Recipes_Step_Tweaks" xml:space="preserve">
+    <value>Tweaks</value>
+  </data>
+  <data name="Recipes_Step_Tweaks_Description" xml:space="preserve">
+    <value>Apply DNS, animations and privacy tweaks</value>
+  </data>
+  <data name="Recipes_Step_Install" xml:space="preserve">
+    <value>Install apps</value>
+  </data>
+  <data name="Recipes_Step_Install_Description" xml:space="preserve">
+    <value>Install APKs on the device</value>
+  </data>
+  <data name="Recipes_Debloat_ModeUninstall" xml:space="preserve">
+    <value>Uninstall</value>
+  </data>
+  <data name="Recipes_Debloat_ModeDisable" xml:space="preserve">
+    <value>Disable</value>
+  </data>
+  <data name="Recipes_Debloat_AddPlaceholder" xml:space="preserve">
+    <value>com.package.name</value>
+  </data>
+  <data name="Recipes_Debloat_EmptyHint" xml:space="preserve">
+    <value>No packages yet. Add package names or pick from a connected device.</value>
+  </data>
+  <data name="Recipes_Tweaks_DontChange" xml:space="preserve">
+    <value>Don't change</value>
+  </data>
+  <data name="Recipes_Tweaks_ProPrivacy" xml:space="preserve">
+    <value>Privacy (Pro)</value>
+  </data>
+  <data name="Recipes_Install_Hint" xml:space="preserve">
+    <value>APK files stay on this computer and are not shared when you export or upload the recipe.</value>
+  </data>
+  <data name="Recipes_Picker_Title" xml:space="preserve">
+    <value>Pick apps from device</value>
+  </data>
+  <data name="Recipes_Picker_AddSelected" xml:space="preserve">
+    <value>Add selected</value>
+  </data>
+  <data name="Recipes_Picker_NoDevice" xml:space="preserve">
+    <value>Connect a device to pick installed apps.</value>
+  </data>
+  <data name="Recipes_Run_SelectDevices" xml:space="preserve">
+    <value>Select target devices</value>
+  </data>
+  <data name="Recipes_Run_ProNote" xml:space="preserve">
+    <value>This recipe includes Pro features. Without a Pro license they'll be skipped.</value>
+  </data>
+  <data name="Recipes_Run_ApkChoiceNote" xml:space="preserve">
+    <value>Free installs one APK per run — choose which one. Go Pro to install them all at once.</value>
+  </data>
+  <data name="Recipes_Run_ApkMissing" xml:space="preserve">
+    <value>file not found on this PC</value>
+  </data>
+  <data name="Recipes_Install_FreeHint" xml:space="preserve">
+    <value>Free installs one APK at a time; you'll choose which when the recipe runs. Pro installs them all.</value>
+  </data>
+  <data name="Recipes_Run_DebloatNote" xml:space="preserve">
+    <value>Uninstalled apps are added to the Debloat history so you can restore them.</value>
+  </data>
+  <data name="Recipes_Run_Waiting" xml:space="preserve">
+    <value>Waiting…</value>
+  </data>
+  <data name="Recipes_Run_NoDevices" xml:space="preserve">
+    <value>No devices connected</value>
+  </data>
+  <data name="Recipes_Run_SelectAtLeastOne" xml:space="preserve">
+    <value>Select at least one device</value>
+  </data>
+  <data name="Recipes_Run_Canceled" xml:space="preserve">
+    <value>Canceled</value>
+  </data>
+  <data name="Recipes_Run_ExtremeSkipped" xml:space="preserve">
+    <value>Extreme mode skipped (Pro required)</value>
+  </data>
+  <data name="Recipes_Run_DeviceDone" xml:space="preserve">
+    <value>Completed</value>
+  </data>
+  <data name="Recipes_Run_DevicePartial" xml:space="preserve">
+    <value>Completed with warnings</value>
+  </data>
+  <data name="Recipes_Run_DeviceFailed" xml:space="preserve">
+    <value>Failed</value>
+  </data>
+  <data name="Recipes_Run_OptimizationDetail" xml:space="preserve">
+    <value>freed {0}</value>
+  </data>
+  <data name="Recipes_Run_DebloatDetail" xml:space="preserve">
+    <value>{0} done, {1} failed, {2} skipped</value>
+  </data>
+  <data name="Recipes_Run_TweaksDetail" xml:space="preserve">
+    <value>{0} applied</value>
+  </data>
+  <data name="Recipes_Run_TweaksDetailSkipped" xml:space="preserve">
+    <value>{0} applied, {1} skipped (Pro)</value>
+  </data>
+  <data name="Recipes_Run_ApplyingTweak" xml:space="preserve">
+    <value>Applying {0}…</value>
+  </data>
+  <data name="Recipes_Run_InstallDetail" xml:space="preserve">
+    <value>{0} installed, {1} failed, {2} skipped</value>
+  </data>
+  <data name="Recipes_Run_Installing" xml:space="preserve">
+    <value>Installing {0}…</value>
+  </data>
+  <data name="Recipes_Chip_Optimization" xml:space="preserve">
+    <value>Optimize</value>
+  </data>
+  <data name="Recipes_Chip_DebloatUninstall" xml:space="preserve">
+    <value>Uninstall {0}</value>
+  </data>
+  <data name="Recipes_Chip_DebloatDisable" xml:space="preserve">
+    <value>Disable {0}</value>
+  </data>
+  <data name="Recipes_Chip_Animations" xml:space="preserve">
+    <value>Animations</value>
+  </data>
+  <data name="Recipes_Chip_Privacy" xml:space="preserve">
+    <value>Privacy ×{0}</value>
+  </data>
+  <data name="Recipes_Chip_Install" xml:space="preserve">
+    <value>Install {0} APK</value>
+  </data>
+  <data name="Recipes_Chip_Tweaks" xml:space="preserve">
+    <value>Tweaks</value>
+  </data>
+  <data name="Recipes_Chip_InstallGeneric" xml:space="preserve">
+    <value>App install</value>
+  </data>
+  <data name="Recipes_NoDescription" xml:space="preserve">
+    <value>No description</value>
+  </data>
+  <data name="Recipes_AppliedCount" xml:space="preserve">
+    <value>Applied {0}×</value>
+  </data>
+  <data name="Recipes_ByAuthor" xml:space="preserve">
+    <value>by {0}</value>
+  </data>
+  <data name="Recipes_AnonymousAuthor" xml:space="preserve">
+    <value>Anonymous</value>
+  </data>
+  <data name="Recipes_CopySuffix" xml:space="preserve">
+    <value>(copy)</value>
+  </data>
+  <data name="Recipes_Status_Saved" xml:space="preserve">
+    <value>Recipe '{0}' saved</value>
+  </data>
+  <data name="Recipes_Status_Duplicated" xml:space="preserve">
+    <value>Duplicated as '{0}'</value>
+  </data>
+  <data name="Recipes_Status_Exported" xml:space="preserve">
+    <value>Exported to {0}</value>
+  </data>
+  <data name="Recipes_Status_Imported" xml:space="preserve">
+    <value>{0} recipe(s) imported</value>
+  </data>
+  <data name="Recipes_Status_Downloaded" xml:space="preserve">
+    <value>'{0}' added to your library</value>
+  </data>
+  <data name="Recipes_Status_Shared" xml:space="preserve">
+    <value>'{0}' shared to the community</value>
+  </data>
+  <data name="Recipes_Status_Uploading" xml:space="preserve">
+    <value>Uploading recipe…</value>
+  </data>
+  <data name="Recipes_Status_RunFinished" xml:space="preserve">
+    <value>Recipe '{0}' finished</value>
+  </data>
+  <data name="Recipes_Export_Title" xml:space="preserve">
+    <value>Export Recipe</value>
+  </data>
+  <data name="Recipes_Import_Title" xml:space="preserve">
+    <value>Import Recipe</value>
+  </data>
+  <data name="Recipes_AddApk_Title" xml:space="preserve">
+    <value>Select APK files</value>
+  </data>
+  <data name="Recipes_Delete_Confirm" xml:space="preserve">
+    <value>Delete recipe '{0}'? This cannot be undone.</value>
+  </data>
+  <data name="Recipes_Share_Title" xml:space="preserve">
+    <value>Share Recipe</value>
+  </data>
+  <data name="Recipes_Share_Confirm" xml:space="preserve">
+    <value>Share this recipe with the community? It will be public and downloadable by other users. No APK files or personal data are included.</value>
+  </data>
+  <data name="Recipes_Share_AlreadyShared" xml:space="preserve">
+    <value>This recipe has already been shared.</value>
+  </data>
+  <data name="Recipes_Share_NeedAuthor" xml:space="preserve">
+    <value>Add an author name before sharing so people know who made it.</value>
+  </data>
+  <data name="Recipes_Share_Failed" xml:space="preserve">
+    <value>Couldn't share the recipe.</value>
+  </data>
+  <data name="Recipes_Error_NewerSchema" xml:space="preserve">
+    <value>This recipe was made with a newer version of the app.</value>
+  </data>
+  <data name="Recipes_Error_InvalidName" xml:space="preserve">
+    <value>Enter a name (max 60 characters).</value>
+  </data>
+  <data name="Recipes_Error_InvalidDescription" xml:space="preserve">
+    <value>The description is too long.</value>
+  </data>
+  <data name="Recipes_Error_InvalidAuthor" xml:space="preserve">
+    <value>The author name is too long.</value>
+  </data>
+  <data name="Recipes_Error_Empty" xml:space="preserve">
+    <value>Enable at least one step.</value>
+  </data>
+  <data name="Recipes_Error_TooManyPackages" xml:space="preserve">
+    <value>Too many packages in the debloat list.</value>
+  </data>
+  <data name="Recipes_Error_InvalidPackage" xml:space="preserve">
+    <value>Enter a valid package name (e.g. com.example.app).</value>
+  </data>
+  <data name="Recipes_Error_InvalidAnimationScale" xml:space="preserve">
+    <value>Invalid animation scale.</value>
+  </data>
+  <data name="Recipes_Error_InvalidDns" xml:space="preserve">
+    <value>Invalid DNS hostname.</value>
+  </data>
+  <data name="Recipes_Error_InvalidProOp" xml:space="preserve">
+    <value>Unsupported privacy operation.</value>
+  </data>
+  <data name="Recipes_Error_TooManyApks" xml:space="preserve">
+    <value>Too many APKs in the install list.</value>
+  </data>
+  <data name="Recipes_Error_InvalidApk" xml:space="preserve">
+    <value>One of the APK entries is invalid.</value>
+  </data>
+  <data name="Recipes_Error_Unreadable" xml:space="preserve">
+    <value>The recipe file couldn't be read.</value>
+  </data>
+  <data name="Debloat_Preset_Import" xml:space="preserve">
+    <value>Import preset</value>
+  </data>
+  <data name="Debloat_Preset_Import_Tooltip" xml:space="preserve">
+    <value>Load a debloat preset and select matching apps</value>
+  </data>
+  <data name="Debloat_Preset_Export" xml:space="preserve">
+    <value>Export preset</value>
+  </data>
+  <data name="Debloat_Preset_Export_Tooltip" xml:space="preserve">
+    <value>Save the selected apps as a debloat preset</value>
+  </data>
+  <data name="Debloat_Preset_SaveAsRecipe" xml:space="preserve">
+    <value>Save as recipe</value>
+  </data>
+  <data name="Debloat_Preset_SaveAsRecipe_Tooltip" xml:space="preserve">
+    <value>Save the selection as a reusable recipe</value>
+  </data>
+  <data name="Debloat_Preset_Export_Title" xml:space="preserve">
+    <value>Export Debloat Preset</value>
+  </data>
+  <data name="Debloat_Preset_Import_Title" xml:space="preserve">
+    <value>Import Debloat Preset</value>
+  </data>
+  <data name="Debloat_Preset_DefaultName" xml:space="preserve">
+    <value>Debloat preset ({0} apps)</value>
+  </data>
+  <data name="Debloat_Preset_DefaultDescription" xml:space="preserve">
+    <value>Debloat preset created from a selection</value>
+  </data>
+  <data name="Debloat_Preset_SavedToLibrary" xml:space="preserve">
+    <value>Saved '{0}' to your recipe library.</value>
+  </data>
+  <data name="Debloat_Preset_Import_NoPackages" xml:space="preserve">
+    <value>This file has no debloat packages.</value>
+  </data>
+  <data name="Debloat_Preset_Import_LoadFirst" xml:space="preserve">
+    <value>Load the app list first, then import the preset.</value>
+  </data>
+  <data name="Debloat_Preset_Import_Matched" xml:space="preserve">
+    <value>Selected {0} of {1} apps from the preset</value>
+  </data>
+  <data name="Debloat_Preset_FilterText" xml:space="preserve">
+    <value>Text package list</value>
+  </data>
+  <data name="Debloat_Preset_FilterAll" xml:space="preserve">
+    <value>Debloat presets</value>
+  </data>
+  <data name="Debloat_Button_EnableSelected" xml:space="preserve">
+    <value>Enable selected</value>
+  </data>
+  <data name="Debloat_Selected_Count" xml:space="preserve">
+    <value>{0} selected</value>
+  </data>
+  <data name="Debloat_Summary" xml:space="preserve">
+    <value>{0} apps — {1} system · {2} user · {3} disabled</value>
+  </data>
+  <data name="Debloat_Sort_Tooltip" xml:space="preserve">
+    <value>Sort apps</value>
+  </data>
+  <data name="Debloat_Sort_Name" xml:space="preserve">
+    <value>Name (A–Z)</value>
+  </data>
+  <data name="Debloat_Sort_SafeFirst" xml:space="preserve">
+    <value>Safest to remove first</value>
+  </data>
+  <data name="Debloat_Sort_RiskFirst" xml:space="preserve">
+    <value>Riskiest first</value>
+  </data>
+  <data name="Debloat_Empty_Apps_Title" xml:space="preserve">
+    <value>No apps loaded</value>
+  </data>
+  <data name="Debloat_Empty_History_Title" xml:space="preserve">
+    <value>No history yet</value>
+  </data>
+  <data name="Debloat_Empty_History_Text" xml:space="preserve">
+    <value>Apps you uninstall will appear here, ready to be restored.</value>
+  </data>
+  <data name="Debloat_Empty_NoResults" xml:space="preserve">
+    <value>No matches</value>
+  </data>
+  <data name="Debloat_Empty_NoResults_Text" xml:space="preserve">
+    <value>Try a different search or filter.</value>
+  </data>
+  <data name="Debloat_Restore_Selected" xml:space="preserve">
+    <value>Restore selected</value>
+  </data>
+  <data name="Debloat_Forget_Selected" xml:space="preserve">
+    <value>Forget selected</value>
+  </data>
+  <data name="Debloat_History_BulkForgetQuestion" xml:space="preserve">
+    <value>Remove {0} entries from history? Saved APK backups will be deleted too.</value>
+  </data>
+  <data name="Debloat_History_ConnectFirst" xml:space="preserve">
+    <value>Connect the device to restore apps.</value>
+  </data>
+  <data name="Debloat_Restore_NeedsBackup" xml:space="preserve">
+    <value>No saved APK available — this device (Android 7 or older) can't restore apps without a backup.</value>
+  </data>
+  <data name="Debloat_Action_Restore_Past" xml:space="preserve">
+    <value>restored</value>
+  </data>
+  <data name="Debloat_QuickAction_Launch" xml:space="preserve">
+    <value>Launch</value>
+  </data>
+  <data name="Debloat_QuickAction_ForceStop" xml:space="preserve">
+    <value>Force stop</value>
+  </data>
+  <data name="Debloat_QuickAction_AppInfo" xml:space="preserve">
+    <value>App info</value>
+  </data>
+  <data name="Debloat_QuickAction_Extract" xml:space="preserve">
+    <value>Extract APK</value>
+  </data>
+  <data name="Debloat_QuickAction_Extract_Tooltip" xml:space="preserve">
+    <value>Saves the app's APK files to your PC.</value>
+  </data>
+  <data name="Debloat_QuickAction_ClearData" xml:space="preserve">
+    <value>Clear data</value>
+  </data>
+  <data name="Debloat_QuickAction_ClearData_Tooltip" xml:space="preserve">
+    <value>Deletes all app data and cache — like a fresh install.</value>
+  </data>
+  <data name="Debloat_ClearData_Question" xml:space="preserve">
+    <value>Clear all data of {0}? The app will reset as freshly installed.</value>
+  </data>
+  <data name="Debloat_Status_Launched" xml:space="preserve">
+    <value>{0} launched.</value>
+  </data>
+  <data name="Debloat_Status_NoLauncher" xml:space="preserve">
+    <value>{0} has no launchable screen.</value>
+  </data>
+  <data name="Debloat_Status_Stopped" xml:space="preserve">
+    <value>{0} stopped.</value>
+  </data>
+  <data name="Debloat_Status_DataCleared" xml:space="preserve">
+    <value>Data of {0} cleared.</value>
+  </data>
+  <data name="Debloat_Status_DataClearFailed" xml:space="preserve">
+    <value>Could not clear data of {0}.</value>
+  </data>
+  <data name="Debloat_Status_Extracted" xml:space="preserve">
+    <value>APK extracted to {0}</value>
+  </data>
+  <data name="Debloat_Status_ExtractFailed" xml:space="preserve">
+    <value>APK extraction failed.</value>
+  </data>
+  <data name="Debloat_Extract_Title" xml:space="preserve">
+    <value>Choose destination folder</value>
+  </data>
+  <data name="Debloat_Bucket_Unsupported" xml:space="preserve">
+    <value>Requires Android 9+</value>
+  </data>
+  <data name="Advanced_DNS_Custom" xml:space="preserve">
+    <value>Custom hostname…</value>
+  </data>
+  <data name="Advanced_DNS_Custom_Placeholder" xml:space="preserve">
+    <value>e.g. abc123.dns.nextdns.io</value>
+  </data>
+  <data name="Advanced_DNS_InvalidHostname" xml:space="preserve">
+    <value>That doesn't look like a valid DNS hostname.</value>
+  </data>
+  <data name="Advanced_RamExpansion_Verified" xml:space="preserve">
+    <value>Verified on the device — the switches now read as off.</value>
+  </data>
+  <data name="Advanced_RamExpansion_NotSupported" xml:space="preserve">
+    <value>This firmware doesn't expose Virtual RAM switches — there was nothing to disable.</value>
+  </data>
+  <data name="Advanced_RamExpansion_NotApplied" xml:space="preserve">
+    <value>The firmware ignored the change — Virtual RAM is still reported as active.</value>
+  </data>
+  <data name="Advanced_Vials_Header" xml:space="preserve">
+    <value>Time Vials</value>
+  </data>
+  <data name="Advanced_Vials_Tagline" xml:space="preserve">
+    <value>Zephyr bottles your device's settings before every experiment — optimizations, recipes and advanced tweaks alike. Uncork a vial to see exactly what changed, and pour any setting back to how it was.</value>
+  </data>
+  <data name="Advanced_Vials_BottleNow" xml:space="preserve">
+    <value>Bottle now</value>
+  </data>
+  <data name="Advanced_Vials_BottleNow_Tooltip" xml:space="preserve">
+    <value>Save a snapshot of the current device settings.</value>
+  </data>
+  <data name="Advanced_Vials_Empty" xml:space="preserve">
+    <value>No vials on the shelf yet — the first one is bottled automatically with your next operation.</value>
+  </data>
+  <data name="Advanced_Vials_EmptyDisconnected" xml:space="preserve">
+    <value>Connect a device to see its vials.</value>
+  </data>
+  <data name="Advanced_Vials_Open" xml:space="preserve">
+    <value>Uncork</value>
+  </data>
+  <data name="Advanced_Vials_Count" xml:space="preserve">
+    <value>{0} settings bottled</value>
+  </data>
+  <data name="Advanced_Vials_Trigger_Optimize" xml:space="preserve">
+    <value>Before optimization</value>
+  </data>
+  <data name="Advanced_Vials_Trigger_Recipe" xml:space="preserve">
+    <value>Before recipe · {0}</value>
+  </data>
+  <data name="Advanced_Vials_Trigger_Advanced" xml:space="preserve">
+    <value>Before advanced tweak</value>
+  </data>
+  <data name="Advanced_Vials_Trigger_Manual" xml:space="preserve">
+    <value>Bottled by hand</value>
+  </data>
+  <data name="Advanced_Vials_Overlay_Title" xml:space="preserve">
+    <value>Inside the vial</value>
+  </data>
+  <data name="Advanced_Vials_Overlay_Subtitle" xml:space="preserve">
+    <value>{0} — {1}</value>
+  </data>
+  <data name="Advanced_Vials_Comparing" xml:space="preserve">
+    <value>Holding the vial up to the light…</value>
+  </data>
+  <data name="Advanced_Vials_NoChanges" xml:space="preserve">
+    <value>Nothing to pour back — your device already matches this vial perfectly.</value>
+  </data>
+  <data name="Advanced_Vials_Summary" xml:space="preserve">
+    <value>{0} changed · {1} added · {2} removed since this vial</value>
+  </data>
+  <data name="Advanced_Vials_Now" xml:space="preserve">
+    <value>Now</value>
+  </data>
+  <data name="Advanced_Vials_Vial" xml:space="preserve">
+    <value>Vial</value>
+  </data>
+  <data name="Advanced_Vials_Missing" xml:space="preserve">
+    <value>(not set)</value>
+  </data>
+  <data name="Advanced_Vials_ProtectedTooltip" xml:space="preserve">
+    <value>Protected — restoring this key could break the connection or device setup, so Zephyr never pours it back.</value>
+  </data>
+  <data name="Advanced_Vials_RestoreSelected" xml:space="preserve">
+    <value>Pour back selected</value>
+  </data>
+  <data name="Advanced_Vials_RestoreQuestion" xml:space="preserve">
+    <value>Pour {0} settings from this vial back into the device?</value>
+  </data>
+  <data name="Advanced_Vials_RestoreDone" xml:space="preserve">
+    <value>{0} settings poured back — time turned.</value>
+  </data>
+  <data name="Advanced_Vials_DeleteQuestion" xml:space="preserve">
+    <value>Shatter this vial? Its snapshot can't be recovered.</value>
+  </data>
+  <data name="Advanced_Vials_Captured" xml:space="preserve">
+    <value>Bottled — the present is safe on the shelf.</value>
+  </data>
+  <data name="Advanced_Vials_CaptureFailed" xml:space="preserve">
+    <value>Couldn't bottle the settings — check the connection.</value>
+  </data>
+  <data name="Advanced_Vials_DiffFailed" xml:space="preserve">
+    <value>Couldn't read the device to compare — check the connection.</value>
+  </data>
+  <data name="AdbError_Unauthorized" xml:space="preserve">
+    <value>The device hasn't authorized this computer. Unlock the phone and accept the "Allow USB debugging" prompt (tick "Always allow").</value>
+  </data>
+  <data name="AdbError_Offline" xml:space="preserve">
+    <value>The device is connected but not responding. Unplug and replug the cable, or toggle USB debugging off and on.</value>
+  </data>
+  <data name="AdbError_NoDevice" xml:space="preserve">
+    <value>No device detected. Connect via USB and make sure USB debugging is enabled in Developer options.</value>
+  </data>
+  <data name="AdbError_MultipleDevices" xml:space="preserve">
+    <value>More than one device is connected and no target was chosen. Select the active device and retry.</value>
+  </data>
+  <data name="AdbError_Timeout" xml:space="preserve">
+    <value>The command timed out. Try a different USB cable or port, and avoid USB hubs.</value>
+  </data>
+  <data name="AdbError_UserRestricted" xml:space="preserve">
+    <value>The device blocked the operation (USER_RESTRICTED). On Xiaomi/Redmi/POCO enable "Install via USB" and "USB debugging (Security settings)" in Developer options — a Mi account and SIM may be required.</value>
+  </data>
+  <data name="AdbError_VersionDowngrade" xml:space="preserve">
+    <value>A newer version of this app is already installed. Uninstall it first, or use a backup that matches the installed version.</value>
+  </data>
+  <data name="AdbError_InsufficientStorage" xml:space="preserve">
+    <value>Not enough free storage on the device. Free some space and retry.</value>
+  </data>
+  <data name="AdbError_SignatureMismatch" xml:space="preserve">
+    <value>The APK signature doesn't match the installed app (different source or build). Uninstall the existing app first.</value>
+  </data>
+  <data name="AdbError_NotSigned" xml:space="preserve">
+    <value>The APK isn't signed, so Android refuses to install it.</value>
+  </data>
+  <data name="AdbError_ParseFailed" xml:space="preserve">
+    <value>The APK file is corrupted or incomplete and can't be parsed.</value>
+  </data>
+  <data name="AdbError_VerificationBlocked" xml:space="preserve">
+    <value>Play Protect or the device verifier blocked the install. Temporarily disable Play Protect scanning and retry.</value>
+  </data>
+  <data name="AdbError_MissingSplit" xml:space="preserve">
+    <value>This app was installed as a bundle — all of its split APKs must be installed together.</value>
+  </data>
+  <data name="AdbError_TestOnly" xml:space="preserve">
+    <value>The APK is marked test-only. Enable the bypass option to install it anyway.</value>
+  </data>
+  <data name="AdbError_SdkMismatch" xml:space="preserve">
+    <value>This APK targets a different Android version than the device supports.</value>
+  </data>
+  <data name="AdbError_NotInstalledForUser" xml:space="preserve">
+    <value>The app isn't installed for the current user, so there's nothing to act on.</value>
+  </data>
+  <data name="AdbError_PermissionDenied" xml:space="preserve">
+    <value>Android denied the permission for this operation — it isn't possible over ADB on this device or Android version.</value>
+  </data>
+  <data name="Pro_Required_RecipesFeature" xml:space="preserve">
+    <value>This recipe step requires a Pro license.</value>
+  </data>
+  <data name="Recipes_Rank_1" xml:space="preserve">
+    <value>Novice Brewer</value>
+  </data>
+  <data name="Recipes_Rank_2" xml:space="preserve">
+    <value>Apprentice Alchemist</value>
+  </data>
+  <data name="Recipes_Rank_3" xml:space="preserve">
+    <value>Elixir Artisan</value>
+  </data>
+  <data name="Recipes_Rank_4" xml:space="preserve">
+    <value>Master Alchemist</value>
+  </data>
+  <data name="Recipes_Rank_5" xml:space="preserve">
+    <value>Grand Elixirist</value>
+  </data>
+  <data name="Recipes_Gamify_Level" xml:space="preserve">
+    <value>Lv {0}</value>
+  </data>
+  <data name="Recipes_Gamify_Xp" xml:space="preserve">
+    <value>{0} / {1} brews</value>
+  </data>
+  <data name="Recipes_Gamify_XpMax" xml:space="preserve">
+    <value>{0} brews</value>
+  </data>
+  <data name="Recipes_Gamify_Next" xml:space="preserve">
+    <value>Next: {0}</value>
+  </data>
+  <data name="Recipes_Gamify_Legend" xml:space="preserve">
+    <value>Top rank reached ✦</value>
+  </data>
+  <data name="Recipes_Gamify_Recipes" xml:space="preserve">
+    <value>Recipes</value>
+  </data>
+  <data name="Recipes_Gamify_Brews" xml:space="preserve">
+    <value>Brews</value>
+  </data>
+  <data name="Recipes_Gamify_Shared" xml:space="preserve">
+    <value>Shared</value>
+  </data>
+  <data name="Recipes_Mascot_Name" xml:space="preserve">
+    <value>Zephyr</value>
+  </data>
+  <data name="Recipes_Mascot_Welcome" xml:space="preserve">
+    <value>Welcome to my lab! Bundle optimization, debloat and tweaks into a single brew, then pour it over any device with one tap. Craft your first recipe and start your ascent!</value>
+  </data>
+  <data name="Recipes_Tip_1" xml:space="preserve">
+    <value>Apply a recipe on several phones at once — plug them all in and pick your targets.</value>
+  </data>
+  <data name="Recipes_Tip_2" xml:space="preserve">
+    <value>Every brew you pour earns XP. Keep applying to climb the alchemist ranks!</value>
+  </data>
+  <data name="Recipes_Tip_3" xml:space="preserve">
+    <value>Found a great recipe in the Community? Tap Get and it lands in your library.</value>
+  </data>
+  <data name="Recipes_Tip_4" xml:space="preserve">
+    <value>Share your best brew — likes and downloads push it up the leaderboard.</value>
+  </data>
+  <data name="Recipes_Tip_5" xml:space="preserve">
+    <value>Extreme optimization is a Pro spell, but Free brews already work wonders.</value>
+  </data>
+  <data name="Recipes_Tooltip_Unpublish" xml:space="preserve">
+    <value>Remove from community</value>
+  </data>
+  <data name="Recipes_Unpublish_Title" xml:space="preserve">
+    <value>Remove Recipe</value>
+  </data>
+  <data name="Recipes_Unpublish_Confirm" xml:space="preserve">
+    <value>Remove this recipe from the community? People who already downloaded it keep their copy.</value>
+  </data>
+  <data name="Recipes_Status_Unpublishing" xml:space="preserve">
+    <value>Removing from community…</value>
+  </data>
+  <data name="Recipes_Status_Unpublished" xml:space="preserve">
+    <value>'{0}' removed from the community</value>
+  </data>
+  <data name="Recipes_Unpublish_Failed" xml:space="preserve">
+    <value>Couldn't remove the recipe.</value>
+  </data>
+  <data name="Console_Button_Export" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="Console_Button_Clear" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="Console_Section_Snippets" xml:space="preserve">
+    <value>SNIPPETS</value>
+  </data>
+  <data name="Console_Section_AddSnippet" xml:space="preserve">
+    <value>ADD SNIPPET</value>
+  </data>
+  <data name="Console_Snippet_NamePlaceholder" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Console_Snippet_CommandPlaceholder" xml:space="preserve">
+    <value>adb command</value>
+  </data>
+  <data name="Console_Button_SaveSnippet" xml:space="preserve">
+    <value>Save snippet</value>
+  </data>
+  <data name="Console_Tooltip_NewTab" xml:space="preserve">
+    <value>New tab</value>
+  </data>
+  <data name="Console_Tooltip_CloseTab" xml:space="preserve">
+    <value>Close tab</value>
+  </data>
+  <data name="Console_Tooltip_Rename" xml:space="preserve">
+    <value>Double-click to rename</value>
+  </data>
+  <data name="Console_Tooltip_DeleteSnippet" xml:space="preserve">
+    <value>Delete snippet</value>
+  </data>
+  <data name="Console_Empty_Title" xml:space="preserve">
+    <value>Interactive ADB shell</value>
+  </data>
+  <data name="Console_Empty_Text" xml:space="preserve">
+    <value>Type a command below, or pick a snippet on the right</value>
+  </data>
+  <data name="Console_Input_Placeholder" xml:space="preserve">
+    <value>Type an adb shell command — Enter to run, Tab to autocomplete, ↑/↓ for history</value>
+  </data>
+  <data name="FileManager_Filter_Placeholder" xml:space="preserve">
+    <value>Filter this folder…</value>
+  </data>
+  <data name="FileManager_Open_BlockedExecutable" xml:space="preserve">
+    <value>"{0}" is an executable file. For your safety it was not launched — its folder was opened in Explorer instead.</value>
+  </data>
+  <data name="FileManager_Paste_OverwriteConfirm" xml:space="preserve">
+    <value>{0} item(s) with the same name already exist in this folder and will be overwritten. Continue?</value>
+  </data>
+  <data name="FileManager_Transfer_FailedStatus" xml:space="preserve">
+    <value>{0} failed: {1}</value>
+  </data>
+  <data name="Perf_Fps_Source" xml:space="preserve">
+    <value>Measuring: {0}</value>
+  </data>
+  <data name="Perf_Fps_Tooltip_Idle" xml:space="preserve">
+    <value>Frames per second of the foreground app</value>
+  </data>
+  <data name="Help_Basics_Sidebar_Recipes" xml:space="preserve">
+    <value>• Recipes — your one-tap automations, and the community library others have shared.</value>
+  </data>
+  <data name="Help_Basics_Sidebar_Tools" xml:space="preserve">
+    <value>• Tools — APK installer, file manager, ADB shell and power options; with Pro, screen mirror and performance monitor too.</value>
+  </data>
+  <data name="Help_Basics_MultiDevice_Title" xml:space="preserve">
+    <value>Working with several devices</value>
+  </data>
+  <data name="Help_Basics_MultiDevice_Body" xml:space="preserve">
+    <value>Connect as many phones as you like: click the device card and the switcher lists everything attached, with unauthorised devices clearly marked. One of them is always the active device, and every page follows it — switch while Debloat is open and the app list reloads for the new phone. Nothing is ever sent to a device you did not choose: the only place several devices work at once is a recipe run, where you pick the targets yourself.</value>
+  </data>
+  <data name="Help_Guide_Recipes_Title" xml:space="preserve">
+    <value>Recipes</value>
+  </data>
+  <data name="Help_Guide_Recipes_Body" xml:space="preserve">
+    <value>Everything you do by hand, bottled once and poured on demand. A recipe holds up to four steps — an optimization, the apps to uninstall or disable, your tweaks (Private DNS, animation speed, Pro privacy toggles) and the APKs to install — and replays them in that order, exactly the same way, every time.</value>
+  </data>
+  <data name="Help_Guide_Recipes_Build_Title" xml:space="preserve">
+    <value>Building one</value>
+  </data>
+  <data name="Help_Guide_Recipes_Build_Body" xml:space="preserve">
+    <value>Press New recipe, give it a name, a short description and a glyph, then switch on the steps you want. In Debloat, "Save as recipe" turns the selection you have just made into one. Every recipe is a single .zerecipe file you can export, keep as a backup, or send to a friend.</value>
+  </data>
+  <data name="Help_Guide_Recipes_Run_Title" xml:space="preserve">
+    <value>Running one</value>
+  </data>
+  <data name="Help_Guide_Recipes_Run_Body" xml:space="preserve">
+    <value>Press Run and choose your targets: one device, or every phone plugged in. Each gets its own progress card and an honest verdict at the end — done, partial or failed. Steps that need Pro are reported as skipped, never applied silently, and a Time Vial is bottled before each device is touched.</value>
+  </data>
+  <data name="Help_Guide_Recipes_Community_Title" xml:space="preserve">
+    <value>The community library</value>
+  </data>
+  <data name="Help_Guide_Recipes_Community_Body" xml:space="preserve">
+    <value>The second tab collects the recipes other people have shared, sorted by top, recent or most used. Get pulls one into your library, a like says thank you, and Share publishes yours — with unpublish always one click away. No account is needed, and APK files never travel: a shared recipe carries their names, not the files.</value>
+  </data>
+  <data name="Help_Guide_Recipes_Hint_Title" xml:space="preserve">
+    <value>Read before you brew</value>
+  </data>
+  <data name="Help_Guide_Recipes_Hint_Body" xml:space="preserve">
+    <value>Community recipes are written by other users and are not vetted by us. Open one and check its package list before running it — exactly the care you would take with any list of apps to remove.</value>
+  </data>
+  <data name="Help_Guide_Tools_Title" xml:space="preserve">
+    <value>Tools</value>
+  </data>
+  <data name="Help_Guide_Tools_Body" xml:space="preserve">
+    <value>The utilities that do not belong anywhere else, each of them working on the device you have selected.</value>
+  </data>
+  <data name="Help_Guide_Tools_Apk_Title" xml:space="preserve">
+    <value>APK Installer</value>
+  </data>
+  <data name="Help_Guide_Tools_Apk_Body" xml:space="preserve">
+    <value>Drop in APK, XAPK, APKS or APKM files and they are installed for you, bundles extracted automatically. When Android refuses one, you get the reason in plain language — a signature clash, not enough space, a downgrade — instead of a raw error code. Pro installs a whole queue in one go.</value>
+  </data>
+  <data name="Help_Guide_Tools_Files_Title" xml:space="preserve">
+    <value>File Manager</value>
+  </data>
+  <data name="Help_Guide_Tools_Files_Body" xml:space="preserve">
+    <value>Browse the device like a desktop explorer: copy, move, rename and delete, drag files in both directions, filter a crowded folder as you type, preview images and text, and see where your storage actually went.</value>
+  </data>
+  <data name="Help_Guide_Tools_Shell_Title" xml:space="preserve">
+    <value>ADB Shell</value>
+  </data>
+  <data name="Help_Guide_Tools_Shell_Body" xml:space="preserve">
+    <value>A real multi-tab terminal inside the app. Save the commands you keep retyping as snippets, rename your tabs to tell them apart, and export a whole session to a text file when you need to share it.</value>
+  </data>
+  <data name="Help_Guide_Tools_Power_Title" xml:space="preserve">
+    <value>Power Options</value>
+  </data>
+  <data name="Help_Guide_Tools_Power_Body" xml:space="preserve">
+    <value>Reboot to system, recovery, bootloader or fastbootd, power the device off, or sideload an OTA package — without memorising a single key combination.</value>
+  </data>
+  <data name="Help_Guide_Tools_Pro_Title" xml:space="preserve">
+    <value>With Pro</value>
+  </data>
+  <data name="Help_Guide_Tools_Pro_Body" xml:space="preserve">
+    <value>Two more tools appear here: Screen Mirror, which streams your phone to the desktop with mouse-and-keyboard control and recording, and the Performance Monitor, with live CPU, RAM, GPU, FPS, network, storage and battery readings you can record to a CSV file.</value>
+  </data>
+  <data name="Help_Guide_Vials_Title" xml:space="preserve">
+    <value>Time Vials</value>
+  </data>
+  <data name="Help_Guide_Vials_Body" xml:space="preserve">
+    <value>A snapshot of your system settings is bottled before every optimization, every recipe and every advanced tweak — and whenever you press Bottle now. Uncork a vial to see what changed, what was added and what disappeared since that moment, then pour back the settings you regret, one at a time or all together. Fifteen vials are kept per device, on this PC only; a few keys such as USB debugging are shown but never rewritten, because restoring them would cut the connection.</value>
+  </data>
+  <data name="Help_Faq_Recipes_Q" xml:space="preserve">
+    <value>What is a recipe?</value>
+  </data>
+  <data name="Help_Faq_Recipes_A" xml:space="preserve">
+    <value>A small file describing what you want done to a phone: an optimization, apps to remove or disable, tweaks such as Private DNS and animation speed, and APKs to install. Press Run, choose your devices, and every step is replayed in order. Creating, running, importing and sharing recipes is free — Pro only unlocks the Extreme step, the privacy toggles and installing more than one APK per recipe.</value>
+  </data>
+  <data name="Help_Faq_Vials_Q" xml:space="preserve">
+    <value>What are Time Vials — are they a backup?</value>
+  </data>
+  <data name="Help_Faq_Vials_A" xml:space="preserve">
+    <value>They are automatic snapshots of your device’s system settings, taken before every optimization, recipe and advanced tweak, so you can see exactly what changed and restore individual settings. They are not a backup of your data: apps, photos and files are not included, and a vial cannot bring back an app you uninstalled — the History tab in Debloat does that.</value>
+  </data>
+  <data name="Help_Faq_MultiDevice_Q" xml:space="preserve">
+    <value>Can I work on several phones at once?</value>
+  </data>
+  <data name="Help_Faq_MultiDevice_A" xml:space="preserve">
+    <value>Yes. Connect as many as you like and switch between them from the device card in the sidebar: every page follows the one you pick, so a command can never land on the wrong phone. Recipes are the exception by design — there you choose several targets on purpose, and they run in parallel.</value>
+  </data>
+  <data name="Help_Faq_Community_Q" xml:space="preserve">
+    <value>Is it safe to run a recipe from the community?</value>
+  </data>
+  <data name="Help_Faq_Community_A" xml:space="preserve">
+    <value>Community recipes are written by other users and we do not verify them. Open one and read its package list before running it — the same care you would take with any list of apps to remove. Nothing is applied until you press Run, a Time Vial is bottled first, and anything uninstalled can be restored from the History tab in Debloat.</value>
+  </data>
+  <data name="Help_Tip_Recipes_Title" xml:space="preserve">
+    <value>Write it down once</value>
+  </data>
+  <data name="Help_Tip_Recipes_Body" xml:space="preserve">
+    <value>The second time you do something to a phone, make it a recipe. A new device, a relative’s phone or a fresh start after a factory reset then costs one tap instead of an evening.</value>
+  </data>
+  <data name="Help_Tip_Vials_Title" xml:space="preserve">
+    <value>Read the diff</value>
+  </data>
+  <data name="Help_Tip_Vials_Body" xml:space="preserve">
+    <value>After a big run, open the newest vial in Advanced. It is the clearest possible answer to "what did that actually change?" — and every line can be poured back on its own.</value>
+  </data>
 </root>

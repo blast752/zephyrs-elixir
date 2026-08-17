@@ -31,10 +31,20 @@ public sealed partial class FileManager : UserControl
         "device offline"
     };
 
+    // Extensions Windows ShellExecute would RUN rather than open in a viewer. A file pulled from a
+    // phone is untrusted input: reveal it in Explorer instead of executing it on the PC.
+    private static readonly HashSet<string> ExecutableExtensions = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ".exe", ".bat", ".cmd", ".com", ".scr", ".ps1", ".msi", ".msix", ".appx",
+        ".vbs", ".vbe", ".js", ".jse", ".wsf", ".wsh", ".hta", ".lnk", ".pif", ".cpl", ".reg", ".jar"
+    };
+
     private readonly Action _onClose;
     private readonly EventHandler _languageListener;
     private readonly SemaphoreSlim _transferGate = new(MaxParallelTransfers, MaxParallelTransfers);
+    private readonly SemaphoreSlim _dirSizeGate = new(3, 3);
     private readonly List<RemoteEntry> _clipboardEntries = new();
+    private readonly ICollectionView _entriesView;
 
     private CancellationTokenSource? _listingCts;
     private CancellationTokenSource? _previewCts;
@@ -93,6 +103,9 @@ public sealed partial class FileManager : UserControl
     [ObservableProperty] private bool _isStorageLoading;
     [ObservableProperty] private bool _isStorageAvailable;
     [ObservableProperty] private LinearGradientBrush? _storageBarBrush;
+    [ObservableProperty] private string _filterText = "";
+
+    partial void OnFilterTextChanged(string value) => _entriesView.Refresh();
 
     public string DeviceSerialDisplay => string.IsNullOrEmpty(DeviceSerial)
         ? ""
@@ -141,6 +154,10 @@ public sealed partial class FileManager : UserControl
         UpdateBreadcrumbs(DefaultRemotePath);
         EmptyStateMessage = Strings.FileManager_Status_Empty;
 
+        _entriesView = CollectionViewSource.GetDefaultView(Entries);
+        _entriesView.Filter = o => string.IsNullOrEmpty(FilterText) ||
+            (o is RemoteEntry entry && entry.Name.Contains(FilterText, StringComparison.OrdinalIgnoreCase));
+
         Entries.CollectionChanged += (_, _) => HasEntries = Entries.Count > 0;
         Transfers.CollectionChanged += OnTransfersChanged;
 
@@ -152,8 +169,8 @@ public sealed partial class FileManager : UserControl
 
     private void SeedBookmarksAndTrees()
     {
-        Bookmarks.Add(new Bookmark("/sdcard/Download",    Strings.FileManager_Bookmark_Downloads, "", AppBrushes.GradientApk));
-        Bookmarks.Add(new Bookmark("/sdcard/DCIM/Camera", Strings.FileManager_Bookmark_Camera,    "", AppBrushes.GradientApkm));
+        Bookmarks.Add(new Bookmark("/sdcard/Download",    Strings.FileManager_Bookmark_Downloads, "download", AppBrushes.GradientApk));
+        Bookmarks.Add(new Bookmark("/sdcard/DCIM/Camera", Strings.FileManager_Bookmark_Camera,    "camera", AppBrushes.GradientApkm));
 
         TreeRoots.Add(TreeNode.CreateExpandable(Strings.FileManager_Tree_InternalStorage, "/sdcard"));
         TreeRoots.Add(TreeNode.CreateExpandable(Strings.FileManager_Tree_FilesystemRoot, "/"));
@@ -163,14 +180,14 @@ public sealed partial class FileManager : UserControl
     private void RebuildBookmarks(string? whatsAppPath, bool tempAvailable)
     {
         Bookmarks.Clear();
-        Bookmarks.Add(new Bookmark("/sdcard/Download",    Strings.FileManager_Bookmark_Downloads, "", AppBrushes.GradientApk));
-        Bookmarks.Add(new Bookmark("/sdcard/DCIM/Camera", Strings.FileManager_Bookmark_Camera,    "", AppBrushes.GradientApkm));
+        Bookmarks.Add(new Bookmark("/sdcard/Download",    Strings.FileManager_Bookmark_Downloads, "download", AppBrushes.GradientApk));
+        Bookmarks.Add(new Bookmark("/sdcard/DCIM/Camera", Strings.FileManager_Bookmark_Camera,    "camera", AppBrushes.GradientApkm));
 
         if (!string.IsNullOrEmpty(whatsAppPath))
-            Bookmarks.Add(new Bookmark(whatsAppPath, Strings.FileManager_Bookmark_WhatsApp, "", AppBrushes.GradientGreen));
+            Bookmarks.Add(new Bookmark(whatsAppPath, Strings.FileManager_Bookmark_WhatsApp, "chat", AppBrushes.GradientGreen));
 
         if (tempAvailable)
-            Bookmarks.Add(new Bookmark("/data/local/tmp", Strings.FileManager_Bookmark_Temp, "", AppBrushes.GradientOrange));
+            Bookmarks.Add(new Bookmark("/data/local/tmp", Strings.FileManager_Bookmark_Temp, "folder-open", AppBrushes.GradientOrange));
     }
 
     private async Task ProbeBookmarksAsync()
@@ -269,6 +286,7 @@ public sealed partial class FileManager : UserControl
                 this.SubscribeToDeviceUpdates(
                     onStatusChanged: HandleDeviceStatus,
                     onInfoUpdated: (name, _) => DeviceName = DeviceManager.Instance.IsConnected ? name : "");
+                this.SubscribeToActiveDevice(HandleActiveDeviceChanged);
                 _wired = true;
             }
 
@@ -294,6 +312,7 @@ public sealed partial class FileManager : UserControl
             _wired = false;
         }
 
+        _promptCompletion?.TrySetResult(null);
         DisposeCts(ref _listingCts);
         DisposeCts(ref _previewCts);
         DisposeCts(ref _storageCts);
@@ -318,6 +337,7 @@ public sealed partial class FileManager : UserControl
         _listingCts = cts;
 
         IsLoading = true;
+        FilterText = "";
         Entries.Clear();
         ClosePreview();
         EmptyStateMessage = Strings.FileManager_Status_Loading;
@@ -524,6 +544,16 @@ public sealed partial class FileManager : UserControl
         var verb = _clipboardMode == ClipboardMode.Cut ? "mv" : "cp -r";
         var snapshot = _clipboardEntries.ToArray();
 
+        var existingNames = Entries.Select(en => en.Name).ToHashSet(StringComparer.Ordinal);
+        var collisions = snapshot.Count(en =>
+            existingNames.Contains(en.Name) &&
+            !string.Equals(PathUtil.Combine(CurrentPath, en.Name), en.FullPath, StringComparison.Ordinal));
+        if (collisions > 0 &&
+            !DialogService.Instance.ConfirmDirect(
+                string.Format(Strings.FileManager_Paste_OverwriteConfirm, collisions),
+                Window.GetWindow(this), Strings.MessageBox_ConfirmAction_Title))
+            return;
+
         var errors = await RunShellBatchAsync(snapshot, entry =>
         {
             var destPath = PathUtil.Combine(CurrentPath, entry.Name);
@@ -532,7 +562,9 @@ public sealed partial class FileManager : UserControl
                 : $"shell {verb} -- {AdbArg.ForShell(entry.FullPath)} {AdbArg.ForShell(destPath)}";
         });
 
-        if (_clipboardMode == ClipboardMode.Cut)
+        // After a failed cut the sources are still in place: keep the clipboard so the user can
+        // retry instead of silently losing what they had marked for the move.
+        if (_clipboardMode == ClipboardMode.Cut && errors.Length == 0)
             ClearClipboardCommand.Execute(null);
 
         TryReportBatchErrors(errors, Strings.FileManager_Error_Paste);
@@ -650,14 +682,6 @@ public sealed partial class FileManager : UserControl
     }
 
     [RelayCommand]
-    private void ClearCompletedTransfers()
-    {
-        var done = Transfers.Where(t => t.IsTerminal).ToArray();
-        foreach (var t in done)
-            Transfers.Remove(t);
-    }
-
-    [RelayCommand]
     private void ClosePreview()
     {
         _previewCts?.Cancel();
@@ -750,6 +774,14 @@ public sealed partial class FileManager : UserControl
         }
     }
 
+    private void OnFilterKeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key != Key.Escape) return;
+        FilterText = "";
+        EntriesGrid.Focus();
+        e.Handled = true;
+    }
+
     private void OnPromptKeyDown(object sender, KeyEventArgs e)
     {
         switch (e.Key)
@@ -795,8 +827,19 @@ public sealed partial class FileManager : UserControl
         if (sender is not DataGrid grid) return;
         if (e.LeftButton != MouseButtonState.Pressed) return;
 
+        // Arm a drag-out only when the press lands on an already-selected row — Explorer's rule.
+        // Pressing elsewhere must keep meaning "start a new selection", never "drag files".
         _gridDragOrigin = e.GetPosition(grid);
-        _gridDragArmed = grid.SelectedItems.Count > 0;
+        _gridDragArmed = e.OriginalSource is FrameworkElement { DataContext: RemoteEntry entry } &&
+                         grid.SelectedItems.Contains(entry);
+    }
+
+    private void OnGridPreviewKeyDown(object sender, KeyEventArgs e)
+    {
+        // DataGrid swallows Enter for cell navigation before the UserControl KeyBinding can see it.
+        if (e.Key != Key.Enter || Keyboard.Modifiers != ModifierKeys.None) return;
+        e.Handled = true;
+        OpenSelectionCommand.Execute(null);
     }
 
     private async void OnGridMouseMove(object sender, MouseEventArgs e)
@@ -909,6 +952,17 @@ public sealed partial class FileManager : UserControl
             if (localPath is null)
             {
                 ReportShellError(Strings.FileManager_Open_Failed_Title, Strings.FileManager_Open_Failed_Pull);
+                return;
+            }
+
+            if (ExecutableExtensions.Contains(Path.GetExtension(localPath)))
+            {
+                Process.Start("explorer.exe", $"/select,\"{localPath}\"");
+                DialogService.Instance.ShowInfoDirect(
+                    Strings.FileManager_Open_Failed_Title,
+                    string.Format(Strings.FileManager_Open_BlockedExecutable, entry.Name),
+                    Window.GetWindow(this));
+                AdbLogger.Instance.LogInfo("FileManager", "Blocked executable open, revealed in Explorer", entry.FullPath);
                 return;
             }
 
@@ -1085,6 +1139,7 @@ public sealed partial class FileManager : UserControl
 
     private async Task EnqueuePushesAsync(IEnumerable<string> localPaths, string remoteDir)
     {
+        PruneFinishedTransfers();
         foreach (var local in localPaths)
         {
             if (!File.Exists(local) && !Directory.Exists(local)) continue;
@@ -1111,6 +1166,7 @@ public sealed partial class FileManager : UserControl
 
     private async Task EnqueuePullsAsync(IEnumerable<RemoteEntry> entries, string localDir)
     {
+        PruneFinishedTransfers();
         foreach (var entry in entries)
         {
             var item = new TransferItem
@@ -1125,6 +1181,12 @@ public sealed partial class FileManager : UserControl
             Transfers.Add(item);
         }
         await RunPendingTransfersAsync();
+    }
+
+    private void PruneFinishedTransfers()
+    {
+        foreach (var done in Transfers.Where(t => t.IsTerminal).ToArray())
+            Transfers.Remove(done);
     }
 
     private Task RunPendingTransfersAsync() =>
@@ -1175,6 +1237,8 @@ public sealed partial class FileManager : UserControl
             {
                 item.Status = TransferStatus.Failed;
                 item.Detail = ExtractTransferDetail(output);
+                await Dispatcher.InvokeAsync(() =>
+                    StatusMessage = string.Format(Strings.FileManager_Transfer_FailedStatus, item.DisplayName, ShortError(item.Detail ?? "")));
             }
             else
             {
@@ -1198,6 +1262,8 @@ public sealed partial class FileManager : UserControl
         {
             item.Status = TransferStatus.Failed;
             item.Detail = ex.Message;
+            await Dispatcher.InvokeAsync(() =>
+                StatusMessage = string.Format(Strings.FileManager_Transfer_FailedStatus, item.DisplayName, ShortError(ex.Message)));
             LogException(ex);
         }
         finally
@@ -1221,6 +1287,22 @@ public sealed partial class FileManager : UserControl
         ActiveTransferCount = active.Count;
         HasActiveTransfers = active.Count > 0;
         AggregateProgress = active.Count == 0 ? 0 : active.Average(t => t.Progress);
+    }
+
+    private async void HandleActiveDeviceChanged(string serial)
+    {
+        DeviceSerial = serial;
+        DeviceName = DeviceManager.Instance.IsConnected ? DeviceManager.Instance.DeviceName : "";
+        UpdateStatusMessage();
+
+        // Queued transfers reference paths listed on the previous device; only in-flight ones are
+        // already pinned to their own adb process and may finish safely.
+        foreach (var pending in Transfers.Where(t => t.Status is TransferStatus.Pending or TransferStatus.Queued).ToArray())
+            pending.Cancel();
+
+        await NavigateAsync(CurrentPath);
+        _ = LoadStorageAsync();
+        _ = ProbeBookmarksAsync();
     }
 
     private void HandleDeviceStatus(bool connected)
@@ -1540,8 +1622,10 @@ public sealed partial class FileManager : UserControl
     {
         try
         {
+            // No awk: Android's toybox only ships it from Android 15 — the leading token of
+            // "du -sk" is the KB figure on every version.
             var output = await AdbExecutor.ExecuteCommandAsync(
-                $"shell du -sk -- {AdbArg.ForShell(remotePath)} 2>/dev/null | awk '{{print $1}}'", ct);
+                $"shell du -sk -- {AdbArg.ForShell(remotePath)} 2>/dev/null", ct);
             var token = output?.Split(new[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
             return long.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out var kb) ? kb : 0;
         }
@@ -1558,7 +1642,15 @@ public sealed partial class FileManager : UserControl
 
     private async Task FetchAndApplyDirSizeAsync(RemoteEntry dir, CancellationToken ct)
     {
-        var kb = await DirectorySizeKbAsync(dir.FullPath, ct).ConfigureAwait(false);
+        // Gate the fan-out: a folder with dozens of subdirectories must not spawn dozens of
+        // concurrent adb processes each running a deep "du" on the device.
+        try { await _dirSizeGate.WaitAsync(ct).ConfigureAwait(false); }
+        catch (OperationCanceledException) { return; }
+
+        long kb;
+        try { kb = await DirectorySizeKbAsync(dir.FullPath, ct).ConfigureAwait(false); }
+        finally { _dirSizeGate.Release(); }
+
         if (ct.IsCancellationRequested || kb <= 0) return;
         var bytes = kb * 1024L;
         await Dispatcher.InvokeAsync(() =>
@@ -1567,7 +1659,10 @@ public sealed partial class FileManager : UserControl
             {
                 if (Entries[i].FullPath == dir.FullPath)
                 {
-                    Entries[i] = Entries[i] with { Size = bytes };
+                    var updated = Entries[i] with { Size = bytes };
+                    var wasSelected = EntriesGrid.SelectedItems.Contains(Entries[i]);
+                    Entries[i] = updated;
+                    if (wasSelected) EntriesGrid.SelectedItems.Add(updated);
                     break;
                 }
             }
@@ -1656,15 +1751,9 @@ public sealed record PathSegment(string Label, string FullPath);
 
 public sealed record StorageSegment(string Label, long Bytes, Color Color)
 {
-    public Brush ColorBrush
-    {
-        get
-        {
-            var brush = new SolidColorBrush(Color);
-            brush.Freeze();
-            return brush;
-        }
-    }
+    private Brush? _colorBrush;
+
+    public Brush ColorBrush => _colorBrush ??= UIHelpers.FrozenSolid(Color.R, Color.G, Color.B, Color.A);
     public string SizeDisplay => UIHelpers.FormatBytes(Bytes);
 }
 
@@ -1727,7 +1816,7 @@ public sealed partial class TransferItem : ObservableObject
 
     [ObservableProperty] private string? _detail;
 
-    public string DirectionIcon => Direction == TransferDirection.Push ? "" : "";
+    public string DirectionIcon => Direction == TransferDirection.Push ? "upload" : "download";
     public Brush DirectionBrush => Direction == TransferDirection.Push
         ? AppBrushes.GradientApk
         : AppBrushes.GradientGreen;
@@ -1787,12 +1876,12 @@ public sealed partial class TreeNode : ObservableObject
     {
         string icon, typeKey;
 
-        if      (path == "/")              { icon = ""; typeKey = "root"; }
-        else if (path.StartsWith("/data")) { icon = ""; typeKey = "data"; }
-        else                               { icon = ""; typeKey = "folder"; }
+        if      (path == "/")              { icon = "phone"; typeKey = "root"; }
+        else if (path.StartsWith("/data")) { icon = "database"; typeKey = "data"; }
+        else                               { icon = "folder"; typeKey = "folder"; }
 
         var node = new TreeNode { Name = name, Path = path, CanExpand = true, Icon = icon, TypeKey = typeKey };
-        node.Children.Add(new TreeNode { Name = Strings.FileManager_Tree_Loading, IsPlaceholder = true, Icon = "", TypeKey = "loading" });
+        node.Children.Add(new TreeNode { Name = Strings.FileManager_Tree_Loading, IsPlaceholder = true, Icon = "sync", TypeKey = "loading" });
         return node;
     }
 }
@@ -1854,16 +1943,20 @@ internal static partial class PathUtil
         target.StartsWith('/') ? Normalize(target) : Normalize(Combine(Parent(symlinkPath), target));
 }
 
-internal static class AdbArg
+internal static partial class AdbArg
 {
-    public static string ForPullPush(string path) =>
-        "\"" + path.Replace("\"", "\\\"") + "\"";
+    // adb.exe re-splits the command line with CommandLineToArgvW rules, where a run of backslashes is
+    // only special immediately before a quote. Doubling that run is what keeps the quote literal
+    // instead of ending the argument — dropping the quote instead would silently retarget the command.
+    [GeneratedRegex(@"(\\*)""")]
+    private static partial Regex QuoteRun();
 
-    public static string ForShell(string path)
-    {
-        var noQuotes = path.Replace("\"", string.Empty);
-        return "\"'" + noQuotes.Replace("'", "'\\''") + "'\"";
-    }
+    private static string ForWindows(string path) => QuoteRun().Replace(path, @"$1$1\""");
+
+    public static string ForPullPush(string path) => "\"" + ForWindows(path) + "\"";
+
+    public static string ForShell(string path) =>
+        "\"'" + ForWindows(path.Replace("'", "'\\''")) + "'\"";
 }
 
 internal static partial class LsParser
@@ -2040,20 +2133,20 @@ internal static class RemoteEntryClassifier
 
     public static string IconFor(string key) => key switch
     {
-        "folder"  => "",
-        "link"    => "",
-        "image"   => "",
-        "video"   => "",
-        "audio"   => "",
-        "text"    => "",
-        "config"  => "",
-        "archive" => "",
-        "android" => "",
-        "web"     => "",
-        "script"  => "",
-        "db"      => "",
-        "pdf"     => "",
-        _         => ""
+        "folder"  => "folder",
+        "link"    => "link",
+        "image"   => "image",
+        "video"   => "video",
+        "audio"   => "audio",
+        "text"    => "document",
+        "config"  => "settings",
+        "archive" => "archive",
+        "android" => "phone",
+        "web"     => "globe",
+        "script"  => "console",
+        "db"      => "database",
+        "pdf"     => "document",
+        _         => "page"
     };
 
     public static Brush BrushFor(string key) => key switch
