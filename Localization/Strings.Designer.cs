@@ -147,6 +147,7 @@ namespace ZephyrsElixir.Localization
         public static string Common_Status_Error => ResourceManager.GetString("Common_Status_Error", resourceCulture);
         public static string Common_Status_Success => ResourceManager.GetString("Common_Status_Success", resourceCulture);
         public static string Common_Warning_Title => ResourceManager.GetString("Common_Warning_Title", resourceCulture);
+        public static string Debloat_AI_Disabled => ResourceManager.GetString("Debloat_AI_Disabled", resourceCulture);
         public static string Debloat_AI_QuotaExhausted => ResourceManager.GetString("Debloat_AI_QuotaExhausted", resourceCulture);
         public static string Debloat_Action_Done => ResourceManager.GetString("Debloat_Action_Done", resourceCulture);
         public static string Debloat_Action_PerformConfirm => ResourceManager.GetString("Debloat_Action_PerformConfirm", resourceCulture);
@@ -161,6 +162,7 @@ namespace ZephyrsElixir.Localization
         public static string Debloat_AppDetails_SafetyScore => ResourceManager.GetString("Debloat_AppDetails_SafetyScore", resourceCulture);
         public static string Debloat_Bucket_Active => ResourceManager.GetString("Debloat_Bucket_Active", resourceCulture);
         public static string Debloat_Bucket_Frequent => ResourceManager.GetString("Debloat_Bucket_Frequent", resourceCulture);
+        public static string Debloat_Bucket_Never => ResourceManager.GetString("Debloat_Bucket_Never", resourceCulture);
         public static string Debloat_Bucket_Rare => ResourceManager.GetString("Debloat_Bucket_Rare", resourceCulture);
         public static string Debloat_Bucket_Restricted => ResourceManager.GetString("Debloat_Bucket_Restricted", resourceCulture);
         public static string Debloat_Bucket_WorkingSet => ResourceManager.GetString("Debloat_Bucket_WorkingSet", resourceCulture);
@@ -316,13 +318,9 @@ namespace ZephyrsElixir.Localization
         public static string PowerMenu_DeviceStatus => ResourceManager.GetString("PowerMenu_DeviceStatus", resourceCulture);
         public static string PowerMenu_Error_CommandFailed => ResourceManager.GetString("PowerMenu_Error_CommandFailed", resourceCulture);
         public static string PowerMenu_Error_Communication => ResourceManager.GetString("PowerMenu_Error_Communication", resourceCulture);
-        public static string PowerMenu_Error_DeviceNotFound => ResourceManager.GetString("PowerMenu_Error_DeviceNotFound", resourceCulture);
         public static string PowerMenu_Error_DownloadNotSupported => ResourceManager.GetString("PowerMenu_Error_DownloadNotSupported", resourceCulture);
         public static string PowerMenu_Error_FastbootNotSupported => ResourceManager.GetString("PowerMenu_Error_FastbootNotSupported", resourceCulture);
-        public static string PowerMenu_Error_Offline => ResourceManager.GetString("PowerMenu_Error_Offline", resourceCulture);
-        public static string PowerMenu_Error_PermissionDenied => ResourceManager.GetString("PowerMenu_Error_PermissionDenied", resourceCulture);
         public static string PowerMenu_Error_SideloadNotAvailable => ResourceManager.GetString("PowerMenu_Error_SideloadNotAvailable", resourceCulture);
-        public static string PowerMenu_Error_Unauthorized => ResourceManager.GetString("PowerMenu_Error_Unauthorized", resourceCulture);
         public static string PowerMenu_Error_Unknown => ResourceManager.GetString("PowerMenu_Error_Unknown", resourceCulture);
         public static string PowerMenu_Executing => ResourceManager.GetString("PowerMenu_Executing", resourceCulture);
         public static string PowerMenu_Header => ResourceManager.GetString("PowerMenu_Header", resourceCulture);
@@ -532,7 +530,6 @@ namespace ZephyrsElixir.Localization
         public static string Window_Tooltip_Maximize => ResourceManager.GetString("Window_Tooltip_Maximize", resourceCulture);
         public static string Window_Tooltip_Minimize => ResourceManager.GetString("Window_Tooltip_Minimize", resourceCulture);
         public static string Window_Tooltip_Restore => ResourceManager.GetString("Window_Tooltip_Restore", resourceCulture);
-        public static string WirelessConnection_Log_Title => ResourceManager.GetString("WirelessConnection_Log_Title", resourceCulture);
         public static string Wireless_Android10 => ResourceManager.GetString("Wireless_Android10", resourceCulture);
         public static string Wireless_Android11 => ResourceManager.GetString("Wireless_Android11", resourceCulture);
         public static string Wireless_Button_Connect => ResourceManager.GetString("Wireless_Button_Connect", resourceCulture);
@@ -607,6 +604,9 @@ namespace ZephyrsElixir.Localization
         public static string License_Status_Suspended => ResourceManager.GetString("License_Status_Suspended", resourceCulture);
         public static string License_Status_Expired => ResourceManager.GetString("License_Status_Expired", resourceCulture);
         public static string License_Status_Canceled => ResourceManager.GetString("License_Status_Canceled", resourceCulture);
+        public static string License_Status_Active => ResourceManager.GetString("License_Status_Active", resourceCulture);
+        public static string License_Status_Trial => ResourceManager.GetString("License_Status_Trial", resourceCulture);
+        public static string License_Status_Lifetime => ResourceManager.GetString("License_Status_Lifetime", resourceCulture);
         public static string License_Status_Free => ResourceManager.GetString("License_Status_Free", resourceCulture);
         public static string License_Status_SubscriptionActive => ResourceManager.GetString("License_Status_SubscriptionActive", resourceCulture);
         public static string License_Status_Renews => ResourceManager.GetString("License_Status_Renews", resourceCulture);
@@ -619,12 +619,17 @@ namespace ZephyrsElixir.Localization
         public static string License_Deactivated_Success => ResourceManager.GetString("License_Deactivated_Success", resourceCulture);
         public static string License_Deactivated_Failed => ResourceManager.GetString("License_Deactivated_Failed", resourceCulture);
         public static string License_Activation_Failed => ResourceManager.GetString("License_Activation_Failed", resourceCulture);
+        public static string License_Activation_Success => ResourceManager.GetString("License_Activation_Success", resourceCulture);
+        public static string License_Activation_DllPending => ResourceManager.GetString("License_Activation_DllPending", resourceCulture);
+        public static string License_Activation_NoProEntitlement => ResourceManager.GetString("License_Activation_NoProEntitlement", resourceCulture);
+        public static string License_Error_DiskSpace => ResourceManager.GetString("License_Error_DiskSpace", resourceCulture);
         public static string License_Revoked => ResourceManager.GetString("License_Revoked", resourceCulture);
         public static string License_Revoked_ContactSupport => ResourceManager.GetString("License_Revoked_ContactSupport", resourceCulture);
         public static string License_Expired_Renew => ResourceManager.GetString("License_Expired_Renew", resourceCulture);
         public static string License_RefreshFailed => ResourceManager.GetString("License_RefreshFailed", resourceCulture);
         public static string License_DeviceIdCopied => ResourceManager.GetString("License_DeviceIdCopied", resourceCulture);
         public static string License_Error_ServerUnavailable => ResourceManager.GetString("License_Error_ServerUnavailable", resourceCulture);
+        public static string License_Error_ClockSkew => ResourceManager.GetString("License_Error_ClockSkew", resourceCulture);
         public static string License_Error_InvalidResponse => ResourceManager.GetString("License_Error_InvalidResponse", resourceCulture);
         public static string License_Error_Timeout => ResourceManager.GetString("License_Error_Timeout", resourceCulture);
         public static string License_Error_Connection => ResourceManager.GetString("License_Error_Connection", resourceCulture);
@@ -715,10 +720,6 @@ namespace ZephyrsElixir.Localization
         public static string FileManager_Tree_Loading => ResourceManager.GetString("FileManager_Tree_Loading", resourceCulture);
         public static string FileManager_PathBar_Tooltip => ResourceManager.GetString("FileManager_PathBar_Tooltip", resourceCulture);
         public static string FileManager_Tooltip_CancelAll => ResourceManager.GetString("FileManager_Tooltip_CancelAll", resourceCulture);
-        public static string FileManager_Tooltip_DeviceSerial => ResourceManager.GetString("FileManager_Tooltip_DeviceSerial", resourceCulture);
-        public static string FileManager_Tooltip_NameColumn => ResourceManager.GetString("FileManager_Tooltip_NameColumn", resourceCulture);
-        public static string FileManager_Tooltip_OwnerColumn => ResourceManager.GetString("FileManager_Tooltip_OwnerColumn", resourceCulture);
-        public static string FileManager_Tooltip_PreviewName => ResourceManager.GetString("FileManager_Tooltip_PreviewName", resourceCulture);
         public static string FileManager_Connection_None => ResourceManager.GetString("FileManager_Connection_None", resourceCulture);
         public static string FileManager_Connection_Generic => ResourceManager.GetString("FileManager_Connection_Generic", resourceCulture);
         public static string FileManager_Status_Waiting => ResourceManager.GetString("FileManager_Status_Waiting", resourceCulture);
@@ -751,7 +752,6 @@ namespace ZephyrsElixir.Localization
         public static string FileManager_Validate_NameReserved => ResourceManager.GetString("FileManager_Validate_NameReserved", resourceCulture);
         public static string FileManager_Validate_NameTooLong => ResourceManager.GetString("FileManager_Validate_NameTooLong", resourceCulture);
         public static string FileManager_Validate_ModeEmpty => ResourceManager.GetString("FileManager_Validate_ModeEmpty", resourceCulture);
-        public static string FileManager_Validate_ModeFormat => ResourceManager.GetString("FileManager_Validate_ModeFormat", resourceCulture);
         public static string FileManager_Validate_ModeUnrecognised => ResourceManager.GetString("FileManager_Validate_ModeUnrecognised", resourceCulture);
         public static string FileManager_Validate_NoDevice_Message => ResourceManager.GetString("FileManager_Validate_NoDevice_Message", resourceCulture);
         public static string FileManager_Validate_NoDevice_Title => ResourceManager.GetString("FileManager_Validate_NoDevice_Title", resourceCulture);
@@ -799,7 +799,6 @@ namespace ZephyrsElixir.Localization
         public static string FileManager_Transfer_FailedStatus => ResourceManager.GetString("FileManager_Transfer_FailedStatus", resourceCulture);
         public static string FileManager_DragOut_PullFailed => ResourceManager.GetString("FileManager_DragOut_PullFailed", resourceCulture);
         public static string FileManager_Permissions_Tooltip => ResourceManager.GetString("FileManager_Permissions_Tooltip", resourceCulture);
-        public static string FileManager_DragHover_Destination_Format => ResourceManager.GetString("FileManager_DragHover_Destination_Format", resourceCulture);
         public static string FileManager_Perm_None => ResourceManager.GetString("FileManager_Perm_None", resourceCulture);
         public static string FileManager_Perm_Rwx => ResourceManager.GetString("FileManager_Perm_Rwx", resourceCulture);
         public static string FileManager_Perm_Rw => ResourceManager.GetString("FileManager_Perm_Rw", resourceCulture);
@@ -825,20 +824,14 @@ namespace ZephyrsElixir.Localization
         public static string FileManager_Storage_Media => ResourceManager.GetString("FileManager_Storage_Media", resourceCulture);
         public static string FileManager_Storage_Downloads => ResourceManager.GetString("FileManager_Storage_Downloads", resourceCulture);
         public static string FileManager_Storage_System => ResourceManager.GetString("FileManager_Storage_System", resourceCulture);
-        public static string FileManager_Storage_Other => ResourceManager.GetString("FileManager_Storage_Other", resourceCulture);
         public static string FileManager_Storage_Free => ResourceManager.GetString("FileManager_Storage_Free", resourceCulture);
-        public static string FileManager_Storage_Loading => ResourceManager.GetString("FileManager_Storage_Loading", resourceCulture);
         public static string FileManager_Storage_Unavailable => ResourceManager.GetString("FileManager_Storage_Unavailable", resourceCulture);
-        public static string FileManager_Storage_Probe_Failed => ResourceManager.GetString("FileManager_Storage_Probe_Failed", resourceCulture);
         public static string FileManager_Status_DeviceSerialFormat => ResourceManager.GetString("FileManager_Status_DeviceSerialFormat", resourceCulture);
 
         // ── Live Performance Monitor (Pro) ──
         public static string Pro_Required_PerformanceMonitor => ResourceManager.GetString("Pro_Required_PerformanceMonitor", resourceCulture);
         public static string Perf_Header => ResourceManager.GetString("Perf_Header", resourceCulture);
         public static string Perf_Subtitle => ResourceManager.GetString("Perf_Subtitle", resourceCulture);
-        public static string Perf_Upsell_Title => ResourceManager.GetString("Perf_Upsell_Title", resourceCulture);
-        public static string Perf_Upsell_Description => ResourceManager.GetString("Perf_Upsell_Description", resourceCulture);
-        public static string Perf_Upsell_UpgradeButton => ResourceManager.GetString("Perf_Upsell_UpgradeButton", resourceCulture);
         public static string Perf_Metric_Cpu => ResourceManager.GetString("Perf_Metric_Cpu", resourceCulture);
         public static string Perf_Metric_Ram => ResourceManager.GetString("Perf_Metric_Ram", resourceCulture);
         public static string Perf_Metric_Network => ResourceManager.GetString("Perf_Metric_Network", resourceCulture);
@@ -866,8 +859,6 @@ namespace ZephyrsElixir.Localization
         public static string Perf_Recording_SampleCount => ResourceManager.GetString("Perf_Recording_SampleCount", resourceCulture);
         public static string Perf_Recording_Stopped_DeviceDisconnected => ResourceManager.GetString("Perf_Recording_Stopped_DeviceDisconnected", resourceCulture);
         public static string Perf_Recording_Stopped_DurationReached => ResourceManager.GetString("Perf_Recording_Stopped_DurationReached", resourceCulture);
-        public static string Perf_View_Live => ResourceManager.GetString("Perf_View_Live", resourceCulture);
-        public static string Perf_View_Session => ResourceManager.GetString("Perf_View_Session", resourceCulture);
         public static string Perf_Export_Title => ResourceManager.GetString("Perf_Export_Title", resourceCulture);
         public static string Perf_Export_Success_Title => ResourceManager.GetString("Perf_Export_Success_Title", resourceCulture);
         public static string Perf_Export_Success_Msg => ResourceManager.GetString("Perf_Export_Success_Msg", resourceCulture);
@@ -990,7 +981,6 @@ namespace ZephyrsElixir.Localization
         public static string Recipes_Delete_Confirm => ResourceManager.GetString("Recipes_Delete_Confirm", resourceCulture);
         public static string Recipes_Share_Title => ResourceManager.GetString("Recipes_Share_Title", resourceCulture);
         public static string Recipes_Share_Confirm => ResourceManager.GetString("Recipes_Share_Confirm", resourceCulture);
-        public static string Recipes_Share_AlreadyShared => ResourceManager.GetString("Recipes_Share_AlreadyShared", resourceCulture);
         public static string Recipes_Share_NeedAuthor => ResourceManager.GetString("Recipes_Share_NeedAuthor", resourceCulture);
         public static string Recipes_Share_Failed => ResourceManager.GetString("Recipes_Share_Failed", resourceCulture);
         public static string Recipes_Error_NewerSchema => ResourceManager.GetString("Recipes_Error_NewerSchema", resourceCulture);
@@ -1108,7 +1098,8 @@ namespace ZephyrsElixir.Localization
         public static string AdbError_SdkMismatch => ResourceManager.GetString("AdbError_SdkMismatch", resourceCulture);
         public static string AdbError_NotInstalledForUser => ResourceManager.GetString("AdbError_NotInstalledForUser", resourceCulture);
         public static string AdbError_PermissionDenied => ResourceManager.GetString("AdbError_PermissionDenied", resourceCulture);
-        public static string Pro_Required_RecipesFeature => ResourceManager.GetString("Pro_Required_RecipesFeature", resourceCulture);
+        public static string Pro_Module_NotLoaded => ResourceManager.GetString("Pro_Module_NotLoaded", resourceCulture);
+        public static string Pro_Module_Title => ResourceManager.GetString("Pro_Module_Title", resourceCulture);
         public static string Recipes_Rank_1 => ResourceManager.GetString("Recipes_Rank_1", resourceCulture);
         public static string Recipes_Rank_2 => ResourceManager.GetString("Recipes_Rank_2", resourceCulture);
         public static string Recipes_Rank_3 => ResourceManager.GetString("Recipes_Rank_3", resourceCulture);
@@ -1135,5 +1126,9 @@ namespace ZephyrsElixir.Localization
         public static string Recipes_Status_Unpublishing => ResourceManager.GetString("Recipes_Status_Unpublishing", resourceCulture);
         public static string Recipes_Status_Unpublished => ResourceManager.GetString("Recipes_Status_Unpublished", resourceCulture);
         public static string Recipes_Unpublish_Failed => ResourceManager.GetString("Recipes_Unpublish_Failed", resourceCulture);
+        public static string License_Dll_RetryDownload => ResourceManager.GetString("License_Dll_RetryDownload", resourceCulture);
+        public static string License_Dialog_CopyDeviceId => ResourceManager.GetString("License_Dialog_CopyDeviceId", resourceCulture);
+        public static string ApkInstaller_Parse_Failed => ResourceManager.GetString("ApkInstaller_Parse_Failed", resourceCulture);
+        public static string ApkInstaller_Split_Selected => ResourceManager.GetString("ApkInstaller_Split_Selected", resourceCulture);
     }
 }

@@ -12,7 +12,6 @@
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
              
     <UserControl.Resources>
-        <h:BatteryLevelToBrushConverter x:Key="BatteryBrush"/>
         <x:Static Member="h:StringEqualityToBoolConverter.Instance" x:Key="StringEq"/>
     </UserControl.Resources>
 
@@ -120,9 +119,13 @@
                         </ControlTemplate>
                     </Button.Template>
                     <Border Style="{StaticResource Sidebar.Style.DevicePanel}" Background="Transparent">
-                        <StackPanel Orientation="Horizontal"
-                                    VerticalAlignment="Center"
-                                    HorizontalAlignment="Center">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
                             <Border x:Name="DeviceCountBadge"
                                     Background="{StaticResource App.Brush.DeepSkyBlue}"
                                     CornerRadius="9" MinWidth="18" Height="18"
@@ -133,10 +136,13 @@
                                            Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
 
-                            <TextBlock Text="{Binding DeviceStatusText}"
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding DeviceStatusText}"
+                                       ToolTip="{Binding DeviceStatusText}"
                                        Style="{StaticResource Sidebar.Style.DeviceText}"/>
 
-                            <Canvas Width="54" Height="24" Margin="10,0,0,0">
+                            <Canvas Grid.Column="2" Width="54" Height="24" Margin="10,0,0,0"
+                                    VerticalAlignment="Center">
                                 <Border Canvas.Left="0" Canvas.Top="2"
                                         Width="50" Height="20"
                                         BorderThickness="2"
@@ -145,7 +151,7 @@
                                         Background="#33000000">
                                     <Grid Margin="2">
                                         <Rectangle RadiusX="2" RadiusY="2"
-                                                   Fill="{Binding DeviceBattery, Converter={StaticResource BatteryBrush}}">
+                                                   Fill="{Binding DeviceBattery, Converter={x:Static h:BatteryLevelToBrushConverter.Instance}}">
                                             <Rectangle.RenderTransform>
                                                 <ScaleTransform ScaleX="{Binding DeviceBattery, Converter={StaticResource App.Converter.PercentageToScale}}"
                                                                ScaleY="1"/>
@@ -158,7 +164,7 @@
                                         Background="White"
                                         CornerRadius="0,2,2,0"/>
                             </Canvas>
-                        </StackPanel>
+                        </Grid>
                     </Border>
                 </Button>
 

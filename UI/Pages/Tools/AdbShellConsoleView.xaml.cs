@@ -22,7 +22,7 @@ public sealed partial class AdbShellConsoleView : UserControl
         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
         "ZephyrsElixir", "adb_snippets.json");
 
-    // Contextual autocomplete table (AC-04). Key = root token, value = sub-commands.
+    // Contextual autocomplete table. Key = root token, value = sub-commands.
     private static readonly Dictionary<string, string[]> Autocomplete = new(StringComparer.OrdinalIgnoreCase)
     {
         ["pm"]       = new[] { "list packages", "list packages -3", "list packages -s", "install", "install -r",
@@ -71,15 +71,16 @@ public sealed partial class AdbShellConsoleView : UserControl
 
     private TabSession? Active => Tabs.SelectedItem as TabSession;
 
-    #region Lifecycle
-
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
         _flushTimer.Start();
         InputBox.Focus();
     }
 
-    private void OnUnloaded(object sender, RoutedEventArgs e) => Cleanup();
+    // Unloaded also fires on plain sidebar navigation, because MainWindow keeps built screens alive:
+    // tearing the sessions down here would hand back a console that looks alive and silently ignores
+    // every command. Only the flush timer pauses; the real teardown is close and app shutdown.
+    private void OnUnloaded(object sender, RoutedEventArgs e) => _flushTimer.Stop();
 
     private void OnShutdownStarted(object? sender, EventArgs e) => Cleanup();
 
@@ -95,11 +96,11 @@ public sealed partial class AdbShellConsoleView : UserControl
             session.Dispose();
     }
 
-    private void OnCloseClick(object sender, RoutedEventArgs e) => _onClose();
-
-    #endregion
-
-    #region Tabs
+    private void OnCloseClick(object sender, RoutedEventArgs e)
+    {
+        Cleanup();
+        _onClose();
+    }
 
     private void AddNewTab()
     {
@@ -190,10 +191,6 @@ public sealed partial class AdbShellConsoleView : UserControl
         EmptyHint.Visibility = (Active?.HasOutput ?? false) ? Visibility.Collapsed : Visibility.Visible;
     }
 
-    #endregion
-
-    #region Input / history / submit
-
     private void OnInputPreviewKeyDown(object sender, KeyEventArgs e)
     {
         switch (e.Key)
@@ -260,10 +257,6 @@ public sealed partial class AdbShellConsoleView : UserControl
         InputBox.CaretIndex = text.Length;
     }
 
-    #endregion
-
-    #region Autocomplete
-
     private void ShowAutocomplete()
     {
         var text = InputBox.Text ?? string.Empty;
@@ -320,10 +313,6 @@ public sealed partial class AdbShellConsoleView : UserControl
 
     private void OnAutoListClick(object sender, MouseButtonEventArgs e) => ConfirmAutocomplete();
 
-    #endregion
-
-    #region Snippets
-
     private void LoadSnippets()
     {
         foreach (var snippet in DefaultSnippets)
@@ -344,7 +333,7 @@ public sealed partial class AdbShellConsoleView : UserControl
                 Snippets.Add(snippet);
             }
         }
-        catch { /* best-effort load, coherent with project convention */ }
+        catch { /* best-effort load */ }
     }
 
     private void SaveSnippets()
@@ -391,10 +380,6 @@ public sealed partial class AdbShellConsoleView : UserControl
         SaveSnippets();
         e.Handled = true;
     }
-
-    #endregion
-
-    #region Toolbar (export / clear) + flush
 
     private void OnExportClick(object sender, RoutedEventArgs e)
     {
@@ -452,8 +437,6 @@ public sealed partial class AdbShellConsoleView : UserControl
             UpdateEmptyHint();
         }
     }
-
-    #endregion
 
 
     /// <summary>A named ADB snippet. Only user-defined ones are persisted and deletable.</summary>
@@ -518,17 +501,9 @@ public sealed partial class AdbShellConsoleView : UserControl
                 var serial = DeviceManager.Instance.ActiveSerial;
                 var arguments = string.IsNullOrEmpty(serial) ? "shell" : $"-s {serial} shell";
 
-                var psi = new ProcessStartInfo(AdbExecutor.GetAdbPath(), arguments)
-                {
-                    RedirectStandardInput = true,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    StandardOutputEncoding = Encoding.UTF8,
-                    StandardErrorEncoding = Encoding.UTF8,
-                    StandardInputEncoding = Encoding.UTF8
-                };
+                var psi = AdbExecutor.CreateStartInfo(AdbExecutor.GetAdbPath(), arguments);
+                psi.RedirectStandardInput = true;
+                psi.StandardInputEncoding = Encoding.UTF8;
 
                 _process = new Process { StartInfo = psi, EnableRaisingEvents = true };
                 _process.OutputDataReceived += OnOutputData;
@@ -545,7 +520,7 @@ public sealed partial class AdbShellConsoleView : UserControl
             }
             catch (Exception ex)
             {
-                // adb missing from PATH / Tools\adb, or any spawn failure → graceful message, no crash (AC-07).
+                // adb missing from PATH / Tools\adb, or any spawn failure → graceful message, no crash.
                 Enqueue($"Failed to start adb: {ex.Message}", LineKind.Stderr);
                 Enqueue("Ensure 'adb' is in PATH or bundled in Tools/adb.", LineKind.System);
                 AdbLogger.Instance.LogError("AdbConsole", $"adb shell start failed: {ex.Message}");

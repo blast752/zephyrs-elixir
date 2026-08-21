@@ -2,24 +2,14 @@ namespace ZephyrsElixir.Core;
 
 public sealed class AdbLogger
 {
-    #region Singleton
-
     private static readonly Lazy<AdbLogger> _instance = new(() => new AdbLogger());
     public static AdbLogger Instance => _instance.Value;
 
     private AdbLogger() { }
 
-    #endregion
-
-    #region Configuration
-
     private const int MaxEntries = 150;
     private const int MaxDetailLength = 300;
     private const int DedupeWindowSeconds = 5;
-
-    #endregion
-
-    #region State
 
     private readonly List<LogEntry> _entries = new();
     private readonly object _lock = new();
@@ -27,10 +17,6 @@ public sealed class AdbLogger
     private int _duplicateCount;
 
     public event EventHandler<LogEntry>? LogEntryAdded;
-
-    #endregion
-
-    #region Public Types
 
     public enum LogLevel { Info, Success, Warning, Error, Command }
 
@@ -50,10 +36,6 @@ public sealed class AdbLogger
             return $"[{time}] [{Level}] [{Category}] {Message}{repeat}{detail}";
         }
     }
-
-    #endregion
-
-    #region Core Logging Methods
 
     public void LogInfo(string category, string message, string? details = null)
         => AddEntry(LogLevel.Info, category, message, details);
@@ -89,10 +71,6 @@ public sealed class AdbLogger
 
         AddEntry(LogLevel.Error, category, message, detail);
     }
-
-    #endregion
-
-    #region Entry Management
 
     private void AddEntry(LogLevel level, string category, string message, string? detail = null)
     {
@@ -155,10 +133,6 @@ public sealed class AdbLogger
         _entries.RemoveAt(0);
     }
 
-    #endregion
-
-    #region Export & Query
-
     public bool HasLogs
     {
         get { lock (_lock) return _entries.Count > 0; }
@@ -183,7 +157,7 @@ public sealed class AdbLogger
             if (_lastEntry is not null && _duplicateCount > 1 &&
                 _entries.Count > 0 && ReferenceEquals(_entries[^1], _lastEntry))
             {
-                _entries[^1] = _lastEntry with { RepeatCount = _duplicateCount };
+                _entries[^1] = _lastEntry = _lastEntry with { RepeatCount = _duplicateCount };
             }
             snapshot = _entries.ToArray();
         }
@@ -240,14 +214,11 @@ public sealed class AdbLogger
         }
     }
 
-    #endregion
-
-    #region Sanitization (Privacy)
-
     private static readonly Regex WinPathRegex = new(@"[A-Za-z]:\\[^\s""]+\\([^\s""\\]+)", RegexOptions.Compiled);
     private static readonly Regex UnixPathRegex = new(@"/(?:home|Users|mnt|storage)/[^\s""]+/([^\s""/]+)", RegexOptions.Compiled);
     private static readonly Regex IpRegex = new(@"(\d{1,3})\.\d{1,3}\.\d{1,3}\.\d{1,3}", RegexOptions.Compiled);
     private static readonly Regex SerialRegex = new(@"\b[A-Z0-9]{8,}\b", RegexOptions.Compiled);
+    private static readonly Regex SerialTargetRegex = new(@"^\s*-s\s+\S+", RegexOptions.Compiled);
     private static readonly Regex EmailRegex = new(@"\b[\w.-]+@[\w.-]+\.\w+\b", RegexOptions.Compiled);
     private static readonly Regex WinPathOutputRegex = new(@"[A-Za-z]:\\[^\s\r\n]+", RegexOptions.Compiled);
     private static readonly Regex DataPathRegex = new(@"/(?:data|storage|sdcard)/[^\s\r\n]+", RegexOptions.Compiled);
@@ -257,6 +228,7 @@ public sealed class AdbLogger
     private static string SanitizeCommand(string command)
     {
         if (string.IsNullOrEmpty(command)) return command;
+        command = SerialTargetRegex.Replace(command, "-s [SERIAL]");
         command = WinPathRegex.Replace(command, "$1");
         command = UnixPathRegex.Replace(command, "$1");
         command = IpRegex.Replace(command, "$1.xxx.xxx.xxx");
@@ -289,6 +261,4 @@ public sealed class AdbLogger
 
         return string.Concat(text.AsSpan(0, maxLength - 3), "...");
     }
-
-    #endregion
 }

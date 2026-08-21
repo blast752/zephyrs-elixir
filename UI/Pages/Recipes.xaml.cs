@@ -81,8 +81,6 @@ public sealed partial class Recipes : UserControl
         AnimationHelpers.CrossFade(TipText, () => _gamification.Tip = tips[_tipIndex]);
     }
 
-    #region Lifecycle
-
     private void OnLoad(object sender, RoutedEventArgs e)
     {
         _tipTimer.Start();
@@ -125,10 +123,6 @@ public sealed partial class Recipes : UserControl
 
     private void Flash(string message) => PageHeaderControl.Subtitle = message;
 
-    #endregion
-
-    #region Tabs
-
     private void OnTabChanged(object sender, RoutedEventArgs e)
     {
         if (LibraryPanel is null || CommunityPanel is null) return;
@@ -139,10 +133,6 @@ public sealed partial class Recipes : UserControl
 
         if (community && !_communityLoaded) _ = LoadCommunityAsync();
     }
-
-    #endregion
-
-    #region Library actions
 
     private static RecipeCardViewModel? CardOf(object sender) =>
         (sender as FrameworkElement)?.DataContext as RecipeCardViewModel;
@@ -170,7 +160,7 @@ public sealed partial class Recipes : UserControl
             Title = Strings.Recipes_Export_Title,
             FileName = $"{vm.Model.Name.SanitizeFileName()}{Recipe.FileExtension}",
             DefaultExt = Recipe.FileExtension,
-            Filter = $"Zephyr's Recipe (*{Recipe.FileExtension})|*{Recipe.FileExtension}"
+            Filter = Recipe.FileDialogFilter
         };
         if (dialog.ShowDialog() != true) return;
 
@@ -181,7 +171,7 @@ public sealed partial class Recipes : UserControl
         }
         catch (Exception ex)
         {
-            DialogService.Instance.ShowInfoDirect(Strings.Dialog_Title_Error, ex.Message, Window.GetWindow(this));
+            DialogService.Instance.ShowError(ex, Window.GetWindow(this));
         }
     }
 
@@ -190,7 +180,7 @@ public sealed partial class Recipes : UserControl
         var dialog = new OpenFileDialog
         {
             Title = Strings.Recipes_Import_Title,
-            Filter = $"Zephyr's Recipe (*{Recipe.FileExtension})|*{Recipe.FileExtension}|All Files (*.*)|*.*",
+            Filter = $"{Recipe.FileDialogFilter}|All Files (*.*)|*.*",
             Multiselect = true
         };
         if (dialog.ShowDialog() != true) return;
@@ -294,10 +284,6 @@ public sealed partial class Recipes : UserControl
                 $"{Strings.Recipes_Unpublish_Failed}\n{ex.Message}", Window.GetWindow(this));
         }
     }
-
-    #endregion
-
-    #region Editor
 
     private void BuildGlyphPicker()
     {
@@ -553,10 +539,6 @@ public sealed partial class Recipes : UserControl
             _editorApks.Remove(apk);
     }
 
-    #endregion
-
-    #region Device app picker
-
     private bool MatchesPickerSearch(AppInfoViewModel app)
     {
         var search = PickerSearch.Text.Trim();
@@ -581,6 +563,7 @@ public sealed partial class Recipes : UserControl
 
         _pickerApps.Clear();
         PickerSearch.Text = string.Empty;
+        PickerSpinner.Visibility = Visibility.Visible;
         PickerLoading.Visibility = Visibility.Visible;
         PickerOverlay.Visibility = Visibility.Visible;
 
@@ -607,7 +590,12 @@ public sealed partial class Recipes : UserControl
         finally
         {
             if (!ct.IsCancellationRequested)
-                PickerLoading.Visibility = _pickerApps.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+            {
+                // Whatever happened, the wait is over: an empty result is the terminal state of a
+                // failure, so only the message it left behind stays on screen.
+                PickerSpinner.Visibility = Visibility.Collapsed;
+                if (_pickerApps.Count > 0) PickerLoading.Visibility = Visibility.Collapsed;
+            }
         }
     }
 
@@ -626,10 +614,6 @@ public sealed partial class Recipes : UserControl
         _pickerCts?.Cancel();
         PickerOverlay.Visibility = Visibility.Collapsed;
     }
-
-    #endregion
-
-    #region Run
 
     private void OnRunRecipeClick(object sender, RoutedEventArgs e)
     {
@@ -795,10 +779,6 @@ public sealed partial class Recipes : UserControl
         HideOverlays();
     }
 
-    #endregion
-
-    #region Community
-
     private CommunitySort SelectedSort =>
         SortRecent.IsChecked == true ? CommunitySort.Recent
         : SortUsed.IsChecked == true ? CommunitySort.MostUsed
@@ -887,14 +867,10 @@ public sealed partial class Recipes : UserControl
         }
         catch (Exception ex)
         {
-            DialogService.Instance.ShowInfoDirect(Strings.Dialog_Title_Error, ex.Message, Window.GetWindow(this));
+            DialogService.Instance.ShowError(ex, Window.GetWindow(this));
         }
         finally { vm.IsBusy = false; }
     }
-
-    #endregion
-
-    #region Overlay helpers
 
     private void ShowOverlay(UIElement overlay)
     {
@@ -912,6 +888,4 @@ public sealed partial class Recipes : UserControl
         PickerOverlay.Visibility = Visibility.Collapsed;
         OverlayContainer.Visibility = Visibility.Collapsed;
     }
-
-    #endregion
 }

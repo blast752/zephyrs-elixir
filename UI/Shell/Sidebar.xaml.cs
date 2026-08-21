@@ -25,13 +25,11 @@ public partial class Sidebar : UserControl
         TranslationManager.Instance.LanguageChanged += OnLanguageChanged;
     }
 
-    #region Lifecycle
-
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
         this.SubscribeToDeviceUpdates(
-            onStatusChanged: OnDeviceStatusChanged,
-            onInfoUpdated: UpdateDeviceInfo
+            onStatusChanged: _ => RefreshDeviceDisplay(),
+            onInfoUpdated: (_, _) => RefreshDeviceDisplay()
         );
 
         DeviceManager.Instance.DevicesChanged += OnDevicesChanged;
@@ -77,31 +75,9 @@ public partial class Sidebar : UserControl
 
     private void RefreshDeviceDisplay()
     {
-        if (DeviceManager.Instance.IsConnected)
-            UpdateDeviceInfo(DeviceManager.Instance.DeviceName, DeviceManager.Instance.BatteryLevel);
-        else
-            UpdateDeviceInfo(Strings.DeviceStatus_NoDevice, 0);
+        DeviceStatusText = DeviceManager.Instance.StatusText;
+        DeviceBattery = DeviceManager.Instance.BatteryLevel;
     }
-
-    #endregion
-
-    #region Device Events
-
-    private void OnDeviceStatusChanged(bool isConnected)
-    {
-        if (!isConnected)
-            UpdateDeviceInfo(Strings.DeviceStatus_NoDevice, 0);
-    }
-
-    private void UpdateDeviceInfo(string name, int battery)
-    {
-        DeviceStatusText = name;
-        DeviceBattery = battery;
-    }
-
-    #endregion
-
-    #region Navigation
 
     public static readonly RoutedEvent NavigateRequestedEvent =
         EventManager.RegisterRoutedEvent(
@@ -125,10 +101,6 @@ public partial class Sidebar : UserControl
         SelectedKey = key;
         RaiseEvent(new RoutedEventArgs(NavigateRequestedEvent));
     }
-
-    #endregion
-
-    #region Dependency Properties
 
     public static readonly DependencyProperty SelectedKeyProperty =
         DependencyProperty.Register(
@@ -168,6 +140,4 @@ public partial class Sidebar : UserControl
         get => (double)GetValue(DeviceBatteryProperty);
         set => SetValue(DeviceBatteryProperty, value);
     }
-
-    #endregion
 }

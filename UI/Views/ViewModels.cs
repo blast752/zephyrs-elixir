@@ -19,6 +19,16 @@ public abstract class LocalizedObservableObject : ObservableObject
     protected virtual void OnLanguageChanged() { }
 }
 
+/// <summary>
+/// One rendered row of the Debloat grid. WPF has no virtualizing wrap panel, so the page groups the
+/// filtered apps into rows itself and lets a <c>VirtualizingStackPanel</c> virtualize by row: the
+/// grid keeps its columns while only the visible rows are ever realized.
+/// </summary>
+/// <param name="Items">The apps in this row, at most <paramref name="Columns"/> of them.</param>
+/// <param name="Columns">Column count the row's <c>UniformGrid</c> lays out against, so a partial
+/// last row keeps the same cell width as a full one.</param>
+public sealed record AppRowViewModel(IReadOnlyList<AppInfoViewModel> Items, int Columns);
+
 public sealed class AppInfoViewModel : LocalizedObservableObject, IEquatable<AppInfoViewModel>
 {
     public event Action<bool>? IsSelectedChanged;
@@ -28,12 +38,15 @@ public sealed class AppInfoViewModel : LocalizedObservableObject, IEquatable<App
     private BitmapImage? _icon;
     private SafetyRiskLevel _riskLevel = SafetyRiskLevel.Unknown;
     private double _safetyScore;
-    private string _aiDescription = Strings.Debloat_Risk_Analyzing;
+    private string _aiDescription = string.Empty;
+    private bool _hasIntelligence;
     private string? _warningMessage;
 
     protected override void OnLanguageChanged()
     {
-        if (_aiDescription == Strings.Debloat_Risk_Analyzing)
+        // The placeholder has to follow the language, the verdict must not: comparing the text would
+        // fail here, because the resource has already switched by the time this runs.
+        if (!_hasIntelligence)
             OnPropertyChanged(nameof(AiDescription));
         OnPropertyChanged(nameof(RiskDisplay));
     }
@@ -81,8 +94,13 @@ public sealed class AppInfoViewModel : LocalizedObservableObject, IEquatable<App
 
     public string AiDescription
     {
-        get => _aiDescription;
-        set => SetProperty(ref _aiDescription, value);
+        get => _hasIntelligence ? _aiDescription : Strings.Debloat_Risk_Analyzing;
+        set
+        {
+            _aiDescription = value;
+            _hasIntelligence = true;
+            OnPropertyChanged();
+        }
     }
 
     public string? WarningMessage
@@ -194,14 +212,28 @@ public sealed class AppDetailsViewModel : LocalizedObservableObject
     public AppInfoViewModel App => _app;
     public ObservableCollection<PermissionItem> Permissions { get; } = new();
 
-    public Dictionary<StandbyBucket, string> BucketOptions => new()
+    public Dictionary<StandbyBucket, string> BucketOptions
     {
-        { StandbyBucket.Active, Strings.Debloat_Bucket_Active },
-        { StandbyBucket.WorkingSet, Strings.Debloat_Bucket_WorkingSet },
-        { StandbyBucket.Frequent, Strings.Debloat_Bucket_Frequent },
-        { StandbyBucket.Rare, Strings.Debloat_Bucket_Rare },
-        { StandbyBucket.Restricted, Strings.Debloat_Bucket_Restricted }
-    };
+        get
+        {
+            var options = new Dictionary<StandbyBucket, string>
+            {
+                { StandbyBucket.Active, Strings.Debloat_Bucket_Active },
+                { StandbyBucket.WorkingSet, Strings.Debloat_Bucket_WorkingSet },
+                { StandbyBucket.Frequent, Strings.Debloat_Bucket_Frequent },
+                { StandbyBucket.Rare, Strings.Debloat_Bucket_Rare },
+                { StandbyBucket.Restricted, Strings.Debloat_Bucket_Restricted }
+            };
+
+            // NEVER is what Android assigns to an app the user has never opened — the state most of
+            // the preinstalled bloat is actually in. It is reported, not chosen: it belongs in the
+            // list only while it is the current value, or the box would render blank on those apps.
+            if (_selectedBucket == StandbyBucket.Never)
+                options.Add(StandbyBucket.Never, Strings.Debloat_Bucket_Never);
+
+            return options;
+        }
+    }
 
     public bool IsLoading
     {
@@ -249,6 +281,7 @@ public sealed class AppDetailsViewModel : LocalizedObservableObject
             if (SupportsStandbyBucket)
             {
                 _selectedBucket = await PermissionManager.GetAppStandbyBucketAsync(_app.PackageName);
+                OnPropertyChanged(nameof(BucketOptions));
                 OnPropertyChanged(nameof(SelectedBucket));
             }
             NotifyPermissionCounts();
@@ -352,23 +385,29 @@ public sealed class DnsProviderViewModel : LocalizedObservableObject
     public int PingMs
     {
         get => _pingMs;
-        set { if (SetProperty(ref _pingMs, value)) OnPropertyChanged(nameof(PingDisplay)); }
+        set { if (SetProperty(ref _pingMs, value)) { OnPropertyChanged(nameof(PingDisplay)); OnPropertyChanged(nameof(PingQualityIcon)); } }
     }
 
     public bool IsPinging
     {
         get => _isPinging;
-        set { if (SetProperty(ref _isPinging, value)) OnPropertyChanged(nameof(PingDisplay)); }
+        set { if (SetProperty(ref _isPinging, value)) { OnPropertyChanged(nameof(PingDisplay)); OnPropertyChanged(nameof(PingQualityIcon)); } }
     }
 
     public string PingDisplay => IsPinging ? "..." : PingMs switch
     {
         < 0 => "",
         0 => Strings.Advanced_DNS_Ping_Timeout,
-        < 50 => $"{PingMs}ms ⚡",
-        < 100 => $"{PingMs}ms ✓",
-        < 200 => $"{PingMs}ms",
-        _ => $"{PingMs}ms ⚠"
+        _ => $"{PingMs}ms"
+    };
+
+    /// <summary>Icon registry key grading the latency alongside <see cref="PingDisplay"/>; empty when there is nothing to grade.</summary>
+    public string PingQualityIcon => IsPinging || PingMs <= 0 ? string.Empty : PingMs switch
+    {
+        < 50 => "bolt",
+        < 100 => "check",
+        < 200 => string.Empty,
+        _ => "warning"
     };
 }
 
@@ -445,16 +484,16 @@ public static class RecipeAccents
 {
     private static readonly Dictionary<string, Brush> Map = new(StringComparer.OrdinalIgnoreCase)
     {
-        ["gold"] = AppBrushes.GradientApks,
+        ["gold"] = AppBrushes.GradientAmber,
         ["red"] = AppBrushes.GradientRed,
         ["cyan"] = AppBrushes.GradientCyan,
-        ["purple"] = AppBrushes.GradientApkm,
+        ["purple"] = AppBrushes.GradientPurple,
         ["green"] = AppBrushes.GradientGreen,
-        ["blue"] = AppBrushes.GradientApk
+        ["blue"] = AppBrushes.GradientBlue
     };
 
     public static Brush BrushFor(string accent) =>
-        Map.TryGetValue(accent, out var brush) ? brush : AppBrushes.GradientApk;
+        Map.TryGetValue(accent, out var brush) ? brush : AppBrushes.GradientBlue;
 }
 
 public static class RecipeChips

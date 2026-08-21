@@ -2,15 +2,11 @@ namespace ZephyrsElixir.UI.Dialogs;
 
 public sealed partial class UnifiedDialog : Window
 {
-    #region Cached Icon Brushes (shared across all dialog instances)
-
-    // Frozen at class-init to avoid allocating/freezing a new LinearGradientBrush
-    // on every dialog open. Keeps identical visuals, saves GC pressure.
-    private static readonly Brush InfoIconBrush     = UIHelpers.CreateGradientBrush("#00BFFF", "#007FFF");
-    private static readonly Brush SuccessIconBrush  = AppBrushes.GradientGreen; // identical colors — shared
-    private static readonly Brush WarningIconBrush  = UIHelpers.CreateGradientBrush("#FFD700", "#FFA500");
-    private static readonly Brush ErrorIconBrush    = UIHelpers.CreateGradientBrush("#FF6B6B", "#FF4757");
-    private static readonly Brush QuestionIconBrush = UIHelpers.CreateGradientBrush("#A78BFA", "#7C3AED");
+    private static readonly Brush InfoIconBrush     = AppBrushes.GradientSky;
+    private static readonly Brush SuccessIconBrush  = AppBrushes.GradientGreen;
+    private static readonly Brush WarningIconBrush  = AppBrushes.GradientGold;
+    private static readonly Brush ErrorIconBrush    = AppBrushes.GradientCoral;
+    private static readonly Brush QuestionIconBrush = AppBrushes.GradientViolet;
     private static readonly Brush ProIconBrush      = WarningIconBrush; // same gold/orange palette
 
     private static readonly SolidColorBrush DefaultIconBrush;
@@ -21,21 +17,9 @@ public sealed partial class UnifiedDialog : Window
         DefaultIconBrush.Freeze();
     }
 
-    #endregion
-
-    #region Dialog Result
-
     public DialogAction Result { get; private set; } = DialogAction.Cancel;
 
-    #endregion
-
-    #region Private Constructor (use DialogService)
-
     private UnifiedDialog() => InitializeComponent();
-
-    #endregion
-
-    #region Factory Methods (Internal)
 
     internal static UnifiedDialog Create(DialogConfig config)
     {
@@ -43,10 +27,6 @@ public sealed partial class UnifiedDialog : Window
         dialog.Configure(config);
         return dialog;
     }
-
-    #endregion
-
-    #region Configuration
 
     private void Configure(DialogConfig config)
     {
@@ -107,10 +87,6 @@ public sealed partial class UnifiedDialog : Window
         }
     }
 
-    #endregion
-
-    #region Icon & Style Helpers
-
     private static string GetIconForType(DialogType type) => type switch
     {
         DialogType.Info or DialogType.RichContent => "info",
@@ -141,10 +117,7 @@ public sealed partial class UnifiedDialog : Window
         _                     => "DialogSecondaryButtonStyle"
     };
 
-    #endregion
 }
-
-#region Enums & Configuration Records
 
 public enum DialogType
 {
@@ -187,4 +160,3 @@ public sealed record DialogConfig
     public IEnumerable<Block>? RichContent { get; init; }
 }
 
-#endregion

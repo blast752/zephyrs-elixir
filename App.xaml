@@ -21,24 +21,21 @@
                 <Setter Property="TextOptions.TextHintingMode" Value="Auto"/>
                 <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
                 <Setter Property="RenderOptions.ClearTypeHint" Value="Enabled"/>
+                <!-- FontFamily is inherited, so setting it here reaches every control in the window.
+                     An implicit Style on Control never applies: WPF resolves implicit styles on the
+                     exact runtime type, and nothing instantiates a bare Control. -->
+                <Setter Property="FontFamily" Value="{StaticResource AppFontFamily}"/>
             </Style>
 
             <Style TargetType="TextBlock">
                 <Setter Property="UseLayoutRounding" Value="True"/>
                 <Setter Property="SnapsToDevicePixels" Value="True"/>
-                <Setter Property="TextOptions.TextFormattingMode" Value="Ideal"/>
                 <Setter Property="TextOptions.TextRenderingMode" Value="ClearType"/>
                 <Setter Property="TextOptions.TextHintingMode" Value="Auto"/>
                 <Setter Property="FontFamily" Value="{StaticResource AppFontFamily}"/>
             </Style>
 
             <Style TargetType="Label">
-                <Setter Property="UseLayoutRounding" Value="True"/>
-                <Setter Property="SnapsToDevicePixels" Value="True"/>
-                <Setter Property="FontFamily" Value="{StaticResource AppFontFamily}"/>
-            </Style>
-
-            <Style TargetType="Control">
                 <Setter Property="UseLayoutRounding" Value="True"/>
                 <Setter Property="SnapsToDevicePixels" Value="True"/>
                 <Setter Property="FontFamily" Value="{StaticResource AppFontFamily}"/>

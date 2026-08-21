@@ -2,17 +2,11 @@ namespace ZephyrsElixir.Licensing;
 
 public sealed class LicenseService : IDisposable
 {
-    #region Singleton
-
     private static readonly Lazy<LicenseService> _instance = new(
         () => new LicenseService(), 
         LazyThreadSafetyMode.ExecutionAndPublication);
     
     public static LicenseService Instance => _instance.Value;
-
-    #endregion
-
-    #region Fields
 
     private readonly HttpClient _http;
     private readonly HttpClient _downloadHttp;
@@ -41,10 +35,6 @@ public sealed class LicenseService : IDisposable
     private int _dllConsecutiveFailures;
     private int _dllHealInFlight;
 
-    #endregion
-
-    #region Events & Properties
-
     public event EventHandler<LicenseStateChangedEventArgs>? StateChanged;
     public event EventHandler<ProDllProgressEventArgs>? DllDownloadProgress;
 
@@ -62,10 +52,11 @@ public sealed class LicenseService : IDisposable
                 reason = DetermineChangeReason(old, value);
             }
             
-            if (old.EffectiveTier != value.EffectiveTier || 
+            if (old.EffectiveTier != value.EffectiveTier ||
                 old.IsOffline != value.IsOffline ||
                 old.Status != value.Status ||
-                old.DllState != value.DllState)
+                old.DllState != value.DllState ||
+                old.LastError != value.LastError)
             {
                 Log("StateChange", $"{old.EffectiveTier}→{value.EffectiveTier}, Status: {value.Status}, Offline: {value.IsOffline}, Dll: {value.DllState}");
                 StateChanged?.Invoke(this, new LicenseStateChangedEventArgs(old, value, reason));
@@ -99,13 +90,6 @@ public sealed class LicenseService : IDisposable
                 _signature);
         }
     }
-
-    public bool IsInitialized => _initialized;
-    public string? LocalProDllVersion => _cachedProDllVersion;
-
-    #endregion
-
-    #region Constructor
 
     private LicenseService()
     {
@@ -152,10 +136,6 @@ public sealed class LicenseService : IDisposable
         
         Log("Init", $"Service created. DeviceId: {_deviceId[..8]}..., CachePath: {_cachePath}");
     }
-
-    #endregion
-
-    #region Public API
 
     public async Task InitializeAsync()
     {
@@ -231,13 +211,24 @@ public sealed class LicenseService : IDisposable
 
             if (!ValidateTimestamp(response.Timestamp))
             {
-                Log("Activate", "Invalid timestamp");
-                return LicenseResult.Failure(Strings.License_Error_InvalidResponse);
+                Log("Activate", "Timestamp outside tolerance - system clock not synchronised");
+                return LicenseResult.Failure(Strings.License_Error_ClockSkew);
             }
 
             var newState = CreateStateFromResponse(response, normalizedKey, offline: false);
-            
-            if (newState.Tier >= LicenseTier.Pro && response.ProDll?.IsValid == true)
+
+            // A key the server accepts but grants no Pro entitlement for leaves the app on Free.
+            // Reporting that as a successful activation — and caching it — is how the user ends up
+            // staring at the Free screen after an "activated" message.
+            if (newState.EffectiveTier < LicenseTier.Pro)
+            {
+                Log("Activate", $"No Pro entitlement: Tier={newState.Tier}, Status={newState.Status}, Expires={newState.ExpiresAt:O}");
+                return LicenseResult.Failure(newState.IsExpired
+                    ? Strings.License_Expired_Renew
+                    : Strings.License_Activation_NoProEntitlement);
+            }
+
+            if (response.ProDll?.IsValid == true)
             {
                 progress?.Report(new ActivationProgress(ActivationPhase.Downloading, 0));
                 
@@ -260,23 +251,21 @@ public sealed class LicenseService : IDisposable
                     Log("Activate", $"Pro DLL download failed: {dllResult.Error}");
                 }
             }
-            else if (newState.Tier >= LicenseTier.Pro)
+            else
             {
-                var localDll = VerifyLocalProDll();
-                newState = newState with { DllState = localDll };
+                newState = newState with { DllState = VerifyLocalProDll() };
             }
 
             CurrentState = newState;
             await SaveCacheAsync(newState, response.Signature, response.Timestamp);
-            
+
             progress?.Report(new ActivationProgress(ActivationPhase.Complete, 100));
-            
+
             Log("Activate", $"SUCCESS! Tier: {newState.Tier}, Status: {newState.Status}, Dll: {newState.DllState}");
 
-            if (newState.Tier >= LicenseTier.Pro && newState.DllState == ProDllState.DownloadFailed)
-                return LicenseResult.Success("License activated! Pro module download failed — it will retry automatically.", newState);
-            
-            return LicenseResult.Success("License activated successfully!", newState);
+            return newState.DllState == ProDllState.DownloadFailed
+                ? LicenseResult.Success(Strings.License_Activation_DllPending, newState)
+                : LicenseResult.Success(Strings.License_Activation_Success, newState);
         }
         catch (TaskCanceledException)
         {
@@ -375,6 +364,13 @@ public sealed class LicenseService : IDisposable
                 CurrentState = newState;
                 await SaveCacheAsync(newState, response.Signature, response.Timestamp);
                 Log("Validate", $"Valid! Status: {newState.Status}, Dll: {newState.DllState}");
+            }
+            else if (response?.Valid == true)
+            {
+                // The licence is good but the response cannot be trusted as fresh. Say so, instead of
+                // letting the periodic check fail silently until the offline grace runs out.
+                Log("Validate", "Timestamp outside tolerance - system clock not synchronised");
+                CurrentState = CurrentState with { LastError = Strings.License_Error_ClockSkew };
             }
             else if (response?.Valid == false)
             {
@@ -503,7 +499,7 @@ public sealed class LicenseService : IDisposable
             if (result.Success)
             {
                 CurrentState = CurrentState with { DllState = ProDllState.Ready };
-                await SaveCacheAsync(CurrentState, response.Signature, response.Timestamp);
+                await SaveCacheAsync(CurrentState, _signature, _signedAt);
                 progress?.Report(new ActivationProgress(ActivationPhase.Complete, 100));
                 Log("RetryDll", "Pro DLL downloaded successfully on retry");
             }
@@ -621,6 +617,11 @@ public sealed class LicenseService : IDisposable
             if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
 
+            // The load context memory-maps this file and holds it for the life of the process, so the
+            // cleanup that runs after loading can never win. The previous session's copy is wiped
+            // here instead — the one moment nothing has it open.
+            CleanupTempDll();
+
             File.WriteAllBytes(tempPath, dllBytes);
             Log("DllLoad", $"Decrypted DLL written to temp path ({dllBytes.Length} bytes)");
             return tempPath;
@@ -651,10 +652,6 @@ public sealed class LicenseService : IDisposable
             try { File.Delete(ProDllConfig.TempDllPath); } catch { }
         }
     }
-
-    #endregion
-
-    #region Pro DLL Download & Installation
 
     private async Task<(bool Success, string? Error)> DownloadAndInstallProDllAsync(
         ProDllInfo dllInfo, string normalizedKey, Action<double>? onProgress = null)
@@ -818,7 +815,7 @@ public sealed class LicenseService : IDisposable
 
             var drive = new DriveInfo(root);
             if (drive.AvailableFreeSpace < requiredBytes + ProDllConfig.MinDiskSpaceBytes)
-                return (false, "Not enough disk space. Please free up some space and try again.");
+                return (false, Strings.License_Error_DiskSpace);
             
             return (true, null);
         }
@@ -834,10 +831,6 @@ public sealed class LicenseService : IDisposable
         if (!Directory.Exists(dir))
             Directory.CreateDirectory(dir);
     }
-
-    #endregion
-
-    #region Pro DLL Crypto
 
     private byte[]? EncryptDll(byte[] dllBytes, string normalizedKey)
     {
@@ -911,10 +904,6 @@ public sealed class LicenseService : IDisposable
         CryptographicOperations.ZeroMemory(ikm);
         return key;
     }
-
-    #endregion
-
-    #region Pro DLL Fingerprint
 
     private ProDllState VerifyLocalProDll()
     {
@@ -1024,10 +1013,6 @@ public sealed class LicenseService : IDisposable
         return !string.Equals(serverVersion, localVersion, StringComparison.OrdinalIgnoreCase);
     }
 
-    #endregion
-
-    #region HTTP
-
     private async Task<T?> PostAsync<T>(string endpoint, object request) where T : class
     {
         try
@@ -1049,10 +1034,6 @@ public sealed class LicenseService : IDisposable
             return null;
         }
     }
-
-    #endregion
-
-    #region Cache Operations
 
     private bool LoadCache()
     {
@@ -1200,10 +1181,6 @@ public sealed class LicenseService : IDisposable
         }
     }
 
-    #endregion
-
-    #region Crypto & Validation
-
     private static string GenerateDeviceId()
     {
         var data = string.Join("|",
@@ -1223,10 +1200,8 @@ public sealed class LicenseService : IDisposable
 
     private static bool ValidateTimestamp(long timestamp)
     {
-        var serverTime = DateTimeOffset.FromUnixTimeSeconds(timestamp);
-        var diff = DateTimeOffset.UtcNow - serverTime;
-        return diff.TotalMinutes > -LicenseConfig.TimestampToleranceMinutesPast 
-            && diff.TotalMinutes < LicenseConfig.TimestampToleranceMinutesFuture;
+        var diff = DateTimeOffset.UtcNow - DateTimeOffset.FromUnixTimeSeconds(timestamp);
+        return Math.Abs(diff.TotalMinutes) <= LicenseConfig.TimestampToleranceMinutes;
     }
 
     private static byte[] Encrypt(string text)
@@ -1267,10 +1242,6 @@ public sealed class LicenseService : IDisposable
             }
         }
     }
-
-    #endregion
-
-    #region Background Validation
 
     private void StartPeriodicValidation()
     {
@@ -1321,11 +1292,7 @@ public sealed class LicenseService : IDisposable
         Log("Validation", $"Next validation in {interval.TotalHours:F1} hours");
     }
 
-    #endregion
-
-    #region Pro DLL Self-Healing Guardian
-
-    private enum GuardianTrigger { Startup, LicenseStateChanged, NetworkRestored, FileSystem, Periodic, Manual }
+    private enum GuardianTrigger { Startup, LicenseStateChanged, NetworkRestored, FileSystem, Periodic }
 
     private void StartProDllGuardian()
     {
@@ -1370,8 +1337,6 @@ public sealed class LicenseService : IDisposable
         _dllWatcher?.Dispose();
         _dllGuardianCts?.Dispose();
     }
-
-    public Task TriggerProDllGuardianAsync() => EvaluateProDllStateAsync(GuardianTrigger.Manual);
 
     private void SetupDllWatcher()
     {
@@ -1480,7 +1445,6 @@ public sealed class LicenseService : IDisposable
         if (state.LicenseKey is null) return true;
         if (state.Tier < LicenseTier.Pro) return true;
         if (state.OfflineGraceExpired) return true;
-        if (state.IsExpired) return true;
 
         return state.Status
             is LicenseStatus.Refunded
@@ -1505,8 +1469,7 @@ public sealed class LicenseService : IDisposable
             is GuardianTrigger.Startup
             or GuardianTrigger.LicenseStateChanged
             or GuardianTrigger.NetworkRestored
-            or GuardianTrigger.FileSystem
-            or GuardianTrigger.Manual;
+            or GuardianTrigger.FileSystem;
         if (isImmediate) return true;
 
         if (_dllConsecutiveFailures == 0) return true;
@@ -1549,10 +1512,6 @@ public sealed class LicenseService : IDisposable
             Log("Guardian", $"Heal failed (consecutive failures={_dllConsecutiveFailures})");
         }
     }
-
-    #endregion
-
-    #region Helpers
 
     private LicenseRequest CreateRequest(string key) => new()
     {
@@ -1610,10 +1569,6 @@ public sealed class LicenseService : IDisposable
         if (_disposed) throw new ObjectDisposedException(nameof(LicenseService));
     }
 
-    #endregion
-
-    #region IDisposable
-
     public void Dispose()
     {
         if (_disposed) return;
@@ -1633,11 +1588,7 @@ public sealed class LicenseService : IDisposable
         
         Log("Dispose", "Service disposed");
     }
-
-    #endregion
 }
-
-#region Activation Progress
 
 public enum ActivationPhase
 {
@@ -1681,5 +1632,3 @@ public sealed class ProDllProgressEventArgs : EventArgs
         TotalBytes = totalBytes;
     }
 }
-
-#endregion

@@ -21,7 +21,7 @@
                 <Setter Property="Background">
                     <Setter.Value>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                            <GradientStop Color="#FF007FFF" Offset="0"/>
+                            <GradientStop Color="{StaticResource App.Color.Blue400}" Offset="0"/>
                             <GradientStop Color="#FF00BFFF" Offset="1"/>
                         </LinearGradientBrush>
                     </Setter.Value>
@@ -77,7 +77,7 @@
                 <Setter Property="Background">
                     <Setter.Value>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                            <GradientStop Color="#FFFFD700" Offset="0"/>
+                            <GradientStop Color="{StaticResource App.Color.Gold}" Offset="0"/>
                             <GradientStop Color="#FFFFA500" Offset="1"/>
                         </LinearGradientBrush>
                     </Setter.Value>
@@ -91,7 +91,7 @@
         <Border CornerRadius="16" BorderThickness="1.5">
             <Border.BorderBrush>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="#60FFD700" Offset="0"/>
+                    <GradientStop Color="{StaticResource App.Color.Gold.A60}" Offset="0"/>
                     <GradientStop Color="#6000BFFF" Offset="1"/>
                 </LinearGradientBrush>
             </Border.BorderBrush>
@@ -125,7 +125,7 @@
                                VerticalAlignment="Center">
                         <TextBlock.Foreground>
                             <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                <GradientStop Color="#FFFFD700" Offset="0"/>
+                                <GradientStop Color="{StaticResource App.Color.Gold}" Offset="0"/>
                                 <GradientStop Color="#FFFFFFFF" Offset="1"/>
                             </LinearGradientBrush>
                         </TextBlock.Foreground>

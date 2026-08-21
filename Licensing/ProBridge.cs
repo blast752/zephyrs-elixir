@@ -1,7 +1,5 @@
 namespace ZephyrsElixir.Licensing;
 
-#region IProModule Interface
-
 public interface IProModule : IDisposable
 {
     bool Initialize(
@@ -26,10 +24,6 @@ public interface IProModule : IDisposable
     FrameworkElement? CreatePage(string pageId, Action? closeAction = null);
 }
 
-#endregion
-
-#region ProResult
-
 public readonly record struct ProResult
 {
     public bool Success { get; init; }
@@ -40,10 +34,6 @@ public readonly record struct ProResult
     public static ProResult Fail(string message) => new() { Success = false, Message = message };
     public static ProResult Ok(string message, IReadOnlyDictionary<string, object> data) => new() { Success = true, Message = message, Data = data };
 }
-
-#endregion
-
-#region ProModuleLoadContext
 
 internal sealed class ProModuleLoadContext : AssemblyLoadContext
 {
@@ -67,10 +57,6 @@ internal sealed class ProModuleLoadContext : AssemblyLoadContext
         return null;
     }
 }
-
-#endregion
-
-#region ProLoader
 
 public static class ProLoader
 {
@@ -153,8 +139,6 @@ public static class ProLoader
 
                 var instance = (IProModule)Activator.CreateInstance(moduleType)!;
 
-                LicenseService.Instance.CleanupTempDll();
-
                 var initialized = instance.Initialize(
                     adbExecutor: (cmd, ct) => AdbExecutor.ExecuteModuleAsync(cmd, ct),
                     licenseStateProvider: () => LicenseService.Instance.CurrentState,
@@ -165,29 +149,18 @@ public static class ProLoader
                     Log("Pro module initialization failed");
                     instance.Dispose();
                     UnloadContext();
+                    LicenseService.Instance.CleanupTempDll();
                     return;
                 }
 
                 _module = instance;
                 Log($"Pro module loaded v{instance.ModuleVersion} — {instance.SupportedCommands.Count} commands, {instance.SupportedPages.Count} pages");
             }
-            catch (BadImageFormatException ex)
-            {
-                Log($"Bad image format: {ex.Message}");
-                _module = null;
-                UnloadContext();
-                LicenseService.Instance.CleanupTempDll();
-            }
-            catch (FileLoadException ex)
-            {
-                Log($"File load error: {ex.Message}");
-                _module = null;
-                UnloadContext();
-                LicenseService.Instance.CleanupTempDll();
-            }
             catch (Exception ex)
             {
-                Log($"Failed to load Pro module: {ex.Message}");
+                // The type name keeps BadImageFormatException and FileLoadException — a tampered or
+                // half-written DLL — distinguishable in the log without three identical handlers.
+                Log($"Failed to load Pro module: {ex.GetType().Name}: {ex.Message}");
                 _module = null;
                 UnloadContext();
                 LicenseService.Instance.CleanupTempDll();
@@ -267,10 +240,6 @@ public static class ProLoader
     }
 }
 
-#endregion
-
-#region ProIntegrity
-
 internal static class ProIntegrity
 {
     internal static readonly byte[] ExpectedPublicKeyToken = new byte[]
@@ -278,10 +247,6 @@ internal static class ProIntegrity
         0xAE, 0x38, 0xA7, 0x84, 0x38, 0xDF, 0x1E, 0x97
     };
 }
-
-#endregion
-
-#region Pro Commands Helper
 
 public static class Pro
 {
@@ -293,45 +258,59 @@ public static class Pro
         CancellationToken ct = default,
         IProgress<string>? progress = null)
     {
-        if (!ProLoader.IsLoaded)
+        // Captured once. An unload triggered by a licence change between the check and the call would
+        // otherwise turn ProLoader.Module! into a NullReferenceException mid-command.
+        var module = ProLoader.Module;
+        if (module is null)
         {
             ProLoader.ReloadIfNeeded();
-            if (!ProLoader.IsLoaded)
+            module = ProLoader.Module;
+            if (module is null)
                 return ProResult.Fail("Pro module not available. Please check your license or restart the application.");
         }
 
         if (!LicenseService.Instance.IsPro)
             return ProResult.Fail("Pro license required.");
 
-        return await ProLoader.Module!.ExecuteAsync(commandId, args, ct, progress);
+        // Recipes carry command ids as data, and a cached module can predate the app: ask what this
+        // build of the module actually implements instead of handing it an id it never declared.
+        if (!module.SupportedCommands.Contains(commandId))
+            return ProResult.Fail($"Pro module does not support '{commandId}'.");
+
+        return await InvokeAsync(() => module.ExecuteAsync(commandId, args, ct, progress));
     }
 
     public static async Task<ProResult> RevertAsync(string commandId, CancellationToken ct = default)
     {
-        if (!ProLoader.IsLoaded)
+        var module = ProLoader.Module;
+        if (module is null)
             return ProResult.Fail("Pro module not available.");
 
-        return await ProLoader.Module!.RevertAsync(commandId, ct);
+        if (!module.SupportedCommands.Contains(commandId))
+            return ProResult.Fail($"Pro module does not support '{commandId}'.");
+
+        return await InvokeAsync(() => module.RevertAsync(commandId, ct));
+    }
+
+    // A licence change between the capture above and the call disposes the module out from under an
+    // in-flight command, so its own state turns null mid-flight. Callers get a failed result to act
+    // on instead of a raw NullReferenceException surfacing as the user's error message.
+    private static async Task<ProResult> InvokeAsync(Func<Task<ProResult>> call)
+    {
+        try { return await call(); }
+        catch (OperationCanceledException) { throw; }
+        catch (Exception ex) { return ProResult.Fail($"Pro module unavailable: {ex.Message}"); }
     }
 
     public static FrameworkElement? CreatePage(string pageId, Action? closeAction = null)
     {
-        if (!ProLoader.IsLoaded || !LicenseService.Instance.IsPro)
+        var module = ProLoader.Module;
+        if (module is null || !LicenseService.Instance.IsPro || !module.SupportedPages.Contains(pageId))
             return null;
 
-        return ProLoader.Module!.CreatePage(pageId, closeAction);
+        return module.CreatePage(pageId, closeAction);
     }
-
-    public static bool SupportsCommand(string commandId) =>
-        ProLoader.Module?.SupportedCommands.Contains(commandId) == true;
-
-    public static bool SupportsPage(string pageId) =>
-        ProLoader.Module?.SupportedPages.Contains(pageId) == true;
 }
-
-#endregion
-
-#region Pro Command IDs
 
 public static class ProCommandIds
 {
@@ -341,17 +320,12 @@ public static class ProCommandIds
     public const string GoogleCoreControl = "privacy.google_core";
     public const string RamExpansion = "privacy.ram_expansion";
 
-    public const string ExtremeOptimization = "optimization.extreme";
     public const string ExtremeCachedAppsFreezer = "extreme_cached_apps_freezer";
     public const string ExtremeMulticoreScheduler = "extreme_multicore_scheduler";
     public const string ExtremeCompilationMode = "extreme_compilation_mode";
 
     public const string ApkBackup = "debloat.backup";
 
-    public const string MultiApkInstall = "tools.apk_multi_install";
-
     public const string ScreenMirrorPage = "tools.screen_mirror";
     public const string PerformanceMonitorPage = "performance.monitor";
 }
-
-#endregion

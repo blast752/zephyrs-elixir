@@ -1,7 +1,5 @@
 namespace ZephyrsElixir.UI.Helpers;
 
-#region Static Helpers
-
 public static class UIHelpers
 {
     public static LinearGradientBrush CreateGradientBrush(string hexColor1, string hexColor2)
@@ -18,6 +16,29 @@ public static class UIHelpers
         };
         brush.Freeze();
         return brush;
+    }
+
+    /// <summary>The live binding behind <c>{h:Translate key}</c>, so code-behind that has to touch a
+    /// translated property re-establishes the binding instead of freezing the current language in.</summary>
+    public static Binding Translation(string key) => new($"[{key}]")
+    {
+        Source = TranslationManager.Instance,
+        Mode = BindingMode.OneWay
+    };
+
+    /// <summary>Decodes a stream into a frozen, cross-thread-usable bitmap. <c>OnLoad</c> is what lets
+    /// the caller dispose the stream immediately.</summary>
+    public static BitmapImage BitmapFromStream(Stream stream, int decodePixelWidth = 0, bool ignoreColorProfile = false)
+    {
+        var bitmap = new BitmapImage();
+        bitmap.BeginInit();
+        bitmap.CacheOption = BitmapCacheOption.OnLoad;
+        if (ignoreColorProfile) bitmap.CreateOptions = BitmapCreateOptions.IgnoreColorProfile;
+        if (decodePixelWidth > 0) bitmap.DecodePixelWidth = decodePixelWidth;
+        bitmap.StreamSource = stream;
+        bitmap.EndInit();
+        bitmap.Freeze();
+        return bitmap;
     }
 
     public static string ToPascalCase(string snakeCase) =>
@@ -46,6 +67,15 @@ public static class UIHelpers
         brush.Freeze();
         return brush;
     }
+
+    /// <summary>
+    /// Resolves a palette <see cref="Color"/> out of the merged dictionaries, so code that has to
+    /// hand a colour to something outside WPF — the DWM caption, an interop call — reads the same
+    /// token the UI paints with instead of carrying a second copy of the literal. Null when the key
+    /// is absent, which callers treat as "leave the platform default alone".
+    /// </summary>
+    public static Color? PaletteColor(string key) =>
+        Application.Current?.TryFindResource(key) is Color color ? color : null;
 
     /// <summary>
     /// The representative "leading" colour of a brush — the first stop of a gradient, the colour
@@ -107,8 +137,6 @@ public static class AnimationHelpers
     }
 }
 
-#region Centralized Shell Utilities
-
 public static class ShellUtils
 {
     public static bool OpenUrl(string? url)
@@ -128,9 +156,29 @@ public static class ShellUtils
     }
 
     public static bool OpenUrl(Uri? uri) => OpenUrl(uri?.AbsoluteUri);
-}
 
-#endregion
+    /// <summary>Opens Explorer with <paramref name="path"/> selected; false when the shell refuses.</summary>
+    public static bool RevealInExplorer(string? path) => StartExplorer(path, $"/select,\"{path}\"");
+
+    /// <summary>Opens <paramref name="path"/> as a folder in Explorer; false when the shell refuses.</summary>
+    public static bool OpenFolder(string? path) => StartExplorer(path, $"\"{path}\"");
+
+    private static bool StartExplorer(string? path, string arguments)
+    {
+        if (string.IsNullOrWhiteSpace(path)) return false;
+
+        try
+        {
+            Process.Start("explorer.exe", arguments);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            try { AdbLogger.Instance.LogWarning("Shell", $"Failed to open Explorer: {ex.Message}"); } catch { }
+            return false;
+        }
+    }
+}
 
 public static class AppBrushes
 {
@@ -143,16 +191,19 @@ public static class AppBrushes
     public static readonly SolidColorBrush Caution    = UIHelpers.FrozenSolid(255, 190, 0);
     public static readonly SolidColorBrush Critical   = UIHelpers.FrozenSolid(220, 20, 60);
 
-    public static readonly Brush GradientApk     = UIHelpers.CreateGradientBrush("#63B5FF", "#1175E6");
-    public static readonly Brush GradientXapk    = UIHelpers.CreateGradientBrush("#00D68F", "#00B377");
-    public static readonly Brush GradientApks    = UIHelpers.CreateGradientBrush("#FFD700", "#CC9900");
-    public static readonly Brush GradientApkm    = UIHelpers.CreateGradientBrush("#7D64FF", "#5A3FD9");
+    public static readonly Brush GradientBlue    = UIHelpers.CreateGradientBrush("#63B5FF", "#1175E6");
+    public static readonly Brush GradientAmber   = UIHelpers.CreateGradientBrush("#FFD700", "#CC9900");
+    public static readonly Brush GradientPurple  = UIHelpers.CreateGradientBrush("#7D64FF", "#5A3FD9");
     public static readonly Brush GradientDefault = UIHelpers.CreateGradientBrush("#808080", "#606060");
     public static readonly Brush GradientOrange  = UIHelpers.CreateGradientBrush("#FF9F43", "#E67E22");
     public static readonly Brush GradientGreen   = UIHelpers.CreateGradientBrush("#00D68F", "#00B377");
     public static readonly Brush GradientCyan    = UIHelpers.CreateGradientBrush("#00BFFF", "#0099CC");
     public static readonly Brush GradientNavy    = UIHelpers.CreateGradientBrush("#1175E6", "#0D3A78");
     public static readonly Brush GradientRed     = UIHelpers.CreateGradientBrush("#FF6B6B", "#DC143C");
+    public static readonly Brush GradientGold    = UIHelpers.CreateGradientBrush("#FFD700", "#FFA500");
+    public static readonly Brush GradientSky     = UIHelpers.CreateGradientBrush("#00BFFF", "#007FFF");
+    public static readonly Brush GradientCoral   = UIHelpers.CreateGradientBrush("#FF6B6B", "#FF4757");
+    public static readonly Brush GradientViolet  = UIHelpers.CreateGradientBrush("#A78BFA", "#7C3AED");
 }
 
 public sealed record IconShape(Geometry Geometry, bool IsFilled);
@@ -378,10 +429,6 @@ public static class AppIcons
         }
     }
 }
-
-#endregion
-
-#region Custom Controls
 
 /// <summary>
 /// Draws a registered vector icon at <see cref="Size"/>, tinted with the inherited foreground.
@@ -685,10 +732,6 @@ public static class NavButton
     public static void SetIsFeatured(DependencyObject element, bool value) => element.SetValue(IsFeaturedProperty, value);
 }
 
-#endregion
-
-#region Markup Extensions
-
 [MarkupExtensionReturnType(typeof(string))]
 public sealed class TranslateExtension : MarkupExtension
 {
@@ -699,20 +742,9 @@ public sealed class TranslateExtension : MarkupExtension
         _key = key;
     }
 
-    public override object ProvideValue(IServiceProvider serviceProvider)
-    {
-        var binding = new Binding($"[{_key}]")
-        {
-            Source = TranslationManager.Instance,
-            Mode = BindingMode.OneWay
-        };
-        return binding.ProvideValue(serviceProvider);
-    }
+    public override object ProvideValue(IServiceProvider serviceProvider) =>
+        UIHelpers.Translation(_key).ProvideValue(serviceProvider);
 }
-
-#endregion
-
-#region Value Converters
 
 public sealed class StringEqualityToBoolConverter : IValueConverter
 {
@@ -790,6 +822,7 @@ public sealed class SizeToScaleConverter : IValueConverter
 public sealed class BatteryLevelToBrushConverter : IValueConverter
 {
     public static BatteryLevelToBrushConverter Instance { get; } = new();
+    private BatteryLevelToBrushConverter() { }
 
     private const string LowKey    = "App.Brush.Battery.Low";
     private const string MediumKey = "App.Brush.Battery.Medium";
@@ -866,6 +899,7 @@ public sealed class NullToVisibilityConverter : IValueConverter
 public sealed class StringToVisibilityConverter : IValueConverter
 {
     public static StringToVisibilityConverter Instance { get; } = new();
+    private StringToVisibilityConverter() { }
 
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         => string.IsNullOrEmpty(value as string) ? Visibility.Collapsed : Visibility.Visible;
@@ -874,25 +908,15 @@ public sealed class StringToVisibilityConverter : IValueConverter
         => throw new NotSupportedException();
 }
 
-public sealed class WidthToColumnsConverter : IValueConverter
+/// <summary>How many card columns a given viewport width carries. Read from code rather than a
+/// binding since the Debloat list groups its own rows, but the rule stays in one place.</summary>
+public static class ResponsiveColumns
 {
-    public static WidthToColumnsConverter Instance { get; } = new();
-    private WidthToColumnsConverter() { }
-
     private const double MinColumnWidth = 580;
     private const int MaxColumns = 3;
 
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-        if (value is not double width || width <= 0)
-            return 1;
-
-        var columns = Math.Max(1, (int)(width / MinColumnWidth));
-        return Math.Min(columns, MaxColumns);
-    }
-
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        => throw new NotSupportedException();
+    public static int For(double width) =>
+        width <= 0 ? 1 : Math.Min(Math.Max(1, (int)(width / MinColumnWidth)), MaxColumns);
 }
 
 public sealed class InverseBoolConverter : IValueConverter
@@ -922,6 +946,7 @@ public sealed class InverseBoolToVisibilityConverter : IValueConverter
 public sealed class LoadingTextConverter : IValueConverter
 {
     public static LoadingTextConverter Instance { get; } = new();
+    private LoadingTextConverter() { }
 
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
@@ -976,10 +1001,6 @@ public sealed class SmartTruncateConverter : IValueConverter
     private static bool IsSeparator(char c) =>
         c is '_' or '-' or '.' or ' ' or '/' or '\\';
 }
-
-#endregion
-
-#region Attached Behaviors
 
 public static class HyperlinkExtensions
 {
@@ -1068,10 +1089,6 @@ public static class WindowClose
         }
     }
 }
-
-#endregion
-
-#region License Guard
 
 public static class LicenseGuard
 {
@@ -1169,4 +1186,3 @@ public static class LicenseGuard
     }
 }
 
-#endregion

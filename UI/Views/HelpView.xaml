@@ -37,12 +37,12 @@
 
         <LinearGradientBrush x:Key="HeadingGradientBrush" StartPoint="0,0.5" EndPoint="1,0.5">
             <GradientStop Color="White" Offset="0.0"/>
-            <GradientStop Color="#FFFFD700" Offset="0.7"/>
+            <GradientStop Color="{StaticResource App.Color.Gold}" Offset="0.7"/>
             <GradientStop Color="#FF00BFFF" Offset="1.0"/>
         </LinearGradientBrush>
 
         <LinearGradientBrush x:Key="AccentGradientBrush" StartPoint="0,0" EndPoint="1,0">
-            <GradientStop Color="#FFD700" Offset="0.0"/>
+            <GradientStop Color="{StaticResource App.Color.Gold}" Offset="0.0"/>
             <GradientStop Color="{StaticResource App.Color.DeepSkyBlue}" Offset="1.0"/>
         </LinearGradientBrush>
 
@@ -51,16 +51,16 @@
             <Setter Property="BorderThickness" Value="2"/>
             <Setter Property="Padding" Value="26"/>
             <Setter Property="Margin" Value="0,0,0,20"/>
-            <Setter Property="Background" Value="#32007FFF"/>
+            <Setter Property="Background" Value="{StaticResource App.Brush.Blue400.A32}"/>
             <Setter Property="ShadowEffect">
                 <Setter.Value>
-                    <DropShadowEffect BlurRadius="30" ShadowDepth="0" Color="#FF007FFF" Opacity="0.40"/>
+                    <DropShadowEffect BlurRadius="30" ShadowDepth="0" Color="{StaticResource App.Color.Blue400}" Opacity="0.40"/>
                 </Setter.Value>
             </Setter>
             <Setter Property="BorderBrush">
                 <Setter.Value>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                        <GradientStop Color="#B3FFD700" Offset="0.0"/>
+                        <GradientStop Color="{StaticResource App.Color.Gold.AB3}" Offset="0.0"/>
                         <GradientStop Color="#8000BFFF" Offset="1.0"/>
                     </LinearGradientBrush>
                 </Setter.Value>
@@ -81,12 +81,12 @@
             <Setter Property="Background">
                 <Setter.Value>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                        <GradientStop Color="#28FFD700" Offset="0.0"/>
+                        <GradientStop Color="{StaticResource App.Color.Gold.A28}" Offset="0.0"/>
                         <GradientStop Color="#1400BFFF" Offset="1.0"/>
                     </LinearGradientBrush>
                 </Setter.Value>
             </Setter>
-            <Setter Property="BorderBrush" Value="#50FFD700"/>
+            <Setter Property="BorderBrush" Value="{StaticResource App.Brush.Gold.A50}"/>
             <Setter Property="BorderThickness" Value="1.5"/>
             <Setter Property="Padding" Value="14"/>
             <Setter Property="Margin" Value="0,12,0,0"/>
@@ -136,7 +136,7 @@
         </Style>
 
         <Style x:Key="Emphasis" TargetType="Run">
-            <Setter Property="Foreground" Value="#FFFFD700"/>
+            <Setter Property="Foreground" Value="{StaticResource App.Brush.Gold}"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
         </Style>
 
@@ -194,7 +194,7 @@
                                             <Setter TargetName="Border" Property="Background">
                                                 <Setter.Value>
                                                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                                        <GradientStop Color="#50FFD700" Offset="0.0"/>
+                                                        <GradientStop Color="{StaticResource App.Color.Gold.A50}" Offset="0.0"/>
                                                         <GradientStop Color="#5000BFFF" Offset="1.0"/>
                                                     </LinearGradientBrush>
                                                 </Setter.Value>
@@ -382,7 +382,7 @@
 
                         <Border Style="{StaticResource HighlightBox}">
                             <StackPanel>
-                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,8" FontWeight="SemiBold" Foreground="#FFFFD700" Text="{Binding [Help_Basics_ADB_SafeTitle], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,8" FontWeight="SemiBold" Foreground="{StaticResource App.Brush.Gold}" Text="{Binding [Help_Basics_ADB_SafeTitle], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4" Text="{Binding [Help_Basics_ADB_Safe1], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4" Text="{Binding [Help_Basics_ADB_Safe2], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4" Text="{Binding [Help_Basics_ADB_Safe3], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
@@ -487,7 +487,7 @@
 
                         <Border Style="{StaticResource HighlightBox}">
                             <StackPanel>
-                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,8" FontWeight="SemiBold" Foreground="#FFFFD700" Text="{Binding [Help_Basics_Safety_IfWrong], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
+                                <TextBlock Style="{StaticResource Body}" Margin="0,0,0,8" FontWeight="SemiBold" Foreground="{StaticResource App.Brush.Gold}" Text="{Binding [Help_Basics_Safety_IfWrong], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4" Text="{Binding [Help_Basics_Safety_Step1], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 <TextBlock Style="{StaticResource Body}" Margin="0,0,0,4" Text="{Binding [Help_Basics_Safety_Step2], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
                                 <TextBlock Style="{StaticResource Body}" Text="{Binding [Help_Basics_Safety_Step3], Source={x:Static loc:TranslationManager.Instance}, Mode=OneWay}"/>
@@ -1064,9 +1064,9 @@
                                 </TextBlock>
                                 <TextBlock Style="{StaticResource Body}">
                                     <Run Text="GitHub: "/>
-                                    <Hyperlink NavigateUri="https://github.com/zephyrs-elixir" 
+                                    <Hyperlink NavigateUri="https://github.com/blast752/zephyrs-elixir"
                                              helpers:HyperlinkExtensions.OpenInBrowser="True">
-                                        github.com/zephyrs-elixir
+                                        github.com/blast752/zephyrs-elixir
                                     </Hyperlink>
                                 </TextBlock>
                             </StackPanel>
@@ -1140,7 +1140,7 @@
                     Padding="14">
                 <StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
-                        <helpers:Icon Kind="info" Size="16" Foreground="#FFD700" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <helpers:Icon Kind="info" Size="16" Foreground="{StaticResource App.Brush.Gold}" VerticalAlignment="Center" Margin="0,0,8,0"/>
                         <TextBlock FontSize="13"
                                  FontWeight="SemiBold"
                                  Foreground="White"

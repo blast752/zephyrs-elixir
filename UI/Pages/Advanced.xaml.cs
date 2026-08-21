@@ -1,24 +1,22 @@
 namespace ZephyrsElixir.UI.Pages;
 public partial class Advanced : UserControl
 {
-    private static readonly string CustomDnsPath = Path.Combine(AppConfiguration.Paths.LocalAppDataRoot, ".custom_dns");
-
     private readonly ObservableCollection<DnsProviderViewModel> _dns = new();
     private readonly ObservableCollection<VialChangeRow> _vialChanges = new();
     private readonly UIElement[] _devControls;
 
     private Timer? _animTimer, _pingTimer;
+    private int _animSyncBusy;
     private CancellationTokenSource? _pingCts;
     private volatile bool _pingLoopRunning;
+    private const long RamExpansionMinimumMb = 5000;
+
     private DateTime? _lastSelect;
-    private string? _cfgDns;
     private bool _resetting, _initialized, _interacting, _comboOpen;
     private long _ramMb;
     private bool _hasEnoughRam;
     private SettingsSnapshot? _openVial;
     private bool _suppressVialSelectAll;
-
-    #region Lifecycle
 
     public Advanced()
     {
@@ -79,10 +77,6 @@ public partial class Advanced : UserControl
         e.Handled = true;
     }
 
-    #endregion
-
-    #region Privacy & DNS
-
     private void InitDns()
     {
         if (_dns.Count > 0) return;
@@ -90,7 +84,7 @@ public partial class Advanced : UserControl
             _dns.Add(new DnsProviderViewModel { Name = n, Hostname = h });
         _dns.Add(new DnsProviderViewModel { Name = Strings.Advanced_DNS_Custom, IsCustom = true });
 
-        try { if (File.Exists(CustomDnsPath)) CustomDnsBox.Text = File.ReadAllText(CustomDnsPath).Trim(); } catch { }
+        try { if (File.Exists(AppConfiguration.Paths.CustomDnsMarker)) CustomDnsBox.Text = File.ReadAllText(AppConfiguration.Paths.CustomDnsMarker).Trim(); } catch { }
 
         if (DnsProviderComboBox != null) { DnsProviderComboBox.ItemsSource = _dns; DnsProviderComboBox.SelectedIndex = 0; }
     }
@@ -179,9 +173,8 @@ public partial class Advanced : UserControl
         {
             await Adb("shell settings put global private_dns_mode hostname");
             await Adb($"shell settings put global private_dns_specifier {hostname}");
-            _cfgDns = displayName;
             if (p.IsCustom)
-                try { File.WriteAllText(CustomDnsPath, hostname); } catch { }
+                try { File.WriteAllText(AppConfiguration.Paths.CustomDnsMarker, hostname); } catch { }
             Track(OperationLedger.Ops.Dns);
             return (true, string.Format(Strings.Advanced_DNS_Success, displayName));
         });
@@ -251,7 +244,11 @@ public partial class Advanced : UserControl
 
     private async void OnRamExpansionClick(object s, RoutedEventArgs e)
     {
-        if (!_hasEnoughRam) return;
+        if (!_hasEnoughRam)
+        {
+            Show(PrivacyStatusBorder, PrivacyStatusText, Strings.Advanced_RamExpansion_Description_LowRam);
+            return;
+        }
         if (!Confirm(Strings.Advanced_RamExpansion_Confirm)) return;
 
         if (RamExpansionButton != null) RamExpansionButton.IsEnabled = false;
@@ -355,10 +352,6 @@ public partial class Advanced : UserControl
         }
     }
 
-    #endregion
-
-    #region Animations
-
     private async void LoadAnimSpeed()
     {
         if (AnimationSlider == null) return;
@@ -372,12 +365,17 @@ public partial class Advanced : UserControl
         _animTimer = new Timer(async _ =>
         {
             if (!DeviceManager.Instance.IsConnected || _resetting || _interacting) return;
+
+            // On a slow link the poll can outlast the 2s period; without this a backlog of stale
+            // reads would pile up, each holding one of the shared adb slots.
+            if (Interlocked.Exchange(ref _animSyncBusy, 1) == 1) return;
             try
             {
                 var cur = await GetAnimSpeedAsync();
                 await Dispatcher.InvokeAsync(() => { if (AnimationSlider != null && !_interacting && Math.Abs(AnimationSlider.Value - cur) > 0.01) UpdateSlider(cur); });
             }
             catch { }
+            finally { Interlocked.Exchange(ref _animSyncBusy, 0); }
         }, null, TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(2));
     }
 
@@ -462,10 +460,6 @@ public partial class Advanced : UserControl
             await AdbExecutor.ExecuteCommandAsync($"shell settings put global {n} {v}");
     }
 
-    #endregion
-
-    #region Troubleshooting
-
     private async void OnResetBatteryClick(object s, RoutedEventArgs e)
     {
         if (!Confirm(Strings.Advanced_ResetBattery_Confirm)) return;
@@ -533,7 +527,6 @@ public partial class Advanced : UserControl
             await RestoreBaselineAsync(serial);
 
             OperationLedger.Clear(serial);
-            _cfgDns = null;
             LoadAnimSpeed();
             UpdateUI();
             Show(TroubleshootingStatusBorder, TroubleshootingStatusText, Strings.Advanced_ResetAll_Success);
@@ -566,12 +559,12 @@ public partial class Advanced : UserControl
         await SettingsTimeMachine.RestoreAsync(owned, serial);
     }
 
-    #endregion
-
-    #region Helpers
-
     private async Task CheckRamAsync()
     {
+        // Cleared first: an unreadable meminfo on the device we just switched to must not leave the
+        // previous phone's capacity in place, or the gate below would open on hardware that fails it.
+        _ramMb = 0;
+        _hasEnoughRam = false;
         try
         {
             var o = await Adb("shell cat /proc/meminfo");
@@ -579,21 +572,21 @@ public partial class Advanced : UserControl
             if (m.Success && long.TryParse(m.Groups[1].Value, out var kb))
             {
                 _ramMb = kb / 1024;
-                _hasEnoughRam = _ramMb >= 5000;
-
-                await Dispatcher.InvokeAsync(() =>
-                {
-                    if (RamExpansionDescription != null) 
-                        RamExpansionDescription.Text = _hasEnoughRam
-                            ? string.Format(Strings.Advanced_RamExpansion_Description_WithRam, _ramMb / 1024.0)
-                            : Strings.Advanced_RamExpansion_Description_LowRam;
-                });
+                _hasEnoughRam = _ramMb >= RamExpansionMinimumMb;
             }
         }
         catch { }
+
+        await Dispatcher.InvokeAsync(() =>
+        {
+            if (RamExpansionDescription != null)
+                RamExpansionDescription.Text = _hasEnoughRam
+                    ? string.Format(Strings.Advanced_RamExpansion_Description_WithRam, _ramMb / 1024.0)
+                    : Strings.Advanced_RamExpansion_Description_LowRam;
+        });
     }
 
-    private async Task ResetDnsAsync() { await Adb("shell settings put global private_dns_mode off"); await Adb("shell settings delete global private_dns_specifier"); _cfgDns = null; }
+    private async Task ResetDnsAsync() { await Adb("shell settings put global private_dns_mode off"); await Adb("shell settings delete global private_dns_specifier"); }
 
     private static string? Serial => DeviceManager.Instance.ActiveSerial;
     private static int PendingOps => OperationLedger.Count(Serial);
@@ -640,10 +633,6 @@ public partial class Advanced : UserControl
     private static void Show(Border? b, TextBlock? t, string msg) { if (b == null || t == null) return; t.Text = msg; b.Visibility = Visibility.Visible; }
     private static void Hide(Border? b) { if (b != null) b.Visibility = Visibility.Collapsed; }
     private static Task<string> Adb(string cmd) => AdbExecutor.ExecuteCommandAsync(cmd);
-
-    #endregion
-
-    #region Time Vials
 
     private void OnVialsStoreChanged() => Dispatcher.BeginInvoke(RefreshVials);
 
@@ -802,6 +791,4 @@ public partial class Advanced : UserControl
         _openVial = null;
         _vialChanges.Clear();
     }
-
-    #endregion
 }

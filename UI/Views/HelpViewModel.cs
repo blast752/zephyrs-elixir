@@ -61,18 +61,8 @@ public sealed class HelpViewModel : INotifyPropertyChanged
         {
             if (!SetField(ref _searchQuery, value)) return;
             FilteredFaqView.Refresh();
-            OnPropertyChanged(nameof(IsFaqEmpty));
-            OnPropertyChanged(nameof(SearchResultCount));
         }
     }
-
-    public bool IsFaqEmpty => FilteredFaqView.IsEmpty;
-
-    public int SearchResultCount => FilteredFaqView switch
-    {
-        ListCollectionView listView => listView.Count,
-        { } view => view.Cast<object>().Count(),
-    };
 
     public void SelectByKey(string key)
     {
@@ -177,8 +167,6 @@ public sealed class HelpViewModel : INotifyPropertyChanged
 }
 
 public sealed record HelpNavItem(string Key, string Title, string Icon);
-
-public sealed record QuickStep(string Icon, string Text);
 
 public sealed record FaqItem(string Question, string Answer);
 

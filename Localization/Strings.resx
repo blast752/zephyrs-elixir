@@ -208,9 +208,6 @@
   <data name="Home_Button_WirelessConnection_Tooltip" xml:space="preserve">
     <value>Connect your device wirelessly</value>
   </data>
-  <data name="WirelessConnection_Log_Title" xml:space="preserve">
-    <value>Wireless connection log</value>
-  </data>
   <data name="Home_Banner_RecommendedPartner" xml:space="preserve">
     <value>RECOMMENDED</value>
   </data>
@@ -452,8 +449,14 @@
   <data name="Debloat_Bucket_Restricted" xml:space="preserve">
     <value>Frozen</value>
   </data>
+  <data name="Debloat_Bucket_Never" xml:space="preserve">
+    <value>Never launched</value>
+  </data>
   <data name="Debloat_AI_QuotaExhausted" xml:space="preserve">
     <value>Daily limit reached — {0} free scans a day</value>
+  </data>
+  <data name="Debloat_AI_Disabled" xml:space="preserve">
+    <value>AI analysis is off — enable it in Settings for a verdict</value>
   </data>
   <!-- ═══════════════════════════════════════════════════════════════════ -->
   <!-- TOOLS                                                              -->
@@ -818,6 +821,12 @@
   <data name="Settings_Reset_Button" xml:space="preserve">
     <value>Reset to defaults</value>
   </data>
+  <data name="Settings_Reset_Confirm_Title" xml:space="preserve">
+    <value>Restore defaults?</value>
+  </data>
+  <data name="Settings_Reset_Confirm_Message" xml:space="preserve">
+    <value>This resets the app's own settings: interface language, cloud AI analysis and the saved custom DNS. Your license, recipes, backups and every device change stay untouched.</value>
+  </data>
   <data name="Settings_ProLicense_Title" xml:space="preserve">
     <value>Pro License</value>
   </data>
@@ -871,7 +880,7 @@
     <value>Settings reset</value>
   </data>
   <data name="Settings_MessageBox_ResetInfo_Message" xml:space="preserve">
-    <value>Settings restored to defaults. Restart the app to apply.</value>
+    <value>Settings restored to defaults.</value>
   </data>
 
   <!-- ═══════════════════════════════════════════════════════════════════ -->
@@ -938,6 +947,12 @@ Track CPU, RAM, GPU, real FPS, network, storage I/O and battery temperature as t
     <value>Batch APK installation is a Pro feature.
 
 Free plan allows one APK at a time.</value>
+  </data>
+  <data name="Pro_Module_Title" xml:space="preserve">
+    <value>Pro Module</value>
+  </data>
+  <data name="Pro_Module_NotLoaded" xml:space="preserve">
+    <value>The Pro module could not be loaded. Restart Zephyr's Elixir and try again.</value>
   </data>
   <data name="Pro_Required_ApkBackup" xml:space="preserve">
     <value>Backing up an APK before uninstalling is a Pro feature.
@@ -1256,6 +1271,15 @@ Uninstalling without a backup stays free, and the History tab can still restore 
   <data name="License_Status_Canceled" xml:space="preserve">
     <value>Subscription canceled</value>
   </data>
+  <data name="License_Status_Active" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="License_Status_Trial" xml:space="preserve">
+    <value>Trial</value>
+  </data>
+  <data name="License_Status_Lifetime" xml:space="preserve">
+    <value>Lifetime</value>
+  </data>
   <data name="License_Status_Free" xml:space="preserve">
     <value>Free</value>
   </data>
@@ -1292,6 +1316,15 @@ Uninstalling without a backup stays free, and the History tab can still restore 
   <data name="License_Activation_Failed" xml:space="preserve">
     <value>Activation failed. Please check your key.</value>
   </data>
+  <data name="License_Activation_Success" xml:space="preserve">
+    <value>License activated successfully!</value>
+  </data>
+  <data name="License_Activation_DllPending" xml:space="preserve">
+    <value>License activated! The Pro module download failed — it will retry automatically.</value>
+  </data>
+  <data name="License_Activation_NoProEntitlement" xml:space="preserve">
+    <value>This key is valid but carries no Pro subscription, so Pro stays locked. If you did buy Pro, contact support quoting your key.</value>
+  </data>
   <data name="License_Revoked" xml:space="preserve">
     <value>License revoked: {0}</value>
   </data>
@@ -1312,6 +1345,9 @@ Uninstalling without a backup stays free, and the History tab can still restore 
   </data>
   <data name="License_Error_InvalidResponse" xml:space="preserve">
     <value>Invalid server response. Please try again.</value>
+  </data>
+  <data name="License_Error_ClockSkew" xml:space="preserve">
+    <value>Your system clock is out of sync. Set the date and time automatically, then try again.</value>
   </data>
   <data name="License_Error_Timeout" xml:space="preserve">
     <value>Request timed out. Please try again.</value>
@@ -1354,6 +1390,9 @@ Uninstalling without a backup stays free, and the History tab can still restore 
   </data>
   <data name="License_Error_Unexpected" xml:space="preserve">
     <value>An unexpected error occurred during download.</value>
+  </data>
+  <data name="License_Error_DiskSpace" xml:space="preserve">
+    <value>Not enough disk space. Please free up some space and try again.</value>
   </data>
 
   <!-- ═══════════════════════════════════════════════════════════════════ -->
@@ -1524,15 +1563,6 @@ Uninstalling without a backup stays free, and the History tab can still restore 
   <data name="PowerMenu_NoDevice" xml:space="preserve">
     <value>No device connected. Please connect a device first.</value>
   </data>
-  <data name="PowerMenu_Error_DeviceNotFound" xml:space="preserve">
-    <value>Device not found. Please reconnect your device.</value>
-  </data>
-  <data name="PowerMenu_Error_Unauthorized" xml:space="preserve">
-    <value>USB debugging not authorized. Please accept the prompt on your device.</value>
-  </data>
-  <data name="PowerMenu_Error_Offline" xml:space="preserve">
-    <value>Device is offline. Try reconnecting the USB cable.</value>
-  </data>
   <data name="PowerMenu_Error_FastbootNotSupported" xml:space="preserve">
     <value>Fastbootd mode not supported. This feature requires Android 10 or newer with dynamic partitions.</value>
   </data>
@@ -1541,9 +1571,6 @@ Uninstalling without a backup stays free, and the History tab can still restore 
   </data>
   <data name="PowerMenu_Error_SideloadNotAvailable" xml:space="preserve">
     <value>Sideload mode not available. Your device may not support direct sideload boot.</value>
-  </data>
-  <data name="PowerMenu_Error_PermissionDenied" xml:space="preserve">
-    <value>Permission denied. This operation may require root access.</value>
   </data>
   <data name="PowerMenu_Error_Communication" xml:space="preserve">
     <value>Communication error. Please try again.</value>
@@ -2196,7 +2223,7 @@ Uninstalling without a backup stays free, and the History tab can still restore 
     <value>Performance</value>
   </data>
   <data name="Help_Basics_Cat_Performance_Body" xml:space="preserve">
-    <value>Clears app caches iteratively, trims memory pressure, frees storage, and force-compiles installed packages in speed mode so cold starts feel snappier.</value>
+    <value>Clears app caches iteratively, trims memory pressure, frees storage, and force-compiles installed packages with the profile-guided filter so cold starts feel snappier.</value>
   </data>
   <data name="Help_Basics_Cat_Battery_Title" xml:space="preserve">
     <value>Battery</value>
@@ -2220,7 +2247,7 @@ Uninstalling without a backup stays free, and the History tab can still restore 
     <value>Standard vs Extreme</value>
   </data>
   <data name="Help_Basics_Extreme_Body" xml:space="preserve">
-    <value>Standard optimization is what runs by default and is designed to be safe on every supported device. Extreme mode — exposed via the toggle on the Optimize page — goes further: it kill-alls background services, trims caches aggressively, force-compiles packages with the speed profile, and turns animations down to half speed. Extreme is a Pro-only feature and only activates when the Pro module is loaded.</value>
+    <value>Standard optimization is what runs by default and is designed to be safe on every supported device. Extreme mode — exposed via the toggle on the Optimize page — goes further: it kill-alls background services, trims caches aggressively, force-compiles every method of every package ahead of time, and turns animations down to half speed. Extreme is a Pro-only feature and only activates when the Pro module is loaded.</value>
   </data>
   <data name="Help_Basics_Extreme_Hint_Title" xml:space="preserve">
     <value>A gentle note about Extreme</value>
@@ -2367,7 +2394,7 @@ Uninstalling without a backup stays free, and the History tab can still restore 
     <value>Extreme mode (Pro)</value>
   </data>
   <data name="Help_Guide_Extreme_Body" xml:space="preserve">
-    <value>The Extreme toggle unlocks a more aggressive pass: background services are killed outright, caches are trimmed up to 1 TB worth of slack space, system packages are force-compiled in speed profile, and animation scales are pushed to 0.5×. Cached apps freezer and multi-core packet scheduler are enabled where the hardware supports them.</value>
+    <value>Every run already kills background services, trims up to 1 TB of cached slack space and pushes the three animation scales to 0.5×. What the Extreme toggle changes is the compilation stage: instead of compiling only the code paths the collected profile marks as hot, it ahead-of-time compiles every method of every package — far slower, and far more thorough. It also enables the cached apps freezer and the multi-core packet scheduler where the hardware supports them.</value>
   </data>
   <data name="Help_Guide_Extreme_Note" xml:space="preserve">
     <value>Extreme requires an active Pro license and the Pro module loaded. Without both, the toggle stays disabled and shows an upgrade hint on hover.</value>
@@ -2412,13 +2439,13 @@ Uninstalling without a backup stays free, and the History tab can still restore 
     <value>Filtering and search</value>
   </data>
   <data name="Help_Guide_Debloat_Filter_Body" xml:space="preserve">
-    <value>The filter tabs split apps by type: User, System, or Disabled. A free-text search bar narrows results by name or package, and the sort menu reorders them alphabetically, safest first, or riskiest first. Tick the checkboxes to build a multi-selection — the count in the header updates live, and the summary line keeps track of how many apps are system, user or disabled.</value>
+    <value>The filter tabs split apps by type: All, User, System, or Disabled. A free-text search bar narrows results by name or package, and the sort menu reorders them alphabetically, safest first, or riskiest first. Tick the checkboxes to build a multi-selection — the count in the header updates live, and the summary line keeps track of how many apps are system, user or disabled.</value>
   </data>
   <data name="Help_Guide_Debloat_Actions_Title" xml:space="preserve">
     <value>Disable, uninstall, re-enable or inspect</value>
   </data>
   <data name="Help_Guide_Debloat_Actions_Body" xml:space="preserve">
-    <value>With apps selected you can Disable (pm disable-user), which keeps the APK on disk but stops the app from running; Uninstall (pm uninstall --user 0), which removes it for the current user; or Enable, which brings back anything you disabled — one app or a whole selection at a time. Manage opens a details panel with permissions, standby bucket and cloud-powered safety analysis, plus quick actions to launch, force-stop or inspect the app, extract its APK, and clear its data. Package lists can be imported and exported, and any selection can be saved as a recipe.</value>
+    <value>With apps selected you can Disable (pm disable-user), which keeps the APK on disk but stops the app from running; Uninstall (pm uninstall --user 0), which removes it for the current user; or Enable, which brings back anything you disabled — one app or a whole selection at a time. Manage opens a details panel with permissions, cloud-powered safety analysis and the standby bucket, which reports an app Android has never seen you launch — usually the safest kind to strip out — plus quick actions to launch, force-stop or inspect the app, extract its APK, and clear its data. Package lists can be imported and exported, and any selection can be saved as a recipe.</value>
   </data>
   <data name="Help_Guide_Debloat_Hint_Title" xml:space="preserve">
     <value>The History tab</value>
@@ -2703,7 +2730,7 @@ Uninstalling without a backup stays free, and the History tab can still restore 
     <value>What's the difference between Standard and Extreme?</value>
   </data>
   <data name="Help_Faq_ExtremeVsStandard_A" xml:space="preserve">
-    <value>Standard is the default, designed to be safe on every supported device. Extreme — available with the Pro module — adds aggressive background kill, 1 TB cache trim, speed-profile force compile across all packages, half-speed animations, cached apps freezer, and multi-core packet scheduler. A reboot is recommended after Extreme runs.</value>
+    <value>Standard is the default, designed to be safe on every supported device: it already kills background apps, trims the caches, tunes the network and halves the animation scales. Extreme — available with the Pro module — takes the compilation stage all the way, force-compiling every method of every package ahead of time instead of only the hot paths, and adds the cached apps freezer and the multi-core packet scheduler. It takes considerably longer, and a reboot is recommended afterwards.</value>
   </data>
   <data name="Help_Faq_SomethingWrong_Q" xml:space="preserve">
     <value>An app misbehaves after a run. What do I do?</value>
@@ -2973,7 +3000,7 @@ Uninstalling without a backup stays free, and the History tab can still restore 
     <value>Failed to download or install scrcpy. Check your internet connection and try again.</value>
   </data>
   <data name="ScreenMirror_SetupCancelled" xml:space="preserve">
-    <value>scrcpy setup was cancelled.</value>
+    <value>scrcpy setup was canceled.</value>
   </data>
   <data name="ScreenMirror_BrowseRecordFolder" xml:space="preserve">
     <value>Choose where to save the recording</value>
@@ -3010,13 +3037,13 @@ Uninstalling without a backup stays free, and the History tab can still restore 
     <value>Privacy Notice — Short Version</value>
   </data>
   <data name="Info_Privacy_Point1" xml:space="preserve">
-    <value>The data controller is Zephyr's Elixir (full contact details and operator identity available at the link below). The software operates primarily on your computer: we do not collect behavioural telemetry, profiling analytics, advertising identifiers or your interaction patterns with the application.</value>
+    <value>The data controller is Zephyr's Elixir (full contact details and operator identity available at the link below). The software operates primarily on your computer: we do not collect behavioral telemetry, profiling analytics, advertising identifiers or your interaction patterns with the application.</value>
   </data>
   <data name="Info_Privacy_Point2" xml:space="preserve">
     <value>When you activate or validate the Pro edition we send our license server a pseudonymous PC identifier — a SHA-256 hash derived from technical parameters (computer name, Windows username, OS version, architecture). We use it solely to bind the license to your device and prevent abuse, and we retain the binding only for the duration of the active license: deactivating the license releases it from the server. Legal basis: performance of a contract, GDPR Art. 6(1)(b).</value>
   </data>
   <data name="Info_Privacy_Point3" xml:space="preserve">
-    <value>When you analyse apps installed on a connected Android device (Debloat), the package names are forwarded in real time to a third-party AI provider (OpenAI, USA) for safety classification. We do not store, log or aggregate them on our infrastructure; per OpenAI's API terms data is processed and discarded and not used for model training. We never transmit messages, photos, files, contacts or app content. Legal basis: legitimate interest in providing accurate safety information, GDPR Art. 6(1)(f); you may avoid this processing by not opening cloud-AI app analysis.</value>
+    <value>When you analyze apps installed on a connected Android device (Debloat), the package names are forwarded in real time to a third-party AI provider (OpenAI, USA) for safety classification. We do not store, log or aggregate them on our infrastructure; per OpenAI's API terms data is processed and discarded and not used for model training. We never transmit messages, photos, files, contacts or app content. Legal basis: legitimate interest in providing accurate safety information, GDPR Art. 6(1)(f); you may avoid this processing by not opening cloud-AI app analysis.</value>
   </data>
   <data name="Info_Privacy_Point4" xml:space="preserve">
     <value>The application's only outbound connections are: our license server (license binding), our safety analysis endpoint that forwards to OpenAI for AI classification (no storage on our side), our update server, GitHub (to download scrcpy for the Pro edition) and Whop (for Pro purchases). Several recipients are located in the United States; transfers are covered by the data-transfer mechanisms applicable to each service. IP addresses transit through standard server logs and are retained only as long as strictly necessary for security and accounting.</value>
@@ -3039,40 +3066,49 @@ Uninstalling without a backup stays free, and the History tab can still restore 
     <value>New</value>
   </data>
   <data name="Info_Changelog_New_1" xml:space="preserve">
-    <value>Zephyr's Recipes: bottle an optimization, the apps you strip out, your DNS and animation tweaks and a stack of APKs into a single recipe — then pour it over every phone you own in one tap. Export it, or share it in the community library and brew what others have perfected.</value>
+    <value>A new installer, written again from the first line: fewer screens, clearer choices, artwork of its own, and a good deal less waiting between the moment you double-click and the moment Zephyr's Elixir opens.</value>
   </data>
   <data name="Info_Changelog_New_2" xml:space="preserve">
-    <value>Time Vials: before every optimization, every recipe and every advanced tweak, your device's settings are quietly bottled. Uncork a vial to see exactly what changed, and pour any single setting back — the undo button Android never gave you.</value>
+    <value>Every icon drawn again as vector art on a single grid, so the whole app stays razor-sharp at any window size, on any display and at any scaling — one visual language from the sidebar to the smallest dialog.</value>
   </data>
   <data name="Info_Changelog_New_3" xml:space="preserve">
-    <value>Multi-device control: plug in as many phones as you like and switch between them from the sidebar. Every page follows the device you pick, and a recipe can run on all of them at once.</value>
+    <value>Extreme Optimization, deeper: the compilation stage now ahead-of-time compiles every method of every package instead of only the code paths marked hot, while the standard run stays quick and light on every device.</value>
   </data>
   <data name="Info_Changelog_New_4" xml:space="preserve">
-    <value>The Alchemist's Journey: every recipe you pour earns a brew, and brews earn rank — from Novice Brewer to Grand Elixirist, right at the top of the Recipes page.</value>
+    <value>The apps you have never opened: Android files every app by how recently it was used, and preinstalled bloat tends to sit in a single bucket — never launched. Manage now reports that state, so the safest things to strip out are the ones the phone itself admits you have never touched.</value>
   </data>
   <data name="Info_Changelog_Updated" xml:space="preserve">
     <value>Improved</value>
   </data>
   <data name="Info_Changelog_Updated_1" xml:space="preserve">
-    <value>Debloat, rebuilt: disable, uninstall or re-enable as many apps as you like in one pass, sort them by name or by AI risk, launch, force-stop, extract the APK or wipe the data of any app in a click, and import or export package lists. Split-APK apps are backed up and reinstalled properly.</value>
+    <value>Quicker and lighter throughout: the app opens sooner, moves between sections without hesitating, and asks noticeably less of your machine while it works.</value>
   </data>
   <data name="Info_Changelog_Updated_2" xml:space="preserve">
-    <value>Errors that explain themselves: when Android refuses an install, an uninstall or a restore, you get the reason in plain language instead of a raw ADB dump.</value>
+    <value>Debloat, fluid at any size: the app grid renders only the rows you can actually see, so a device carrying a thousand packages scrolls as smoothly as one carrying fifty — and the layout still reflows between one and three columns as you resize the window.</value>
   </data>
   <data name="Info_Changelog_Updated_3" xml:space="preserve">
-    <value>Tools, polished: save shell commands as snippets and export a whole session, filter a crowded folder as you type, see where your storage actually went, and transfer large files without hitting a timeout.</value>
+    <value>Easier on the eyes: text across the app is crisper and more comfortable to read, holding its quality at every window size and on every screen.</value>
   </data>
   <data name="Info_Changelog_Updated_4" xml:space="preserve">
-    <value>Advanced and Performance Monitor (Pro): point Private DNS at your own hostname and it is remembered, virtual RAM now confirms on the device that it really was switched off, and real FPS and GPU load join the live readings.</value>
+    <value>Tools that get out of your way: APK Installer, Power Options and wireless pairing are clearer about what they are doing, and honest about what went wrong when something fails.</value>
   </data>
   <data name="Info_Changelog_Updated_5" xml:space="preserve">
-    <value>Reset all, for real: the undo in Advanced now covers everything Optimize and Advanced changed, and it is remembered per device across restarts. Settings are poured back from the vial bottled before your first change, so they return to your own previous values — and whatever you changed on the phone yourself is left alone.</value>
+    <value>Licenses that stay in step: license checks are steadier and recover on their own, so Pro simply stays Pro without ever asking for your attention.</value>
   </data>
-  <data name="Info_Changelog_Removed" xml:space="preserve">
-    <value>Removed</value>
+  <data name="Info_Changelog_Updated_6" xml:space="preserve">
+    <value>Pro instruments, steadier: Performance Monitor and Screen Mirror follow the device you actually picked, and say so plainly when something goes wrong instead of failing in silence.</value>
   </data>
-  <data name="Info_Changelog_Removed_1" xml:space="preserve">
-    <value>Dead code removed, colours and styles centralised, and both translations reviewed line by line — a lighter, tidier app in English and Italian alike.</value>
+  <data name="Info_Changelog_Fixed" xml:space="preserve">
+    <value>Fixed &amp; Polished</value>
+  </data>
+  <data name="Info_Changelog_Fixed_1" xml:space="preserve">
+    <value>A long list of bugs fixed across every section of the app — the kind you would have run into eventually, now gone before you did.</value>
+  </data>
+  <data name="Info_Changelog_Fixed_2" xml:space="preserve">
+    <value>Security strengthened from end to end, from the way your license is handled on your machine to the services behind it.</value>
+  </data>
+  <data name="Info_Changelog_Fixed_3" xml:space="preserve">
+    <value>A thorough clean-up under the hood: less code, better organized, and both translations reviewed line by line — a lighter app that is easier to keep fast.</value>
   </data>
 
   <!-- ═══════════════════════════════════════════════════════════════════ -->
@@ -3205,18 +3241,6 @@ Uninstalling without a backup stays free, and the History tab can still restore 
   <data name="FileManager_Tooltip_CancelAll" xml:space="preserve">
     <value>Cancel all</value>
   </data>
-  <data name="FileManager_Tooltip_DeviceSerial" xml:space="preserve">
-    <value>Connected device serial</value>
-  </data>
-  <data name="FileManager_Tooltip_NameColumn" xml:space="preserve">
-    <value>Full file name</value>
-  </data>
-  <data name="FileManager_Tooltip_OwnerColumn" xml:space="preserve">
-    <value>Owner / group</value>
-  </data>
-  <data name="FileManager_Tooltip_PreviewName" xml:space="preserve">
-    <value>Previewed file</value>
-  </data>
   <data name="FileManager_Connection_None" xml:space="preserve">
     <value>No device connected</value>
   </data>
@@ -3313,11 +3337,8 @@ Uninstalling without a backup stays free, and the History tab can still restore 
   <data name="FileManager_Validate_ModeEmpty" xml:space="preserve">
     <value>Mode cannot be empty.</value>
   </data>
-  <data name="FileManager_Validate_ModeFormat" xml:space="preserve">
-    <value>Use 3 or 4 octal digits (e.g. 755, 0644).</value>
-  </data>
   <data name="FileManager_Validate_ModeUnrecognised" xml:space="preserve">
-    <value>Mode not recognised. Use octal, symbolic, or descriptive form.</value>
+    <value>Mode not recognized. Use octal, symbolic, or descriptive form.</value>
   </data>
   <data name="FileManager_Validate_NoDevice_Message" xml:space="preserve">
     <value>Connect your Android device via ADB before performing this action.</value>
@@ -3448,9 +3469,6 @@ Uninstalling without a backup stays free, and the History tab can still restore 
   <data name="FileManager_Permissions_Tooltip" xml:space="preserve">
     <value>Cycle permission display mode</value>
   </data>
-  <data name="FileManager_DragHover_Destination_Format" xml:space="preserve">
-    <value>→ {0}</value>
-  </data>
   <data name="FileManager_Perm_None" xml:space="preserve">
     <value>has no access</value>
   </data>
@@ -3526,20 +3544,11 @@ Uninstalling without a backup stays free, and the History tab can still restore 
   <data name="FileManager_Storage_System" xml:space="preserve">
     <value>System</value>
   </data>
-  <data name="FileManager_Storage_Other" xml:space="preserve">
-    <value>Other</value>
-  </data>
   <data name="FileManager_Storage_Free" xml:space="preserve">
     <value>Free</value>
   </data>
-  <data name="FileManager_Storage_Loading" xml:space="preserve">
-    <value>Reading storage…</value>
-  </data>
   <data name="FileManager_Storage_Unavailable" xml:space="preserve">
     <value>Storage info unavailable</value>
-  </data>
-  <data name="FileManager_Storage_Probe_Failed" xml:space="preserve">
-    <value>Storage details unavailable on this device.</value>
   </data>
   <data name="FileManager_Status_DeviceSerialFormat" xml:space="preserve">
     <value>Serial: {0}</value>
@@ -3556,15 +3565,6 @@ Uninstalling without a backup stays free, and the History tab can still restore 
     <value>Real-time CPU, RAM, GPU, FPS, network, storage and battery of the connected device.</value>
   </data>
 
-  <data name="Perf_Upsell_Title" xml:space="preserve">
-    <value>Unlock the Live Performance Monitor</value>
-  </data>
-  <data name="Perf_Upsell_Description" xml:space="preserve">
-    <value>Watch CPU, RAM, GPU load, real FPS, network throughput, storage I/O, battery level and temperature evolve in real time, alongside a live ranking of the apps eating your memory. Record sessions while gaming or stress-testing, export everything as CSV and correlate workload spikes with thermal behavior.</value>
-  </data>
-  <data name="Perf_Upsell_UpgradeButton" xml:space="preserve">
-    <value>Upgrade to Pro</value>
-  </data>
 
   <data name="Perf_Metric_Cpu" xml:space="preserve">
     <value>CPU</value>
@@ -3645,12 +3645,6 @@ Uninstalling without a backup stays free, and the History tab can still restore 
     <value>Recording stopped: configured duration reached.</value>
   </data>
 
-  <data name="Perf_View_Live" xml:space="preserve">
-    <value>Live (60s window)</value>
-  </data>
-  <data name="Perf_View_Session" xml:space="preserve">
-    <value>Recorded session</value>
-  </data>
 
   <data name="Perf_Export_Title" xml:space="preserve">
     <value>Export performance session</value>
@@ -3693,7 +3687,7 @@ Uninstalling without a backup stays free, and the History tab can still restore 
     <value>Restrictions. You may not reverse engineer or circumvent the protections of the Pro module, share or resell your license key, or bypass the single-device binding, except where mandatorily permitted by law.</value>
   </data>
   <data name="Eula_Community" xml:space="preserve">
-    <value>Community recipes. The app includes an optional community library, and nothing leaves your PC unless you choose to publish it. You stay the author of what you share and grant the Provider a non-exclusive, worldwide, royalty-free licence to host and distribute it for as long as it remains published; you may withdraw it at any time. You may not publish recipes built to damage a device, personal data, unlawful, misleading or infringing content, or spam. The library is not pre-moderated: recipes written by other users carry no guarantee — read their steps before running them — and the Provider may remove any recipe that breaches these terms.</value>
+    <value>Community recipes. The app includes an optional community library, and nothing leaves your PC unless you choose to publish it. You stay the author of what you share and grant the Provider a non-exclusive, worldwide, royalty-free license to host and distribute it for as long as it remains published; you may withdraw it at any time. You may not publish recipes built to damage a device, personal data, unlawful, misleading or infringing content, or spam. The library is not pre-moderated: recipes written by other users carry no guarantee — read their steps before running them — and the Provider may remove any recipe that breaches these terms.</value>
   </data>
   <data name="Eula_Ai" xml:space="preserve">
     <value>AI features. The app removal-risk analysis sends only the technical package names (e.g. com.example.app) to a third-party AI service (OpenAI) — never data that identifies you. The request also carries the same pseudonymous installation identifier used for licensing, so that the free daily allowance can be counted; it stops at our service and never reaches the AI provider. The result is advisory only; the final decision is always yours.</value>
@@ -3717,7 +3711,7 @@ Uninstalling without a backup stays free, and the History tab can still restore 
     <value>Enable AI analysis?</value>
   </data>
   <data name="Debloat_Ai_Consent_Message" xml:space="preserve">
-    <value>To assess removal risk, the names of the installed app packages (e.g. com.example.app) are sent to a third-party AI service (OpenAI). No data that identifies you is sent, and the result is advisory only. Do you want to enable cloud AI analysis? You can change this later in Settings.</value>
+    <value>To assess removal risk, the names of the installed app packages (e.g. com.example.app) are sent to our analysis service, which forwards the package name alone to a third-party AI provider (OpenAI). A pseudonymous device ID travels with each request so the free daily allowance can be counted, and Pro installs also send their signed license proof to lift that limit; neither reaches OpenAI. Your name, your files and your personal content are never sent, and the result is advisory only. Do you want to enable cloud AI analysis? You can change this later in Settings.</value>
   </data>
 
   <data name="Sidebar_Nav_Recipes" xml:space="preserve">
@@ -4061,9 +4055,6 @@ Uninstalling without a backup stays free, and the History tab can still restore 
   </data>
   <data name="Recipes_Share_Confirm" xml:space="preserve">
     <value>Share this recipe with the community? It will be public and downloadable by other users. No APK files or personal data are included.</value>
-  </data>
-  <data name="Recipes_Share_AlreadyShared" xml:space="preserve">
-    <value>This recipe has already been shared.</value>
   </data>
   <data name="Recipes_Share_NeedAuthor" xml:space="preserve">
     <value>Add an author name before sharing so people know who made it.</value>
@@ -4416,9 +4407,6 @@ Uninstalling without a backup stays free, and the History tab can still restore 
   <data name="AdbError_PermissionDenied" xml:space="preserve">
     <value>Android denied the permission for this operation — it isn't possible over ADB on this device or Android version.</value>
   </data>
-  <data name="Pro_Required_RecipesFeature" xml:space="preserve">
-    <value>This recipe step requires a Pro license.</value>
-  </data>
   <data name="Recipes_Rank_1" xml:space="preserve">
     <value>Novice Brewer</value>
   </data>
@@ -4651,7 +4639,7 @@ Uninstalling without a backup stays free, and the History tab can still restore 
     <value>What are Time Vials — are they a backup?</value>
   </data>
   <data name="Help_Faq_Vials_A" xml:space="preserve">
-    <value>They are automatic snapshots of your device’s system settings, taken before every optimization, recipe and advanced tweak, so you can see exactly what changed and restore individual settings. They are not a backup of your data: apps, photos and files are not included, and a vial cannot bring back an app you uninstalled — the History tab in Debloat does that.</value>
+    <value>They are automatic snapshots of your device's system settings, taken before every optimization, recipe and advanced tweak, so you can see exactly what changed and restore individual settings. They are not a backup of your data: apps, photos and files are not included, and a vial cannot bring back an app you uninstalled — the History tab in Debloat does that.</value>
   </data>
   <data name="Help_Faq_MultiDevice_Q" xml:space="preserve">
     <value>Can I work on several phones at once?</value>
@@ -4669,12 +4657,24 @@ Uninstalling without a backup stays free, and the History tab can still restore 
     <value>Write it down once</value>
   </data>
   <data name="Help_Tip_Recipes_Body" xml:space="preserve">
-    <value>The second time you do something to a phone, make it a recipe. A new device, a relative’s phone or a fresh start after a factory reset then costs one tap instead of an evening.</value>
+    <value>The second time you do something to a phone, make it a recipe. A new device, a relative's phone or a fresh start after a factory reset then costs one tap instead of an evening.</value>
   </data>
   <data name="Help_Tip_Vials_Title" xml:space="preserve">
     <value>Read the diff</value>
   </data>
   <data name="Help_Tip_Vials_Body" xml:space="preserve">
     <value>After a big run, open the newest vial in Advanced. It is the clearest possible answer to "what did that actually change?" — and every line can be poured back on its own.</value>
+  </data>
+  <data name="License_Dll_RetryDownload" xml:space="preserve">
+    <value>Retry Download</value>
+  </data>
+  <data name="License_Dialog_CopyDeviceId" xml:space="preserve">
+    <value>Copy Device ID</value>
+  </data>
+  <data name="ApkInstaller_Parse_Failed" xml:space="preserve">
+    <value>Error parsing file</value>
+  </data>
+  <data name="ApkInstaller_Split_Selected" xml:space="preserve">
+    <value>Selected {0} of {1} APKs ({2}, {3}dpi, {4})</value>
   </data>
 </root>

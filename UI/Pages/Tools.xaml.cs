@@ -2,7 +2,7 @@ namespace ZephyrsElixir.UI.Pages;
 
 public sealed partial class Tools : UserControl
 {
-    private readonly List<ToolItem> _tools;
+    private readonly List<MenuItemBase> _tools;
 
     public Tools()
     {
@@ -11,13 +11,13 @@ public sealed partial class Tools : UserControl
         _tools =
         [
             new("apk_installer", "download", () => Strings.Tools_ApkInstaller_Title, () => Strings.Tools_ApkInstaller_Description,
-                AppBrushes.GradientApk),
+                AppBrushes.GradientBlue),
             new("screen_mirror", "display", () => Strings.Tools_ScreenMirror_Title, () => Strings.Tools_ScreenMirror_Description,
-                AppBrushes.GradientApkm, true),
+                AppBrushes.GradientPurple),
             new("performance_monitor", "chart", () => Strings.Tools_PerformanceMonitor_Title, () => Strings.Tools_PerformanceMonitor_Description,
-                AppBrushes.GradientCyan, true),
+                AppBrushes.GradientCyan),
             new("reboot", "restore", () => Strings.Tools_Reboot_Title, () => Strings.Tools_Reboot_Description,
-                AppBrushes.GradientOrange, true),
+                AppBrushes.GradientOrange),
             new("file_manager", "folder-open", () => Strings.Tools_FileManager_Title, () => Strings.Tools_FileManager_Description,
                 AppBrushes.GradientCyan),
             new("adb_shell", "console", () => Strings.Tools_AdbConsole_Title, () => Strings.Tools_AdbConsole_Description,
@@ -30,7 +30,7 @@ public sealed partial class Tools : UserControl
         TranslationManager.Instance.LanguageChanged += (s, e) => UpdateLocalizedStrings();
     }
 
-    public IEnumerable<ToolItem> ToolItems => _tools;
+    public IEnumerable<MenuItemBase> ToolItems => _tools;
 
     private void OnLoaded(object sender, RoutedEventArgs e) => UpdateLocalizedStrings();
 
@@ -43,6 +43,11 @@ public sealed partial class Tools : UserControl
     private void OnToolClick(object sender, RoutedEventArgs e)
     {
         if (sender is not Button { Tag: string key }) return;
+
+        // A valid licence with the module on disk but not yet in memory: wake it here, or the first
+        // click on a Pro tool would be spent doing nothing visible and the user would have to click twice.
+        if (LicenseService.Instance.IsPro && !ProLoader.IsLoaded)
+            ProLoader.ReloadIfNeeded();
 
         if (key == "screen_mirror" && !Features.IsAvailable(Features.ScreenMirror))
         {
@@ -80,14 +85,10 @@ public sealed partial class Tools : UserControl
     private void ShowProOrModuleError(string proRequiredKey = "Pro_Required_ScreenMirror")
     {
         if (LicenseService.Instance.IsPro && !ProLoader.IsLoaded)
-        {
-            ProLoader.ReloadIfNeeded();
-            if (ProLoader.IsLoaded) return;
             DialogService.Instance.ShowInfoDirect(
-                "Pro Module",
-                "Pro module not found. Please restart the application.",
+                Strings.Pro_Module_Title,
+                Strings.Pro_Module_NotLoaded,
                 Window.GetWindow(this));
-        }
         else
             DialogService.Instance.ShowProRequiredWithUpgrade(proRequiredKey);
     }
@@ -102,26 +103,5 @@ public sealed partial class Tools : UserControl
     {
         SubPageHost.Visibility = Visibility.Collapsed;
         SubPageContent.Content = null;
-    }
-}
-
-public sealed class ToolItem : MenuItemBase
-{
-    private bool _isEnabled;
-
-    public bool BaseEnabled { get; }
-
-    public bool IsEnabled
-    {
-        get => _isEnabled;
-        set { _isEnabled = value; OnPropertyChanged(); }
-    }
-
-    public ToolItem(string key, string icon, Func<string> titleAccessor, Func<string> descriptionAccessor,
-                    Brush iconBrush, bool baseEnabled = true)
-        : base(key, icon, titleAccessor, descriptionAccessor, iconBrush)
-    {
-        BaseEnabled = baseEnabled;
-        _isEnabled = baseEnabled;
     }
 }

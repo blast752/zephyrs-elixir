@@ -6,8 +6,7 @@
              xmlns:h="clr-namespace:ZephyrsElixir.UI.Helpers"
              mc:Ignorable="d"
              d:DesignHeight="860" d:DesignWidth="1120"
-             Background="Transparent"
-             x:Name="Root">
+             Background="Transparent">
 
     <UserControl.Resources>
         <Style x:Key="Recipes.Style.Chip" TargetType="Border">
@@ -19,11 +18,11 @@
         <Style x:Key="Recipes.Style.ChipText" TargetType="TextBlock">
             <Setter Property="FontSize" Value="10"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Foreground" Value="#C8D8E8"/>
+            <Setter Property="Foreground" Value="{StaticResource App.Brush.Steel.Bright}"/>
         </Style>
         <Style x:Key="Recipes.Style.ProTag" TargetType="Border">
-            <Setter Property="Background" Value="#20FFD700"/>
-            <Setter Property="BorderBrush" Value="#40FFD700"/>
+            <Setter Property="Background" Value="{StaticResource App.Brush.Gold.A20}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource App.Brush.Gold.A40}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="CornerRadius" Value="4"/>
             <Setter Property="Padding" Value="7,2"/>
@@ -132,7 +131,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <RadioButton x:Name="LibraryTab"
+                        <RadioButton
                                      Content="{h:Translate Recipes_Tab_Library}"
                                      GroupName="RecipesTab"
                                      IsChecked="True"
@@ -147,7 +146,7 @@
                     </Grid>
                 </Border>
 
-                <Button x:Name="ImportButton"
+                <Button
                         Grid.Column="2"
                         Style="{StaticResource App.Style.Button}"
                         Content="{h:Translate Recipes_Button_Import}"
@@ -155,7 +154,7 @@
                         Click="OnImportClick"
                         MinWidth="130"/>
 
-                <Button x:Name="NewButton"
+                <Button
                         Grid.Column="4"
                         Style="{StaticResource App.Style.Button}"
                         Content="{h:Translate Recipes_Button_New}"
@@ -326,15 +325,15 @@
                                                         Margin="0,0,10,0"/>
                                                 <Button Style="{StaticResource App.Style.Button.IconOnly}" Click="OnEditRecipeClick"
                                                         ToolTip="{h:Translate Recipes_Tooltip_Edit}">
-                                                    <h:Icon Kind="edit" Size="16" Foreground="#C8D8E8"/>
+                                                    <h:Icon Kind="edit" Size="16" Foreground="{StaticResource App.Brush.Steel.Bright}"/>
                                                 </Button>
                                                 <Button Style="{StaticResource App.Style.Button.IconOnly}" Click="OnDuplicateRecipeClick"
                                                         ToolTip="{h:Translate Recipes_Tooltip_Duplicate}">
-                                                    <h:Icon Kind="copy" Size="16" Foreground="#C8D8E8"/>
+                                                    <h:Icon Kind="copy" Size="16" Foreground="{StaticResource App.Brush.Steel.Bright}"/>
                                                 </Button>
                                                 <Button Style="{StaticResource App.Style.Button.IconOnly}" Click="OnExportRecipeClick"
                                                         ToolTip="{h:Translate Recipes_Tooltip_Export}">
-                                                    <h:Icon Kind="save" Size="16" Foreground="#C8D8E8"/>
+                                                    <h:Icon Kind="save" Size="16" Foreground="{StaticResource App.Brush.Steel.Bright}"/>
                                                 </Button>
                                                 <Button Style="{StaticResource App.Style.Button.IconOnly}" Click="OnShareRecipeClick"
                                                         ToolTip="{Binding ShareTooltip}">
@@ -342,7 +341,7 @@
                                                 </Button>
                                                 <Button Style="{StaticResource App.Style.Button.IconOnly}" Click="OnDeleteRecipeClick"
                                                         ToolTip="{h:Translate Recipes_Tooltip_Delete}">
-                                                    <h:Icon Kind="delete" Size="16" Foreground="#FF6B6B"/>
+                                                    <h:Icon Kind="delete" Size="16" Foreground="{StaticResource App.Brush.Crimson}"/>
                                                 </Button>
                                             </StackPanel>
                                         </Grid>
@@ -417,7 +416,7 @@
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <RadioButton x:Name="SortTop" Content="{h:Translate Recipes_Sort_Top}" GroupName="CommunitySort" IsChecked="True"
+                                <RadioButton Content="{h:Translate Recipes_Sort_Top}" GroupName="CommunitySort" IsChecked="True"
                                              Style="{StaticResource App.Style.SegmentedRadioButton}" Checked="OnCommunitySortChanged"/>
                                 <RadioButton x:Name="SortRecent" Grid.Column="1" Content="{h:Translate Recipes_Sort_Recent}" GroupName="CommunitySort"
                                              Style="{StaticResource App.Style.SegmentedRadioButton}" Checked="OnCommunitySortChanged"/>
@@ -428,7 +427,7 @@
 
                         <Button Grid.Column="3" Style="{StaticResource App.Style.Button.IconOnly}" Click="OnCommunityRefreshClick"
                                 Margin="12,0,0,0" VerticalAlignment="Center" ToolTip="{h:Translate Recipes_Tooltip_Refresh}">
-                            <h:Icon Kind="refresh" Size="17" Foreground="#C8D8E8"/>
+                            <h:Icon Kind="refresh" Size="17" Foreground="{StaticResource App.Brush.Steel.Bright}"/>
                         </Button>
                     </Grid>
 
@@ -489,7 +488,7 @@
                                                                 <h:Icon.Style>
                                                                     <Style TargetType="{x:Type h:Icon}">
                                                                         <Setter Property="Kind" Value="heart-outline"/>
-                                                                        <Setter Property="Foreground" Value="#C8D8E8"/>
+                                                                        <Setter Property="Foreground" Value="{StaticResource App.Brush.Steel.Bright}"/>
                                                                         <Style.Triggers>
                                                                             <DataTrigger Binding="{Binding HasLiked}" Value="True">
                                                                                 <Setter Property="Kind" Value="heart"/>
@@ -499,7 +498,7 @@
                                                                     </Style>
                                                                 </h:Icon.Style>
                                                             </h:Icon>
-                                                            <TextBlock Text="{Binding LikesDisplay}" FontSize="12" Foreground="#C8D8E8"
+                                                            <TextBlock Text="{Binding LikesDisplay}" FontSize="12" Foreground="{StaticResource App.Brush.Steel.Bright}"
                                                                        Margin="6,0,0,0" VerticalAlignment="Center"/>
                                                         </StackPanel>
                                                     </Button>
@@ -538,7 +537,7 @@
 
                         <StackPanel x:Name="CommunityError" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Collapsed">
                             <h:Icon Kind="alert" Size="42" Foreground="#40FFFFFF" HorizontalAlignment="Center"/>
-                            <TextBlock x:Name="CommunityErrorText" Text="{h:Translate Recipes_Community_Offline}" FontSize="13"
+                            <TextBlock Text="{h:Translate Recipes_Community_Offline}" FontSize="13"
                                        Foreground="{StaticResource App.Brush.Steel}" HorizontalAlignment="Center" Margin="0,14,0,16"
                                        TextAlignment="Center" MaxWidth="380" TextWrapping="Wrap"/>
                             <Button Style="{StaticResource App.Style.Button}" Content="{h:Translate Recipes_Button_Retry}" Tag="refresh"
@@ -553,7 +552,7 @@
             </Grid>
         </h:ShadowCard>
 
-        <Grid x:Name="OverlayContainer" Grid.Row="0" Grid.RowSpan="3" Visibility="Collapsed" Background="#CC050A14">
+        <Grid x:Name="OverlayContainer" Grid.Row="0" Grid.RowSpan="3" Visibility="Collapsed" Background="{StaticResource App.Brush.Scrim}">
 
             <Grid x:Name="EditorOverlay" Visibility="Collapsed">
                 <h:ShadowCard Style="{StaticResource App.Style.OverlayCard}" Width="760" MaxHeight="780" VerticalAlignment="Center">
@@ -578,23 +577,23 @@
                                         <ColumnDefinition Width="2*"/>
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Grid.Column="0">
-                                        <TextBlock Text="{h:Translate Recipes_Editor_Name}" FontSize="12" FontWeight="SemiBold" Foreground="#C8D8E8" Margin="0,0,0,6"/>
+                                        <TextBlock Text="{h:Translate Recipes_Editor_Name}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource App.Brush.Steel.Bright}" Margin="0,0,0,6"/>
                                         <TextBox x:Name="EditorName" Style="{StaticResource App.Style.TextBox.Glass}" Height="40"
                                                  Tag="{h:Translate Recipes_Editor_NamePlaceholder}" MaxLength="60"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="2">
-                                        <TextBlock Text="{h:Translate Recipes_Editor_Author}" FontSize="12" FontWeight="SemiBold" Foreground="#C8D8E8" Margin="0,0,0,6"/>
+                                        <TextBlock Text="{h:Translate Recipes_Editor_Author}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource App.Brush.Steel.Bright}" Margin="0,0,0,6"/>
                                         <TextBox x:Name="EditorAuthor" Style="{StaticResource App.Style.TextBox.Glass}" Height="40"
                                                  Tag="{h:Translate Recipes_Editor_AuthorPlaceholder}" MaxLength="40"/>
                                     </StackPanel>
                                 </Grid>
 
-                                <TextBlock Text="{h:Translate Recipes_Editor_Description}" FontSize="12" FontWeight="SemiBold" Foreground="#C8D8E8" Margin="0,0,0,6"/>
+                                <TextBlock Text="{h:Translate Recipes_Editor_Description}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource App.Brush.Steel.Bright}" Margin="0,0,0,6"/>
                                 <TextBox x:Name="EditorDescription" Style="{StaticResource App.Style.TextBox.Glass}" Height="58"
                                          Tag="{h:Translate Recipes_Editor_DescriptionPlaceholder}" MaxLength="300"
                                          TextWrapping="Wrap" AcceptsReturn="True" VerticalContentAlignment="Top" Padding="12,8"/>
 
-                                <TextBlock Text="{h:Translate Recipes_Editor_Style}" FontSize="12" FontWeight="SemiBold" Foreground="#C8D8E8" Margin="0,14,0,6"/>
+                                <TextBlock Text="{h:Translate Recipes_Editor_Style}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource App.Brush.Steel.Bright}" Margin="0,14,0,6"/>
                                 <StackPanel x:Name="GlyphPanel" Orientation="Horizontal" Margin="0,0,0,16"/>
 
                                 <Border Style="{StaticResource Recipes.Style.SectionCard}">
@@ -610,11 +609,11 @@
                                             <CheckBox x:Name="OptEnable" Style="{StaticResource App.Style.ToggleSwitch}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                                         </Grid>
                                         <StackPanel Visibility="{Binding IsChecked, ElementName=OptEnable, Converter={StaticResource App.Converter.BooleanToVisibility}}" Margin="0,12,0,0">
-                                            <Border Background="#0DFFD700" CornerRadius="10" Padding="12,9" BorderBrush="#18FFD700" BorderThickness="1">
+                                            <Border Background="{StaticResource App.Brush.Gold.A0D}" CornerRadius="10" Padding="12,9" BorderBrush="{StaticResource App.Brush.Gold.A18}" BorderThickness="1">
                                                 <CheckBox x:Name="ExtremeCheck" Style="{StaticResource App.Style.ToggleSwitch.Extreme}">
                                                     <StackPanel Orientation="Horizontal">
                                                         <h:Icon Kind="bolt" Size="15" Foreground="{StaticResource App.Brush.Gold}" Margin="0,0,8,0" VerticalAlignment="Center"/>
-                                                        <TextBlock Text="{h:Translate Optimize_ExtremeMode_Label}" FontSize="12" FontWeight="SemiBold" Foreground="#C8D8E8" VerticalAlignment="Center"/>
+                                                        <TextBlock Text="{h:Translate Optimize_ExtremeMode_Label}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource App.Brush.Steel.Bright}" VerticalAlignment="Center"/>
                                                         <Border Style="{StaticResource Recipes.Style.ProTag}" Margin="10,0,0,0" VerticalAlignment="Center">
                                                             <TextBlock Text="PRO" FontSize="9" FontWeight="Bold" Foreground="{StaticResource App.Brush.Gold}"/>
                                                         </Border>
@@ -629,7 +628,7 @@
                                     <StackPanel>
                                         <Grid>
                                             <StackPanel Orientation="Horizontal">
-                                                <h:Icon Kind="delete" Size="18" Foreground="#FF6B6B" VerticalAlignment="Center"/>
+                                                <h:Icon Kind="delete" Size="18" Foreground="{StaticResource App.Brush.Crimson}" VerticalAlignment="Center"/>
                                                 <StackPanel Margin="12,0,0,0">
                                                     <TextBlock Text="{h:Translate Recipes_Step_Debloat}" FontSize="14" FontWeight="SemiBold" Foreground="White"/>
                                                     <TextBlock Text="{h:Translate Recipes_Step_Debloat_Description}" FontSize="11" Foreground="{StaticResource App.Brush.Steel}" Margin="0,2,0,0"/>
@@ -667,7 +666,7 @@
                                                                         <TextBlock Text="{Binding PackageName}" FontSize="12" Foreground="{StaticResource App.Brush.Steel}" VerticalAlignment="Center"/>
                                                                     </StackPanel>
                                                                     <Button Grid.Column="1" Style="{StaticResource App.Style.Button.IconOnly}" Padding="4" Click="OnRemovePackageClick">
-                                                                        <h:Icon Kind="close" Size="13" Foreground="#FF6B6B"/>
+                                                                        <h:Icon Kind="close" Size="13" Foreground="{StaticResource App.Brush.Crimson}"/>
                                                                     </Button>
                                                                 </Grid>
                                                             </DataTemplate>
@@ -689,9 +688,9 @@
                                                 <TextBox x:Name="PkgInput" Style="{StaticResource App.Style.TextBox.Glass}" Height="36"
                                                          Tag="{h:Translate Recipes_Debloat_AddPlaceholder}" KeyDown="OnPkgInputKeyDown"/>
                                                 <Button Grid.Column="2" Style="{StaticResource App.Style.Button.Inline}" Content="{h:Translate Recipes_Button_Add}" Tag="add" Click="OnAddPackageClick"/>
-                                                <Button Grid.Column="4" x:Name="FromDeviceButton" Style="{StaticResource App.Style.Button.Inline}" Content="{h:Translate Recipes_Button_FromDevice}" Tag="phone" Click="OnFromDeviceClick"/>
+                                                <Button Grid.Column="4" Style="{StaticResource App.Style.Button.Inline}" Content="{h:Translate Recipes_Button_FromDevice}" Tag="phone" Click="OnFromDeviceClick"/>
                                             </Grid>
-                                            <TextBlock x:Name="PkgError" FontSize="11" Foreground="#FF6B6B" Margin="2,6,0,0" Visibility="Collapsed"
+                                            <TextBlock x:Name="PkgError" FontSize="11" Foreground="{StaticResource App.Brush.Crimson}" Margin="2,6,0,0" Visibility="Collapsed"
                                                        Text="{h:Translate Recipes_Error_InvalidPackage}"/>
                                         </StackPanel>
                                     </StackPanel>
@@ -775,30 +774,30 @@
                                                             </h:Icon>
                                                             <TextBlock Grid.Column="2" Text="{Binding FileName}" FontSize="12" Foreground="White" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
                                                             <Button Grid.Column="3" Style="{StaticResource App.Style.Button.IconOnly}" Padding="4" Click="OnRemoveApkClick">
-                                                                <h:Icon Kind="close" Size="13" Foreground="#FF6B6B"/>
+                                                                <h:Icon Kind="close" Size="13" Foreground="{StaticResource App.Brush.Crimson}"/>
                                                             </Button>
                                                         </Grid>
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
                                             </ItemsControl>
-                                            <TextBlock x:Name="ApkHint" Text="{h:Translate Recipes_Install_Hint}" FontSize="11"
+                                            <TextBlock Text="{h:Translate Recipes_Install_Hint}" FontSize="11"
                                                        Foreground="{StaticResource App.Brush.Steel}" Margin="2,4,0,6" TextWrapping="Wrap"/>
                                             <TextBlock x:Name="ApkTierHint" Text="{h:Translate Recipes_Install_FreeHint}" FontSize="11"
                                                        Foreground="{StaticResource App.Brush.Gold}" Margin="2,0,0,10" TextWrapping="Wrap" Visibility="Collapsed"/>
-                                            <Button x:Name="AddApkButton" Style="{StaticResource App.Style.Button.Inline}" Content="{h:Translate Recipes_Button_AddApk}"
+                                            <Button Style="{StaticResource App.Style.Button.Inline}" Content="{h:Translate Recipes_Button_AddApk}"
                                                     Tag="import-file" Click="OnAddApkClick" HorizontalAlignment="Left"/>
                                         </StackPanel>
                                     </StackPanel>
                                 </Border>
 
-                                <TextBlock x:Name="EditorError" FontSize="12" Foreground="#FF6B6B" TextWrapping="Wrap" Margin="2,0,0,4" Visibility="Collapsed"/>
+                                <TextBlock x:Name="EditorError" FontSize="12" Foreground="{StaticResource App.Brush.Crimson}" TextWrapping="Wrap" Margin="2,0,0,4" Visibility="Collapsed"/>
                             </StackPanel>
                         </ScrollViewer>
 
                         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
                             <Button Style="{StaticResource App.Style.Button}" Background="Transparent" Content="{h:Translate Common_Button_Cancel}"
                                     Tag="close" Click="OnEditorCancelClick" Margin="0,0,12,0" MinWidth="130"/>
-                            <Button x:Name="EditorSave" Style="{StaticResource App.Style.Button}" Content="{h:Translate Recipes_Button_Save}"
+                            <Button Style="{StaticResource App.Style.Button}" Content="{h:Translate Recipes_Button_Save}"
                                     Tag="save" Click="OnEditorSaveClick" MinWidth="160"/>
                         </StackPanel>
                     </Grid>
@@ -850,8 +849,8 @@
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
 
-                                    <Border x:Name="RunProNote" Background="#0DFFD700" CornerRadius="10" Padding="12,10" Margin="0,6,0,0"
-                                            BorderBrush="#18FFD700" BorderThickness="1" Visibility="Collapsed">
+                                    <Border x:Name="RunProNote" Background="{StaticResource App.Brush.Gold.A0D}" CornerRadius="10" Padding="12,10" Margin="0,6,0,0"
+                                            BorderBrush="{StaticResource App.Brush.Gold.A18}" BorderThickness="1" Visibility="Collapsed">
                                         <StackPanel Orientation="Horizontal">
                                             <h:Icon Kind="bolt" Size="15" Foreground="{StaticResource App.Brush.Gold}" VerticalAlignment="Center"/>
                                             <TextBlock Text="{h:Translate Recipes_Run_ProNote}" FontSize="12" Foreground="#E8D8A8" Margin="10,0,0,0"
@@ -862,13 +861,13 @@
                                     <Border x:Name="RunDebloatNote" Background="#15FFFFFF" CornerRadius="10" Padding="12,10" Margin="0,8,0,0" Visibility="Collapsed">
                                         <StackPanel Orientation="Horizontal">
                                             <h:Icon Kind="refresh" Size="15" Foreground="{StaticResource App.Brush.DeepSkyBlue}" VerticalAlignment="Center"/>
-                                            <TextBlock Text="{h:Translate Recipes_Run_DebloatNote}" FontSize="12" Foreground="#C8D8E8" Margin="10,0,0,0"
+                                            <TextBlock Text="{h:Translate Recipes_Run_DebloatNote}" FontSize="12" Foreground="{StaticResource App.Brush.Steel.Bright}" Margin="10,0,0,0"
                                                        VerticalAlignment="Center" TextWrapping="Wrap" MaxWidth="480"/>
                                         </StackPanel>
                                     </Border>
 
-                                    <Border x:Name="RunApkChoice" Background="#0DFFD700" CornerRadius="10" Padding="14,12" Margin="0,8,0,0"
-                                            BorderBrush="#18FFD700" BorderThickness="1" Visibility="Collapsed">
+                                    <Border x:Name="RunApkChoice" Background="{StaticResource App.Brush.Gold.A0D}" CornerRadius="10" Padding="14,12" Margin="0,8,0,0"
+                                            BorderBrush="{StaticResource App.Brush.Gold.A18}" BorderThickness="1" Visibility="Collapsed">
                                         <StackPanel>
                                             <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
                                                 <h:Icon Kind="download" Size="15" Foreground="{StaticResource App.Brush.Gold}" VerticalAlignment="Center"/>
@@ -926,7 +925,7 @@
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
-                                    <TextBlock x:Name="RunSummaryText" FontSize="12" Foreground="#C8D8E8" TextWrapping="Wrap" Margin="2,8,0,0" Visibility="Collapsed"/>
+                                    <TextBlock x:Name="RunSummaryText" FontSize="12" Foreground="{StaticResource App.Brush.Steel.Bright}" TextWrapping="Wrap" Margin="2,8,0,0" Visibility="Collapsed"/>
                                 </StackPanel>
                             </StackPanel>
                         </ScrollViewer>
@@ -987,7 +986,7 @@
                                 </ItemsControl>
                             </ScrollViewer>
                             <StackPanel x:Name="PickerLoading" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Collapsed">
-                                <ProgressBar IsIndeterminate="True" Width="180" Style="{StaticResource App.Style.ProgressBar}"/>
+                                <ProgressBar x:Name="PickerSpinner" IsIndeterminate="True" Width="180" Style="{StaticResource App.Style.ProgressBar}"/>
                                 <TextBlock x:Name="PickerStatus" Text="{h:Translate Debloat_Loading}" Foreground="{StaticResource App.Brush.Steel}" FontSize="12"
                                            Margin="0,12,0,0" HorizontalAlignment="Center"/>
                             </StackPanel>
@@ -996,7 +995,7 @@
                         <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
                             <Button Style="{StaticResource App.Style.Button}" Background="Transparent" Content="{h:Translate Common_Button_Cancel}"
                                     Tag="close" Click="OnPickerCancelClick" Margin="0,0,12,0" MinWidth="130"/>
-                            <Button x:Name="PickerAddButton" Style="{StaticResource App.Style.Button}" Content="{h:Translate Recipes_Picker_AddSelected}"
+                            <Button Style="{StaticResource App.Style.Button}" Content="{h:Translate Recipes_Picker_AddSelected}"
                                     Tag="add" Click="OnPickerAddClick" MinWidth="170"/>
                         </StackPanel>
                     </Grid>

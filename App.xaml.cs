@@ -101,13 +101,15 @@ public partial class App : Application
             };
             var dialog = UnifiedDialog.Create(config);
             dialog.ShowDialog();
-            e.Handled = dialog.Result == DialogAction.Yes;
+            if (dialog.Result != DialogAction.Yes) Shutdown(1);
+            // Handled either way: declining asks for a clean shutdown, and letting WPF rethrow would
+            // instead reach the domain handler for a second dialog and a crash-path exit.
+            e.Handled = true;
         }
         catch
         {
             e.Handled = false;
         }
-        if (!e.Handled) Shutdown(1);
     }
 
     private void OnDomainException(object s, UnhandledExceptionEventArgs e)

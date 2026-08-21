@@ -1,7 +1,5 @@
 namespace ZephyrsElixir.Core;
 
-#region Model
-
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum DebloatMode { Uninstall, Disable }
 
@@ -53,6 +51,9 @@ public sealed class Recipe
 {
     public const int CurrentSchemaVersion = 1;
     public const string FileExtension = ".zerecipe";
+
+    /// <summary>The recipe entry of a <see cref="Microsoft.Win32.FileDialog.Filter"/>; callers append their own.</summary>
+    public const string FileDialogFilter = "Zephyr's Recipe (*" + FileExtension + ")|*" + FileExtension;
 
     public int SchemaVersion { get; set; } = CurrentSchemaVersion;
     public string Id { get; set; } = Guid.NewGuid().ToString("N");
@@ -153,10 +154,6 @@ public static class RecipeJson
     };
 }
 
-#endregion
-
-#region Validation
-
 public static class RecipeValidator
 {
     public const int MaxNameLength = 60;
@@ -213,10 +210,6 @@ public static class RecipeValidator
         return null;
     }
 }
-
-#endregion
-
-#region Store
 
 /// <summary>
 /// Single owner of everything recipe-persistence: the local library folder, the .zerecipe
@@ -305,7 +298,10 @@ public static class RecipeStore
         if (recipe is null) return (null, Strings.Recipes_Error_Unreadable);
         if (RecipeValidator.Validate(recipe) is { } error) return (null, error);
 
-        if (File.Exists(Path.Combine(LibraryDir, $"{recipe.Id}{Recipe.FileExtension}")))
+        // The id names the file on disk and arrives straight from an untrusted payload, so anything
+        // that is not one of our own identifiers is replaced rather than trusted with a path.
+        if (!Guid.TryParseExact(recipe.Id, "N", out _) ||
+            File.Exists(Path.Combine(LibraryDir, $"{recipe.Id}{Recipe.FileExtension}")))
             recipe.Id = Guid.NewGuid().ToString("N");
 
         recipe.TimesApplied = 0;
@@ -382,10 +378,6 @@ public static class RecipeStore
 
     private static string Truncate(string s, int max) => s.Length <= max ? s : s[..max];
 }
-
-#endregion
-
-#region Runner
 
 public enum RecipeStepKind { Optimization, Debloat, Tweaks, Install }
 public enum RecipeStepStatus { Success, Partial, Skipped, Failed }
@@ -561,6 +553,12 @@ public static class RecipeRunner
         int ok = 0, failed = 0, skipped = 0;
         var sdk = await DeviceApi.GetSdkAsync(ctx.Device.Serial, ctx.Ct);
 
+        // One listing for the whole batch. Without it every entry claims to be a system app, and the
+        // history then offers a restore that cannot work on a user-installed one.
+        var systemPackages = step.Mode == DebloatMode.Uninstall
+            ? await DeviceApi.GetSystemPackagesAsync(ctx.Device.Serial, ctx.Ct)
+            : null;
+
         for (int i = 0; i < step.Packages.Count; i++)
         {
             ctx.Ct.ThrowIfCancellationRequested();
@@ -573,8 +571,10 @@ public static class RecipeRunner
                 continue;
             }
 
+            var isSystem = systemPackages?.Contains(pkg.PackageName) == true;
+
             var command = step.Mode == DebloatMode.Uninstall
-                ? DeviceApi.UninstallCommand(sdk, pkg.PackageName, keepForRestore: true)
+                ? DeviceApi.UninstallCommand(sdk, pkg.PackageName, keepForRestore: isSystem)
                 : DeviceApi.DisableCommand(sdk, pkg.PackageName);
 
             var result = await ctx.AdbAsync(command);
@@ -588,7 +588,7 @@ public static class RecipeRunner
                         DisplayName = pkg.Label ?? pkg.PackageName,
                         Version = string.Empty,
                         UninstallDate = DateTime.Now,
-                        IsSystemApp = true,
+                        IsSystemApp = isSystem,
                         DeviceSerial = ctx.Device.Serial
                     });
             }
@@ -607,24 +607,39 @@ public static class RecipeRunner
         var step = recipe.Tweaks!;
         var applied = new List<string>();
         var skippedPro = 0;
+        var failed = 0;
 
+        // Nothing below is tracked in the ledger unless the device confirmed it: a tracked operation
+        // that never happened turns "Reset all" into a revert of something that was never applied.
         if (!string.IsNullOrEmpty(step.DnsHostname))
         {
             ctx.Report(Strings.Advanced_DNS_Title, 0.1);
-            await ctx.AdbAsync("shell settings put global private_dns_mode hostname");
-            await ctx.AdbAsync($"shell settings put global private_dns_specifier {step.DnsHostname}");
-            OperationLedger.Track(ctx.Device.Serial, OperationLedger.Ops.Dns);
-            applied.Add($"DNS: {step.DnsName ?? step.DnsHostname}");
+            var modeSet = DeviceApi.IsSilentSuccess(await ctx.AdbAsync("shell settings put global private_dns_mode hostname"));
+            var hostSet = DeviceApi.IsSilentSuccess(await ctx.AdbAsync($"shell settings put global private_dns_specifier {step.DnsHostname}"));
+
+            if (modeSet && hostSet)
+            {
+                OperationLedger.Track(ctx.Device.Serial, OperationLedger.Ops.Dns);
+                applied.Add($"DNS: {step.DnsName ?? step.DnsHostname}");
+            }
+            else failed++;
         }
 
         if (step.AnimationScale is { } scale)
         {
             ctx.Report(Strings.Advanced_Animations_Header, 0.3);
             var value = scale.ToString("F1", CultureInfo.InvariantCulture);
+
+            var allSet = true;
             foreach (var key in OperationLedger.AnimationKeys)
-                await ctx.AdbAsync($"shell settings put global {key} {value}");
-            OperationLedger.Track(ctx.Device.Serial, OperationLedger.Ops.Animations);
-            applied.Add($"{Strings.Recipes_Chip_Animations} {value}x");
+                allSet &= DeviceApi.IsSilentSuccess(await ctx.AdbAsync($"shell settings put global {key} {value}"));
+
+            if (allSet)
+            {
+                OperationLedger.Track(ctx.Device.Serial, OperationLedger.Ops.Animations);
+                applied.Add($"{Strings.Recipes_Chip_Animations} {value}x");
+            }
+            else failed++;
         }
 
         for (int i = 0; i < step.ProPrivacy.Count; i++)
@@ -639,7 +654,7 @@ public static class RecipeRunner
 
             ctx.Report(string.Format(Strings.Recipes_Run_ApplyingTweak, commandId), 0.5 + 0.5 * i / step.ProPrivacy.Count);
             var result = await Pro.ExecuteAsync(commandId, ct: ctx.Ct);
-            if (!result.Success) continue;
+            if (!result.Success) { failed++; continue; }
             if (OperationLedger.OpForProCommand(commandId) is { } op)
                 OperationLedger.Track(ctx.Device.Serial, op);
             applied.Add(commandId);
@@ -648,7 +663,11 @@ public static class RecipeRunner
         var detail = skippedPro > 0
             ? string.Format(Strings.Recipes_Run_TweaksDetailSkipped, applied.Count, skippedPro)
             : string.Format(Strings.Recipes_Run_TweaksDetail, applied.Count);
-        return new(RecipeStepKind.Tweaks, skippedPro > 0 ? RecipeStepStatus.Partial : RecipeStepStatus.Success, detail);
+
+        var status = applied.Count == 0 && (failed > 0 || skippedPro > 0) ? RecipeStepStatus.Failed
+            : failed > 0 || skippedPro > 0 ? RecipeStepStatus.Partial
+            : RecipeStepStatus.Success;
+        return new(RecipeStepKind.Tweaks, status, detail);
     }
 
     private static async Task<RecipeStepResult> RunInstallAsync(Recipe recipe, StepContext ctx)
@@ -678,5 +697,3 @@ public static class RecipeRunner
         return new(RecipeStepKind.Install, status, detail);
     }
 }
-
-#endregion

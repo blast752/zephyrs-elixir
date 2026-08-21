@@ -30,4 +30,10 @@ public static class AiConsent
         }
         catch { /* non-fatal */ }
     }
+
+    /// <summary>Clears the choice, returning the app to the undecided state of a fresh install.</summary>
+    public static void Reset()
+    {
+        try { File.Delete(MarkerPath); } catch { /* non-fatal */ }
+    }
 }

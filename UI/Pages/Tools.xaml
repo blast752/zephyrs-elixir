@@ -20,7 +20,7 @@
                 Padding="24"
                 ShadowEffect="{StaticResource App.Effect.PageShadow}">
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                <ItemsControl x:Name="ToolsGrid" ItemsSource="{Binding ToolItems}">
+                <ItemsControl ItemsSource="{Binding ToolItems}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <UniformGrid Columns="4" HorizontalAlignment="Stretch"/>
@@ -32,16 +32,15 @@
                                     MinHeight="140"
                                     Cursor="Hand"
                                     Click="OnToolClick"
-                                    Tag="{Binding Key}"
-                                    IsEnabled="{Binding IsEnabled}">
+                                    Tag="{Binding Key}">
                                 <Button.Style>
                                     <Style TargetType="Button">
                                         <Setter Property="Template">
                                             <Setter.Value>
                                                 <ControlTemplate TargetType="Button">
                                                     <Border x:Name="container" 
-                                                            Background="#1AFFFFFF" 
-                                                            BorderBrush="#3AFFFFFF" 
+                                                            Background="{StaticResource App.Brush.Glass.Background}" 
+                                                            BorderBrush="{StaticResource App.Brush.Glass.Border}" 
                                                             BorderThickness="1" 
                                                             CornerRadius="16"
                                                             Padding="20"

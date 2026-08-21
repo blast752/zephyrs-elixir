@@ -62,21 +62,43 @@ public sealed class UltraParticleLayer : FrameworkElement
         Redraw();
     }
 
+    // Particles respawn continuously, and the only variety the eye gets is the alpha: building a
+    // fresh brush every time is churn on the render loop, so the whole range is pre-frozen once.
+    // Built on first use, not at type load, so the palette resources are already merged.
+    private static RadialGradientBrush[]? _goldPalette;
+    private static RadialGradientBrush[]? _bluePalette;
+
+    private static RadialGradientBrush[] BuildPalette(string colorKey, int alphaFrom, int alphaTo)
+    {
+        var c = UIHelpers.PaletteColor(colorKey) ?? Colors.White;
+        var steps = new RadialGradientBrush[8];
+
+        for (int i = 0; i < steps.Length; i++)
+        {
+            var alpha = (byte)(alphaFrom + (alphaTo - alphaFrom) * i / (steps.Length - 1));
+            var brush = new RadialGradientBrush(Color.FromArgb(alpha, c.R, c.G, c.B), Colors.Transparent)
+            {
+                Center = new Point(0.5, 0.5),
+                GradientOrigin = new Point(0.5, 0.5),
+                RadiusX = 0.5,
+                RadiusY = 0.5
+            };
+            brush.Freeze();
+            steps[i] = brush;
+        }
+
+        return steps;
+    }
+
     private Particle CreateParticle(bool initial)
     {
         double size = _rng.NextDouble() * 8 + 3;
-        Color c = _rng.Next(0, 5) == 0
-            ? Color.FromArgb((byte)_rng.Next(90, 160), 255, 215, 0)
-            : Color.FromArgb((byte)_rng.Next(60, 140), 0, 191, 255);
 
-        var brush = new RadialGradientBrush(c, Colors.Transparent)
-        {
-            Center = new Point(0.5, 0.5),
-            GradientOrigin = new Point(0.5, 0.5),
-            RadiusX = 0.5,
-            RadiusY = 0.5
-        };
-        brush.Freeze();
+        _goldPalette ??= BuildPalette("App.Color.Gold", 90, 160);
+        _bluePalette ??= BuildPalette("App.Color.DeepSkyBlue", 60, 140);
+
+        var palette = _rng.Next(0, 5) == 0 ? _goldPalette : _bluePalette;
+        var brush = palette[_rng.Next(palette.Length)];
 
         double x = _rng.NextDouble() * Math.Max(ActualWidth, 1);
         double y = initial ? _rng.NextDouble() * Math.Max(ActualHeight, 1) : ActualHeight + size;

@@ -103,12 +103,12 @@
                     <StackPanel Margin="16,0,0,0" VerticalAlignment="Center">
                         <TextBlock Text="{h:Translate PowerMenu_Header}" FontSize="24" FontWeight="Bold" Foreground="White"/>
                         <TextBlock Text="{h:Translate PowerMenu_Subtitle}" 
-                                   Foreground="#B0B8C8" FontSize="13" Margin="0,2,0,0"/>
+                                   Foreground="{StaticResource App.Brush.Steel}" FontSize="13" Margin="0,2,0,0"/>
                     </StackPanel>
                 </StackPanel>
 
                 <Button Grid.Column="2" Style="{StaticResource App.Style.WindowControl.Close}" 
-                        Click="OnCloseClick" ToolTip="Close"/>
+                        Click="OnCloseClick" ToolTip="{h:Translate Window_Tooltip_Close}"/>
             </Grid>
         </h:ShadowCard>
 
@@ -123,7 +123,7 @@
                     <StackPanel>
                         <TextBlock Text="{h:Translate PowerMenu_Category_Standard}" Style="{StaticResource Power.Style.CategoryHeader}"/>
 
-                        <ItemsControl x:Name="StandardOptionsPanel" ItemsSource="{Binding StandardOptions}">
+                        <ItemsControl ItemsSource="{Binding StandardOptions}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Button Style="{StaticResource Reboot.Style.OptionCard}" 
@@ -136,7 +136,7 @@
 
                         <TextBlock Text="{h:Translate PowerMenu_Category_Advanced}" Style="{StaticResource Power.Style.CategoryHeader}" Margin="4,20,0,12"/>
 
-                        <ItemsControl x:Name="AdvancedOptionsPanel" ItemsSource="{Binding AdvancedOptions}">
+                        <ItemsControl ItemsSource="{Binding AdvancedOptions}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Button Style="{StaticResource Reboot.Style.OptionCard}" 
@@ -149,7 +149,7 @@
 
                         <TextBlock Text="{h:Translate PowerMenu_Category_Power}" Style="{StaticResource Power.Style.CategoryHeader}" Margin="4,20,0,12"/>
 
-                        <ItemsControl x:Name="PowerOptionsPanel" ItemsSource="{Binding PowerOptions}">
+                        <ItemsControl ItemsSource="{Binding PowerOptions}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Button Style="{StaticResource Reboot.Style.OptionCard}" 
@@ -183,9 +183,9 @@
                                         <TextBlock x:Name="DeviceNameText" Text="{h:Translate DeviceStatus_NoDevice}" 
                                                    FontSize="14" FontWeight="SemiBold" Foreground="White"/>
                                         <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
-                                            <Ellipse x:Name="StatusDot" Width="8" Height="8" Fill="#FF6B6B" Margin="0,0,6,0"/>
+                                            <Ellipse x:Name="StatusDot" Width="8" Height="8" Fill="{StaticResource App.Brush.Crimson}" Margin="0,0,6,0"/>
                                             <TextBlock x:Name="StatusText" Text="{h:Translate PowerMenu_Status_Disconnected}" 
-                                                       FontSize="12" Foreground="#FF6B6B"/>
+                                                       FontSize="12" Foreground="{StaticResource App.Brush.Crimson}"/>
                                         </StackPanel>
                                     </StackPanel>
                                 </Grid>
@@ -198,7 +198,7 @@
                                     Visibility="Collapsed">
                                 <StackPanel>
                                     <StackPanel Orientation="Horizontal">
-                                        <h:Icon x:Name="OperationSpinner" Kind="sync" Size="20"
+                                        <h:Icon Kind="sync" Size="20"
                                                 Foreground="#FF9F43"
                                                 RenderTransformOrigin="0.5,0.5">
                                             <h:Icon.RenderTransform>

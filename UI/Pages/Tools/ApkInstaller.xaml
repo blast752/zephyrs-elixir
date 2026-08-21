@@ -18,13 +18,13 @@
                     <Setter Property="Fill" Value="#60FFFFFF"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Status}" Value="Installing">
-                    <Setter Property="Fill" Value="#FFD700"/>
+                    <Setter Property="Fill" Value="{StaticResource App.Brush.Gold}"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Status}" Value="Success">
                     <Setter Property="Fill" Value="#00D68F"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Status}" Value="Failed">
-                    <Setter Property="Fill" Value="#FF6B6B"/>
+                    <Setter Property="Fill" Value="{StaticResource App.Brush.Crimson}"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Status}" Value="Updated">
                     <Setter Property="Fill" Value="{StaticResource App.Brush.DeepSkyBlue}"/>
@@ -63,11 +63,11 @@
                     <TextBlock Text="{h:Translate Tools_ApkInstaller_Title}" FontSize="26" FontWeight="Bold" Foreground="White"/>
                     <TextBlock x:Name="StatusText" 
                                Text="{h:Translate ApkInstaller_DragDrop}" 
-                               Foreground="#B0B8C8" FontSize="13" Margin="0,4,0,0"/>
+                               Foreground="{StaticResource App.Brush.Steel}" FontSize="13" Margin="0,4,0,0"/>
                 </StackPanel>
 
                 <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Button x:Name="BrowseButton"
+                    <Button
                             Style="{StaticResource App.Style.Button}"
                             Content="{h:Translate ApkInstaller_Button_Browse}" Tag="import-file"
                             Click="OnBrowseClick"
@@ -133,8 +133,8 @@
                             <Border Background="#2000D68F" CornerRadius="8" Padding="12,6" Margin="4,0">
                                 <TextBlock Text=".XAPK" FontSize="12" FontWeight="SemiBold" Foreground="#00D68F"/>
                             </Border>
-                            <Border Background="#20FFD700" CornerRadius="8" Padding="12,6" Margin="4,0">
-                                <TextBlock Text=".APKS" FontSize="12" FontWeight="SemiBold" Foreground="#FFD700"/>
+                            <Border Background="{StaticResource App.Brush.Gold.A20}" CornerRadius="8" Padding="12,6" Margin="4,0">
+                                <TextBlock Text=".APKS" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource App.Brush.Gold}"/>
                             </Border>
                             <Border Background="#207D64FF" CornerRadius="8" Padding="12,6" Margin="4,0">
                                 <TextBlock Text=".APKM" FontSize="12" FontWeight="SemiBold" Foreground="#7D64FF"/>
@@ -168,7 +168,7 @@
                     </Border>
 
                     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="8">
-                        <ItemsControl x:Name="FileList" ItemsSource="{Binding Packages}">
+                        <ItemsControl ItemsSource="{Binding Packages}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Border Margin="4" CornerRadius="12" Background="#15FFFFFF" 
@@ -316,7 +316,7 @@
                     <h:Icon Kind="library" Size="16" Foreground="#70B0B8C8" VerticalAlignment="Center" Margin="0,0,10,0"/>
                     <TextBlock x:Name="SummaryText" 
                                Text="{h:Translate ApkInstaller_NoPackages}" 
-                               FontSize="13" Foreground="#B0B8C8" VerticalAlignment="Center"/>
+                               FontSize="13" Foreground="{StaticResource App.Brush.Steel}" VerticalAlignment="Center"/>
                 </StackPanel>
 
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">

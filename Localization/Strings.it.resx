@@ -208,9 +208,6 @@
   <data name="Home_Button_WirelessConnection_Tooltip" xml:space="preserve">
     <value>Collega il dispositivo senza fili</value>
   </data>
-  <data name="WirelessConnection_Log_Title" xml:space="preserve">
-    <value>Log connessione wireless</value>
-  </data>
   <data name="Home_Banner_RecommendedPartner" xml:space="preserve">
     <value>CONSIGLIATO</value>
   </data>
@@ -452,8 +449,14 @@
   <data name="Debloat_Bucket_Restricted" xml:space="preserve">
     <value>Congelata</value>
   </data>
+  <data name="Debloat_Bucket_Never" xml:space="preserve">
+    <value>Mai avviata</value>
+  </data>
   <data name="Debloat_AI_QuotaExhausted" xml:space="preserve">
     <value>Limite giornaliero raggiunto — {0} scansioni gratuite al giorno</value>
+  </data>
+  <data name="Debloat_AI_Disabled" xml:space="preserve">
+    <value>Analisi IA disattivata — attivala in Impostazioni per un verdetto</value>
   </data>
   <!-- ═══════════════════════════════════════════════════════════════════ -->
   <!-- TOOLS                                                              -->
@@ -762,7 +765,7 @@
     <value>Lingua</value>
   </data>
   <data name="Settings_Language_Description" xml:space="preserve">
-    <value>Scegli la lingua dell’interfaccia — inglese o italiano. Il cambiamento è immediato, senza riavvio.</value>
+    <value>Scegli la lingua dell'interfaccia — inglese o italiano. Il cambiamento è immediato, senza riavvio.</value>
   </data>
   <data name="Settings_Updates_Title" xml:space="preserve">
     <value>Aggiornamenti automatici</value>
@@ -818,6 +821,12 @@
   <data name="Settings_Reset_Button" xml:space="preserve">
     <value>Ripristina predefiniti</value>
   </data>
+  <data name="Settings_Reset_Confirm_Title" xml:space="preserve">
+    <value>Ripristinare i valori predefiniti?</value>
+  </data>
+  <data name="Settings_Reset_Confirm_Message" xml:space="preserve">
+    <value>Verranno azzerate le impostazioni dell'app: lingua dell'interfaccia, analisi AI nel cloud e il DNS personalizzato salvato. Licenza, ricette, backup e ogni modifica al dispositivo restano invariati.</value>
+  </data>
   <data name="Settings_ProLicense_Title" xml:space="preserve">
     <value>Licenza Pro</value>
   </data>
@@ -871,7 +880,7 @@
     <value>Impostazioni ripristinate</value>
   </data>
   <data name="Settings_MessageBox_ResetInfo_Message" xml:space="preserve">
-    <value>Impostazioni ripristinate ai valori predefiniti. Riavvia l'app per applicare.</value>
+    <value>Impostazioni ripristinate ai valori predefiniti.</value>
   </data>
 
   <!-- ═══════════════════════════════════════════════════════════════════ -->
@@ -938,6 +947,12 @@ Monitora CPU, RAM, GPU, FPS reali, rete, I/O di archiviazione e temperatura dell
     <value>L'installazione multipla di APK è una funzionalità Pro.
 
 Il piano Free permette un solo APK alla volta.</value>
+  </data>
+  <data name="Pro_Module_Title" xml:space="preserve">
+    <value>Modulo Pro</value>
+  </data>
+  <data name="Pro_Module_NotLoaded" xml:space="preserve">
+    <value>Non è stato possibile caricare il modulo Pro. Riavvia Zephyr's Elixir e riprova.</value>
   </data>
   <data name="Pro_Required_ApkBackup" xml:space="preserve">
     <value>Il backup dell'APK prima della disinstallazione è una funzionalità Pro.
@@ -1256,6 +1271,15 @@ Disinstallare senza backup resta gratuito e la scheda Cronologia può comunque r
   <data name="License_Status_Canceled" xml:space="preserve">
     <value>Abbonamento annullato</value>
   </data>
+  <data name="License_Status_Active" xml:space="preserve">
+    <value>Attiva</value>
+  </data>
+  <data name="License_Status_Trial" xml:space="preserve">
+    <value>Prova</value>
+  </data>
+  <data name="License_Status_Lifetime" xml:space="preserve">
+    <value>A vita</value>
+  </data>
   <data name="License_Status_Free" xml:space="preserve">
     <value>Free</value>
   </data>
@@ -1292,6 +1316,15 @@ Disinstallare senza backup resta gratuito e la scheda Cronologia può comunque r
   <data name="License_Activation_Failed" xml:space="preserve">
     <value>Attivazione non riuscita. Controlla il codice licenza.</value>
   </data>
+  <data name="License_Activation_Success" xml:space="preserve">
+    <value>Licenza attivata con successo!</value>
+  </data>
+  <data name="License_Activation_DllPending" xml:space="preserve">
+    <value>Licenza attivata! Il download del modulo Pro non è riuscito — verrà ritentato automaticamente.</value>
+  </data>
+  <data name="License_Activation_NoProEntitlement" xml:space="preserve">
+    <value>Questo codice è valido ma non include un abbonamento Pro, quindi il Pro resta bloccato. Se hai acquistato il Pro, contatta l'assistenza indicando il tuo codice.</value>
+  </data>
   <data name="License_Revoked" xml:space="preserve">
     <value>Licenza revocata: {0}</value>
   </data>
@@ -1309,6 +1342,9 @@ Disinstallare senza backup resta gratuito e la scheda Cronologia può comunque r
   </data>
   <data name="License_Error_ServerUnavailable" xml:space="preserve">
     <value>Server non disponibile. Verifica la connessione e riprova.</value>
+  </data>
+  <data name="License_Error_ClockSkew" xml:space="preserve">
+    <value>L'orologio di sistema non è sincronizzato. Imposta data e ora automaticamente, poi riprova.</value>
   </data>
   <data name="License_Error_InvalidResponse" xml:space="preserve">
     <value>Risposta del server non valida. Riprova.</value>
@@ -1354,6 +1390,9 @@ Disinstallare senza backup resta gratuito e la scheda Cronologia può comunque r
   </data>
   <data name="License_Error_Unexpected" xml:space="preserve">
     <value>Si è verificato un errore imprevisto durante il download.</value>
+  </data>
+  <data name="License_Error_DiskSpace" xml:space="preserve">
+    <value>Spazio su disco insufficiente. Libera spazio e riprova.</value>
   </data>
 
   <!-- ═══════════════════════════════════════════════════════════════════ -->
@@ -1524,15 +1563,6 @@ Disinstallare senza backup resta gratuito e la scheda Cronologia può comunque r
   <data name="PowerMenu_NoDevice" xml:space="preserve">
     <value>Nessun dispositivo collegato. Collega un dispositivo.</value>
   </data>
-  <data name="PowerMenu_Error_DeviceNotFound" xml:space="preserve">
-    <value>Dispositivo non trovato. Ricollega il dispositivo.</value>
-  </data>
-  <data name="PowerMenu_Error_Unauthorized" xml:space="preserve">
-    <value>Debug USB non autorizzato. Accetta la richiesta sul dispositivo.</value>
-  </data>
-  <data name="PowerMenu_Error_Offline" xml:space="preserve">
-    <value>Dispositivo offline. Prova a ricollegare il cavo USB.</value>
-  </data>
   <data name="PowerMenu_Error_FastbootNotSupported" xml:space="preserve">
     <value>Modalità fastbootd non supportata. Richiede Android 10 o superiore con partizioni dinamiche.</value>
   </data>
@@ -1541,9 +1571,6 @@ Disinstallare senza backup resta gratuito e la scheda Cronologia può comunque r
   </data>
   <data name="PowerMenu_Error_SideloadNotAvailable" xml:space="preserve">
     <value>Modalità sideload non disponibile. Il dispositivo potrebbe non supportare l'avvio diretto in sideload.</value>
-  </data>
-  <data name="PowerMenu_Error_PermissionDenied" xml:space="preserve">
-    <value>Permesso negato. Questa operazione potrebbe richiedere l'accesso root.</value>
   </data>
   <data name="PowerMenu_Error_Communication" xml:space="preserve">
     <value>Errore di comunicazione. Riprova.</value>
@@ -1995,7 +2022,7 @@ Disinstallare senza backup resta gratuito e la scheda Cronologia può comunque r
     <value>Offline per scelta</value>
   </data>
   <data name="Help_Welcome_Privacy_Body" xml:space="preserve">
-    <value>L’app lavora interamente sul tuo computer. Nessun account, nessuna analitica, nessuna telemetria in background. Le uniche chiamate di rete sono il controllo aggiornamenti, la convalida della licenza (se attivi Pro), l’analisi cloud facoltativa dei pacchetti quando apri i dettagli di un’app in Gestione app e la libreria della community quando apri quella scheda. Le tue ricette e le tue Fiale del Tempo non lasciano mai questo PC, a meno che tu non prema Condividi.</value>
+    <value>L'app lavora interamente sul tuo computer. Nessun account, nessuna analitica, nessuna telemetria in background. Le uniche chiamate di rete sono il controllo aggiornamenti, la convalida della licenza (se attivi Pro), l'analisi cloud facoltativa dei pacchetti quando apri i dettagli di un'app in Gestione app e la libreria della community quando apri quella scheda. Le tue ricette e le tue Fiale del Tempo non lasciano mai questo PC, a meno che tu non prema Condividi.</value>
   </data>
   <data name="Help_Welcome_Philosophy_Title" xml:space="preserve">
     <value>La filosofia</value>
@@ -2196,7 +2223,7 @@ Disinstallare senza backup resta gratuito e la scheda Cronologia può comunque r
     <value>Prestazioni</value>
   </data>
   <data name="Help_Basics_Cat_Performance_Body" xml:space="preserve">
-    <value>Pulisce iterativamente le cache delle app, riduce la pressione sulla memoria, libera spazio di archiviazione e ricompila i pacchetti installati in profilo speed, così gli avvii a freddo si percepiscono più reattivi.</value>
+    <value>Pulisce iterativamente le cache delle app, riduce la pressione sulla memoria, libera spazio di archiviazione e ricompila i pacchetti installati in modalità profile-guided, così gli avvii a freddo si percepiscono più reattivi.</value>
   </data>
   <data name="Help_Basics_Cat_Battery_Title" xml:space="preserve">
     <value>Batteria</value>
@@ -2220,7 +2247,7 @@ Disinstallare senza backup resta gratuito e la scheda Cronologia può comunque r
     <value>Standard vs Extreme</value>
   </data>
   <data name="Help_Basics_Extreme_Body" xml:space="preserve">
-    <value>La modalità Standard è quella che parte di default ed è progettata per essere sicura su ogni dispositivo supportato. La modalità Extreme — attivabile dal toggle nella pagina Ottimizza — va oltre: killa i servizi in background, riduce le cache in modo aggressivo, ricompila i pacchetti con profilo speed e porta le animazioni a metà velocità. Extreme è una funzione Pro e si attiva solo quando il modulo Pro è caricato.</value>
+    <value>La modalità Standard è quella che parte di default ed è progettata per essere sicura su ogni dispositivo supportato. La modalità Extreme — attivabile dal toggle nella pagina Ottimizza — va oltre: killa i servizi in background, riduce le cache in modo aggressivo, ricompila ahead-of-time ogni metodo di ogni pacchetto e porta le animazioni a metà velocità. Extreme è una funzione Pro e si attiva solo quando il modulo Pro è caricato.</value>
   </data>
   <data name="Help_Basics_Extreme_Hint_Title" xml:space="preserve">
     <value>Una piccola nota su Extreme</value>
@@ -2247,7 +2274,7 @@ Disinstallare senza backup resta gratuito e la scheda Cronologia può comunque r
     <value>3. Ancora storto? Premi «Ripristina tutto» in Avanzate: annulla ogni modifica che Ottimizza e Avanzate hanno fatto su questo dispositivo, rimettendo ogni impostazione al valore che aveva davvero prima, non a un default indovinato.</value>
   </data>
   <data name="Help_Basics_Safety_Restore" xml:space="preserve">
-    <value>Tutto ciò che hai disattivato si riattiva dal filtro Disattivate in Gestione app, e la scheda Cronologia conserva traccia di ogni disinstallazione: puoi ripristinarla — una app o l’intero elenco — quando vuoi.</value>
+    <value>Tutto ciò che hai disattivato si riattiva dal filtro Disattivate in Gestione app, e la scheda Cronologia conserva traccia di ogni disinstallazione: puoi ripristinarla — una app o l'intero elenco — quando vuoi.</value>
   </data>
   <data name="Help_Quick_Title" xml:space="preserve">
     <value>Guida rapida</value>
@@ -2367,7 +2394,7 @@ Disinstallare senza backup resta gratuito e la scheda Cronologia può comunque r
     <value>Modalità Extreme (Pro)</value>
   </data>
   <data name="Help_Guide_Extreme_Body" xml:space="preserve">
-    <value>Il toggle Extreme sblocca una corsa più aggressiva: i servizi in background vengono killati, le cache vengono ridotte fino a 1 TB di slack, i pacchetti di sistema vengono ricompilati con profilo speed, le animazioni vengono portate a 0.5×. Cached apps freezer e multi-core packet scheduler vengono attivati dove l'hardware lo supporta.</value>
+    <value>Ogni esecuzione arresta già i servizi in background, libera fino a 1 TB di spazio occupato dalle cache e porta le tre scale di animazione a 0.5×. Ciò che cambia il toggle Extreme è la fase di compilazione: invece di compilare solo i percorsi di codice che il profilo raccolto segna come caldi, compila ahead-of-time ogni metodo di ogni pacchetto — molto più lento, e molto più a fondo. Attiva inoltre il cached apps freezer e il multi-core packet scheduler dove l'hardware li supporta.</value>
   </data>
   <data name="Help_Guide_Extreme_Note" xml:space="preserve">
     <value>Extreme richiede una licenza Pro attiva e il modulo Pro caricato. Senza entrambi il toggle resta disabilitato e mostra un suggerimento di upgrade al passaggio del mouse.</value>
@@ -2412,13 +2439,13 @@ Disinstallare senza backup resta gratuito e la scheda Cronologia può comunque r
     <value>Filtri e ricerca</value>
   </data>
   <data name="Help_Guide_Debloat_Filter_Body" xml:space="preserve">
-    <value>Le schede dei filtri dividono le app per tipo: Utente, Sistema o Disattivate. La barra di ricerca libera restringe i risultati per nome o pacchetto, e il menu di ordinamento le riordina alfabeticamente, prima le più sicure o prima le più rischiose. Spunta le caselle per creare una selezione multipla: il conteggio nell’intestazione si aggiorna in tempo reale e la riga di riepilogo tiene il conto di quante app sono di sistema, utente o disattivate.</value>
+    <value>Le schede dei filtri dividono le app per tipo: Tutte, Utente, Sistema o Disattivate. La barra di ricerca libera restringe i risultati per nome o pacchetto, e il menu di ordinamento le riordina alfabeticamente, prima le più sicure o prima le più rischiose. Spunta le caselle per creare una selezione multipla: il conteggio nell'intestazione si aggiorna in tempo reale e la riga di riepilogo tiene il conto di quante app sono di sistema, utente o disattivate.</value>
   </data>
   <data name="Help_Guide_Debloat_Actions_Title" xml:space="preserve">
     <value>Disattiva, disinstalla, riattiva o ispeziona</value>
   </data>
   <data name="Help_Guide_Debloat_Actions_Body" xml:space="preserve">
-    <value>Con le app selezionate puoi usare Disattiva (pm disable-user), che lascia l’APK sul disco ma impedisce all’app di funzionare; Disinstalla (pm uninstall --user 0), che la rimuove per l’utente corrente; oppure Riattiva, che riporta indietro tutto ciò che hai disattivato — una app o un’intera selezione alla volta. Gestisci apre un pannello di dettaglio con permessi, standby bucket e analisi di sicurezza dal cloud, più le azioni rapide per avviare, forzare l’arresto o ispezionare l’app, estrarne l’APK e cancellarne i dati. Gli elenchi di pacchetti si importano ed esportano, e qualsiasi selezione può essere salvata come ricetta.</value>
+    <value>Con le app selezionate puoi usare Disattiva (pm disable-user), che lascia l'APK sul disco ma impedisce all'app di funzionare; Disinstalla (pm uninstall --user 0), che la rimuove per l'utente corrente; oppure Riattiva, che riporta indietro tutto ciò che hai disattivato — una app o un'intera selezione alla volta. Gestisci apre un pannello di dettaglio con permessi, analisi di sicurezza dal cloud e standby bucket, che segnala le app che Android non ti ha mai visto avviare — di solito le più sicure da rimuovere — più le azioni rapide per avviare, forzare l'arresto o ispezionare l'app, estrarne l'APK e cancellarne i dati. Gli elenchi di pacchetti si importano ed esportano, e qualsiasi selezione può essere salvata come ricetta.</value>
   </data>
   <data name="Help_Guide_Debloat_Hint_Title" xml:space="preserve">
     <value>Il tab Cronologia</value>
@@ -2526,7 +2553,7 @@ Disinstallare senza backup resta gratuito e la scheda Cronologia può comunque r
     <value>Ho disattivato qualcosa che non dovevo</value>
   </data>
   <data name="Help_Trouble_DisabledCritical_Body" xml:space="preserve">
-    <value>Apri la scheda Cronologia in Gestione app e premi Ripristina sul pacchetto interessato, oppure selezionane diversi e ripristinali insieme. Le app disattivate non vengono mai davvero rimosse: attiva il filtro Disattivate, selezionale e Riattiva le riporta subito com’erano. L’analisi di sicurezza dal cloud segnala in anticipo i pacchetti classificati come Critici, proprio per evitare questa situazione.</value>
+    <value>Apri la scheda Cronologia in Gestione app e premi Ripristina sul pacchetto interessato, oppure selezionane diversi e ripristinali insieme. Le app disattivate non vengono mai davvero rimosse: attiva il filtro Disattivate, selezionale e Riattiva le riporta subito com'erano. L'analisi di sicurezza dal cloud segnala in anticipo i pacchetti classificati come Critici, proprio per evitare questa situazione.</value>
   </data>
   <data name="Help_Trouble_Advanced_Title" xml:space="preserve">
     <value>Problemi in Avanzate</value>
@@ -2604,7 +2631,7 @@ Disinstallare senza backup resta gratuito e la scheda Cronologia può comunque r
     <value>Cronologia = undo</value>
   </data>
   <data name="Help_Tip_Backup_Body" xml:space="preserve">
-    <value>La scheda Cronologia in Gestione app registra ogni disinstallazione con nome del pacchetto, versione, icona e data. Basta un clic per ripristinare, e puoi ripristinarne o dimenticarne diverse in una volta. Con Pro viene salvata anche una copia locale dell’APK originale — bundle multipli inclusi — così il ripristino funziona anche quando l’app non è più sul Play Store.</value>
+    <value>La scheda Cronologia in Gestione app registra ogni disinstallazione con nome del pacchetto, versione, icona e data. Basta un clic per ripristinare, e puoi ripristinarne o dimenticarne diverse in una volta. Con Pro viene salvata anche una copia locale dell'APK originale — bundle multipli inclusi — così il ripristino funziona anche quando l'app non è più sul Play Store.</value>
   </data>
   <data name="Help_Tip_Wireless_Title" xml:space="preserve">
     <value>Vai senza cavo dopo il primo giorno</value>
@@ -2622,7 +2649,7 @@ Disinstallare senza backup resta gratuito e la scheda Cronologia può comunque r
     <value>Pro è uno sblocco, non una riscrittura</value>
   </data>
   <data name="Help_Tip_Pro_Body" xml:space="preserve">
-    <value>La versione gratuita include già la pipeline di ottimizzazione completa in sette fasi, Gestione app al completo, le ricette con la libreria della community, le Fiale del Tempo, il controllo multi-dispositivo, l’ADB wireless, il DNS privato, la regolazione delle animazioni, l’installer APK, il gestore file, la shell e il menu di alimentazione. Pro aggiunge l’ottimizzazione Extreme, il Monitor prestazioni, il mirroring dello schermo con registrazione, l’installazione multi-APK, il backup locale degli APK, l’analisi di sicurezza cloud illimitata e il pacchetto privacy. Stessa app, manopole più profonde.</value>
+    <value>La versione gratuita include già la pipeline di ottimizzazione completa in sette fasi, Gestione app al completo, le ricette con la libreria della community, le Fiale del Tempo, il controllo multi-dispositivo, l'ADB wireless, il DNS privato, la regolazione delle animazioni, l'installer APK, il gestore file, la shell e il menu di alimentazione. Pro aggiunge l'ottimizzazione Extreme, il Monitor prestazioni, il mirroring dello schermo con registrazione, l'installazione multi-APK, il backup locale degli APK, l'analisi di sicurezza cloud illimitata e il pacchetto privacy. Stessa app, manopole più profonde.</value>
   </data>
   <data name="Help_Faq_Title" xml:space="preserve">
     <value>Domande frequenti</value>
@@ -2697,13 +2724,13 @@ Disinstallare senza backup resta gratuito e la scheda Cronologia può comunque r
     <value>Posso scegliere quali fasi eseguire?</value>
   </data>
   <data name="Help_Faq_Customize_A" xml:space="preserve">
-    <value>Il pulsante unico di ottimizzazione è volutamente fisso: è pensato per essere sicuro su ogni dispositivo, esattamente in quell’ordine. Per un controllo puntuale, in Avanzate imposti DNS privato e velocità delle animazioni in modo indipendente, ognuno con il proprio ripristino. E se vuoi la tua sequenza personale, crea una ricetta: esegue esattamente i passaggi che hai scelto, su quanti dispositivi vuoi.</value>
+    <value>Il pulsante unico di ottimizzazione è volutamente fisso: è pensato per essere sicuro su ogni dispositivo, esattamente in quell'ordine. Per un controllo puntuale, in Avanzate imposti DNS privato e velocità delle animazioni in modo indipendente, ognuno con il proprio ripristino. E se vuoi la tua sequenza personale, crea una ricetta: esegue esattamente i passaggi che hai scelto, su quanti dispositivi vuoi.</value>
   </data>
   <data name="Help_Faq_ExtremeVsStandard_Q" xml:space="preserve">
     <value>Qual è la differenza tra Standard ed Extreme?</value>
   </data>
   <data name="Help_Faq_ExtremeVsStandard_A" xml:space="preserve">
-    <value>Standard è il default, progettato per essere sicuro su qualunque dispositivo supportato. Extreme — disponibile con il modulo Pro — aggiunge kill aggressivo del background, trim della cache fino a 1 TB, ricompilazione forzata di tutti i pacchetti con profilo speed, animazioni a metà velocità, cached apps freezer e multi-core packet scheduler. Dopo Extreme è consigliato un riavvio.</value>
+    <value>Standard è il default, progettato per essere sicuro su qualunque dispositivo supportato: arresta già le app in background, libera le cache, ottimizza la rete e dimezza le scale di animazione. Extreme — disponibile con il modulo Pro — porta la fase di compilazione fino in fondo, ricompilando ahead-of-time ogni metodo di ogni pacchetto invece dei soli percorsi caldi, e aggiunge il cached apps freezer e il multi-core packet scheduler. Richiede parecchio più tempo, e dopo è consigliato un riavvio.</value>
   </data>
   <data name="Help_Faq_SomethingWrong_Q" xml:space="preserve">
     <value>Un'app si comporta male dopo una corsa. Cosa faccio?</value>
@@ -2721,13 +2748,13 @@ Disinstallare senza backup resta gratuito e la scheda Cronologia può comunque r
     <value>Zephyr's Elixir raccoglie dati?</value>
   </data>
   <data name="Help_Faq_DataCollection_A" xml:space="preserve">
-    <value>Nessuna analitica, nessuna telemetria, nessun tracciamento. L’unico traffico di rete generato dall’app è il controllo aggiornamenti, la convalida della licenza (se Pro è attivo), l’analisi di sicurezza cloud facoltativa quando apri i dettagli di un’app in Gestione app e la libreria della community quando apri quella scheda. Le tue ricette e le tue Fiale del Tempo restano su questo PC, a meno che tu non prema Condividi. È tutto documentato nell’informativa privacy, in Impostazioni.</value>
+    <value>Nessuna analitica, nessuna telemetria, nessun tracciamento. L'unico traffico di rete generato dall'app è il controllo aggiornamenti, la convalida della licenza (se Pro è attivo), l'analisi di sicurezza cloud facoltativa quando apri i dettagli di un'app in Gestione app e la libreria della community quando apri quella scheda. Le tue ricette e le tue Fiale del Tempo restano su questo PC, a meno che tu non prema Condividi. È tutto documentato nell'informativa privacy, in Impostazioni.</value>
   </data>
   <data name="Help_Faq_ProFeatures_Q" xml:space="preserve">
     <value>Cosa sblocca davvero Pro?</value>
   </data>
   <data name="Help_Faq_ProFeatures_A" xml:space="preserve">
-    <value>Ottimizzazione Extreme con congelamento delle app in cache e scheduler multi-core; il Monitor prestazioni, con CPU, RAM, GPU, FPS, rete, archiviazione e batteria in tempo reale, registrabili in CSV; il mirroring dello schermo a bassa latenza con controllo da desktop e registrazione; l’installazione multi-APK; il backup locale dell’APK a ogni disinstallazione; l’analisi di sicurezza cloud illimitata (la versione gratuita si ferma a 25 al giorno); e il pacchetto privacy: Android Safety Core disattivato, reset dell’ID pubblicitario, captive portal disabilitato, Google Core Control disattivato e disattivazione della RAM virtuale per produttore (Samsung, Xiaomi, OnePlus, Oppo, Vivo, Huawei). Extreme, gli interruttori privacy e l’installazione multi-APK funzionano anche come passaggi di una ricetta. Pro è un modulo firmato e scaricato a parte: senza di esso l’app gratuita funziona esattamente come prima.</value>
+    <value>Ottimizzazione Extreme con congelamento delle app in cache e scheduler multi-core; il Monitor prestazioni, con CPU, RAM, GPU, FPS, rete, archiviazione e batteria in tempo reale, registrabili in CSV; il mirroring dello schermo a bassa latenza con controllo da desktop e registrazione; l'installazione multi-APK; il backup locale dell'APK a ogni disinstallazione; l'analisi di sicurezza cloud illimitata (la versione gratuita si ferma a 25 al giorno); e il pacchetto privacy: Android Safety Core disattivato, reset dell'ID pubblicitario, captive portal disabilitato, Google Core Control disattivato e disattivazione della RAM virtuale per produttore (Samsung, Xiaomi, OnePlus, Oppo, Vivo, Huawei). Extreme, gli interruttori privacy e l'installazione multi-APK funzionano anche come passaggi di una ricetta. Pro è un modulo firmato e scaricato a parte: senza di esso l'app gratuita funziona esattamente come prima.</value>
   </data>
   <data name="Help_Faq_ActivatePro_Q" xml:space="preserve">
     <value>Come attivo una licenza Pro?</value>
@@ -3039,40 +3066,49 @@ Disinstallare senza backup resta gratuito e la scheda Cronologia può comunque r
     <value>Novità</value>
   </data>
   <data name="Info_Changelog_New_1" xml:space="preserve">
-    <value>Zephyr's Recipes: imbottiglia in un'unica ricetta un'ottimizzazione, le app da rimuovere, i tuoi tweak su DNS e animazioni e una serie di APK — poi versala su ogni telefono che possiedi con un solo tocco. Esportala, oppure condividila nella libreria della community e prepara ciò che altri hanno perfezionato.</value>
+    <value>Un nuovo installer, riscritto dalla prima riga: meno schermate, scelte più chiare, una grafica tutta sua e molta meno attesa tra il doppio clic e il momento in cui Zephyr's Elixir si apre.</value>
   </data>
   <data name="Info_Changelog_New_2" xml:space="preserve">
-    <value>Fiale del Tempo: prima di ogni ottimizzazione, di ogni ricetta e di ogni modifica avanzata, le impostazioni del dispositivo vengono imbottigliate in silenzio. Stappa una fiala per vedere esattamente cosa è cambiato e versare indietro anche una sola impostazione — l'annulla che Android non ti ha mai dato.</value>
+    <value>Ogni icona ridisegnata come grafica vettoriale su un'unica griglia, così tutta l'app resta nitidissima a qualsiasi dimensione della finestra, su qualsiasi schermo e con qualsiasi scalatura — un solo linguaggio visivo, dalla sidebar al più piccolo dialogo.</value>
   </data>
   <data name="Info_Changelog_New_3" xml:space="preserve">
-    <value>Controllo multi-dispositivo: collega tutti i telefoni che vuoi e passa dall'uno all'altro dalla sidebar. Ogni pagina segue il dispositivo che scegli, e una ricetta può girare su tutti insieme.</value>
+    <value>Ottimizzazione Extreme, più a fondo: la fase di compilazione ora compila ahead-of-time ogni metodo di ogni pacchetto invece dei soli percorsi di codice segnati come caldi, mentre la passata standard resta rapida e leggera su ogni dispositivo.</value>
   </data>
   <data name="Info_Changelog_New_4" xml:space="preserve">
-    <value>Il Viaggio dell'Alchimista: ogni ricetta che versi vale una pozione, e le pozioni fanno salire di rango — da Novizio Alchimista a Grande Elixirista, in cima alla pagina Ricette.</value>
+    <value>Le app che non hai mai aperto: Android cataloga ogni app in base a quanto di recente l'hai usata, e il bloatware preinstallato tende a finire tutto nello stesso gruppo — mai avviata. Gestisci ora riporta questo stato, così le cose più sicure da rimuovere sono quelle che il telefono stesso ammette che non hai mai toccato.</value>
   </data>
   <data name="Info_Changelog_Updated" xml:space="preserve">
     <value>Migliorato</value>
   </data>
   <data name="Info_Changelog_Updated_1" xml:space="preserve">
-    <value>Gestione app, ricostruita: disattiva, disinstalla o riattiva quante app vuoi in una sola passata, ordinale per nome o per rischio IA, avviale, arrestale, estraine l'APK o cancellane i dati con un clic, e importa o esporta gli elenchi di pacchetti. Le app con split APK vengono salvate e reinstallate correttamente.</value>
+    <value>Più veloce e più leggera ovunque: l'app si apre prima, passa da una sezione all'altra senza esitazioni e chiede molto meno al tuo computer mentre lavora.</value>
   </data>
   <data name="Info_Changelog_Updated_2" xml:space="preserve">
-    <value>Errori che si spiegano da soli: quando Android rifiuta un'installazione, una disinstallazione o un ripristino, il motivo te lo diciamo in parole semplici invece che con un dump grezzo di ADB.</value>
+    <value>Gestione app, fluida a ogni dimensione: la griglia disegna solo le righe che vedi davvero, così un dispositivo con mille pacchetti scorre bene quanto uno che ne ha cinquanta — e il layout continua a riorganizzarsi tra una e tre colonne mentre ridimensioni la finestra.</value>
   </data>
   <data name="Info_Changelog_Updated_3" xml:space="preserve">
-    <value>Strumenti più rifiniti: salva i comandi della shell come snippet ed esporta un'intera sessione, filtra al volo una cartella affollata, scopri dov'è finito il tuo spazio e trasferisci file grandi senza incappare nei timeout.</value>
+    <value>Più riposante per gli occhi: il testo in tutta l'app è più nitido e più comodo da leggere, e mantiene la sua qualità a ogni dimensione della finestra e su ogni schermo.</value>
   </data>
   <data name="Info_Changelog_Updated_4" xml:space="preserve">
-    <value>Avanzate e Monitor prestazioni (Pro): punta il DNS privato sul tuo hostname e viene ricordato, la RAM virtuale conferma sul dispositivo di essere stata davvero disattivata, e FPS e carico GPU reali si aggiungono alle letture in tempo reale.</value>
+    <value>Strumenti che non ti intralciano: Installatore APK, Opzioni di avvio e associazione wireless dicono più chiaramente cosa stanno facendo, e sono onesti su cosa è andato storto quando qualcosa fallisce.</value>
   </data>
   <data name="Info_Changelog_Updated_5" xml:space="preserve">
-    <value>Ripristina tutto, davvero: l'annullamento in Avanzate ora copre tutto ciò che Ottimizza e Avanzate hanno cambiato, e viene ricordato per dispositivo anche dopo un riavvio. Le impostazioni tornano dalla fiala imbottigliata prima della tua prima modifica, quindi ai tuoi valori precedenti — e ciò che hai cambiato tu sul telefono resta com’è.</value>
+    <value>Licenze sempre allineate: i controlli della licenza sono più stabili e si riprendono da soli, così Pro resta semplicemente Pro senza mai chiedere la tua attenzione.</value>
   </data>
-  <data name="Info_Changelog_Removed" xml:space="preserve">
-    <value>Rimosso</value>
+  <data name="Info_Changelog_Updated_6" xml:space="preserve">
+    <value>Strumenti Pro, più solidi: Monitor Prestazioni e Mirroring schermo seguono il dispositivo che hai davvero scelto, e lo dicono chiaramente quando qualcosa va storto invece di fallire in silenzio.</value>
   </data>
-  <data name="Info_Changelog_Removed_1" xml:space="preserve">
-    <value>Rimosso codice morto, centralizzati colori e stili e riviste entrambe le traduzioni riga per riga — un'app più leggera e ordinata, sia in italiano che in inglese.</value>
+  <data name="Info_Changelog_Fixed" xml:space="preserve">
+    <value>Correzioni e rifiniture</value>
+  </data>
+  <data name="Info_Changelog_Fixed_1" xml:space="preserve">
+    <value>Una lunga serie di bug risolti in ogni sezione dell'app — quelli in cui prima o poi saresti incappato, spariti prima che accadesse.</value>
+  </data>
+  <data name="Info_Changelog_Fixed_2" xml:space="preserve">
+    <value>Sicurezza rafforzata da un capo all'altro, da come la tua licenza viene gestita sul tuo computer fino ai servizi che stanno dietro.</value>
+  </data>
+  <data name="Info_Changelog_Fixed_3" xml:space="preserve">
+    <value>Una pulizia profonda sotto il cofano: meno codice, meglio organizzato, ed entrambe le traduzioni riviste riga per riga — un'app più leggera e più facile da tenere veloce.</value>
   </data>
 
   <!-- ═══════════════════════════════════════════════════════════════════ -->
@@ -3205,18 +3241,6 @@ Disinstallare senza backup resta gratuito e la scheda Cronologia può comunque r
   <data name="FileManager_Tooltip_CancelAll" xml:space="preserve">
     <value>Annulla tutto</value>
   </data>
-  <data name="FileManager_Tooltip_DeviceSerial" xml:space="preserve">
-    <value>Seriale del dispositivo connesso</value>
-  </data>
-  <data name="FileManager_Tooltip_NameColumn" xml:space="preserve">
-    <value>Nome file completo</value>
-  </data>
-  <data name="FileManager_Tooltip_OwnerColumn" xml:space="preserve">
-    <value>Proprietario / gruppo</value>
-  </data>
-  <data name="FileManager_Tooltip_PreviewName" xml:space="preserve">
-    <value>File in anteprima</value>
-  </data>
   <data name="FileManager_Connection_None" xml:space="preserve">
     <value>Nessun dispositivo connesso</value>
   </data>
@@ -3312,9 +3336,6 @@ Disinstallare senza backup resta gratuito e la scheda Cronologia può comunque r
   </data>
   <data name="FileManager_Validate_ModeEmpty" xml:space="preserve">
     <value>La modalità non può essere vuota.</value>
-  </data>
-  <data name="FileManager_Validate_ModeFormat" xml:space="preserve">
-    <value>Usa 3 o 4 cifre ottali (es. 755, 0644).</value>
   </data>
   <data name="FileManager_Validate_ModeUnrecognised" xml:space="preserve">
     <value>Modalità non riconosciuta. Usa la forma ottale, simbolica o descrittiva.</value>
@@ -3448,9 +3469,6 @@ Disinstallare senza backup resta gratuito e la scheda Cronologia può comunque r
   <data name="FileManager_Permissions_Tooltip" xml:space="preserve">
     <value>Cambia modalità di visualizzazione dei permessi</value>
   </data>
-  <data name="FileManager_DragHover_Destination_Format" xml:space="preserve">
-    <value>→ {0}</value>
-  </data>
   <data name="FileManager_Perm_None" xml:space="preserve">
     <value>non ha accesso</value>
   </data>
@@ -3526,20 +3544,11 @@ Disinstallare senza backup resta gratuito e la scheda Cronologia può comunque r
   <data name="FileManager_Storage_System" xml:space="preserve">
     <value>Sistema</value>
   </data>
-  <data name="FileManager_Storage_Other" xml:space="preserve">
-    <value>Altro</value>
-  </data>
   <data name="FileManager_Storage_Free" xml:space="preserve">
     <value>Libero</value>
   </data>
-  <data name="FileManager_Storage_Loading" xml:space="preserve">
-    <value>Lettura memoria…</value>
-  </data>
   <data name="FileManager_Storage_Unavailable" xml:space="preserve">
     <value>Info memoria non disponibili</value>
-  </data>
-  <data name="FileManager_Storage_Probe_Failed" xml:space="preserve">
-    <value>Dettagli di archiviazione non disponibili su questo dispositivo.</value>
   </data>
   <data name="FileManager_Status_DeviceSerialFormat" xml:space="preserve">
     <value>Seriale: {0}</value>
@@ -3556,15 +3565,6 @@ Disinstallare senza backup resta gratuito e la scheda Cronologia può comunque r
     <value>CPU, RAM, GPU, FPS, rete, archiviazione e batteria del dispositivo connesso in tempo reale.</value>
   </data>
 
-  <data name="Perf_Upsell_Title" xml:space="preserve">
-    <value>Sblocca il Monitor Prestazioni Live</value>
-  </data>
-  <data name="Perf_Upsell_Description" xml:space="preserve">
-    <value>Osserva CPU, RAM, carico GPU, FPS reali, throughput di rete, I/O di archiviazione, livello e temperatura della batteria evolvere in tempo reale, insieme alla classifica live delle app che consumano più memoria. Registra le sessioni mentre giochi o fai stress-test, esporta tutto in CSV e correla i picchi di carico con il comportamento termico.</value>
-  </data>
-  <data name="Perf_Upsell_UpgradeButton" xml:space="preserve">
-    <value>Passa a Pro</value>
-  </data>
 
   <data name="Perf_Metric_Cpu" xml:space="preserve">
     <value>CPU</value>
@@ -3645,12 +3645,6 @@ Disinstallare senza backup resta gratuito e la scheda Cronologia può comunque r
     <value>Registrazione fermata: durata configurata raggiunta.</value>
   </data>
 
-  <data name="Perf_View_Live" xml:space="preserve">
-    <value>Live (finestra 60s)</value>
-  </data>
-  <data name="Perf_View_Session" xml:space="preserve">
-    <value>Sessione registrata</value>
-  </data>
 
   <data name="Perf_Export_Title" xml:space="preserve">
     <value>Esporta sessione prestazioni</value>
@@ -3717,7 +3711,7 @@ Disinstallare senza backup resta gratuito e la scheda Cronologia può comunque r
     <value>Abilitare l'analisi IA?</value>
   </data>
   <data name="Debloat_Ai_Consent_Message" xml:space="preserve">
-    <value>Per valutare il rischio di rimozione, i nomi dei pacchetti delle app installate (es. com.esempio.app) vengono inviati a un servizio IA di terzi (OpenAI). Non viene inviato alcun dato che ti identifichi e l'esito è puramente consultivo. Vuoi abilitare l'analisi IA nel cloud? Potrai cambiarla in seguito dalle Impostazioni.</value>
+    <value>Per valutare il rischio di rimozione, i nomi dei pacchetti delle app installate (es. com.esempio.app) vengono inviati al nostro servizio di analisi, che inoltra il solo nome del pacchetto a un fornitore IA di terzi (OpenAI). A ogni richiesta si accompagna un ID dispositivo pseudonimo, che serve a contare le analisi gratuite giornaliere; le installazioni Pro inviano anche la propria prova di licenza firmata per superare quel limite. Né l'uno né l'altra raggiungono OpenAI. Il tuo nome, i tuoi file e i tuoi contenuti personali non vengono mai inviati e l'esito è puramente consultivo. Vuoi abilitare l'analisi IA nel cloud? Potrai cambiarla in seguito dalle Impostazioni.</value>
   </data>
 
   <data name="Sidebar_Nav_Recipes" xml:space="preserve">
@@ -4061,9 +4055,6 @@ Disinstallare senza backup resta gratuito e la scheda Cronologia può comunque r
   </data>
   <data name="Recipes_Share_Confirm" xml:space="preserve">
     <value>Condividere questa ricetta con la community? Sarà pubblica e scaricabile dagli altri utenti. Non vengono inclusi file APK o dati personali.</value>
-  </data>
-  <data name="Recipes_Share_AlreadyShared" xml:space="preserve">
-    <value>Questa ricetta è già stata condivisa.</value>
   </data>
   <data name="Recipes_Share_NeedAuthor" xml:space="preserve">
     <value>Aggiungi il nome dell'autore prima di condividere, così gli altri sanno chi l'ha creata.</value>
@@ -4416,9 +4407,6 @@ Disinstallare senza backup resta gratuito e la scheda Cronologia può comunque r
   <data name="AdbError_PermissionDenied" xml:space="preserve">
     <value>Android ha negato il permesso per questa operazione — non è possibile via ADB su questo dispositivo o versione di Android.</value>
   </data>
-  <data name="Pro_Required_RecipesFeature" xml:space="preserve">
-    <value>Questo passaggio della ricetta richiede una licenza Pro.</value>
-  </data>
   <data name="Recipes_Rank_1" xml:space="preserve">
     <value>Novizio Alchimista</value>
   </data>
@@ -4567,13 +4555,13 @@ Disinstallare senza backup resta gratuito e la scheda Cronologia può comunque r
     <value>Lavorare con più dispositivi</value>
   </data>
   <data name="Help_Basics_MultiDevice_Body" xml:space="preserve">
-    <value>Collega tutti i telefoni che vuoi: fai clic sulla scheda dispositivo e il selettore elenca tutto ciò che è collegato, segnalando chiaramente i dispositivi non autorizzati. Uno di essi è sempre quello attivo e ogni pagina lo segue: se cambi mentre Gestione app è aperta, l’elenco si ricarica sul nuovo telefono. Nessun comando finisce su un dispositivo che non hai scelto: l’unico caso in cui si lavora su più telefoni insieme è l’esecuzione di una ricetta, dove i bersagli li scegli tu.</value>
+    <value>Collega tutti i telefoni che vuoi: fai clic sulla scheda dispositivo e il selettore elenca tutto ciò che è collegato, segnalando chiaramente i dispositivi non autorizzati. Uno di essi è sempre quello attivo e ogni pagina lo segue: se cambi mentre Gestione app è aperta, l'elenco si ricarica sul nuovo telefono. Nessun comando finisce su un dispositivo che non hai scelto: l'unico caso in cui si lavora su più telefoni insieme è l'esecuzione di una ricetta, dove i bersagli li scegli tu.</value>
   </data>
   <data name="Help_Guide_Recipes_Title" xml:space="preserve">
     <value>Ricette</value>
   </data>
   <data name="Help_Guide_Recipes_Body" xml:space="preserve">
-    <value>Tutto quello che fai a mano, imbottigliato una volta e versato all’occorrenza. Una ricetta contiene fino a quattro passaggi — un’ottimizzazione, le app da disinstallare o disattivare, i tuoi tweak (DNS privato, velocità delle animazioni, interruttori privacy Pro) e gli APK da installare — e li ripete in quest’ordine, identici, ogni volta.</value>
+    <value>Tutto quello che fai a mano, imbottigliato una volta e versato all'occorrenza. Una ricetta contiene fino a quattro passaggi — un'ottimizzazione, le app da disinstallare o disattivare, i tuoi tweak (DNS privato, velocità delle animazioni, interruttori privacy Pro) e gli APK da installare — e li ripete in quest'ordine, identici, ogni volta.</value>
   </data>
   <data name="Help_Guide_Recipes_Build_Title" xml:space="preserve">
     <value>Crearne una</value>
@@ -4597,31 +4585,31 @@ Disinstallare senza backup resta gratuito e la scheda Cronologia può comunque r
     <value>Leggi prima di versare</value>
   </data>
   <data name="Help_Guide_Recipes_Hint_Body" xml:space="preserve">
-    <value>Le ricette della community sono scritte da altri utenti e non sono verificate da noi. Aprine una e controlla l’elenco dei pacchetti prima di eseguirla: la stessa attenzione che dedicheresti a qualsiasi elenco di app da rimuovere.</value>
+    <value>Le ricette della community sono scritte da altri utenti e non sono verificate da noi. Aprine una e controlla l'elenco dei pacchetti prima di eseguirla: la stessa attenzione che dedicheresti a qualsiasi elenco di app da rimuovere.</value>
   </data>
   <data name="Help_Guide_Tools_Title" xml:space="preserve">
     <value>Strumenti</value>
   </data>
   <data name="Help_Guide_Tools_Body" xml:space="preserve">
-    <value>Le utilità che non stanno da nessun’altra parte, tutte al lavoro sul dispositivo che hai selezionato.</value>
+    <value>Le utilità che non stanno da nessun'altra parte, tutte al lavoro sul dispositivo che hai selezionato.</value>
   </data>
   <data name="Help_Guide_Tools_Apk_Title" xml:space="preserve">
     <value>Installer APK</value>
   </data>
   <data name="Help_Guide_Tools_Apk_Body" xml:space="preserve">
-    <value>Trascina file APK, XAPK, APKS o APKM e vengono installati per te, con estrazione automatica dei bundle. Quando Android ne rifiuta uno, il motivo te lo diciamo in parole semplici — firma diversa, spazio insufficiente, versione precedente — invece di un codice di errore. Con Pro installi un’intera coda in una volta sola.</value>
+    <value>Trascina file APK, XAPK, APKS o APKM e vengono installati per te, con estrazione automatica dei bundle. Quando Android ne rifiuta uno, il motivo te lo diciamo in parole semplici — firma diversa, spazio insufficiente, versione precedente — invece di un codice di errore. Con Pro installi un'intera coda in una volta sola.</value>
   </data>
   <data name="Help_Guide_Tools_Files_Title" xml:space="preserve">
     <value>Gestore file</value>
   </data>
   <data name="Help_Guide_Tools_Files_Body" xml:space="preserve">
-    <value>Sfoglia il dispositivo come un esplora risorse: copia, sposta, rinomina ed elimina, trascina i file in entrambe le direzioni, filtra al volo una cartella affollata, visualizza in anteprima immagini e testo e scopri dov’è finito il tuo spazio.</value>
+    <value>Sfoglia il dispositivo come un esplora risorse: copia, sposta, rinomina ed elimina, trascina i file in entrambe le direzioni, filtra al volo una cartella affollata, visualizza in anteprima immagini e testo e scopri dov'è finito il tuo spazio.</value>
   </data>
   <data name="Help_Guide_Tools_Shell_Title" xml:space="preserve">
     <value>Shell ADB</value>
   </data>
   <data name="Help_Guide_Tools_Shell_Body" xml:space="preserve">
-    <value>Un vero terminale multi-scheda dentro l’app. Salva come snippet i comandi che riscrivi sempre, rinomina le schede per distinguerle ed esporta un’intera sessione in un file di testo quando devi condividerla.</value>
+    <value>Un vero terminale multi-scheda dentro l'app. Salva come snippet i comandi che riscrivi sempre, rinomina le schede per distinguerle ed esporta un'intera sessione in un file di testo quando devi condividerla.</value>
   </data>
   <data name="Help_Guide_Tools_Power_Title" xml:space="preserve">
     <value>Opzioni di alimentazione</value>
@@ -4639,31 +4627,31 @@ Disinstallare senza backup resta gratuito e la scheda Cronologia può comunque r
     <value>Fiale del Tempo</value>
   </data>
   <data name="Help_Guide_Vials_Body" xml:space="preserve">
-    <value>Un’istantanea delle impostazioni di sistema viene imbottigliata prima di ogni ottimizzazione, di ogni ricetta e di ogni modifica avanzata — e ogni volta che premi Imbottiglia ora. Stappa una fiala per vedere cosa è cambiato, cosa è stato aggiunto e cosa è sparito da quel momento, poi versa indietro le impostazioni di cui ti sei pentito, una alla volta o tutte insieme. Vengono conservate quindici fiale per dispositivo, solo su questo PC; alcune chiavi come il debug USB sono mostrate ma mai riscritte, perché ripristinarle interromperebbe la connessione.</value>
+    <value>Un'istantanea delle impostazioni di sistema viene imbottigliata prima di ogni ottimizzazione, di ogni ricetta e di ogni modifica avanzata — e ogni volta che premi Imbottiglia ora. Stappa una fiala per vedere cosa è cambiato, cosa è stato aggiunto e cosa è sparito da quel momento, poi versa indietro le impostazioni di cui ti sei pentito, una alla volta o tutte insieme. Vengono conservate quindici fiale per dispositivo, solo su questo PC; alcune chiavi come il debug USB sono mostrate ma mai riscritte, perché ripristinarle interromperebbe la connessione.</value>
   </data>
   <data name="Help_Faq_Recipes_Q" xml:space="preserve">
-    <value>Che cos’è una ricetta?</value>
+    <value>Che cos'è una ricetta?</value>
   </data>
   <data name="Help_Faq_Recipes_A" xml:space="preserve">
-    <value>Un piccolo file che descrive cosa vuoi fare a un telefono: un’ottimizzazione, le app da rimuovere o disattivare, tweak come DNS privato e velocità delle animazioni e gli APK da installare. Premi Esegui, scegli i dispositivi e ogni passaggio viene ripetuto in ordine. Creare, eseguire, importare e condividere ricette è gratis: Pro sblocca soltanto il passaggio Extreme, gli interruttori privacy e l’installazione di più di un APK per ricetta.</value>
+    <value>Un piccolo file che descrive cosa vuoi fare a un telefono: un'ottimizzazione, le app da rimuovere o disattivare, tweak come DNS privato e velocità delle animazioni e gli APK da installare. Premi Esegui, scegli i dispositivi e ogni passaggio viene ripetuto in ordine. Creare, eseguire, importare e condividere ricette è gratis: Pro sblocca soltanto il passaggio Extreme, gli interruttori privacy e l'installazione di più di un APK per ricetta.</value>
   </data>
   <data name="Help_Faq_Vials_Q" xml:space="preserve">
     <value>Che cosa sono le Fiale del Tempo — sono un backup?</value>
   </data>
   <data name="Help_Faq_Vials_A" xml:space="preserve">
-    <value>Sono istantanee automatiche delle impostazioni di sistema del dispositivo, scattate prima di ogni ottimizzazione, ricetta e modifica avanzata, così puoi vedere esattamente cosa è cambiato e ripristinare singole impostazioni. Non sono un backup dei tuoi dati: app, foto e file non sono inclusi e una fiala non può far tornare un’app disinstallata — per quello c’è la scheda Cronologia in Gestione app.</value>
+    <value>Sono istantanee automatiche delle impostazioni di sistema del dispositivo, scattate prima di ogni ottimizzazione, ricetta e modifica avanzata, così puoi vedere esattamente cosa è cambiato e ripristinare singole impostazioni. Non sono un backup dei tuoi dati: app, foto e file non sono inclusi e una fiala non può far tornare un'app disinstallata — per quello c'è la scheda Cronologia in Gestione app.</value>
   </data>
   <data name="Help_Faq_MultiDevice_Q" xml:space="preserve">
     <value>Posso lavorare su più telefoni contemporaneamente?</value>
   </data>
   <data name="Help_Faq_MultiDevice_A" xml:space="preserve">
-    <value>Sì. Collegane quanti vuoi e passa dall’uno all’altro dalla scheda dispositivo nella sidebar: ogni pagina segue quello che hai scelto, così un comando non può mai finire sul telefono sbagliato. Le ricette sono l’eccezione voluta — lì scegli tu più bersagli, e vengono eseguite in parallelo.</value>
+    <value>Sì. Collegane quanti vuoi e passa dall'uno all'altro dalla scheda dispositivo nella sidebar: ogni pagina segue quello che hai scelto, così un comando non può mai finire sul telefono sbagliato. Le ricette sono l'eccezione voluta — lì scegli tu più bersagli, e vengono eseguite in parallelo.</value>
   </data>
   <data name="Help_Faq_Community_Q" xml:space="preserve">
     <value>È sicuro eseguire una ricetta della community?</value>
   </data>
   <data name="Help_Faq_Community_A" xml:space="preserve">
-    <value>Le ricette della community sono scritte da altri utenti e non le verifichiamo. Aprine una e leggi l’elenco dei pacchetti prima di eseguirla: la stessa attenzione che dedicheresti a qualsiasi elenco di app da rimuovere. Nulla viene applicato finché non premi Esegui, prima viene imbottigliata una Fiala del Tempo e tutto ciò che viene disinstallato si ripristina dalla scheda Cronologia in Gestione app.</value>
+    <value>Le ricette della community sono scritte da altri utenti e non le verifichiamo. Aprine una e leggi l'elenco dei pacchetti prima di eseguirla: la stessa attenzione che dedicheresti a qualsiasi elenco di app da rimuovere. Nulla viene applicato finché non premi Esegui, prima viene imbottigliata una Fiala del Tempo e tutto ciò che viene disinstallato si ripristina dalla scheda Cronologia in Gestione app.</value>
   </data>
   <data name="Help_Tip_Recipes_Title" xml:space="preserve">
     <value>Scrivilo una volta sola</value>
@@ -4675,6 +4663,18 @@ Disinstallare senza backup resta gratuito e la scheda Cronologia può comunque r
     <value>Leggi le differenze</value>
   </data>
   <data name="Help_Tip_Vials_Body" xml:space="preserve">
-    <value>Dopo un’operazione importante, stappa la fiala più recente in Avanzate. È la risposta più chiara possibile alla domanda «cosa è cambiato davvero?» — e ogni riga si può versare indietro da sola.</value>
+    <value>Dopo un'operazione importante, stappa la fiala più recente in Avanzate. È la risposta più chiara possibile alla domanda «cosa è cambiato davvero?» — e ogni riga si può versare indietro da sola.</value>
+  </data>
+  <data name="License_Dll_RetryDownload" xml:space="preserve">
+    <value>Riprova il download</value>
+  </data>
+  <data name="License_Dialog_CopyDeviceId" xml:space="preserve">
+    <value>Copia ID dispositivo</value>
+  </data>
+  <data name="ApkInstaller_Parse_Failed" xml:space="preserve">
+    <value>Errore di lettura del file</value>
+  </data>
+  <data name="ApkInstaller_Split_Selected" xml:space="preserve">
+    <value>Selezionati {0} di {1} APK ({2}, {3}dpi, {4})</value>
   </data>
 </root>

@@ -2,15 +2,9 @@ namespace ZephyrsElixir.UI.Pages;
 
 public sealed partial class Optimize : UserControl
 {
-    #region Constants & Configuration
-
     private const int TotalSteps = OptimizationEngine.TotalSteps;
     private const int MaxParticlesIdle = 8;
     private const int MaxParticlesActive = 20;
-
-    #endregion
-
-    #region Fields
 
     private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromSeconds(1) };
     private readonly object _logLock = new();
@@ -23,15 +17,7 @@ public sealed partial class Optimize : UserControl
     private Storyboard? _pulseStoryboard;
     private DispatcherTimer? _particleSpawnTimer, _particleStateTimer;
 
-    #endregion
-
-    #region Properties
-
     private bool IsExtreme => ExtremeModeToggle.IsChecked == true && Pro.IsAvailable;
-
-    #endregion
-
-    #region Constructor & Lifecycle
 
     public Optimize()
     {
@@ -48,7 +34,8 @@ public sealed partial class Optimize : UserControl
             onStatusChanged: OnDeviceConnectionChanged,
             onInfoUpdated: RefreshDeviceUI,
             controls: new UIElement[] { OptimizeButton, DeviceInfoButton });
-        RefreshDeviceUI(DeviceManager.Instance.DeviceName, DeviceManager.Instance.BatteryLevel);
+        RefreshCurrentDevice();
+        TranslationManager.Instance.LanguageChanged += OnLanguageChanged;
         UpdateConsoleStatus(false);
 
         if (TryFindResource("Optimize.Storyboard.PulseGlow") is Storyboard sb)
@@ -60,34 +47,38 @@ public sealed partial class Optimize : UserControl
         if (_particleSpawnTimer is null) InitializeParticleSystem();
         _particleSpawnTimer?.Start();
         _particleStateTimer?.Start();
+
+        if (_isRunning) _timer.Start();
     }
 
     private void OnUnloaded(object sender, RoutedEventArgs e)
     {
-        _cts?.Cancel();
+        // The run outlives the page: navigating away parks the timers, it never cancels the work the
+        // user started, and the report stays where it belongs instead of opening over another screen.
         _timer.Stop();
         StopPulseAnimation();
         _particleSpawnTimer?.Stop();
         _particleStateTimer?.Stop();
+        TranslationManager.Instance.LanguageChanged -= OnLanguageChanged;
     }
 
     private void OnTimerTick(object? sender, EventArgs e) => 
         TimerText.Text = $"{DateTime.Now - _startTime:hh\\:mm\\:ss}";
 
-    #endregion
-
-    #region UI Update Methods
-
     private void OnDeviceConnectionChanged(bool isConnected)
     {
         if (!isConnected)
-            RefreshDeviceUI(Strings.DeviceStatus_NoDevice, 0);
+            RefreshDeviceUI(string.Empty, 0);
     }
+
+    private void OnLanguageChanged(object? sender, EventArgs e) => RefreshCurrentDevice();
+
+    private void RefreshCurrentDevice() =>
+        RefreshDeviceUI(DeviceManager.Instance.DeviceName, DeviceManager.Instance.BatteryLevel);
 
     private void RefreshDeviceUI(string deviceName, int batteryLevel)
     {
-        var hasDevice = !string.IsNullOrWhiteSpace(deviceName)
-                    && !string.Equals(deviceName, Strings.DeviceStatus_NoDevice, StringComparison.Ordinal);
+        var hasDevice = !string.IsNullOrWhiteSpace(deviceName);
 
         DeviceNameText.Text = hasDevice ? deviceName : Strings.DeviceStatus_NoDevice;
         BatteryText.Text    = hasDevice ? $"{batteryLevel}%" : "—";
@@ -132,11 +123,8 @@ public sealed partial class Optimize : UserControl
                 : Strings.Optimize_Console_Status_Idle;
             
             if (ConsoleStatusGlow != null)
-            {
-                ConsoleStatusGlow.Color = isActive 
-                    ? Color.FromRgb(0x00, 0xE6, 0x76) 
-                    : Color.FromRgb(0x60, 0x7D, 0x8B);
-            }
+                ConsoleStatusGlow.Color = UIHelpers.PaletteColor(
+                    isActive ? "App.Color.Status.Active" : "App.Color.Status.Idle") ?? ConsoleStatusGlow.Color;
         });
     }
 
@@ -223,10 +211,6 @@ public sealed partial class Optimize : UserControl
         });
     }
 
-    #endregion
-
-    #region Event Handlers
-
     private async void OnOptimizeClick(object sender, RoutedEventArgs e)
     {
         if (_isRunning)
@@ -242,10 +226,6 @@ public sealed partial class Optimize : UserControl
         var info = await DeviceManager.Instance.GetFullDevicePropertiesAsync();
         LogToConsole($"{info}\n{Strings.Optimize_Console_InfoRetrieved}\n");
     }
-
-    #endregion
-
-    #region Optimization Core
 
     private async Task RunOptimizationAsync()
     {
@@ -328,10 +308,6 @@ public sealed partial class Optimize : UserControl
         _cts.Cancel();
     }
 
-    #endregion
-
-    #region Console Logging
-
     private void ClearConsole() => 
         Dispatcher.Invoke(() => { lock (_logLock) TerminalBox.Clear(); });
 
@@ -361,10 +337,6 @@ public sealed partial class Optimize : UserControl
             LogToConsole($"✗ Report error: {ex.Message}\n");
         }
     }
-
-    #endregion
-
-    #region Particle System
 
     private void InitializeParticleSystem()
     {
@@ -403,7 +375,7 @@ public sealed partial class Optimize : UserControl
                 Width = rng.Next(_isRunning ? 80 : 40, _isRunning ? 200 : 100),
                 Height = _isRunning ? rng.Next(2, 4) : 1,
                 Fill = CreateParticleGradient(isComplete, _isRunning),
-                Effect = new BlurEffect { Radius = _isRunning ? 5 : 2 },
+                Effect = _isRunning ? ParticleBlurRunning : ParticleBlurIdle,
                 Opacity = 0,
                 RenderTransform = new TranslateTransform()
             };
@@ -463,6 +435,16 @@ public sealed partial class Optimize : UserControl
         return brush;
     }
 
+    private static readonly BlurEffect ParticleBlurRunning = CreateFrozenBlur(5);
+    private static readonly BlurEffect ParticleBlurIdle = CreateFrozenBlur(2);
+
+    private static BlurEffect CreateFrozenBlur(double radius)
+    {
+        var effect = new BlurEffect { Radius = radius };
+        effect.Freeze();
+        return effect;
+    }
+
     private static LinearGradientBrush CreateParticleGradient(bool isComplete, bool isRunning) =>
         isComplete ? ParticleGradientComplete : isRunning ? ParticleGradientRunning : ParticleGradientIdle;
 
@@ -473,6 +455,4 @@ public sealed partial class Optimize : UserControl
         Storyboard.SetTargetProperty(animation, new PropertyPath(path));
         return animation;
     }
-
-    #endregion
 }

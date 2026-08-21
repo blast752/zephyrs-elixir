@@ -24,7 +24,7 @@ public enum SafetyRiskLevel { Unknown, Safe, Caution, Critical }
 
 public enum AppState { User, System, Disabled }
 
-public enum StandbyBucket { Active = 10, WorkingSet = 20, Frequent = 30, Rare = 40, Restricted = 45 }
+public enum StandbyBucket { Active = 10, WorkingSet = 20, Frequent = 30, Rare = 40, Restricted = 45, Never = 50 }
 
 public sealed class AppInfo
 {
@@ -250,7 +250,14 @@ public static class AdbExecutor
 {
     private const int MaxConcurrentCommands = 16;
     private const int CommandTimeoutMs = 30_000;
-    private const int TransferTimeoutMs = 180_000;
+
+    /// <summary>Cap for a push, pull or install: a large APK over a slow link is not a hung command.</summary>
+    public const int TransferTimeoutMs = 180_000;
+
+    /// <summary>Cap for a whole-device dexopt pass, which legitimately runs for tens of minutes on a
+    /// phone with hundreds of packages. Long enough never to cut a real run short, short enough that
+    /// a stalled one gives its slot back the same day.</summary>
+    public const int CompileTimeoutMs = 5_400_000;
     private const string AdbExeName = "adb.exe";
 
     private static readonly string AdbPath;
@@ -311,6 +318,11 @@ public static class AdbExecutor
     public static Task<string> ExecuteTransferAsync(string command, CancellationToken ct = default, string? serial = null)
         => ExecuteTimedAsync(command, ct, null, true, serial, TransferTimeoutMs);
 
+    /// <summary>Live-output variant. The caller states the cap because the same path serves a file
+    /// transfer and a whole-device compilation, and one number cannot be right for both.</summary>
+    public static Task<string> ExecuteStreamingAsync(string command, int timeoutMs, Action<string> onOutput, CancellationToken ct = default, string? serial = null)
+        => ExecuteTimedAsync(command, ct, onOutput, true, serial, timeoutMs);
+
     /// <summary>Executor handed to the Pro module, which has no timeout parameter of its own:
     /// transfers pick the generous cap so a DLL-driven APK pull or install is not killed at 30s.</summary>
     public static Task<string> ExecuteModuleAsync(string command, CancellationToken ct = default)
@@ -333,7 +345,7 @@ public static class AdbExecutor
         try
         {
             var targeted = ApplyTarget(command, serial);
-            var result = await ExecuteCoreAsync(targeted, ct, onOutput, timeoutMs);
+            var result = await ExecuteCoreAsync(targeted, ct, onOutput, timeoutMs).ConfigureAwait(false);
             if (log)
                 AdbLogger.Instance.LogAdbCommand(targeted, result, IsLikelyFailure(result));
             return result;
@@ -344,23 +356,26 @@ public static class AdbExecutor
     public static string ExecuteCommand(string command) => ExecuteCommandAsync(command).GetAwaiter().GetResult();
 
     private static readonly string[] FailureMarkers =
-        { "error", "failure", "failed", "denied", "not found", "unauthorized", "no devices", "cannot", "unable", "exception" };
+        { "error", "failure", "failed", "denied", "not found", "unauthorized", "no devices", "offline", "cannot", "unable", "exception" };
 
     // Decides whether an adb result is worth keeping in diagnostics with its full output. Catches
     // both the explicit "Error:" results this class emits and the stderr that most adb failures
     // print, while letting routine successful output stay out of the log.
-    private static bool IsLikelyFailure(string result) =>
+    public static bool IsLikelyFailure(string result) =>
         !string.IsNullOrEmpty(result) &&
         FailureMarkers.Any(m => result.Contains(m, StringComparison.OrdinalIgnoreCase));
 
+    /// <summary>The redirection and UTF-8 setup every tool the app spawns needs; callers add the rest.</summary>
+    public static ProcessStartInfo CreateStartInfo(string fileName, string arguments) => new(fileName, arguments)
+    {
+        RedirectStandardOutput = true, RedirectStandardError = true,
+        UseShellExecute = false, CreateNoWindow = true,
+        StandardOutputEncoding = Encoding.UTF8, StandardErrorEncoding = Encoding.UTF8
+    };
+
     private static async Task<string> ExecuteCoreAsync(string command, CancellationToken ct, Action<string>? onOutput, int timeoutMs)
     {
-        var psi = new ProcessStartInfo(AdbPath, command)
-        {
-            RedirectStandardOutput = true, RedirectStandardError = true,
-            UseShellExecute = false, CreateNoWindow = true,
-            StandardOutputEncoding = Encoding.UTF8, StandardErrorEncoding = Encoding.UTF8
-        };
+        var psi = CreateStartInfo(AdbPath, command);
 
         using var process = Process.Start(psi);
         if (process == null) return "Error: Could not start ADB process.";
@@ -370,12 +385,28 @@ public static class AdbExecutor
         if (onOutput != null)
         {
             var sb = new StringBuilder();
-            process.OutputDataReceived += (_, e) => { if (!string.IsNullOrEmpty(e.Data)) { onOutput(e.Data); sb.AppendLine(e.Data); } };
-            process.ErrorDataReceived += (_, e) => { if (!string.IsNullOrEmpty(e.Data)) { onOutput(e.Data); sb.AppendLine(e.Data); } };
+            Action<string> emit = onOutput;
+
+            // The two handlers run on separate pool threads and dexopt writes to both streams at
+            // once, so the buffer they share is guarded.
+            void Collect(string line) { emit(line); lock (sb) { sb.AppendLine(line); } }
+
+            process.OutputDataReceived += (_, e) => { if (!string.IsNullOrEmpty(e.Data)) Collect(e.Data); };
+            process.ErrorDataReceived += (_, e) => { if (!string.IsNullOrEmpty(e.Data)) Collect(e.Data); };
             process.BeginOutputReadLine();
             process.BeginErrorReadLine();
-            await process.WaitForExitAsync(ct).ConfigureAwait(false);
-            return sb.ToString().Trim();
+
+            using var streamCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+            streamCts.CancelAfter(timeoutMs);
+            try { await process.WaitForExitAsync(streamCts.Token).ConfigureAwait(false); }
+            catch (OperationCanceledException)
+            {
+                try { process.Kill(true); } catch { }
+                if (ct.IsCancellationRequested) throw;
+                return "Error: Command timeout.";
+            }
+
+            lock (sb) { return sb.ToString().Trim(); }
         }
 
         var outputTask = process.StandardOutput.ReadToEndAsync(ct);
@@ -408,6 +439,39 @@ public static class AdbExecutor
     private static void Observe(Task task) =>
         _ = task.ContinueWith(static t => _ = t.Exception,
             CancellationToken.None, TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+}
+
+/// <summary>
+/// Quoting for values handed to adb. Every command that can carry a user-supplied path or setting
+/// value goes through here: the two layers below are easy to get subtly wrong, and getting them
+/// wrong silently retargets the command rather than failing.
+/// </summary>
+public static partial class AdbArg
+{
+    // adb.exe re-splits the command line with CommandLineToArgvW rules, where a run of backslashes is
+    // only special immediately before a quote. Doubling that run is what keeps the quote literal
+    // instead of ending the argument — dropping the quote instead would silently retarget the command.
+    [GeneratedRegex(@"(\\*)""")]
+    private static partial Regex QuoteRun();
+
+    [GeneratedRegex(@"(\\+)$")]
+    private static partial Regex TrailingBackslashes();
+
+    /// <summary>Wraps a value as a single Windows command-line argument.</summary>
+    public static string ForWindows(string value)
+    {
+        var escaped = QuoteRun().Replace(value, @"$1$1\""");
+        escaped = TrailingBackslashes().Replace(escaped, m => new string('\\', m.Groups[1].Value.Length * 2));
+        return $"\"{escaped}\"";
+    }
+
+    /// <summary>Wraps a value so the device's shell sees it as one literal word.</summary>
+    public static string ForPosix(string value) => "'" + value.Replace("'", "'\\''") + "'";
+
+    public static string ForPullPush(string path) => ForWindows(path);
+
+    /// <summary>Survives both splits: Windows hands adb one argument, the device shell one word.</summary>
+    public static string ForShell(string path) => ForWindows(ForPosix(path));
 }
 
 /// <summary>
@@ -483,7 +547,9 @@ public sealed class DeviceManager
 
     public bool IsConnected { get; private set; }
     public int BatteryLevel { get; private set; }
-    public string DeviceName { get; private set; } = Strings.DeviceStatus_NoDevice;
+    /// <summary>Empty while nothing is connected: the "no device" wording is localized, so it is
+    /// resolved on read through <see cref="StatusText"/> and never frozen into this field.</summary>
+    public string DeviceName { get; private set; } = string.Empty;
     public string DeviceSerial { get; private set; } = string.Empty;
     public string StatusText => IsConnected ? DeviceName : Strings.DeviceStatus_NoDevice;
 
@@ -606,21 +672,13 @@ public sealed class DeviceManager
         else if (was)
         {
             BatteryLevel = 0;
-            DeviceName = Strings.DeviceStatus_NoDevice;
+            DeviceName = string.Empty;
             DeviceSerial = string.Empty;
             DeviceInfoUpdated?.Invoke(this, (DeviceName, BatteryLevel));
         }
 
         if (previous.Count != devices.Count || !previous.Zip(devices).All(p => p.First.SameAs(p.Second)))
             DevicesChanged?.Invoke(this, devices);
-    }
-
-    public async Task<bool> CheckConnectedAsync()
-    {
-        var result = await AdbExecutor.ExecuteCommandAsync("devices", log: false);
-        if (string.IsNullOrWhiteSpace(result)) return false;
-        return result.SplitLines()
-            .Skip(1).Any(l => !string.IsNullOrWhiteSpace(l) && l.Trim().EndsWith("device", StringComparison.OrdinalIgnoreCase));
     }
 
     private static async Task<List<(string Serial, string State)>> ListDeviceEntriesAsync()
@@ -677,7 +735,7 @@ public sealed class DeviceManager
 /// </summary>
 public static class DeviceApi
 {
-    public const int Lollipop = 21, Oreo = 26, Pie = 28;
+    public const int Lollipop = 21, Oreo = 26, Pie = 28, Q = 29;
 
     private static readonly ConcurrentDictionary<string, int> SdkCache = new();
 
@@ -734,6 +792,10 @@ public static class DeviceApi
     public static bool IsSuccess(string result) =>
         result.Contains("success", StringComparison.OrdinalIgnoreCase) ||
         result.Contains("new state", StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>For the commands that print nothing when they work — <c>settings put</c> above all.
+    /// Their output is only ever a complaint, so anything that reads like one means it did not apply.</summary>
+    public static bool IsSilentSuccess(string result) => !AdbExecutor.IsLikelyFailure(result);
 }
 
 public static class PermissionManager
@@ -1001,7 +1063,10 @@ public static class OperationLedger
         lock (Gate) return Load(serial)?.Ops.ToArray() ?? Array.Empty<string>();
     }
 
-    public static int Count(string? serial) => Get(serial).Count;
+    public static int Count(string? serial)
+    {
+        lock (Gate) return Load(serial)?.Ops.Count ?? 0;
+    }
 
     public static string? BaselineVialPath(string? serial)
     {
@@ -1226,8 +1291,7 @@ public static class SettingsTimeMachine
                 : BuildPutCommand(change.Namespace, change.Key, change.VialValue);
 
             var result = await AdbExecutor.ExecuteCommandAsync(command, ct, serial: serial);
-            if (!result.Contains("exception", StringComparison.OrdinalIgnoreCase) &&
-                !result.Contains("error", StringComparison.OrdinalIgnoreCase))
+            if (DeviceApi.IsSilentSuccess(result))
                 applied++;
         }
         return applied;
@@ -1298,15 +1362,7 @@ public static class SettingsTimeMachine
         if (value.Length > 0 && value.All(c => char.IsLetterOrDigit(c) || c is '.' or '_' or '-' or ':' or '/' or '@' or '+' or ','))
             return $"shell settings put {ns} {key} {value}";
 
-        var deviceQuoted = "'" + value.Replace("'", "'\\''") + "'";
-        return $"shell {WindowsQuote($"settings put {ns} {key} {deviceQuoted}")}";
-    }
-
-    private static string WindowsQuote(string s)
-    {
-        var escaped = Regex.Replace(s, "(\\\\*)\"", m => new string('\\', m.Groups[1].Value.Length * 2) + "\\\"");
-        escaped = Regex.Replace(escaped, "(\\\\+)$", m => new string('\\', m.Groups[1].Value.Length * 2));
-        return $"\"{escaped}\"";
+        return $"shell {AdbArg.ForWindows($"settings put {ns} {key} {AdbArg.ForPosix(value)}")}";
     }
 
     private static void TryDeleteFile(string? path)
@@ -1320,7 +1376,6 @@ public static class CloudIntelligenceManager
 {
     private static readonly ConcurrentDictionary<string, PackageIntelligenceData> Cache = new();
     private static readonly HttpClient Http;
-    private static readonly JsonSerializerOptions JsonOpts = new() { PropertyNameCaseInsensitive = true, Converters = { new JsonStringEnumConverter() } };
     private const string Api = AppConfiguration.Urls.CloudApiAnalyzeFull;
 
     static CloudIntelligenceManager()
@@ -1332,7 +1387,6 @@ public static class CloudIntelligenceManager
 
     public static async Task AnalyzeBatchStreamAsync(IEnumerable<string> packages, Action<PackageIntelligenceData> onResult, CancellationToken ct)
     {
-        var toAnalyze = new List<string>();
         var needsCloud = new List<string>();
 
         foreach (var pkg in packages)
@@ -1355,6 +1409,17 @@ public static class CloudIntelligenceManager
 
         if (needsCloud.Count == 0) return;
 
+        // Declining the cloud analysis must not cost the local verdicts: the offline pass above still
+        // ran, so the "will brick your device" warnings survive, and everything it could not name gets
+        // a terminal answer here instead of a placeholder that claims to still be working. Not cached,
+        // so re-enabling the setting yields real verdicts on the next load.
+        if (!AiConsent.IsEnabled())
+        {
+            foreach (var pkg in needsCloud)
+                onResult(CreateDisabledFallback(pkg));
+            return;
+        }
+
         var quotaAvailable = AiQuotaManager.IsUnlimited
             ? needsCloud.Count
             : AiQuotaManager.ConsumeBatch(needsCloud.Count);
@@ -1364,29 +1429,38 @@ public static class CloudIntelligenceManager
 
         if (cloudPackages.Count > 0)
         {
-            await Parallel.ForEachAsync(cloudPackages, new ParallelOptions { MaxDegreeOfParallelism = 7, CancellationToken = ct }, async (pkg, token) =>
+            var settled = 0;
+            try
             {
-                var result = await FetchAsync(pkg, token);
-                if (result is not null)
+                await Parallel.ForEachAsync(cloudPackages, new ParallelOptions { MaxDegreeOfParallelism = 7, CancellationToken = ct }, async (pkg, token) =>
                 {
-                    Cache.TryAdd(pkg, result);
-                    onResult(result);
-                    return;
-                }
+                    var result = await FetchAsync(pkg, token);
+                    Interlocked.Increment(ref settled);
+                    if (result is not null)
+                    {
+                        // A quota refusal describes the day, not the package: caching it would keep
+                        // answering "quota exhausted" for the rest of the session, Pro purchase included.
+                        if (!result.IsOfflineResult) Cache.TryAdd(pkg, result);
+                        onResult(result);
+                        return;
+                    }
 
-                // Unreachable cloud: hand the allowance back and leave the cache untouched so the
-                // next load can still get a real verdict instead of a frozen "Network unavailable".
-                AiQuotaManager.Refund(1);
-                onResult(Fallback(pkg));
-            });
+                    // Unreachable cloud: hand the allowance back and leave the cache untouched so the
+                    // next load can still get a real verdict instead of a frozen "Network unavailable".
+                    AiQuotaManager.Refund(1);
+                    onResult(Fallback(pkg));
+                });
+            }
+            finally
+            {
+                // The whole batch is charged up front, so every package the run never reached — a
+                // cancelled load, a device unplugged mid-analysis — has to hand its unit back.
+                AiQuotaManager.Refund(cloudPackages.Count - Volatile.Read(ref settled));
+            }
         }
 
         foreach (var pkg in fallbackPackages)
-        {
-            var fallback = CreateQuotaFallback(pkg);
-            Cache.TryAdd(pkg, fallback);
-            onResult(fallback);
-        }
+            onResult(CreateQuotaFallback(pkg));
     }
 
     public static async Task<PackageIntelligenceData> AnalyzeSingleAsync(string packageName, CancellationToken ct = default)
@@ -1400,12 +1474,15 @@ public static class CloudIntelligenceManager
             return offline!;
         }
 
+        if (!AiConsent.IsEnabled())
+            return CreateDisabledFallback(packageName);
+
         if (AiQuotaManager.TryConsume())
         {
             var result = await FetchAsync(packageName, ct);
             if (result is not null)
             {
-                Cache.TryAdd(packageName, result);
+                if (!result.IsOfflineResult) Cache.TryAdd(packageName, result);
                 return result;
             }
 
@@ -1413,17 +1490,22 @@ public static class CloudIntelligenceManager
             return Fallback(packageName);
         }
 
-        var fallback = CreateQuotaFallback(packageName);
-        Cache.TryAdd(packageName, fallback);
-        return fallback;
+        return CreateQuotaFallback(packageName);
     }
 
-    private static PackageIntelligenceData CreateQuotaFallback(string pkg) => new()
+    private static PackageIntelligenceData CreateQuotaFallback(string pkg) =>
+        CreateNeutralResult(pkg, string.Format(Strings.Debloat_AI_QuotaExhausted, AiQuotaManager.DailyLimit));
+
+    private static PackageIntelligenceData CreateDisabledFallback(string pkg) =>
+        CreateNeutralResult(pkg, Strings.Debloat_AI_Disabled);
+
+    /// <summary>A verdict-free answer: no risk level, a neutral score, and a description saying why.</summary>
+    private static PackageIntelligenceData CreateNeutralResult(string pkg, string description) => new()
     {
         PackageName = pkg,
         RiskLevel = SafetyRiskLevel.Unknown,
         SafetyScore = 50,
-        Description = string.Format(Strings.Debloat_AI_QuotaExhausted, AiQuotaManager.DailyLimit),
+        Description = description,
         WarningMessage = null,
         IsOfflineResult = true
     };
@@ -1440,7 +1522,7 @@ public static class CloudIntelligenceManager
             // here on. A plain burst refusal is transient and is treated like any unreachable call.
             if (resp.StatusCode == HttpStatusCode.TooManyRequests)
             {
-                var rejection = await resp.Content.ReadFromJsonAsync<QuotaRejection>(JsonOpts, ct);
+                var rejection = await resp.Content.ReadFromJsonAsync<QuotaRejection>(CoreJson.CaseInsensitive, ct);
                 if (rejection?.QuotaExceeded != true) return null;
 
                 AiQuotaManager.MarkExhausted();
@@ -1449,12 +1531,20 @@ public static class CloudIntelligenceManager
 
             if (resp.IsSuccessStatusCode)
             {
-                var r = await resp.Content.ReadFromJsonAsync<PackageIntelligenceData>(JsonOpts, ct);
+                var r = await resp.Content.ReadFromJsonAsync<PackageIntelligenceData>(CoreJson.CaseInsensitive, ct);
                 if (r is not null)
                 {
-                    if (string.IsNullOrEmpty(r.PackageName)) r.PackageName = pkg;
+                    // The service answers 200 with this shape when its own call to the model produced
+                    // nothing. It is an outage, not a verdict: treat it exactly like an unreachable
+                    // service so the allowance is handed back and nothing is cached.
+                    if (r.RiskLevel == SafetyRiskLevel.Unknown && r.Description == "Unavailable") return null;
+
+                    // The model fills this field, so it can come back normalized or truncated. The
+                    // requested package is the key the cache and the tile map are indexed by, and a
+                    // drifting name would leave that tile stuck on "Analyzing" for the session.
+                    r.PackageName = pkg;
                     if (r.SafetyScore < 1 || r.SafetyScore > 100) r.SafetyScore = 50;
-                    if (r.RiskLevel == SafetyRiskLevel.Unknown && !string.IsNullOrEmpty(r.Description) && r.Description != "Unavailable")
+                    if (r.RiskLevel == SafetyRiskLevel.Unknown && !string.IsNullOrEmpty(r.Description))
                         r.RiskLevel = r.SafetyScore <= 15 ? SafetyRiskLevel.Critical : r.SafetyScore <= 50 ? SafetyRiskLevel.Caution : SafetyRiskLevel.Safe;
                     if (r.WarningMessage is "none" or "null") r.WarningMessage = null;
                     return r;

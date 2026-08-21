@@ -2,14 +2,13 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:h="clr-namespace:ZephyrsElixir.UI.Helpers"
+        xmlns:lic="clr-namespace:ZephyrsElixir.Licensing"
         Title="{h:Translate License_Dialog_Title}" Width="460" SizeToContent="Height"
         WindowStartupLocation="CenterOwner" WindowStyle="None"
         AllowsTransparency="True" Background="Transparent"
         ResizeMode="NoResize" ShowInTaskbar="False">
 
     <Window.Resources>
-        <h:LoadingTextConverter x:Key="LoadingText"/>
-        <h:StringToVisibilityConverter x:Key="StrToVis"/>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
     </Window.Resources>
 
@@ -89,20 +88,29 @@
                             </StackPanel>
                             <TextBlock Text="{Binding ExpirationText}" FontSize="13" 
                                        Foreground="{DynamicResource App.Brush.DeepSkyBlue}" Opacity="0.8" Margin="0,0,0,4"/>
-                            <TextBlock Text="{Binding OfflineStatusText}" FontSize="12" 
-                                       Foreground="{DynamicResource App.Brush.NavButtonForeground}"/>
+                            <StackPanel Orientation="Horizontal"
+                                        Visibility="{Binding OfflineStatusText, Converter={x:Static h:StringToVisibilityConverter.Instance}}">
+                                <h:Icon Kind="{Binding OfflineStatusIcon}" Size="13" Margin="0,0,6,0"
+                                        Foreground="{DynamicResource App.Brush.NavButtonForeground}"/>
+                                <TextBlock Text="{Binding OfflineStatusText}" FontSize="12" TextWrapping="Wrap"
+                                           Foreground="{DynamicResource App.Brush.NavButtonForeground}"/>
+                            </StackPanel>
 
                             <TextBlock Text="{Binding DllStateText}" FontSize="12" Margin="0,8,0,0" TextWrapping="Wrap"
-                                       Visibility="{Binding DllStateText, Converter={StaticResource StrToVis}}">
+                                       Visibility="{Binding DllStateText, Converter={x:Static h:StringToVisibilityConverter.Instance}}">
                                 <TextBlock.Foreground>
                                     <SolidColorBrush Color="{DynamicResource App.Color.Gold}"/>
                                 </TextBlock.Foreground>
                             </TextBlock>
 
-                            <Button Content="↻ Retry Download" Command="{Binding RetryDllDownloadCommand}"
-                                    Margin="0,10,0,0" HorizontalAlignment="Left" Height="32" Padding="14,0" 
+                            <Button Command="{Binding RetryDllDownloadCommand}"
+                                    Margin="0,10,0,0" HorizontalAlignment="Left" Height="32" Padding="14,0"
                                     FontSize="11" Cursor="Hand"
                                     Visibility="{Binding ShowDllDownloadFailed, Converter={StaticResource BoolToVis}}">
+                                <StackPanel Orientation="Horizontal">
+                                    <h:Icon Kind="refresh" Size="13" Margin="0,0,6,0"/>
+                                    <TextBlock Text="{h:Translate License_Dll_RetryDownload}" VerticalAlignment="Center"/>
+                                </StackPanel>
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
                                         <Border x:Name="bg" Background="{DynamicResource App.Brush.IconCircle}" 
@@ -234,17 +242,17 @@
                         <TextBox x:Name="TxtLicenseKey" 
                                  Text="{Binding LicenseKey, UpdateSourceTrigger=PropertyChanged}"
                                  Style="{DynamicResource App.Style.LicenseKeyTextBox}"
-                                 Tag="Z-XXXXXX-XXXXXXXX-XXXXXXX"/>
+                                 Tag="{x:Static lic:LicenseConfig.KeyPlaceholder}"/>
 
                         <TextBlock Text="{Binding ErrorMessage}" FontSize="12" Margin="0,10,0,0" TextWrapping="Wrap"
-                                   Visibility="{Binding ErrorMessage, Converter={StaticResource StrToVis}}">
+                                   Visibility="{Binding ErrorMessage, Converter={x:Static h:StringToVisibilityConverter.Instance}}">
                             <TextBlock.Foreground>
                                 <SolidColorBrush Color="{DynamicResource App.Color.Crimson}"/>
                             </TextBlock.Foreground>
                         </TextBlock>
                         <TextBlock Text="{Binding SuccessMessage}" Foreground="{DynamicResource App.Brush.DeepSkyBlue}"
                                    FontSize="12" Margin="0,10,0,0" TextWrapping="Wrap"
-                                   Visibility="{Binding SuccessMessage, Converter={StaticResource StrToVis}}"/>
+                                   Visibility="{Binding SuccessMessage, Converter={x:Static h:StringToVisibilityConverter.Instance}}"/>
 
                         <Grid Margin="0,20,0,0">
                             <Grid.ColumnDefinitions>
@@ -274,7 +282,7 @@
                             </Button>
                             
                             <Button Grid.Column="2" Command="{Binding ActivateCommand}" IsEnabled="{Binding CanActivate}"
-                                    Content="{Binding IsLoading, Converter={StaticResource LoadingText}, ConverterParameter='License_Dialog_Activate|License_Dialog_Activating'}"
+                                    Content="{Binding IsLoading, Converter={x:Static h:LoadingTextConverter.Instance}, ConverterParameter='License_Dialog_Activate|License_Dialog_Activating'}"
                                     Height="42" FontSize="13" FontWeight="SemiBold" Cursor="Hand"
                                     Foreground="{DynamicResource App.Brush.CheckedForeground}">
                                 <Button.Template>
@@ -317,7 +325,7 @@
                                 <TextBlock Grid.Column="1" Text="{Binding DeviceId}" FontSize="11" FontFamily="Consolas"
                                            Foreground="{DynamicResource App.Brush.DeepSkyBlue}" 
                                            VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
-                                <Button Grid.Column="2" Command="{Binding CopyDeviceIdCommand}" ToolTip="Copy Device ID"
+                                <Button Grid.Column="2" Command="{Binding CopyDeviceIdCommand}" ToolTip="{h:Translate License_Dialog_CopyDeviceId}"
                                         Width="26" Height="26" Margin="8,0,0,0" Cursor="Hand">
                                     <Button.Template>
                                         <ControlTemplate TargetType="Button">
@@ -351,7 +359,7 @@
                                Foreground="{DynamicResource App.Brush.CheckedForeground}" 
                                FontSize="14" FontWeight="Medium" Margin="0,16,0,0" 
                                HorizontalAlignment="Center" TextAlignment="Center"
-                               Visibility="{Binding ActivationStatusMessage, Converter={StaticResource StrToVis}}"/>
+                               Visibility="{Binding ActivationStatusMessage, Converter={x:Static h:StringToVisibilityConverter.Instance}}"/>
 
                     <TextBlock Text="{h:Translate License_Dialog_PleaseWait}" 
                                Foreground="{DynamicResource App.Brush.NavButtonForeground}" 
@@ -360,7 +368,7 @@
                             <Style TargetType="TextBlock">
                                 <Setter Property="Visibility" Value="Visible"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ActivationStatusMessage, Converter={StaticResource StrToVis}}" Value="Visible">
+                                    <DataTrigger Binding="{Binding ActivationStatusMessage, Converter={x:Static h:StringToVisibilityConverter.Instance}}" Value="Visible">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
                                 </Style.Triggers>

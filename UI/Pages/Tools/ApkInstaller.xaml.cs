@@ -38,8 +38,6 @@ public sealed partial class ApkInstaller : UserControl
         Unloaded += (_, _) => LicenseService.Instance.StateChanged -= _onLicenseChanged;
     }
 
-    #region Event Handlers
-
     private void OnBackClick(object sender, RoutedEventArgs e) => _onClose();
 
     private void OnBrowseClick(object sender, RoutedEventArgs e)
@@ -73,10 +71,6 @@ public sealed partial class ApkInstaller : UserControl
         if (_isInstalling) { _cts?.Cancel(); return; }
         await InstallAllPackagesAsync();
     }
-
-    #endregion
-
-    #region Drag & Drop
 
     private void OnDragOver(object sender, DragEventArgs e)
     {
@@ -125,10 +119,6 @@ public sealed partial class ApkInstaller : UserControl
     private static bool IsValidApkFile(string path) =>
         Path.GetExtension(path).ToLowerInvariant() is ".apk" or ".xapk" or ".apks" or ".apkm";
 
-    #endregion
-
-    #region File Processing
-
     private async void ProcessFiles(string[] files)
     {
         var isPro = Features.IsAvailable(Features.MultiApkInstall);
@@ -174,7 +164,7 @@ public sealed partial class ApkInstaller : UserControl
                 {
                     FilePath = file,
                     DisplayName = Path.GetFileName(file),
-                    PackageName = "Error parsing file",
+                    PackageName = Strings.ApkInstaller_Parse_Failed,
                     Status = InstallStatus.Failed,
                     ErrorMessage = ex.Message,
                     PackageType = GetPackageType(file)
@@ -329,14 +319,7 @@ public sealed partial class ApkInstaller : UserControl
         {
             using var process = new Process
             {
-                StartInfo = new ProcessStartInfo(Aapt2Path, $"dump badging \"{apkPath}\"")
-                {
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    StandardOutputEncoding = Encoding.UTF8
-                }
+                StartInfo = AdbExecutor.CreateStartInfo(Aapt2Path, $"dump badging \"{apkPath}\"")
             };
 
             process.Start();
@@ -379,10 +362,6 @@ public sealed partial class ApkInstaller : UserControl
             _ => PackageType.Apk
         };
 
-    #endregion
-
-    #region Split APK Selection
-
     private string[] SelectOptimalSplitApks(string[] allApks, ApkPackage package)
     {
         var selected = new List<string>();
@@ -392,10 +371,12 @@ public sealed partial class ApkInstaller : UserControl
         {
             var fileName = Path.GetFileNameWithoutExtension(apk).ToLowerInvariant();
 
-            if (IsBaseApk(fileName)) { selected.Add(apk); continue; }
+            // Specific before generic: bundletool names every split "base-<qualifier>", so testing the
+            // base fallback first would wave every architecture and density through unfiltered.
             if (IsArchSplit(fileName)) { if (MatchesArch(fileName, deviceInfo.Abi)) selected.Add(apk); continue; }
             if (IsDpiSplit(fileName)) { if (MatchesDpi(fileName, deviceInfo.Dpi)) selected.Add(apk); continue; }
             if (IsLangSplit(fileName)) { if (MatchesLang(fileName, deviceInfo.Lang)) selected.Add(apk); continue; }
+            if (IsBaseApk(fileName)) { selected.Add(apk); continue; }
             if (fileName.Contains("config.")) continue;
 
             selected.Add(apk);
@@ -417,7 +398,8 @@ public sealed partial class ApkInstaller : UserControl
             if (langApk != null) selected.Add(langApk);
         }
 
-        package.SplitInfo = $"Selected {selected.Count}/{allApks.Length} APKs ({deviceInfo.Abi}, {deviceInfo.Dpi}dpi, {deviceInfo.Lang})";
+        package.SplitInfo = string.Format(Strings.ApkInstaller_Split_Selected,
+            selected.Count, allApks.Length, deviceInfo.Abi, deviceInfo.Dpi, deviceInfo.Lang);
         return selected.Distinct().ToArray();
     }
 
@@ -466,22 +448,42 @@ public sealed partial class ApkInstaller : UserControl
             .FirstOrDefault(a => a != null);
     }
 
+    private static (string Serial, DeviceConfig Config)? _deviceConfig;
+
+    /// <summary>
+    /// ABI, density and locale in one batched shell round-trip, remembered per device. This is asked
+    /// once per dropped file when picking splits, and none of the three can change between files.
+    /// </summary>
     private static DeviceConfig GetDeviceInfo()
     {
-        try
-        {
-            var abi = AdbExecutor.ExecuteCommand("shell getprop ro.product.cpu.abi").Trim();
-            var dpiStr = AdbExecutor.ExecuteCommand("shell wm density").Replace("Physical density:", "").Trim();
-            var dpi = int.TryParse(dpiStr, out var d) ? d : 480;
-            var lang = AdbExecutor.ExecuteCommand("shell getprop persist.sys.locale").Split('-', '_').FirstOrDefault()?.Trim() ?? "en";
-            return new DeviceConfig(abi, dpi, lang);
-        }
-        catch { return new DeviceConfig("arm64-v8a", 480, "en"); }
+        var serial = DeviceManager.Instance.ActiveSerial;
+        if (_deviceConfig is { } cached && cached.Serial == serial) return cached.Config;
+
+        var config = ReadDeviceConfig();
+        _deviceConfig = (serial, config);
+        return config;
     }
 
-    #endregion
+    private static DeviceConfig ReadDeviceConfig()
+    {
+        const string Sep = "ZE-SEP";
+        try
+        {
+            var sections = AdbExecutor.ExecuteCommand(
+                $"shell \"getprop ro.product.cpu.abi; echo {Sep}; wm density; echo {Sep}; getprop persist.sys.locale\"")
+                .Split(Sep, StringSplitOptions.None);
 
-    #region Installation
+            if (sections.Length < 3) return DeviceConfig.Fallback;
+
+            var abi = sections[0].Trim();
+            var dpiStr = sections[1].Replace("Physical density:", "").Trim();
+            var dpi = int.TryParse(dpiStr, out var d) ? d : 480;
+            var lang = sections[2].Split('-', '_').FirstOrDefault()?.Trim() ?? "en";
+
+            return string.IsNullOrEmpty(abi) ? DeviceConfig.Fallback : new DeviceConfig(abi, dpi, lang);
+        }
+        catch { return DeviceConfig.Fallback; }
+    }
 
     private async Task InstallAllPackagesAsync()
     {
@@ -533,7 +535,17 @@ public sealed partial class ApkInstaller : UserControl
         }
         catch (OperationCanceledException) { package.Status = InstallStatus.Pending; }
         catch (Exception ex) { package.Status = InstallStatus.Failed; package.ErrorMessage = ex.Message; }
-        finally { package.Progress = 100; CleanupTempFiles(package); }
+        finally
+        {
+            // Only a terminal state is done with its files. A cancel puts the package back to Pending
+            // for the next run, and deleting what was extracted would leave nothing to install.
+            if (package.Status is InstallStatus.Success or InstallStatus.Updated or InstallStatus.Failed)
+            {
+                package.Progress = 100;
+                CleanupTempFiles(package);
+            }
+            else package.Progress = 0;
+        }
     }
 
     private string BuildInstallCommand(ApkPackage package, int existingVersion)
@@ -580,23 +592,17 @@ public sealed partial class ApkInstaller : UserControl
         var adbPath = AdbExecutor.GetAdbPath();
         using var process = new Process
         {
-            StartInfo = new ProcessStartInfo(adbPath, args)
-            {
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false,
-                CreateNoWindow = true,
-                StandardOutputEncoding = Encoding.UTF8,
-                StandardErrorEncoding = Encoding.UTF8
-            }
+            StartInfo = AdbExecutor.CreateStartInfo(adbPath, args)
         };
 
         await using var _ = token.Register(() => { try { process.Kill(true); } catch { } });
 
+        // The two handlers run on separate pool threads and adb writes progress and warnings to both
+        // streams at once, so the buffer they share is guarded.
         process.OutputDataReceived += (_, e) =>
         {
             if (e.Data == null) return;
-            output.AppendLine(e.Data);
+            lock (output) output.AppendLine(e.Data);
             if (e.Data.Contains("%"))
             {
                 var match = ProgressRegex.Match(e.Data);
@@ -605,7 +611,7 @@ public sealed partial class ApkInstaller : UserControl
             }
         };
 
-        process.ErrorDataReceived += (_, e) => { if (e.Data != null) output.AppendLine(e.Data); };
+        process.ErrorDataReceived += (_, e) => { if (e.Data != null) lock (output) output.AppendLine(e.Data); };
 
         process.Start();
         process.BeginOutputReadLine();
@@ -617,7 +623,8 @@ public sealed partial class ApkInstaller : UserControl
         await process.WaitForExitAsync(token);
         token.ThrowIfCancellationRequested();
 
-        var result = output.ToString();
+        string result;
+        lock (output) result = output.ToString();
         return (process.ExitCode == 0 && !result.Contains("Failure", StringComparison.OrdinalIgnoreCase), result);
     }
 
@@ -633,10 +640,6 @@ public sealed partial class ApkInstaller : UserControl
         if (string.IsNullOrEmpty(package.TempExtractPath)) return;
         try { if (Directory.Exists(package.TempExtractPath)) Directory.Delete(package.TempExtractPath, true); } catch { }
     }
-
-    #endregion
-
-    #region UI Helpers
 
     private void UpdateUI()
     {
@@ -674,16 +677,16 @@ public sealed partial class ApkInstaller : UserControl
             InstallButton.Tag = isStop ? "close" : "download";
         });
     }
-
-    #endregion
 }
-
-#region Data Models
 
 public enum PackageType { Apk, Xapk, Apks, Apkm }
 public enum InstallStatus { Pending, Installing, Success, Updated, Failed }
 
-public record struct DeviceConfig(string Abi, int Dpi, string Lang);
+public record struct DeviceConfig(string Abi, int Dpi, string Lang)
+{
+    /// <summary>What split selection assumes when the device cannot be read.</summary>
+    public static DeviceConfig Fallback => new("arm64-v8a", 480, "en");
+}
 
 public record ApkInfo
 {
@@ -774,10 +777,10 @@ public sealed class ApkPackage : INotifyPropertyChanged
 
     public Brush TypeBrush => PackageType switch
     {
-        PackageType.Apk => AppBrushes.GradientApk,
-        PackageType.Xapk => AppBrushes.GradientXapk,
-        PackageType.Apks => AppBrushes.GradientApks,
-        PackageType.Apkm => AppBrushes.GradientApkm,
+        PackageType.Apk => AppBrushes.GradientBlue,
+        PackageType.Xapk => AppBrushes.GradientGreen,
+        PackageType.Apks => AppBrushes.GradientAmber,
+        PackageType.Apkm => AppBrushes.GradientPurple,
         _ => AppBrushes.GradientDefault
     };
 
@@ -785,5 +788,3 @@ public sealed class ApkPackage : INotifyPropertyChanged
     private void OnPropertyChanged([CallerMemberName] string? name = null) =>
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }
-
-#endregion

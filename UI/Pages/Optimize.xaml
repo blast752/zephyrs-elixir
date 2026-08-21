@@ -189,15 +189,15 @@
                         </Grid.RowDefinitions>
                         
                         <Grid Grid.Row="0" Width="100" Height="100" Margin="0,0,0,20" HorizontalAlignment="Center">
-                            <Ellipse x:Name="OuterRing" Width="100" Height="100" StrokeThickness="2.5"
+                            <Ellipse Width="100" Height="100" StrokeThickness="2.5"
                                      RenderTransformOrigin="0.5,0.5" Opacity="0.9">
                                 <Ellipse.Stroke>
                                     <LinearGradientBrush>
-                                        <GradientStop Color="#00FFD700" Offset="0"/>
-                                        <GradientStop Color="#FFFFD700" Offset="0.2"/>
+                                        <GradientStop Color="{StaticResource App.Color.Gold.A00}" Offset="0"/>
+                                        <GradientStop Color="{StaticResource App.Color.Gold}" Offset="0.2"/>
                                         <GradientStop Color="#FF00BFFF" Offset="0.5"/>
                                         <GradientStop Color="#0000BFFF" Offset="0.8"/>
-                                        <GradientStop Color="#00FFD700" Offset="1"/>
+                                        <GradientStop Color="{StaticResource App.Color.Gold.A00}" Offset="1"/>
                                     </LinearGradientBrush>
                                 </Ellipse.Stroke>
                                 <Ellipse.RenderTransform>
@@ -259,8 +259,8 @@
                                          Value="0" Height="20"/>
                         </Grid>
                         
-                        <Border Grid.Row="3" Background="#0DFFD700" CornerRadius="12" Padding="14,11" Margin="0,0,0,18"
-                                BorderBrush="#18FFD700" BorderThickness="1">
+                        <Border Grid.Row="3" Background="{StaticResource App.Brush.Gold.A0D}" CornerRadius="12" Padding="14,11" Margin="0,0,0,18"
+                                BorderBrush="{StaticResource App.Brush.Gold.A18}" BorderThickness="1">
                             <Border.ToolTip>
                                 <ToolTip Style="{StaticResource App.Style.Tooltip}" MaxWidth="280">
                                     <StackPanel>
@@ -280,7 +280,7 @@
                                             Effect="{StaticResource App.Effect.GoldGlow.Small}"/>
                                     <TextBlock Text="{h:Translate Optimize_ExtremeMode_Label}" 
                                                FontSize="13" FontWeight="SemiBold" 
-                                               Foreground="#C8D8E8" VerticalAlignment="Center"/>
+                                               Foreground="{StaticResource App.Brush.Steel.Bright}" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </CheckBox>
                         </Border>
@@ -313,14 +313,14 @@
                     <h:ShadowCard.Opacity>0</h:ShadowCard.Opacity>
                     
                     <Border CornerRadius="16" ClipToBounds="True"
-                            Background="#18000000" BorderBrush="#20FFD700" BorderThickness="1">
+                            Background="#18000000" BorderBrush="{StaticResource App.Brush.Gold.A20}" BorderThickness="1">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
                             
-                            <Border Grid.Row="0" Background="#10FFD700" Padding="16,12">
+                            <Border Grid.Row="0" Background="{StaticResource App.Brush.Gold.A10}" Padding="16,12">
                                 <Grid>
                                     <StackPanel Orientation="Horizontal">
                                         <h:Icon Kind="console" Size="16" Margin="0,0,10,0"
@@ -332,7 +332,7 @@
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                                         <Ellipse x:Name="ConsoleStatusDot" Width="8" Height="8" Fill="{StaticResource App.Brush.Status.Idle}" Margin="0,0,8,0">
                                             <Ellipse.Effect>
-                                                <DropShadowEffect x:Name="ConsoleStatusGlow" BlurRadius="6" ShadowDepth="0" Color="#607D8B" Opacity="0.5"/>
+                                                <DropShadowEffect x:Name="ConsoleStatusGlow" BlurRadius="6" ShadowDepth="0" Color="{StaticResource App.Color.Status.Idle}" Opacity="0.5"/>
                                             </Ellipse.Effect>
                                         </Ellipse>
                                         <TextBlock x:Name="ConsoleStatusText" Text="{h:Translate Optimize_Console_Status_Idle}" FontSize="11" Foreground="#708898"/>
@@ -362,7 +362,7 @@
                     Style="{StaticResource App.Style.GlassCard}"
                     Padding="20,14">
                 <Border.RenderTransform>
-                    <TranslateTransform x:Name="StatsTranslate" Y="20"/>
+                    <TranslateTransform Y="20"/>
                 </Border.RenderTransform>
                 
                 <Grid>

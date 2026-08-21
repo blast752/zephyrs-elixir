@@ -24,7 +24,7 @@
                       HorizontalScrollBarVisibility="Disabled" 
                       Padding="0,0,10,0">
             
-            <StackPanel x:Name="MainContainer">
+            <StackPanel>
 
                 <h:SettingsSection Icon="settings"
                                          Header="{h:Translate Settings_General_Header}" 
@@ -32,7 +32,7 @@
                     <StackPanel>
                         <h:SettingItem Title="{h:Translate Settings_Language_Title}" 
                                              Description="{h:Translate Settings_Language_Description}">
-                            <ComboBox x:Name="LanguageComboBox" 
+                            <ComboBox 
                                     Style="{StaticResource App.Style.ComboBox.Slim}"
                                     MinWidth="180"
                                     HorizontalAlignment="Right"
@@ -53,7 +53,7 @@
                                     MinWidth="140" 
                                     Height="40">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <h:Icon Kind="check-circle" Size="16" Foreground="#90EE90" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <h:Icon Kind="check-circle" Size="16" Foreground="{StaticResource App.Brush.Success}" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                     <TextBlock Text="{h:Translate Settings_Updates_Status_AlwaysOn}" FontSize="14" FontWeight="SemiBold" Foreground="White" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Border>
@@ -99,16 +99,10 @@
                         <h:SettingItem Title="{h:Translate Settings_Reset_Title}" 
                                              Description="{h:Translate Settings_Reset_Description}" 
                                              Margin="0">
-                            <Button Content="{h:Translate Settings_Reset_Button}" 
+                            <Button Content="{h:Translate Settings_Reset_Button}"
                                     Tag="restore"
-                                    Style="{StaticResource App.Style.SettingsControl}"
-                                    BorderBrush="{StaticResource App.Brush.Destructive.IconCircle}"
-                                    Foreground="#FFC0C0"
-                                    Click="OnResetToDefaultsClick">
-                                <Button.Background>
-                                    <SolidColorBrush Color="#15FF2A2A"/>
-                                </Button.Background>
-                            </Button>
+                                    Style="{StaticResource App.Style.SettingsControl.Destructive}"
+                                    Click="OnResetToDefaultsClick"/>
                         </h:SettingItem>
                         <h:SettingItem Title="{h:Translate Settings_ProLicense_Title}" 
                                        Description="{h:Translate Settings_ProLicense_Description}">

@@ -47,7 +47,6 @@
             </Setter>
         </Style>
 
-        <!-- Tab close affordance: dim by default, turns red on hover. -->
         <Style x:Key="Console.Style.TabClose" TargetType="Button">
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Width" Value="18"/>
@@ -74,7 +73,6 @@
             </Setter>
         </Style>
 
-        <!-- Monospace command input, inherits glass look from the central style. -->
         <Style x:Key="Console.Style.Input" TargetType="TextBox" BasedOn="{StaticResource App.Style.TextBox.Glass}">
             <Setter Property="FontFamily" Value="{StaticResource AppMonospaceFont}"/>
             <Setter Property="FontSize" Value="13"/>
@@ -103,7 +101,7 @@
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="bd" Property="Background" Value="#1AFFFFFF"/>
+                                <Setter TargetName="bd" Property="Background" Value="{StaticResource App.Brush.Glass.Background}"/>
                             </Trigger>
                             <Trigger Property="IsSelected" Value="True">
                                 <Setter TargetName="bd" Property="Background" Value="#26FFFFFF"/>

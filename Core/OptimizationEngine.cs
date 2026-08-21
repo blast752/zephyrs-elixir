@@ -79,8 +79,6 @@ public sealed partial class OptimizationEngine
         Report.CompletedSteps++;
     }
 
-    #region Optimization Tasks
-
     private async Task ClearCacheAsync(CancellationToken ct)
     {
         for (int i = 1; i <= CacheIterations; i++)
@@ -182,8 +180,8 @@ public sealed partial class OptimizationEngine
         StepChanged?.Invoke(Strings.Optimize_Status_RunningTrim);
         await RunAdbAsync("shell sm fstrim /data", ct);
 
-        var sdkStr = await RunAdbAsync("shell getprop ro.build.version.sdk", ct);
-        if (int.TryParse(sdkStr.Trim(), out var sdk) && sdk < 29)
+        var sdk = await DeviceApi.GetSdkAsync(_serial, ct);
+        if (sdk > 0 && sdk < DeviceApi.Q)
             await RunAdbAsync("shell sm fstrim /cache", ct);
 
         Advance();
@@ -230,22 +228,31 @@ public sealed partial class OptimizationEngine
         Log?.Invoke($"✓ {Strings.Optimize_Console_SystemOptimized}\n");
     }
 
+    // The free pass compiles profile-guided: dex2oat AOT-compiles what the collected profile marks
+    // hot, which is what Android's own background dexopt does — quick, and it covers the code paths
+    // that actually run. Extreme buys the full pass: "speed" AOT-compiles every method of every
+    // package, takes far longer, and is the strongest filter AOSP documents. The module names that
+    // filter, but only one of these is accepted, so a stale DLL can never make the paid path compile
+    // less than the free one.
+    private static readonly string[] ExtremeCompileFilters = { "speed", "everything" };
+
     private async Task CompilePackagesAsync(CancellationToken ct)
     {
-        var mode = "speed";
+        var mode = "speed-profile";
         if (Extreme)
         {
             var result = await Pro.ExecuteAsync(ProCommandIds.ExtremeCompilationMode, ct: ct);
-            if (result.Success) mode = result.Message;
+            if (result.Success && System.Array.IndexOf(ExtremeCompileFilters, result.Message) >= 0)
+                mode = result.Message;
         }
 
         StepChanged?.Invoke(Extreme ? Strings.Optimize_Status_ExtremeCompilation : Strings.Optimize_Status_CompilingPackages);
         Log?.Invoke($"{string.Format(Extreme ? Strings.Optimize_Console_ExtremeCompilationStart : Strings.Optimize_Console_CompilationStart, mode)}\n");
 
         GuardRunning(ct);
-        await AdbExecutor.ExecuteCommandAsync(
+        await AdbExecutor.ExecuteStreamingAsync(
             $"shell cmd package compile -m {mode} -f -a",
-            ct,
+            AdbExecutor.CompileTimeoutMs,
             line =>
             {
                 Log?.Invoke($"{line}\n");
@@ -253,7 +260,8 @@ public sealed partial class OptimizationEngine
                 if (match.Success)
                     StepChanged?.Invoke(string.Format(Strings.Optimize_Status_Compiling, match.Groups[1].Value.Split('.').Last()));
             },
-            serial: _serial);
+            ct,
+            _serial);
         GuardRunning(ct);
 
         Advance();
@@ -290,10 +298,6 @@ public sealed partial class OptimizationEngine
             }
         }
     }
-
-    #endregion
-
-    #region Memory Analysis Helpers
 
     [GeneratedRegex(@"(com\.[\w\.]+|org\.[\w\.]+|net\.[\w\.]+).*?(?:lastPss|pss|mem)[=:\s]*([\d,]+)", RegexOptions.IgnoreCase | RegexOptions.Singleline)]
     private static partial Regex ActivityProcessRegex();
@@ -348,10 +352,6 @@ public sealed partial class OptimizationEngine
             .Select(parts => (parts[^1], long.Parse(parts[0])))
             .ToList();
 
-    #endregion
-
-    #region Utility Methods
-
     private bool DeviceOnline => _serial is null
         ? DeviceManager.Instance.IsConnected
         : DeviceManager.Instance.Devices.Any(d => d.Serial == _serial && d.IsAuthorized);
@@ -394,6 +394,4 @@ public sealed partial class OptimizationEngine
         }
         catch { return 0; }
     }
-
-    #endregion
 }

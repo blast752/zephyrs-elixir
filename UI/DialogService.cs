@@ -2,16 +2,10 @@ namespace ZephyrsElixir.UI.Dialogs;
 
 public sealed class DialogService
 {
-    #region Singleton
-
     private static readonly Lazy<DialogService> LazyInstance = new(() => new DialogService());
     public static DialogService Instance => LazyInstance.Value;
 
     private DialogService() { }
-
-    #endregion
-
-    #region Quick Methods - Info, Warning, Error, Success
 
     public void ShowInfo(string messageKey, Window? owner = null, string? titleKey = null)
         => ShowSimple(messageKey, DialogType.Info, owner, titleKey ?? "Dialog_Title_Info");
@@ -21,6 +15,10 @@ public sealed class DialogService
 
     public void ShowError(string messageKey, Window? owner = null, string? titleKey = null)
         => ShowSimple(messageKey, DialogType.Error, owner, titleKey ?? "Dialog_Title_Error");
+
+    /// <summary>Reports a caught exception verbatim under the standard error title.</summary>
+    public void ShowError(Exception ex, Window? owner = null)
+        => ShowInfoDirect(GetString("Dialog_Title_Error"), ex.Message, owner);
 
     public void ShowSuccess(string messageKey, Window? owner = null, string? titleKey = null)
         => ShowSimple(messageKey, DialogType.Success, owner, titleKey ?? "Dialog_Title_Success");
@@ -37,10 +35,6 @@ public sealed class DialogService
         };
         Show(config);
     }
-
-    #endregion
-
-    #region Confirmation Dialogs
 
     private DialogAction ShowConfirmCore(string message, DialogType type, DialogButton cancel, DialogButton confirm, Window? owner, string? title)
     {
@@ -81,10 +75,6 @@ public sealed class DialogService
             new DialogButton(GetString("Dialog_StopOptimization_StopButton"), DialogAction.Primary, ButtonStyle.Accent),
             owner, GetString("Dialog_StopOptimization_Title")) == DialogAction.Primary;
 
-    #endregion
-
-    #region Pro Required Dialogs
-
     public bool ShowProRequired(string featureMessageKey, Window? owner = null)
     {
         var message = $"{GetString(featureMessageKey)}\n\n{GetString("Pro_Required_Upgrade_Question")}";
@@ -117,10 +107,6 @@ public sealed class DialogService
             licenseDialog.ShowDialog();
         }
     }
-
-    #endregion
-
-    #region Custom Dialog
 
     public DialogAction ShowCustom(DialogConfig config)
     {
@@ -159,10 +145,6 @@ public sealed class DialogService
         Show(config);
     }
 
-    #endregion
-
-    #region Private Helpers
-
     private static void Show(DialogConfig config)
     {
         var dialog = UnifiedDialog.Create(config);
@@ -189,10 +171,6 @@ public sealed class DialogService
 
     private static DialogButton OkButton =>
         new(GetString("Common_Button_OK"), DialogAction.Primary, ButtonStyle.Primary);
-
-    #endregion
-
-    #region Info Dialogs (License, Privacy, Changelog)
 
     public void ShowLicense(Window? owner = null)
         => ShowRichInfo("Info_License_Title", CreateLicenseContent(), owner);
@@ -236,10 +214,6 @@ public sealed class DialogService
         Show(config);
     }
 
-    #endregion
-
-    #region Rich Content Factories
-
     private static IEnumerable<Block> CreateLicenseContent()
     {
         yield return CreateParagraph(GetString("Info_License_Copyright"));
@@ -274,17 +248,17 @@ public sealed class DialogService
 
     private static IEnumerable<Block> CreateChangelogContent()
     {
-        var sections = new (string TitleKey, string Icon, int ItemCount)[]
+        var sections = new (string TitleKey, string IconKind)[]
         {
-            ("Info_Changelog_New", "🆕", 4),
-            ("Info_Changelog_Updated", "🚀", 5),
-            ("Info_Changelog_Removed", "❌", 1)
+            ("Info_Changelog_New", "add"),
+            ("Info_Changelog_Updated", "bolt"),
+            ("Info_Changelog_Fixed", "wrench")
         };
 
-        foreach (var (titleKey, icon, itemCount) in sections)
+        foreach (var (titleKey, iconKind) in sections)
         {
-            yield return CreateChangelogSection($"{icon} {GetString(titleKey)}");
-
+            // The run of entries is discovered, not declared: a release that adds or drops a bullet
+            // only edits the resx, and a section left empty disappears instead of rendering markers.
             var list = new List
             {
                 MarkerStyle = TextMarkerStyle.Disc,
@@ -292,15 +266,18 @@ public sealed class DialogService
                 Foreground = TextBrush
             };
 
-            for (var i = 1; i <= itemCount; i++)
+            for (var i = 1; TranslationManager.Instance.Find($"{titleKey}_{i}") is { } entry; i++)
             {
-                list.ListItems.Add(new ListItem(new Paragraph(new Run(GetString($"{titleKey}_{i}")))
+                list.ListItems.Add(new ListItem(new Paragraph(new Run(entry))
                 {
                     Margin = new Thickness(0, 2, 0, 2),
                     FontSize = 13
                 }));
             }
 
+            if (list.ListItems.Count == 0) continue;
+
+            yield return CreateChangelogSection(iconKind, GetString(titleKey));
             yield return list;
         }
     }
@@ -319,18 +296,13 @@ public sealed class DialogService
         yield return CreateParagraphWithLink(GetString("Eula_FullPrivacy"), AppConfiguration.Legal.PrivacyUrl);
     }
 
-    #endregion
-
-    #region FlowDocument Helpers
-
     private static readonly Brush TextBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xDC, 0xDC, 0xF0));
-    private static readonly Brush TitleBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0xD7, 0x00));
+    private static readonly Brush TitleBrush = (Brush)Application.Current.FindResource("App.Brush.Gold");
     private static readonly Brush LinkBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x87, 0xCE, 0xFA));
 
     static DialogService()
     {
         TextBrush.Freeze();
-        TitleBrush.Freeze();
         LinkBrush.Freeze();
     }
 
@@ -350,13 +322,24 @@ public sealed class DialogService
         Margin = new Thickness(0, 8, 0, 12)
     };
 
-    private static Paragraph CreateChangelogSection(string text) => new(new Run(text))
+    private static Paragraph CreateChangelogSection(string iconKind, string text)
     {
-        Foreground = TitleBrush,
-        FontSize = 15,
-        FontWeight = FontWeights.SemiBold,
-        Margin = new Thickness(0, 8, 0, 6)
-    };
+        var paragraph = new Paragraph
+        {
+            Foreground = TitleBrush,
+            FontSize = 15,
+            FontWeight = FontWeights.SemiBold,
+            Margin = new Thickness(0, 8, 0, 6)
+        };
+
+        paragraph.Inlines.Add(new InlineUIContainer(
+            new UI.Helpers.Icon { Kind = iconKind, Size = 15, Foreground = TitleBrush, Margin = new Thickness(0, 0, 6, 0) })
+        {
+            BaselineAlignment = BaselineAlignment.Center
+        });
+        paragraph.Inlines.Add(new Run(text));
+        return paragraph;
+    }
 
     private static Paragraph CreateParagraphWithLink(string text, string url)
     {
@@ -373,10 +356,6 @@ public sealed class DialogService
         paragraph.Inlines.Add(hyperlink);
         return paragraph;
     }
-
-    #endregion
-
-    #region Update Dialog
 
     public bool ShowUpdate(UpdateInfo updateInfo, Window? owner = null)
     {
@@ -406,5 +385,4 @@ public sealed class DialogService
         yield return CreateParagraph(updateInfo.ReleaseNotes);
     }
 
-    #endregion
 }

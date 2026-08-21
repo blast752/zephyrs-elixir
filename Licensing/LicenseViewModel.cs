@@ -2,8 +2,6 @@ namespace ZephyrsElixir.Licensing;
 
 public sealed partial class LicenseViewModel : ObservableObject, IDisposable
 {
-    #region Observable Properties
-
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(CanActivate))]
     [NotifyPropertyChangedFor(nameof(KeyValidationHint))]
@@ -31,10 +29,10 @@ public sealed partial class LicenseViewModel : ObservableObject, IDisposable
     [NotifyPropertyChangedFor(nameof(IsPro))]
     [NotifyPropertyChangedFor(nameof(IsFree))]
     [NotifyPropertyChangedFor(nameof(TierDisplayName))]
-    [NotifyPropertyChangedFor(nameof(StatusIcon))]
     [NotifyPropertyChangedFor(nameof(StatusText))]
     [NotifyPropertyChangedFor(nameof(ExpirationText))]
     [NotifyPropertyChangedFor(nameof(OfflineStatusText))]
+    [NotifyPropertyChangedFor(nameof(OfflineStatusIcon))]
     [NotifyPropertyChangedFor(nameof(ShowOfflineWarning))]
     [NotifyPropertyChangedFor(nameof(ShowExpiration))]
     [NotifyPropertyChangedFor(nameof(ShowStatusWarning))]
@@ -55,10 +53,6 @@ public sealed partial class LicenseViewModel : ObservableObject, IDisposable
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ShowDownloadProgress))]
     private bool _isDownloading;
-
-    #endregion
-
-    #region Computed Properties
 
     public bool IsPro => CurrentState.EffectiveTier >= LicenseTier.Pro;
     public bool IsFree => !IsPro;
@@ -87,23 +81,15 @@ public sealed partial class LicenseViewModel : ObservableObject, IDisposable
         _ => null
     };
     
-    public string StatusIcon => CurrentState switch
-    {
-        { Status: LicenseStatus.PastDue } => "⚠",
-        { Status: LicenseStatus.Suspended } => "⛔",
-        { Status: LicenseStatus.Expired } => "⏰",
-        { IsOffline: true } => "⚠",
-        { IsActive: true } => "✓",
-        _ => "○"
-    };
-    
     public string StatusText => CurrentState switch
     {
         { Status: LicenseStatus.PastDue } => Strings.License_Status_PastDue,
         { Status: LicenseStatus.Suspended } => Strings.License_Status_Suspended,
         { Status: LicenseStatus.Expired } => Strings.License_Status_Expired,
         { Status: LicenseStatus.Canceled } => Strings.License_Status_Canceled,
-        { IsActive: true } => CurrentState.StatusDescription,
+        { IsActive: true, Status: LicenseStatus.Trialing } => Strings.License_Status_Trial,
+        { IsActive: true, Status: LicenseStatus.Completed } => Strings.License_Status_Lifetime,
+        { IsActive: true } => Strings.License_Status_Active,
         _ => Strings.License_Status_Free
     };
     
@@ -117,9 +103,17 @@ public sealed partial class LicenseViewModel : ObservableObject, IDisposable
     
     public string OfflineStatusText => CurrentState switch
     {
-        { IsOffline: true, OfflineGraceExpired: true } => $"⚠ {Strings.License_Status_OfflineTooLong}",
-        { IsOffline: true } => $"⚠ {string.Format(Strings.License_Status_OfflineMode, LicenseConfig.OfflineGraceDays - (int)(DateTime.UtcNow - CurrentState.LastValidated).TotalDays)}",
-        { IsActive: true } => $"✓ {Strings.License_Status_Validated}",
+        { IsOffline: true, OfflineGraceExpired: true } => Strings.License_Status_OfflineTooLong,
+        { IsOffline: true } => string.Format(Strings.License_Status_OfflineMode, LicenseConfig.OfflineGraceDays - (int)(DateTime.UtcNow - CurrentState.LastValidated).TotalDays),
+        { IsActive: true } => Strings.License_Status_Validated,
+        _ => string.Empty
+    };
+
+    /// <summary>Icon registry key matching <see cref="OfflineStatusText"/>; empty when there is no line to show.</summary>
+    public string OfflineStatusIcon => CurrentState switch
+    {
+        { IsOffline: true } => "warning",
+        { IsActive: true } => "check",
         _ => string.Empty
     };
     
@@ -142,10 +136,6 @@ public sealed partial class LicenseViewModel : ObservableObject, IDisposable
     }
     
     public bool ShowKeyValidationHint => !string.IsNullOrEmpty(KeyValidationHint);
-
-    #endregion
-
-    #region Constructor & Cleanup
 
     public LicenseViewModel()
     {
@@ -187,10 +177,6 @@ public sealed partial class LicenseViewModel : ObservableObject, IDisposable
     {
         LicenseService.Instance.StateChanged -= OnLicenseStateChanged;
     }
-
-    #endregion
-
-    #region Commands
 
     [RelayCommand(CanExecute = nameof(CanActivate))]
     private async Task ActivateAsync()
@@ -265,10 +251,10 @@ public sealed partial class LicenseViewModel : ObservableObject, IDisposable
         {
             await LicenseService.Instance.ForceValidateAsync();
             
-            if (CurrentState.IsActive)
-                ShowSuccessMessage(Strings.License_Status_Refreshed);
-            else if (CurrentState.LastError is not null)
+            if (CurrentState.LastError is not null)
                 SetError(CurrentState.LastError);
+            else if (CurrentState.IsActive)
+                ShowSuccessMessage(Strings.License_Status_Refreshed);
         }, Strings.License_RefreshFailed);
     }
 
@@ -325,10 +311,6 @@ public sealed partial class LicenseViewModel : ObservableObject, IDisposable
         catch { }
     }
 
-    #endregion
-
-    #region Helpers
-
     private async Task ExecuteAsync(Func<Task> action, string? defaultError = null)
     {
         ClearMessages();
@@ -375,6 +357,4 @@ public sealed partial class LicenseViewModel : ObservableObject, IDisposable
             });
         }, TaskScheduler.Default);
     }
-
-    #endregion
 }

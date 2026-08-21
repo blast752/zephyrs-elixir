@@ -28,8 +28,6 @@ public sealed partial class MainWindow : Window
         Closed += OnClose;
     }
 
-    #region Custom chrome / monitor / sizing
-
     private void ConfigureChrome() => WindowChrome.SetWindowChrome(this, new WindowChrome
     {
         CaptionHeight = AppConfiguration.Window.CaptionHeight,
@@ -62,14 +60,22 @@ public sealed partial class MainWindow : Window
         try
         {
             int corner = 2, dark = 1;
-            var titleBar = AppConfiguration.Window.TitleBarBg;
-            var windowBorder = AppConfiguration.Window.BorderColor;
-            int caption = NativeInterop.Rgb(titleBar.R, titleBar.G, titleBar.B);
-            int border = NativeInterop.Rgb(windowBorder.R, windowBorder.G, windowBorder.B);
             NativeInterop.DwmSetWindowAttribute(_handle, AppConfiguration.Common.WindowStyleDwmCornerPreference, ref corner, sizeof(int));
             NativeInterop.DwmSetWindowAttribute(_handle, AppConfiguration.Common.WindowStyleDwmDarkMode, ref dark, sizeof(int));
-            NativeInterop.DwmSetWindowAttribute(_handle, AppConfiguration.Common.WindowStyleDwmCaptionColor, ref caption, sizeof(int));
-            NativeInterop.DwmSetWindowAttribute(_handle, AppConfiguration.Common.WindowStyleDwmBorderColor, ref border, sizeof(int));
+
+            // The caption is painted by Windows, not by WPF, so it can only follow the palette by
+            // reading the same token the chrome binds to. Absent token, Windows keeps its default.
+            if (UIHelpers.PaletteColor("App.Color.TitleBarBg") is { } titleBar)
+            {
+                int caption = NativeInterop.Rgb(titleBar.R, titleBar.G, titleBar.B);
+                NativeInterop.DwmSetWindowAttribute(_handle, AppConfiguration.Common.WindowStyleDwmCaptionColor, ref caption, sizeof(int));
+            }
+
+            if (UIHelpers.PaletteColor("App.Color.WindowBorder") is { } windowBorder)
+            {
+                int border = NativeInterop.Rgb(windowBorder.R, windowBorder.G, windowBorder.B);
+                NativeInterop.DwmSetWindowAttribute(_handle, AppConfiguration.Common.WindowStyleDwmBorderColor, ref border, sizeof(int));
+            }
         }
         catch (Exception ex) { Debug.WriteLine($"Win11 style failed: {ex.Message}"); }
     }
@@ -268,7 +274,9 @@ public sealed partial class MainWindow : Window
 
     private static Point GetMousePos(IntPtr lParam)
     {
-        var raw = lParam.ToInt32();
+        // MAKELPARAM zero-extends the packed coordinates, so a cursor above or left of the primary
+        // monitor sets the high bit and ToInt32 would throw on every mouse move over the window.
+        var raw = lParam.ToInt64();
         return new Point((short)(raw & 0xFFFF), (short)((raw >> 16) & 0xFFFF));
     }
 
@@ -308,16 +316,15 @@ public sealed partial class MainWindow : Window
             Canvas.SetTop(front, 2);
             MaximizeIcon.Children.Add(back);
             MaximizeIcon.Children.Add(front);
-            MaximizeRestoreButton.ToolTip = Strings.Window_Tooltip_Restore;
         }
         else
         {
             MaximizeIcon.Children.Add(new Rectangle { Width = 10, Height = 10, Stroke = brush, StrokeThickness = 1 });
-            MaximizeRestoreButton.ToolTip = Strings.Window_Tooltip_Maximize;
         }
-    }
 
-    #endregion
+        BindingOperations.SetBinding(MaximizeRestoreButton, ToolTipProperty,
+            UIHelpers.Translation(_maximized ? "Window_Tooltip_Restore" : "Window_Tooltip_Maximize"));
+    }
 
     private void OnShowHelp(object sender, ExecutedRoutedEventArgs e)
     {

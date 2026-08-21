@@ -165,12 +165,13 @@ public sealed partial class FileManager : UserControl
 
         Loaded += OnPageLoaded;
         Unloaded += OnPageUnloaded;
+        Dispatcher.ShutdownStarted += OnShutdownStarted;
     }
 
     private void SeedBookmarksAndTrees()
     {
-        Bookmarks.Add(new Bookmark("/sdcard/Download",    Strings.FileManager_Bookmark_Downloads, "download", AppBrushes.GradientApk));
-        Bookmarks.Add(new Bookmark("/sdcard/DCIM/Camera", Strings.FileManager_Bookmark_Camera,    "camera", AppBrushes.GradientApkm));
+        Bookmarks.Add(new Bookmark("/sdcard/Download",    Strings.FileManager_Bookmark_Downloads, "download", AppBrushes.GradientBlue));
+        Bookmarks.Add(new Bookmark("/sdcard/DCIM/Camera", Strings.FileManager_Bookmark_Camera,    "camera", AppBrushes.GradientPurple));
 
         TreeRoots.Add(TreeNode.CreateExpandable(Strings.FileManager_Tree_InternalStorage, "/sdcard"));
         TreeRoots.Add(TreeNode.CreateExpandable(Strings.FileManager_Tree_FilesystemRoot, "/"));
@@ -180,8 +181,8 @@ public sealed partial class FileManager : UserControl
     private void RebuildBookmarks(string? whatsAppPath, bool tempAvailable)
     {
         Bookmarks.Clear();
-        Bookmarks.Add(new Bookmark("/sdcard/Download",    Strings.FileManager_Bookmark_Downloads, "download", AppBrushes.GradientApk));
-        Bookmarks.Add(new Bookmark("/sdcard/DCIM/Camera", Strings.FileManager_Bookmark_Camera,    "camera", AppBrushes.GradientApkm));
+        Bookmarks.Add(new Bookmark("/sdcard/Download",    Strings.FileManager_Bookmark_Downloads, "download", AppBrushes.GradientBlue));
+        Bookmarks.Add(new Bookmark("/sdcard/DCIM/Camera", Strings.FileManager_Bookmark_Camera,    "camera", AppBrushes.GradientPurple));
 
         if (!string.IsNullOrEmpty(whatsAppPath))
             Bookmarks.Add(new Bookmark(whatsAppPath, Strings.FileManager_Bookmark_WhatsApp, "chat", AppBrushes.GradientGreen));
@@ -316,6 +317,14 @@ public sealed partial class FileManager : UserControl
         DisposeCts(ref _listingCts);
         DisposeCts(ref _previewCts);
         DisposeCts(ref _storageCts);
+    }
+
+    // Unloaded fires on plain sidebar navigation, because MainWindow keeps built screens alive, so a
+    // running push must survive the user glancing at another page. Killing the transfers and wiping
+    // the staging area belongs to the two moments the view really ends.
+    private void Teardown()
+    {
+        Dispatcher.ShutdownStarted -= OnShutdownStarted;
 
         foreach (var item in Transfers.ToArray())
             item.Cancel();
@@ -323,8 +332,14 @@ public sealed partial class FileManager : UserControl
         try { if (Directory.Exists(TempBase)) Directory.Delete(TempBase, true); } catch { }
     }
 
+    private void OnShutdownStarted(object? sender, EventArgs e) => Teardown();
+
     [RelayCommand]
-    private void Close() => _onClose();
+    private void Close()
+    {
+        Teardown();
+        _onClose();
+    }
 
     [RelayCommand]
     private async Task NavigateAsync(string? path)
@@ -428,6 +443,9 @@ public sealed partial class FileManager : UserControl
     {
         if (!EnsureConnected()) return;
 
+        // The prompt is awaited, and the user can navigate underneath it: the destination is the
+        // directory the command was issued from, not wherever the view happens to be on confirm.
+        var baseDir = CurrentPath;
         var name = await PromptAsync(
             Strings.FileManager_Prompt_NewFolder_Title,
             Strings.FileManager_Prompt_NewFolder_Label,
@@ -435,7 +453,7 @@ public sealed partial class FileManager : UserControl
             FileNameValidator);
         if (string.IsNullOrEmpty(name)) return;
 
-        var newPath = PathUtil.Combine(CurrentPath, name);
+        var newPath = PathUtil.Combine(baseDir, name);
         var output = await AdbExecutor.ExecuteCommandAsync(
             $"shell mkdir -p {AdbArg.ForShell(newPath)}");
 
@@ -453,13 +471,14 @@ public sealed partial class FileManager : UserControl
         var target = CurrentSingleSelection();
         if (target == null) return;
 
+        var baseDir = PathUtil.Parent(target.FullPath);
         var newName = await PromptAsync(
             Strings.FileManager_Prompt_Rename_Title,
             Strings.FileManager_Prompt_Rename_Label,
             target.Name, FileNameValidator);
         if (string.IsNullOrEmpty(newName) || newName == target.Name) return;
 
-        var newPath = PathUtil.Combine(CurrentPath, newName);
+        var newPath = PathUtil.Combine(baseDir, newName);
         var output = await AdbExecutor.ExecuteCommandAsync(
             $"shell mv -- {AdbArg.ForShell(target.FullPath)} {AdbArg.ForShell(newPath)}");
 
@@ -957,7 +976,7 @@ public sealed partial class FileManager : UserControl
 
             if (ExecutableExtensions.Contains(Path.GetExtension(localPath)))
             {
-                Process.Start("explorer.exe", $"/select,\"{localPath}\"");
+                ShellUtils.RevealInExplorer(localPath);
                 DialogService.Instance.ShowInfoDirect(
                     Strings.FileManager_Open_Failed_Title,
                     string.Format(Strings.FileManager_Open_BlockedExecutable, entry.Name),
@@ -1046,14 +1065,7 @@ public sealed partial class FileManager : UserControl
     private static BitmapImage LoadImage(string path)
     {
         using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-        var bmp = new BitmapImage();
-        bmp.BeginInit();
-        bmp.CacheOption = BitmapCacheOption.OnLoad;
-        bmp.CreateOptions = BitmapCreateOptions.IgnoreColorProfile;
-        bmp.StreamSource = stream;
-        bmp.EndInit();
-        bmp.Freeze();
-        return bmp;
+        return UIHelpers.BitmapFromStream(stream, ignoreColorProfile: true);
     }
 
     private static async Task<string> ReadTextSampleAsync(string path, CancellationToken ct)
@@ -1220,12 +1232,12 @@ public sealed partial class FileManager : UserControl
                 ? $"push {AdbArg.ForPullPush(item.LocalPath)} {AdbArg.ForPullPush(item.RemotePath)}"
                 : $"pull -a {AdbArg.ForPullPush(item.RemotePath)} {AdbArg.ForPullPush(item.LocalPath)}";
 
-            var output = await AdbExecutor.ExecuteCommandAsync(command, item.TokenSource.Token, line =>
+            var output = await AdbExecutor.ExecuteStreamingAsync(command, AdbExecutor.TransferTimeoutMs, line =>
             {
                 var match = ProgressPattern().Match(line);
                 if (match.Success && int.TryParse(match.Groups[1].Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var p))
                     Dispatcher.BeginInvoke(() => { item.Progress = p; RecomputeTransferAggregate(); });
-            });
+            }, item.TokenSource.Token);
 
             if (item.TokenSource.IsCancellationRequested)
             {
@@ -1299,6 +1311,10 @@ public sealed partial class FileManager : UserControl
         // already pinned to their own adb process and may finish safely.
         foreach (var pending in Transfers.Where(t => t.Status is TransferStatus.Pending or TransferStatus.Queued).ToArray())
             pending.Cancel();
+
+        // Same reason: a cut or copy holds paths that exist on the previous phone, and pasting them
+        // here would run mv against the wrong device.
+        ClearClipboard();
 
         await NavigateAsync(CurrentPath);
         _ = LoadStorageAsync();
@@ -1374,6 +1390,10 @@ public sealed partial class FileManager : UserControl
 
     private async Task<string?> PromptAsync(string title, string label, string initial, Func<string, string?>? validator)
     {
+        // The page keyboard shortcuts stay live while the prompt has focus, so a second command can
+        // reach this method and orphan the pending completion source, hanging the first caller.
+        if (IsPromptOpen) return null;
+
         PromptTitle = title;
         PromptLabel = label;
         PromptValue = initial;
@@ -1596,8 +1616,8 @@ public sealed partial class FileManager : UserControl
 
             var segments = new List<StorageSegment>
             {
-                new(Strings.FileManager_Storage_Apps,      apps,        UIHelpers.LeadingColor(AppBrushes.GradientApk)),
-                new(Strings.FileManager_Storage_Media,     media,       UIHelpers.LeadingColor(AppBrushes.GradientApkm)),
+                new(Strings.FileManager_Storage_Apps,      apps,        UIHelpers.LeadingColor(AppBrushes.GradientBlue)),
+                new(Strings.FileManager_Storage_Media,     media,       UIHelpers.LeadingColor(AppBrushes.GradientPurple)),
                 new(Strings.FileManager_Storage_Downloads, downloads,   UIHelpers.LeadingColor(AppBrushes.GradientCyan)),
                 new(Strings.FileManager_Storage_System,    systemBytes, UIHelpers.LeadingColor(AppBrushes.GradientNavy)),
                 new(Strings.FileManager_Storage_Free,      freeBytes,   Color.FromArgb(0x40, 0xFF, 0xFF, 0xFF))
@@ -1818,7 +1838,7 @@ public sealed partial class TransferItem : ObservableObject
 
     public string DirectionIcon => Direction == TransferDirection.Push ? "upload" : "download";
     public Brush DirectionBrush => Direction == TransferDirection.Push
-        ? AppBrushes.GradientApk
+        ? AppBrushes.GradientBlue
         : AppBrushes.GradientGreen;
     public string DirectionLabel => Direction == TransferDirection.Push
         ? Strings.FileManager_Transfer_Direction_Push
@@ -1941,22 +1961,6 @@ internal static partial class PathUtil
 
     public static string ResolveSymlink(string symlinkPath, string target) =>
         target.StartsWith('/') ? Normalize(target) : Normalize(Combine(Parent(symlinkPath), target));
-}
-
-internal static partial class AdbArg
-{
-    // adb.exe re-splits the command line with CommandLineToArgvW rules, where a run of backslashes is
-    // only special immediately before a quote. Doubling that run is what keeps the quote literal
-    // instead of ending the argument — dropping the quote instead would silently retarget the command.
-    [GeneratedRegex(@"(\\*)""")]
-    private static partial Regex QuoteRun();
-
-    private static string ForWindows(string path) => QuoteRun().Replace(path, @"$1$1\""");
-
-    public static string ForPullPush(string path) => "\"" + ForWindows(path) + "\"";
-
-    public static string ForShell(string path) =>
-        "\"'" + ForWindows(path.Replace("'", "'\\''")) + "'\"";
 }
 
 internal static partial class LsParser
@@ -2152,11 +2156,11 @@ internal static class RemoteEntryClassifier
     public static Brush BrushFor(string key) => key switch
     {
         "folder"  => FolderBrush,
-        "link"    => AppBrushes.GradientApkm,
-        "image"   => AppBrushes.GradientApkm,
+        "link"    => AppBrushes.GradientPurple,
+        "image"   => AppBrushes.GradientPurple,
         "video"   => AppBrushes.GradientRed,
-        "audio"   => AppBrushes.GradientApks,
-        "text"    => AppBrushes.GradientApk,
+        "audio"   => AppBrushes.GradientAmber,
+        "text"    => AppBrushes.GradientBlue,
         "config"  => AppBrushes.GradientCyan,
         "archive" => AppBrushes.GradientOrange,
         "android" => AppBrushes.GradientGreen,

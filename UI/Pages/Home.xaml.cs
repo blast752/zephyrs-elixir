@@ -14,11 +14,15 @@ public sealed partial class Home : UserControl
         _navigate = requestNavigation ?? throw new ArgumentNullException(nameof(requestNavigation));
         InitializeComponent();
 
-        TxtVersion.Text = $"{Strings.Home_Version} {AppVersion.Value}";
+        RefreshVersionText();
+        TranslationManager.Instance.LanguageChanged += OnLanguageChanged;
         Loaded += OnLoaded;
     }
 
-    #region Lifecycle
+    private void OnLanguageChanged(object? sender, EventArgs e) => RefreshVersionText();
+
+    private void RefreshVersionText() =>
+        TxtVersion.Text = $"{Strings.Home_Version} {AppVersion.Value}";
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
@@ -31,10 +35,6 @@ public sealed partial class Home : UserControl
         if (Resources["Anim.PulseGlow"] is Storyboard pulse)
             MascotGlow.BeginStoryboard(pulse);
     }
-
-    #endregion
-
-    #region Event Handlers
 
     private void OnStartOptimizationClick(object sender, RoutedEventArgs e)
         => _navigate("Optimize");
@@ -63,10 +63,6 @@ public sealed partial class Home : UserControl
         AnimateBannerClose();
     }
 
-    #endregion
-
-    #region Helpers
-
     private void AnimateBannerClose()
     {
         var fade = new DoubleAnimation(1, 0, TimeSpan.FromMilliseconds(300));
@@ -93,6 +89,4 @@ public sealed partial class Home : UserControl
             return "Error";
         }
     }
-
-    #endregion
 }

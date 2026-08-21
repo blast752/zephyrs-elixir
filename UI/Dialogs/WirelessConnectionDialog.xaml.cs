@@ -140,14 +140,17 @@ public sealed partial class WirelessConnectionDialog : Window
 
             if (success)
             {
+                // The header close button stays live through the success pause, and setting the result
+                // on a window the user already closed throws and reports the connection as cancelled.
                 await Task.Delay(Config.SuccessCloseDelayMs);
+                if (!IsVisible) return;
                 DialogResult = true;
                 Close();
             }
         }
         catch (Exception ex)
         {
-            ShowStatus($"❌ {string.Format(Strings.Wireless_Status_OperationFailed, ex.Message)}", StatusType.Error);
+            ShowStatus(string.Format(Strings.Wireless_Status_OperationFailed, ex.Message), StatusType.Error);
             ConnectionProgress.Value = 50;
         }
         finally
@@ -189,7 +192,7 @@ public sealed partial class WirelessConnectionDialog : Window
             return false;
         }
 
-        ShowStatus($"✔ {string.Format(Strings.Wireless_Status_ConnectionInitiated, endpoint)}", StatusType.Success);
+        ShowStatus(string.Format(Strings.Wireless_Status_ConnectionInitiated, endpoint), StatusType.Success);
         ConnectionProgress.Value = 100;
 
         return true;
@@ -233,7 +236,7 @@ public sealed partial class WirelessConnectionDialog : Window
             if (HasOnlineWirelessDevice(devices))
             {
                 LogToTerminal("Device connected via wireless debugging.");
-                ShowStatus($"✔ {Strings.Wireless_Status_PairingComplete}", StatusType.Success);
+                ShowStatus(Strings.Wireless_Status_PairingComplete, StatusType.Success);
                 ConnectionProgress.Value = 100;
                 SuccessMessage.Visibility = Visibility.Visible;
                 return true;
@@ -242,7 +245,7 @@ public sealed partial class WirelessConnectionDialog : Window
 
         // Paired, but the auto-connect hasn't landed yet: report the pairing honestly and
         // keep the dialog open so the user sees the next-step hint instead of a silent close.
-        ShowStatus($"✔ {Strings.Wireless_Status_PairingComplete}", StatusType.Success);
+        ShowStatus(Strings.Wireless_Status_PairingComplete, StatusType.Success);
         ConnectionProgress.Value = 100;
         SuccessMessage.Visibility = Visibility.Visible;
         return false;
@@ -277,7 +280,7 @@ public sealed partial class WirelessConnectionDialog : Window
         if (detail.Length == 0)
             detail = "ADB";
 
-        ShowStatus($"❌ {string.Format(Strings.Wireless_Status_OperationFailed, detail)}", StatusType.Error);
+        ShowStatus(string.Format(Strings.Wireless_Status_OperationFailed, detail), StatusType.Error);
         ConnectionProgress.Value = 50;
     }
 
@@ -358,23 +361,33 @@ public sealed partial class WirelessConnectionDialog : Window
 
     private void ShowStatus(string message, StatusType type)
     {
-        StatusText.Text = message;
-        StatusText.Foreground = type switch
+        var brush = type switch
         {
             StatusType.Progress => ProgressBrush,
             StatusType.Success => SuccessBrush,
             StatusType.Error => ErrorBrush,
             _ => Brushes.White
         };
-        StatusText.Visibility = Visibility.Visible;
 
-        StatusText.BeginAnimation(OpacityProperty, 
+        StatusText.Text = message;
+        StatusText.Foreground = brush;
+        StatusIcon.Foreground = brush;
+        StatusIcon.Kind = type switch
+        {
+            StatusType.Progress => "sync",
+            StatusType.Success => "check-circle",
+            StatusType.Error => "error-circle",
+            _ => "info"
+        };
+        StatusPanel.Visibility = Visibility.Visible;
+
+        StatusPanel.BeginAnimation(OpacityProperty,
             new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(300)));
     }
 
     private void ClearStatus()
     {
-        StatusText.Visibility = Visibility.Collapsed;
+        StatusPanel.Visibility = Visibility.Collapsed;
     }
 
     private static string DetectNetworkPrefix()

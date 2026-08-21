@@ -2,18 +2,17 @@ namespace ZephyrsElixir.Core;
 
 public static class AppConfiguration
 {
-    #region Build & installer manifest — NOT consumed by app code at runtime
     // These values mirror what authoritatively lives in ZephyrsElixir.csproj / ZephyrsElixir.Pro.csproj,
     // ZephyrsElixirInstaller_V2.iss and Build-ZephyrsElixir.ps1. C# cannot share a const with Inno Setup
-    // or the PowerShell build script, so nothing in this region is read at runtime — it is a single-place
-    // reference that must be kept in sync manually when releasing.
+    // or the PowerShell build script, so nothing in the three classes below is read at runtime — they are
+    // a single-place reference that must be kept in sync manually when releasing.
 
     public static class Version
     {
-        public const string Application = "0.7.5";
-        public const string ApplicationFull = "0.7.5.0";
-        public const string Pro = "1.0.4";
-        public const string ProFull = "1.0.4.0";
+        public const string Application = "0.8.0";
+        public const string ApplicationFull = "0.8.0.0";
+        public const string Pro = "1.0.5";
+        public const string ProFull = "1.0.5.0";
 
         // The installer no longer carries a version of its own: ZephyrsElixirInstaller_V2.iss
         // reads it off the published ZephyrsElixir.exe, so this is always ApplicationFull.
@@ -45,16 +44,18 @@ public static class AppConfiguration
         };
     }
 
-    #endregion
-
     public static class Paths
     {
-        // --- Runtime paths (consumed by the app) ---
         public static readonly string AppDataDir = "ZephyrsElixir";
 
         public static readonly string LocalAppDataRoot = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             AppDataDir);
+
+        // User preferences, one marker file each. These are what "restore defaults" clears; the
+        // quota counter, the legal acceptance and every device artefact deliberately stay put.
+        public static readonly string CustomDnsMarker = Path.Combine(LocalAppDataRoot, ".custom_dns");
+        public static readonly string LanguageMarker = Path.Combine(LocalAppDataRoot, ".language");
 
         public static readonly string ToolsDir = "Tools";
         public static readonly string AdbDir = $@"{ToolsDir}\adb";
@@ -69,24 +70,6 @@ public static class AppConfiguration
             AppDataDir);
         public static readonly string RecordingsDir = Path.Combine(BaseOutputDir, "Recordings");
         public static readonly string ScreenshotsDir = Path.Combine(BaseOutputDir, "Screenshots");
-
-        // --- Build & installer reference — NOT consumed at runtime; mirror of Build-ZephyrsElixir.ps1 / .iss ---
-        public const string SolutionRoot = @"C:\Users\Administrator\Desktop\PortableGit\ZE";
-
-        public static readonly string CsprojMain = $@"{SolutionRoot}\ZephyrsElixir\ZephyrsElixir.csproj";
-        public static readonly string CsprojPro = $@"{SolutionRoot}\ZephyrsElixir.Pro\ZephyrsElixir.Pro.csproj";
-        public static readonly string ProBinDir = $@"{SolutionRoot}\ZephyrsElixir.Pro\bin\Release\net8.0-windows\win-x64";
-        public static readonly string ProDllDestDir = $@"{SolutionRoot}\elixirsite\pro";
-        public static readonly string LicenseIndexJs = $@"{SolutionRoot}\elixirsite\api\license\index.js";
-        public static readonly string AdbInstallDir = @"{app}\Tools\adb";
-
-        public const string DefaultInstallDir = @"{autopf}\Zephyrs Elixir";
-        public const string InstallerOutputDir = "InstallerOutput";
-        public const string OutputBaseFilenameTemplate = "ZephyrsElixir_x64_v";
-        public const string NetTargetV1 = "net6.0-windows";
-        public static readonly string SourcePatternV1 = $@"bin\Release\{NetTargetV1}\win-x64\publish\*";
-        public const string NetTargetV2 = "net8.0-windows";
-        public static readonly string SourcePatternV2 = $@"bin\Release\{NetTargetV2}\win-x64\publish\*";
     }
 
     public static class Urls
@@ -203,9 +186,6 @@ public static class AppConfiguration
 
         public const string SidebarDefaultKey = "Home";
         public const string HelpScreenKey = "Help";
-
-        public static readonly System.Windows.Media.Color TitleBarBg = System.Windows.Media.Color.FromRgb(12, 21, 40);
-        public static readonly System.Windows.Media.Color BorderColor = System.Windows.Media.Color.FromRgb(26, 34, 56);
 
         public const string ScrcpyWindowTitle = "Zephyr's Elixir — Screen Mirror";
     }

@@ -26,8 +26,8 @@
                                    Grid.Row="1"
                                    Height="8" 
                                    CornerRadius="4"
-                                   Background="#1AFFFFFF"
-                                   BorderBrush="#3AFFFFFF"
+                                   Background="{StaticResource App.Brush.Glass.Background}"
+                                   BorderBrush="{StaticResource App.Brush.Glass.Border}"
                                    BorderThickness="1"
                                    Margin="12,0"/>
                             
@@ -174,7 +174,7 @@
                                                   Foreground="White"/>
                                         <TextBlock Text="{h:Translate Advanced_SafetyCore_Description}"
                                                   FontSize="13"
-                                                  Foreground="#B0B8C8"
+                                                  Foreground="{StaticResource App.Brush.Steel}"
                                                   TextWrapping="Wrap" 
                                                   Margin="0,4,20,0"/>
                                     </StackPanel>
@@ -206,7 +206,7 @@
                                                   Foreground="White"/>
                                         <TextBlock Text="{h:Translate Advanced_DNS_Description}"
                                                   FontSize="13"
-                                                  Foreground="#B0B8C8"
+                                                  Foreground="{StaticResource App.Brush.Steel}"
                                                   TextWrapping="Wrap" 
                                                   Margin="0,4,0,0"/>
                                     </StackPanel>
@@ -241,25 +241,32 @@
                                                                 Foreground="White"
                                                                 VerticalAlignment="Center"/>
                                                         
-                                                        <TextBlock Grid.Column="1"
-                                                                Text="{Binding PingDisplay}"
-                                                                FontSize="12"
-                                                                FontWeight="Normal"
-                                                                Foreground="{StaticResource App.Brush.DeepSkyBlue}"
+                                                        <StackPanel Grid.Column="1"
+                                                                Orientation="Horizontal"
                                                                 Margin="15,0,0,0"
-                                                                VerticalAlignment="Center"
                                                                 MinWidth="60"
-                                                                TextAlignment="Right">
-                                                            <TextBlock.Style>
-                                                                <Style TargetType="TextBlock">
+                                                                VerticalAlignment="Center"
+                                                                HorizontalAlignment="Right">
+                                                            <StackPanel.Style>
+                                                                <Style TargetType="StackPanel">
                                                                     <Style.Triggers>
                                                                         <DataTrigger Binding="{Binding PingDisplay}" Value="">
                                                                             <Setter Property="Visibility" Value="Collapsed"/>
                                                                         </DataTrigger>
                                                                     </Style.Triggers>
                                                                 </Style>
-                                                            </TextBlock.Style>
-                                                        </TextBlock>
+                                                            </StackPanel.Style>
+                                                            <TextBlock Text="{Binding PingDisplay}"
+                                                                    FontSize="12"
+                                                                    FontWeight="Normal"
+                                                                    Foreground="{StaticResource App.Brush.DeepSkyBlue}"
+                                                                    VerticalAlignment="Center"
+                                                                    TextAlignment="Right"/>
+                                                            <h:Icon Kind="{Binding PingQualityIcon}"
+                                                                    Size="12"
+                                                                    Margin="5,0,0,0"
+                                                                    Foreground="{StaticResource App.Brush.DeepSkyBlue}"/>
+                                                        </StackPanel>
                                                     </Grid>
                                                 </DataTemplate>
                                             </ComboBox.ItemTemplate>
@@ -303,7 +310,7 @@
                                                    Margin="10,0,0,0"
                                                    VerticalAlignment="Center"
                                                    Visibility="Collapsed">
-                                                <h:Icon Kind="check" Size="15" x:Name="CustomDnsValidText" Foreground="#00D68F" VerticalAlignment="Center"/>
+                                                <h:Icon Kind="check" Size="15" Foreground="#00D68F" VerticalAlignment="Center"/>
                                             </Border>
                                         </Grid>
                                     </Grid>
@@ -324,7 +331,7 @@
                                                   Foreground="White"/>
                                         <TextBlock Text="{h:Translate Advanced_ResetAdId_Description}"
                                                   FontSize="13"
-                                                  Foreground="#B0B8C8"
+                                                  Foreground="{StaticResource App.Brush.Steel}"
                                                   TextWrapping="Wrap" 
                                                   Margin="0,4,20,0"/>
                                     </StackPanel>
@@ -354,7 +361,7 @@
                                                 Foreground="White"/>
                                         <TextBlock Text="{h:Translate Advanced_CaptivePortal_Description}"
                                                 FontSize="13"
-                                                Foreground="#B0B8C8"
+                                                Foreground="{StaticResource App.Brush.Steel}"
                                                 TextWrapping="Wrap" 
                                                 Margin="0,4,20,0"/>
                                     </StackPanel>
@@ -384,7 +391,7 @@
                                                 Foreground="White"/>
                                         <TextBlock Text="{h:Translate Advanced_GoogleCoreControl_Description}"
                                                 FontSize="13"
-                                                Foreground="#B0B8C8"
+                                                Foreground="{StaticResource App.Brush.Steel}"
                                                 TextWrapping="Wrap" 
                                                 Margin="0,4,20,0"/>
                                     </StackPanel>
@@ -400,7 +407,7 @@
                                 </Grid>
                             </Border>
 
-                            <Border x:Name="RamExpansionBorder"
+                            <Border
                                 Style="{StaticResource App.Style.SoftTile}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -416,7 +423,7 @@
                                         <TextBlock x:Name="RamExpansionDescription"
                                                 Text="{h:Translate Advanced_RamExpansion_Description}"
                                                 FontSize="13"
-                                                Foreground="#B0B8C8"
+                                                Foreground="{StaticResource App.Brush.Steel}"
                                                 TextWrapping="Wrap" 
                                                 Margin="0,4,20,0"/>
                                     </StackPanel>
@@ -462,7 +469,7 @@
                         </Grid.RowDefinitions>
                         
                         <StackPanel Orientation="Horizontal">
-                            <h:Icon Kind="bolt" Size="26" Foreground="#FFD700" VerticalAlignment="Center"/>
+                            <h:Icon Kind="bolt" Size="26" Foreground="{StaticResource App.Brush.Gold}" VerticalAlignment="Center"/>
                             <TextBlock Text="{h:Translate Advanced_Animations_Header}"
                                       FontSize="22" 
                                       FontWeight="SemiBold"
@@ -496,7 +503,7 @@
                                                       Foreground="White"/>
                                             <TextBlock Text="{h:Translate Advanced_AnimationSpeed_Description}"
                                                       FontSize="13"
-                                                      Foreground="#B0B8C8"
+                                                      Foreground="{StaticResource App.Brush.Steel}"
                                                       TextWrapping="Wrap" 
                                                       Margin="0,4,0,0"/>
                                         </StackPanel>
@@ -592,7 +599,7 @@
                         </Grid.RowDefinitions>
 
                         <StackPanel Orientation="Horizontal">
-                            <h:Icon Kind="wrench" Size="26" Foreground="#FF6B6B" VerticalAlignment="Center"/>
+                            <h:Icon Kind="wrench" Size="26" Foreground="{StaticResource App.Brush.Crimson}" VerticalAlignment="Center"/>
                             <TextBlock Text="{h:Translate Advanced_Troubleshooting_Header}"
                                       FontSize="22" 
                                       FontWeight="SemiBold"
@@ -622,7 +629,7 @@
                                                   Foreground="White"/>
                                         <TextBlock Text="{h:Translate Advanced_ResetBattery_Description}"
                                                   FontSize="13"
-                                                  Foreground="#B0B8C8"
+                                                  Foreground="{StaticResource App.Brush.Steel}"
                                                   TextWrapping="Wrap" 
                                                   Margin="0,4,20,0"/>
                                     </StackPanel>
@@ -652,7 +659,7 @@
                                                   Foreground="White"/>
                                         <TextBlock Text="{h:Translate Advanced_ResetCompilation_Description}"
                                                   FontSize="13"
-                                                  Foreground="#B0B8C8"
+                                                  Foreground="{StaticResource App.Brush.Steel}"
                                                   TextWrapping="Wrap" 
                                                   Margin="0,4,20,0"/>
                                     </StackPanel>
@@ -679,11 +686,11 @@
                                         <TextBlock Text="{h:Translate Advanced_ResetAll_Title}"
                                                   FontSize="16" 
                                                   FontWeight="SemiBold"
-                                                  Foreground="#FFC0C0"/>
+                                                  Foreground="{StaticResource App.Brush.Destructive.Foreground}"/>
                                         <TextBlock x:Name="SessionOperationsText"
                                                   Text="{h:Translate Advanced_ResetAll_Description}"
                                                   FontSize="13"
-                                                  Foreground="#B0B8C8"
+                                                  Foreground="{StaticResource App.Brush.Steel}"
                                                   TextWrapping="Wrap" 
                                                   Margin="0,4,20,0"/>
                                     </StackPanel>
@@ -763,7 +770,7 @@
                         <StackPanel Grid.Row="2" Margin="0,15,0,0">
                             <TextBlock Text="{h:Translate Advanced_Vials_Tagline}"
                                       FontSize="13"
-                                      Foreground="#B0B8C8"
+                                      Foreground="{StaticResource App.Brush.Steel}"
                                       TextWrapping="Wrap"/>
 
                             <ItemsControl x:Name="VialsList" Margin="0,12,0,0">
@@ -784,7 +791,7 @@
 
                                                 <StackPanel Grid.Column="2" VerticalAlignment="Center">
                                                     <TextBlock Text="{Binding TriggerDisplay}" FontSize="14" FontWeight="SemiBold" Foreground="White" TextTrimming="CharacterEllipsis"/>
-                                                    <TextBlock Text="{Binding MetaDisplay}" FontSize="12" Foreground="#B0B8C8" Margin="0,3,0,0"/>
+                                                    <TextBlock Text="{Binding MetaDisplay}" FontSize="12" Foreground="{StaticResource App.Brush.Steel}" Margin="0,3,0,0"/>
                                                 </StackPanel>
 
                                                 <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
@@ -816,7 +823,7 @@
                                     <TextBlock x:Name="VialsEmptyText"
                                               Text="{h:Translate Advanced_Vials_Empty}"
                                               FontSize="13"
-                                              Foreground="#B0B8C8"
+                                              Foreground="{StaticResource App.Brush.Steel}"
                                               TextWrapping="Wrap"
                                               MaxWidth="520"
                                               VerticalAlignment="Center"
@@ -846,7 +853,7 @@
             </StackPanel>
         </ScrollViewer>
 
-        <Grid x:Name="VialOverlayContainer" Grid.RowSpan="3" Visibility="Collapsed" Background="#CC050A14" MouseLeftButtonDown="OnVialOverlayBackgroundMouseDown">
+        <Grid x:Name="VialOverlayContainer" Grid.RowSpan="3" Visibility="Collapsed" Background="{StaticResource App.Brush.Scrim}" MouseLeftButtonDown="OnVialOverlayBackgroundMouseDown">
             <h:ShadowCard Style="{StaticResource App.Style.OverlayCard}" Width="800" MaxHeight="720" VerticalAlignment="Center">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -881,7 +888,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock x:Name="VialSummaryText" FontSize="13" Foreground="#B0B8C8" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                        <TextBlock x:Name="VialSummaryText" FontSize="13" Foreground="{StaticResource App.Brush.Steel}" VerticalAlignment="Center" TextWrapping="Wrap"/>
                         <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                             <CheckBox x:Name="VialSelectAllCheckBox" Style="{StaticResource App.Style.GlassCheckBox}" Checked="OnVialSelectAll" Unchecked="OnVialSelectAll"/>
                             <TextBlock Text="{h:Translate Debloat_SelectAll}" FontSize="13" Foreground="White" VerticalAlignment="Center" Margin="8,0,0,0"/>

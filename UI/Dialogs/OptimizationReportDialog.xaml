@@ -98,7 +98,7 @@
             </Border.Effect>
         </Border>
 
-        <Border Background="{StaticResource App.Brush.TitleBarBg}" BorderBrush="#1AFFFFFF" BorderThickness="1" CornerRadius="16" ClipToBounds="True" Padding="20">
+        <Border Background="{StaticResource App.Brush.TitleBarBg}" BorderBrush="{StaticResource App.Brush.Glass.Background}" BorderThickness="1" CornerRadius="16" ClipToBounds="True" Padding="20">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -132,7 +132,7 @@
                 </StackPanel>
 
                 <Border Grid.Row="1" CornerRadius="12" Background="#10FFFFFF"
-                        BorderBrush="#1AFFFFFF" BorderThickness="1"
+                        BorderBrush="{StaticResource App.Brush.Glass.Background}" BorderThickness="1"
                         Padding="20,14" Margin="0,0,0,18">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -148,14 +148,14 @@
                                        HorizontalAlignment="Center" Margin="0,2,0,0">
                                 <TextBlock.Foreground>
                                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                        <GradientStop Color="#FFD700" Offset="0"/>
+                                        <GradientStop Color="{StaticResource App.Color.Gold}" Offset="0"/>
                                         <GradientStop Color="#FFA500" Offset="1"/>
                                     </LinearGradientBrush>
                                 </TextBlock.Foreground>
                             </TextBlock>
                         </StackPanel>
 
-                        <Border Grid.Column="1" Width="1" Background="#1AFFFFFF" Margin="16,2"/>
+                        <Border Grid.Column="1" Width="1" Background="{StaticResource App.Brush.Glass.Background}" Margin="16,2"/>
 
                         <StackPanel Grid.Column="2" HorizontalAlignment="Center">
                             <TextBlock Text="{h:Translate Report_StepsDone}" FontSize="10" FontWeight="SemiBold"
@@ -168,10 +168,10 @@
 
                 <ScrollViewer Grid.Row="2" MaxHeight="340" VerticalScrollBarVisibility="Auto"
                               Margin="0,0,0,4">
-                    <StackPanel x:Name="SectionsPanel">
+                    <StackPanel>
 
                         <Border x:Name="MemorySection" Visibility="Collapsed"
-                                Style="{StaticResource SectionCard}" Background="#0C007FFF">
+                                Style="{StaticResource SectionCard}" Background="{StaticResource App.Brush.Blue400.A0C}">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
@@ -179,7 +179,7 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
-                                <Border Style="{StaticResource SectionIconCircle}" Background="#1C007FFF">
+                                <Border Style="{StaticResource SectionIconCircle}" Background="{StaticResource App.Brush.Blue400.A1C}">
                                     <h:Icon Kind="touch" Size="19" Foreground="{StaticResource App.Brush.DeepSkyBlue}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Border>
 
@@ -202,15 +202,15 @@
                         </Border>
 
                         <Border x:Name="StorageSection" Visibility="Collapsed"
-                                Style="{StaticResource SectionCard}" Background="#0CFFD700">
+                                Style="{StaticResource SectionCard}" Background="{StaticResource App.Brush.Gold.A0C}">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
 
-                                <Border Style="{StaticResource SectionIconCircle}" Background="#1CFFD700">
-                                    <h:Icon Kind="ram" Size="19" Foreground="#FFD700" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <Border Style="{StaticResource SectionIconCircle}" Background="{StaticResource App.Brush.Gold.A1C}">
+                                    <h:Icon Kind="ram" Size="19" Foreground="{StaticResource App.Brush.Gold}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Border>
 
                                 <StackPanel Grid.Column="1" VerticalAlignment="Center">

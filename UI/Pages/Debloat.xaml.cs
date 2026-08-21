@@ -5,6 +5,8 @@ public partial class Debloat : UserControl, INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
 
     private readonly ObservableCollection<AppInfoViewModel> _apps = new();
+    private readonly ObservableCollection<AppRowViewModel> _rows = new();
+    private int _columns = 1;
     private readonly ObservableCollection<HistoryAppViewModel> _history = new();
     private readonly ICollectionView _appsView, _historyView;
     private readonly DispatcherTimer _iconTimer, _searchTimer;
@@ -18,6 +20,7 @@ public partial class Debloat : UserControl, INotifyPropertyChanged
     private int _sortMode;
     private bool _historyMode;
     private bool _suppressSelectAll;
+    private bool _suppressCount;
     private string _search = string.Empty;
     private string _loadedSerial = string.Empty;
     private int _selectedCount, _selectedDisabled, _selectedActive;
@@ -67,7 +70,7 @@ public partial class Debloat : UserControl, INotifyPropertyChanged
         _appsView = CollectionViewSource.GetDefaultView(_apps);
         _appsView.Filter = FilterApps;
         if (_appsView is ListCollectionView lv) lv.CustomSort = NameComparer;
-        AppsListView.ItemsSource = _appsView;
+        AppsListView.ItemsSource = _rows;
 
         _historyView = CollectionViewSource.GetDefaultView(_history);
         _historyView.Filter = FilterApps;
@@ -122,11 +125,50 @@ public partial class Debloat : UserControl, INotifyPropertyChanged
         if (!DeviceManager.Instance.IsConnected) ResetAppsView();
     }
 
+    /// <summary>
+    /// Regroups the filtered, sorted apps into rows of <see cref="_columns"/> cells. Every path that
+    /// changes what the list shows — a refresh, a batch of new apps, a resize — ends here, because
+    /// the rows are what the virtualizing panel actually binds to.
+    /// </summary>
+    private void RebuildRows()
+    {
+        _rows.Clear();
+        var columns = Math.Max(1, _columns);
+        var buffer = new List<AppInfoViewModel>(columns);
+
+        foreach (AppInfoViewModel app in _appsView)
+        {
+            buffer.Add(app);
+            if (buffer.Count < columns) continue;
+            _rows.Add(new AppRowViewModel(buffer.ToArray(), columns));
+            buffer.Clear();
+        }
+
+        if (buffer.Count > 0) _rows.Add(new AppRowViewModel(buffer.ToArray(), columns));
+    }
+
+    private void RefreshAppsView()
+    {
+        _appsView.Refresh();
+        RebuildRows();
+    }
+
+    private void AppsList_SizeChanged(object s, SizeChangedEventArgs e)
+    {
+        if (!e.WidthChanged) return;
+
+        var columns = ResponsiveColumns.For(e.NewSize.Width);
+        if (columns == _columns) return;
+        _columns = columns;
+        RebuildRows();
+    }
+
     private void ResetAppsView()
     {
         _cts?.Cancel();
         _iconTimer.Stop();
         _apps.Clear();
+        _rows.Clear();
         ClearQueues();
         _loadedSerial = string.Empty;
         UpdateCount();
@@ -147,6 +189,7 @@ public partial class Debloat : UserControl, INotifyPropertyChanged
 
             _iconTimer.Stop();
             _apps.Clear();
+            _rows.Clear();
             ClearQueues();
             UpdateCount();
             ResetSelectAll();
@@ -173,11 +216,14 @@ public partial class Debloat : UserControl, INotifyPropertyChanged
                 if (!ct.IsCancellationRequested)
                 {
                     await AddAppsBatchedAsync(vms, ct);
-                    SetLoading(false);
                     UpdateSummary();
                     UpdateUI();
                     if (vms.Any()) { StartIconLoading(vms, ct); StartAnalysis(vms, ct); }
                 }
+
+                // Outside the guard: a cancelled load still has to put the spinner away, or the page
+                // stays in its loading state until something else happens to clear it.
+                SetLoading(false);
             }
         }
         finally { _loadSem.Release(); }
@@ -195,6 +241,7 @@ public partial class Debloat : UserControl, INotifyPropertyChanged
                 vm.IsSelectedChanged += _ => UpdateCount();
                 _apps.Add(vm);
             }
+            RebuildRows();
             await Dispatcher.Yield(DispatcherPriority.Background);
         }
     }
@@ -220,7 +267,6 @@ public partial class Debloat : UserControl, INotifyPropertyChanged
         if (!AiConsent.IsDecided())
             AiConsent.SetEnabled(DialogService.Instance.Confirm(
                 "Debloat_Ai_Consent_Message", Window.GetWindow(this), "Debloat_Ai_Consent_Title"));
-        if (!AiConsent.IsEnabled()) return;
 
         Task.Run(async () =>
         {
@@ -232,7 +278,7 @@ public partial class Debloat : UserControl, INotifyPropertyChanged
             }, ct);
 
             if (!ct.IsCancellationRequested)
-                await Dispatcher.BeginInvoke(() => { if (_sortMode != 0) _appsView.Refresh(); }, DispatcherPriority.Background);
+                await Dispatcher.BeginInvoke(() => { if (_sortMode != 0) RefreshAppsView(); }, DispatcherPriority.Background);
         }, ct);
     }
 
@@ -298,7 +344,7 @@ public partial class Debloat : UserControl, INotifyPropertyChanged
     private static BitmapImage? DecodeIcon(string? b64)
     {
         if (string.IsNullOrEmpty(b64)) return null;
-        try { using var ms = new MemoryStream(Convert.FromBase64String(b64)); var bmp = new BitmapImage(); bmp.BeginInit(); bmp.StreamSource = ms; bmp.CacheOption = BitmapCacheOption.OnLoad; bmp.EndInit(); bmp.Freeze(); return bmp; }
+        try { using var ms = new MemoryStream(Convert.FromBase64String(b64)); return UIHelpers.BitmapFromStream(ms); }
         catch { return null; }
     }
 
@@ -338,7 +384,7 @@ public partial class Debloat : UserControl, INotifyPropertyChanged
 
     private void ApplySearch()
     {
-        (_historyMode ? _historyView : _appsView).Refresh();
+        if (_historyMode) _historyView.Refresh(); else RefreshAppsView();
         UpdateEmptyState();
     }
 
@@ -348,7 +394,7 @@ public partial class Debloat : UserControl, INotifyPropertyChanged
         if (s is RadioButton { IsChecked: true } rb)
         {
             _filter = FilterPanel.Children.OfType<RadioButton>().ToList().IndexOf(rb);
-            _appsView.Refresh();
+            RefreshAppsView();
             UpdateEmptyState();
         }
     }
@@ -358,13 +404,14 @@ public partial class Debloat : UserControl, INotifyPropertyChanged
         if (SortCombo == null || _appsView is not ListCollectionView lv) return;
         _sortMode = Math.Clamp(SortCombo.SelectedIndex, 0, SortComparers.Length - 1);
         lv.CustomSort = SortComparers[_sortMode];
+        RebuildRows();
     }
 
     private void OnViewModeChanged(object s, RoutedEventArgs e)
     {
-        if (AppsScrollViewer == null || s is not RadioButton { IsChecked: true } rb) return;
+        if (AppsListView == null || s is not RadioButton { IsChecked: true } rb) return;
         _historyMode = Grid.GetColumn(rb) == 1;
-        AppsScrollViewer.Visibility = _historyMode ? Visibility.Collapsed : Visibility.Visible;
+        AppsListView.Visibility = _historyMode ? Visibility.Collapsed : Visibility.Visible;
         HistoryListView.Visibility = _historyMode ? Visibility.Visible : Visibility.Collapsed;
         FilterPanel.Visibility = _historyMode ? Visibility.Collapsed : Visibility.Visible;
         PresetPanel.Visibility = _historyMode ? Visibility.Collapsed : Visibility.Visible;
@@ -414,10 +461,19 @@ public partial class Debloat : UserControl, INotifyPropertyChanged
     private void OnSelectAllChecked(object s, RoutedEventArgs e) { if (!_suppressSelectAll) SetAll(true); }
     private void OnSelectAllUnchecked(object s, RoutedEventArgs e) { if (!_suppressSelectAll) SetAll(false); }
 
+    // Every IsSelected write raises a change that recounts the whole list, so a bulk toggle over a
+    // few hundred packages would walk it once per item. Count once, at the end.
     private void SetAll(bool sel)
     {
-        if (_historyMode) foreach (var h in _historyView.Cast<HistoryAppViewModel>().ToList()) h.IsSelected = sel;
-        else foreach (var a in _appsView.Cast<AppInfoViewModel>().ToList()) a.IsSelected = sel;
+        _suppressCount = true;
+        try
+        {
+            if (_historyMode) foreach (var h in _historyView.Cast<HistoryAppViewModel>().ToList()) h.IsSelected = sel;
+            else foreach (var a in _appsView.Cast<AppInfoViewModel>().ToList()) a.IsSelected = sel;
+        }
+        finally { _suppressCount = false; }
+
+        UpdateCount();
     }
 
     private void ResetSelectAll()
@@ -430,12 +486,21 @@ public partial class Debloat : UserControl, INotifyPropertyChanged
 
     private void ClearSelection()
     {
-        if (_historyMode) foreach (var h in _history) h.IsSelected = false;
-        else foreach (var a in _apps) a.IsSelected = false;
+        _suppressCount = true;
+        try
+        {
+            if (_historyMode) foreach (var h in _history) h.IsSelected = false;
+            else foreach (var a in _apps) a.IsSelected = false;
+        }
+        finally { _suppressCount = false; }
+
+        UpdateCount();
     }
 
     private void UpdateCount()
     {
+        if (_suppressCount) return;
+
         int sel = 0, dis = 0;
         if (_historyMode)
         {
@@ -854,22 +919,22 @@ public partial class Debloat : UserControl, INotifyPropertyChanged
         if (cmd == "uninstall")
         {
             foreach (var a in _apps.Where(x => ok.Contains(x.PackageName)).ToList()) _apps.Remove(a);
+            RebuildRows();
         }
         else if (cmd == "enable" && systemPkgs is not null)
         {
             foreach (var a in _apps.Where(x => ok.Contains(x.PackageName)))
                 a.State = systemPkgs.Contains(a.PackageName) ? AppState.System : AppState.User;
-            _appsView.Refresh();
+            RefreshAppsView();
         }
         else if (cmd == "disable")
         {
             foreach (var a in _apps.Where(x => ok.Contains(x.PackageName))) a.State = AppState.Disabled;
-            _appsView.Refresh();
+            RefreshAppsView();
         }
 
         ClearSelection();
         ResetSelectAll();
-        UpdateCount();
         UpdateUI();
     }
 
@@ -877,8 +942,8 @@ public partial class Debloat : UserControl, INotifyPropertyChanged
     {
         if (text != null) PageHeaderControl.Subtitle = text;
         LoadingIndicator.Visibility = on ? Visibility.Visible : Visibility.Collapsed;
-        AppsScrollViewer.Opacity = on ? 0.35 : 1.0;
-        AppsScrollViewer.IsEnabled = !on;
+        AppsListView.Opacity = on ? 0.35 : 1.0;
+        AppsListView.IsEnabled = !on;
         HistoryListView.Opacity = on ? 0.35 : 1.0;
         HistoryListView.IsEnabled = !on;
     }
@@ -914,8 +979,8 @@ public partial class Debloat : UserControl, INotifyPropertyChanged
         else if (SearchBox.Text.Length > 0) { SearchBox.Clear(); e.Handled = true; }
     }
 
-    #region Debloat presets (independent import/export + Zephyr's Recipes bridge)
-
+    // A preset is a one-step debloat recipe: it imports and exports on its own, and doubles as the
+    // hand-off into Zephyr's Recipes so a selection made here can be replayed as part of a full recipe.
     private DebloatRecipeStep BuildPresetFromSelection() => new()
     {
         Mode = DebloatMode.Uninstall,
@@ -943,7 +1008,7 @@ public partial class Debloat : UserControl, INotifyPropertyChanged
         {
             Title = Strings.Debloat_Preset_Export_Title,
             FileName = "debloat_preset",
-            Filter = $"Zephyr's Recipe (*{Recipe.FileExtension})|*{Recipe.FileExtension}|{Strings.Debloat_Preset_FilterText} (*.txt)|*.txt"
+            Filter = $"{Recipe.FileDialogFilter}|{Strings.Debloat_Preset_FilterText} (*.txt)|*.txt"
         };
         if (dialog.ShowDialog() != true) return;
 
@@ -957,7 +1022,7 @@ public partial class Debloat : UserControl, INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            DialogService.Instance.ShowInfoDirect(Strings.Dialog_Title_Error, ex.Message, Window.GetWindow(this));
+            DialogService.Instance.ShowError(ex, Window.GetWindow(this));
         }
     }
 
@@ -997,12 +1062,19 @@ public partial class Debloat : UserControl, INotifyPropertyChanged
         }
 
         int matched = 0;
-        foreach (var app in _apps)
+        _suppressCount = true;
+        try
         {
-            var select = wanted.Contains(app.PackageName);
-            app.IsSelected = select;
-            if (select) matched++;
+            foreach (var app in _apps)
+            {
+                var select = wanted.Contains(app.PackageName);
+                app.IsSelected = select;
+                if (select) matched++;
+            }
         }
+        finally { _suppressCount = false; }
+
+        UpdateCount();
 
         if (matched > 0 && _filter != 0 && FilterPanel.Children.OfType<RadioButton>().FirstOrDefault() is { } allFilter)
             allFilter.IsChecked = true;
@@ -1037,6 +1109,4 @@ public partial class Debloat : UserControl, INotifyPropertyChanged
 
         return wanted;
     }
-
-    #endregion
 }

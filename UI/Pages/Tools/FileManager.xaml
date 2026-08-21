@@ -34,13 +34,13 @@
                           BlurRadius="40" ShadowDepth="0" Opacity="0.45"/>
 
         <Style x:Key="FileManager.Style.SectionLabel" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="#7B8CA8"/>
+            <Setter Property="Foreground" Value="{StaticResource App.Brush.Steel.Dim}"/>
             <Setter Property="FontSize" Value="10"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
         </Style>
 
         <Style x:Key="FileManager.Style.CellText.Plain" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="#7B8CA8"/>
+            <Setter Property="Foreground" Value="{StaticResource App.Brush.Steel.Dim}"/>
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
@@ -81,7 +81,7 @@
                                 <Border x:Name="iconBadge"
                                         Width="22" Height="22" CornerRadius="11"
                                         Background="{StaticResource App.Brush.IconCircle}">
-                                    <h:Icon Kind="arrow-up" Size="14" x:Name="arrow" Foreground="White" TextOptions.TextRenderingMode="ClearType" TextOptions.TextFormattingMode="Display" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <h:Icon Kind="arrow-up" Size="14" x:Name="arrow" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Border>
                                 <TextBlock x:Name="label" Grid.Column="1"
                                            Text="{TemplateBinding Content}"
@@ -145,7 +145,7 @@
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Padding" Value="0"/>
-            <Setter Property="Foreground" Value="#7B8CA8"/>
+            <Setter Property="Foreground" Value="{StaticResource App.Brush.Steel.Dim}"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
             <Setter Property="Template">
@@ -195,7 +195,7 @@
 
         <Style x:Key="FileManager.Style.BookmarkTile" TargetType="Button">
             <Setter Property="Background" Value="#10FFFFFF"/>
-            <Setter Property="BorderBrush" Value="#1AFFFFFF"/>
+            <Setter Property="BorderBrush" Value="{StaticResource App.Brush.Glass.Background}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="Padding" Value="10,8"/>
@@ -250,7 +250,7 @@
                                         <ToggleButton.Template>
                                             <ControlTemplate TargetType="ToggleButton">
                                                 <Border Background="Transparent" Width="18" Height="18">
-                                                    <h:Icon Kind="chevron-right" Size="11" x:Name="chev" Foreground="#7B8CA8" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5"/>
+                                                    <h:Icon Kind="chevron-right" Size="11" x:Name="chev" Foreground="{StaticResource App.Brush.Steel.Dim}" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5"/>
                                                 </Border>
                                                 <ControlTemplate.Triggers>
                                                     <Trigger Property="IsChecked" Value="True">
@@ -300,7 +300,7 @@
 
         <Style x:Key="FileManager.Style.GridColumnHeader" TargetType="DataGridColumnHeader">
             <Setter Property="Background" Value="#0AFFFFFF"/>
-            <Setter Property="Foreground" Value="#7B8CA8"/>
+            <Setter Property="Foreground" Value="{StaticResource App.Brush.Steel.Dim}"/>
             <Setter Property="FontSize" Value="10"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Padding" Value="14,9"/>
@@ -589,7 +589,7 @@
                                                Margin="0,4,0,8"/>
                                     <Border Grid.Row="1" Background="#08000000" CornerRadius="10"
                                             BorderBrush="#15FFFFFF" BorderThickness="1">
-                                        <TreeView x:Name="LocationsTree"
+                                        <TreeView
                                                   ItemsSource="{Binding TreeRoots}"
                                                   Style="{StaticResource FileManager.Style.TreeView}"
                                                   ItemContainerStyle="{StaticResource FileManager.Style.TreeItem}"
@@ -638,7 +638,7 @@
                                                                        Foreground="#D0D8E8" FontSize="11"
                                                                        VerticalAlignment="Center"/>
                                                             <TextBlock Text="{Binding SizeDisplay}"
-                                                                       Foreground="#7B8CA8" FontSize="11"
+                                                                       Foreground="{StaticResource App.Brush.Steel.Dim}" FontSize="11"
                                                                        FontFamily="Cascadia Code, Consolas"
                                                                        VerticalAlignment="Center"/>
                                                         </StackPanel>
@@ -648,7 +648,7 @@
                                         </StackPanel>
 
                                         <TextBlock Text="{h:Translate FileManager_Storage_Unavailable}"
-                                                   Foreground="#7B8CA8" FontSize="11" Margin="0,6,0,0"
+                                                   Foreground="{StaticResource App.Brush.Steel.Dim}" FontSize="11" Margin="0,6,0,0"
                                                    TextWrapping="Wrap">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
@@ -687,7 +687,7 @@
                                         <ColumnDefinition Width="8"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <Button x:Name="UpButton"
+                                    <Button
                                             Style="{StaticResource FileManager.Style.UpFolderButton}"
                                             Content="{h:Translate FileManager_Button_Up}"
                                             Command="{Binding GoUpCommand}"
@@ -726,14 +726,14 @@
                                                VerticalAlignment="Center" Margin="0,0,14,0"
                                                Visibility="{Binding HasClipboard, Converter={StaticResource App.Converter.BooleanToVisibility}}"/>
                                     <Grid Grid.Column="2" Width="210">
-                                        <TextBox x:Name="FilterBox"
+                                        <TextBox
                                                  Style="{StaticResource App.Style.TextBox.Glass}"
                                                  Height="30" Padding="28,0,10,0" FontSize="12"
                                                  VerticalContentAlignment="Center"
                                                  Tag="{h:Translate FileManager_Filter_Placeholder}"
                                                  Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"
                                                  KeyDown="OnFilterKeyDown"/>
-                                        <h:Icon Kind="search" Size="13" Foreground="#7B8CA8" IsHitTestVisible="False" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                                        <h:Icon Kind="search" Size="13" Foreground="{StaticResource App.Brush.Steel.Dim}" IsHitTestVisible="False" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0"/>
                                     </Grid>
                                 </Grid>
                             </Border>
@@ -782,7 +782,7 @@
                                                                    FontSize="13" VerticalAlignment="Center"
                                                                    TextTrimming="CharacterEllipsis"/>
                                                         <TextBlock Text="{Binding SymlinkSuffix}"
-                                                                   Foreground="#7B8CA8" FontSize="11"
+                                                                   Foreground="{StaticResource App.Brush.Steel.Dim}" FontSize="11"
                                                                    FontStyle="Italic" Margin="6,0,0,0"
                                                                    VerticalAlignment="Center"/>
                                                     </StackPanel>
@@ -882,7 +882,7 @@
                                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="40">
                                         <Border Width="72" Height="72" CornerRadius="20"
                                                 Background="#15FFFFFF" HorizontalAlignment="Center">
-                                            <h:Icon Kind="warning" Size="34" Foreground="#7B8CA8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            <h:Icon Kind="warning" Size="34" Foreground="{StaticResource App.Brush.Steel.Dim}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                         </Border>
                                         <TextBlock Text="{Binding EmptyStateMessage}"
                                                    Foreground="#A0B8C8" FontSize="14"
@@ -919,7 +919,7 @@
                                                    FontWeight="SemiBold" FontSize="14" Margin="0,4,0,2"
                                                    TextTrimming="CharacterEllipsis"
                                                    ToolTip="{Binding PreviewName}"/>
-                                        <TextBlock Text="{Binding PreviewSubtitle}" Foreground="#7B8CA8"
+                                        <TextBlock Text="{Binding PreviewSubtitle}" Foreground="{StaticResource App.Brush.Steel.Dim}"
                                                    FontSize="11" FontFamily="Cascadia Code, Consolas"/>
                                     </StackPanel>
                                     <Button Grid.Column="1" Style="{StaticResource App.Style.Button.IconOnly}"
@@ -985,7 +985,7 @@
                         <StackPanel Margin="12,0,16,0" VerticalAlignment="Center">
                             <TextBlock Text="{Binding ConnectionStatusText}" Foreground="White"
                                        FontSize="13" FontWeight="SemiBold"/>
-                            <TextBlock Text="{Binding DeviceSerialDisplay}" Foreground="#7B8CA8" FontSize="11"
+                            <TextBlock Text="{Binding DeviceSerialDisplay}" Foreground="{StaticResource App.Brush.Steel.Dim}" FontSize="11"
                                        FontFamily="Cascadia Code, Consolas" TextTrimming="CharacterEllipsis"
                                        MaxWidth="280"
                                        ToolTip="{Binding DeviceSerialDisplay}"/>
@@ -1026,7 +1026,7 @@
 
                     <Border Grid.Column="2" Margin="16,0,0,0" MaxWidth="240"
                             Visibility="{Binding HasActiveTransfers, Converter={StaticResource App.Converter.BooleanToVisibility}}"
-                            Background="#10FFFFFF" CornerRadius="10" BorderBrush="#1AFFFFFF" BorderThickness="1"
+                            Background="#10FFFFFF" CornerRadius="10" BorderBrush="{StaticResource App.Brush.Glass.Background}" BorderThickness="1"
                             Padding="12,6" ToolTipService.ShowDuration="30000">
                         <Border.ToolTip>
                             <ItemsControl ItemsSource="{Binding Transfers}">

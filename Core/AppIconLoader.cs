@@ -2,6 +2,8 @@
 namespace ZephyrsElixir.Core;
 public static class AppIconLoader
 {
+    private const int IconDecodeWidth = 96;
+
     private static readonly ConcurrentDictionary<string, BitmapImage?> IconCache = new();
     private static readonly SemaphoreSlim LoadSemaphore = new(Environment.ProcessorCount);
 
@@ -25,18 +27,17 @@ public static class AppIconLoader
             if (IconCache.TryGetValue(key, out cached))
                 return cached;
 
-            var icon = await ExtractIconAsync(packageName, cancellationToken);
-            icon?.Freeze();
-            IconCache.TryAdd(key, icon);
+            var (icon, conclusive) = await ExtractIconAsync(packageName, cancellationToken);
+
+            // "This package has no icon" is worth remembering. "The agent did not answer" is not:
+            // caching that would leave the tile blank for the rest of the session over one hiccup.
+            if (icon is not null || conclusive)
+                IconCache.TryAdd(key, icon);
+
             return icon;
-        }
-        catch (OperationCanceledException)
-        {
-            return null;
         }
         catch
         {
-            IconCache.TryAdd(key, null);
             return null;
         }
         finally
@@ -45,7 +46,9 @@ public static class AppIconLoader
         }
     }
 
-    private static async Task<BitmapImage?> ExtractIconAsync(
+    /// <summary>The icon, and whether the answer is final. Only a final answer may be cached: a 404
+    /// means the package has no icon, anything else means the agent could not be asked.</summary>
+    private static async Task<(BitmapImage? Icon, bool Conclusive)> ExtractIconAsync(
         string packageName,
         CancellationToken cancellationToken)
     {
@@ -57,20 +60,14 @@ public static class AppIconLoader
                 cancellationToken);
 
             if (!response.IsSuccessStatusCode)
-                return null;
+                return (null, response.StatusCode == HttpStatusCode.NotFound);
 
             var imageBytes = await response.Content.ReadAsByteArrayAsync(cancellationToken);
             if (imageBytes is not { Length: > 0 })
-                return null;
+                return (null, true);
 
             using var stream = new MemoryStream(imageBytes);
-            var bitmap = new BitmapImage();
-            bitmap.BeginInit();
-            bitmap.CacheOption = BitmapCacheOption.OnLoad;
-            bitmap.DecodePixelWidth = 96;
-            bitmap.StreamSource = stream;
-            bitmap.EndInit();
-            return bitmap;
+            return (UIHelpers.BitmapFromStream(stream, IconDecodeWidth), true);
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
         {
@@ -78,7 +75,7 @@ public static class AppIconLoader
         }
         catch
         {
-            return null;
+            return (null, false);
         }
     }
 }

@@ -80,11 +80,13 @@ public static class Updater
                 throw new InvalidOperationException(Strings.License_Error_InvalidSource);
 
             // Stream straight to disk: the installer is ~70 MB, never buffer it in memory.
-            using (var response = await HttpClient.GetAsync(remoteInfo.DownloadUrl, HttpCompletionOption.ResponseHeadersRead, ct).ConfigureAwait(false))
+            // No ConfigureAwait(false) anywhere below: the method is only ever reached from the UI
+            // thread, and both Application.Current.Shutdown() and the dialog in the catch require it.
+            using (var response = await HttpClient.GetAsync(remoteInfo.DownloadUrl, HttpCompletionOption.ResponseHeadersRead, ct))
             {
                 response.EnsureSuccessStatusCode();
                 await using var fileStream = new FileStream(tempInstallerPath, FileMode.Create, FileAccess.Write, FileShare.None);
-                await response.Content.CopyToAsync(fileStream, ct).ConfigureAwait(false);
+                await response.Content.CopyToAsync(fileStream, ct);
             }
 
             using var process = Process.Start(new ProcessStartInfo

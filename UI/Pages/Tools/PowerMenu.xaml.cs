@@ -19,14 +19,14 @@ public sealed partial class PowerMenu : UserControl
         StandardOptions =
         [
             new("reboot", "restore", () => Strings.PowerMenu_Option_Reboot, () => Strings.PowerMenu_Option_Reboot_Desc, AppBrushes.GradientGreen),
-            new("recovery", "wrench", () => Strings.PowerMenu_Option_Recovery, () => Strings.PowerMenu_Option_Recovery_Desc, AppBrushes.GradientApkm),
-            new("bootloader", "firmware", () => Strings.PowerMenu_Option_Bootloader, () => Strings.PowerMenu_Option_Bootloader_Desc, AppBrushes.GradientApk)
+            new("recovery", "wrench", () => Strings.PowerMenu_Option_Recovery, () => Strings.PowerMenu_Option_Recovery_Desc, AppBrushes.GradientPurple),
+            new("bootloader", "firmware", () => Strings.PowerMenu_Option_Bootloader, () => Strings.PowerMenu_Option_Bootloader_Desc, AppBrushes.GradientBlue)
         ];
 
         AdvancedOptions =
         [
             new("fastboot", "braces", () => Strings.PowerMenu_Option_Fastbootd, () => Strings.PowerMenu_Option_Fastbootd_Desc, AppBrushes.GradientCyan),
-            new("sideload", "download", () => Strings.PowerMenu_Option_Sideload, () => Strings.PowerMenu_Option_Sideload_Desc, AppBrushes.GradientApks),
+            new("sideload", "download", () => Strings.PowerMenu_Option_Sideload, () => Strings.PowerMenu_Option_Sideload_Desc, AppBrushes.GradientAmber),
             new("sideload_auto", "back-to-start", () => Strings.PowerMenu_Option_SideloadAuto, () => Strings.PowerMenu_Option_SideloadAuto_Desc, AppBrushes.GradientOrange),
             new("download", "download", () => Strings.PowerMenu_Option_Download, () => Strings.PowerMenu_Option_Download_Desc, AppBrushes.GradientNavy)
         ];
@@ -86,7 +86,7 @@ public sealed partial class PowerMenu : UserControl
         var dm = DeviceManager.Instance;
         var connected = dm.IsConnected;
 
-        DeviceNameText.Text = connected ? dm.DeviceName : Strings.DeviceStatus_NoDevice;
+        DeviceNameText.Text = dm.StatusText;
         StatusText.Text = connected ? Strings.PowerMenu_Status_Connected : Strings.PowerMenu_Status_Disconnected;
         
         var statusBrush = connected ? ConnectedBrush : DisconnectedBrush;
@@ -149,12 +149,12 @@ public sealed partial class PowerMenu : UserControl
             }
 
             var output = await AdbExecutor.ExecuteCommandAsync(command);
-            var success = !ContainsError(output);
+            var success = !AdbExecutor.IsLikelyFailure(output);
 
             if (!success && key == "power_off")
             {
                 output = await AdbExecutor.ExecuteCommandAsync("shell reboot -p");
-                success = !ContainsError(output);
+                success = !AdbExecutor.IsLikelyFailure(output);
             }
 
             _spinnerTimer.Stop();
@@ -185,38 +185,26 @@ public sealed partial class PowerMenu : UserControl
         }
     }
 
-    private static bool ContainsError(string output)
-    {
-        var lowerOutput = output.ToLowerInvariant();
-        return lowerOutput.Contains("error") || lowerOutput.Contains("failed") || 
-               lowerOutput.Contains("not found") || lowerOutput.Contains("no devices") || 
-               lowerOutput.Contains("unauthorized") || lowerOutput.Contains("offline");
-    }
-
     private static string ParseRebootError(string output, string commandKey)
     {
         var lower = output.ToLowerInvariant();
 
-        return lower switch
+        // A device-level failure outranks the mode-specific guesses: "error: device unauthorized" on a
+        // fastboot reboot is an unauthorized device, not a device without a fastboot mode.
+        var modeSpecific = commandKey switch
         {
-            _ when lower.Contains("no devices") || lower.Contains("device not found") 
-                => Strings.PowerMenu_Error_DeviceNotFound,
-            _ when lower.Contains("unauthorized") 
-                => Strings.PowerMenu_Error_Unauthorized,
-            _ when lower.Contains("offline") 
-                => Strings.PowerMenu_Error_Offline,
-            _ when commandKey == "fastboot" && (lower.Contains("unknown") || lower.Contains("error")) 
+            "fastboot" when lower.Contains("unknown") || lower.Contains("error")
                 => Strings.PowerMenu_Error_FastbootNotSupported,
-            _ when commandKey == "download" && (lower.Contains("unknown") || lower.Contains("error")) 
+            "download" when lower.Contains("unknown") || lower.Contains("error")
                 => Strings.PowerMenu_Error_DownloadNotSupported,
-            _ when commandKey == "sideload" && lower.Contains("error") 
+            "sideload" when lower.Contains("error")
                 => Strings.PowerMenu_Error_SideloadNotAvailable,
-            _ when lower.Contains("permission denied") 
-                => Strings.PowerMenu_Error_PermissionDenied,
-            _ when lower.Contains("protocol fault") 
+            _ when lower.Contains("protocol fault")
                 => Strings.PowerMenu_Error_Communication,
             _ => string.Format(Strings.PowerMenu_Error_CommandFailed, output.Length > 100 ? output[..100] + "..." : output)
         };
+
+        return AdbErrorCatalog.Humanize(output, modeSpecific);
     }
 
     private void ShowOperationStatus(string message, string detail)

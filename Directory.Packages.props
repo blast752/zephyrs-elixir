@@ -6,9 +6,6 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.2" />
-    <PackageVersion Include="Emoji.Wpf" Version="0.3.4" />
-    <PackageVersion Include="SkiaSharp" Version="3.119.2" />
-    <PackageVersion Include="System.Drawing.Common" Version="10.0.5" />
     <PackageVersion Include="System.Security.Cryptography.ProtectedData" Version="10.0.5" />
     <PackageVersion Include="SharpVectors.Wpf" Version="1.8.4" />
   </ItemGroup>

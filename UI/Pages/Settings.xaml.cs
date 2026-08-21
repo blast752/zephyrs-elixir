@@ -82,10 +82,10 @@ public partial class Settings : UserControl
 
         var dialog = new SaveFileDialog 
         { 
-            Title = Strings.Settings_MessageBox_ExportDialog_Title ?? "Export Diagnostic Log",
+            Title = Strings.Settings_MessageBox_ExportDialog_Title,
             FileName = $"zephyrs_elixir_log_{DateTime.Now:yyyyMMdd_HHmmss}.txt", 
             DefaultExt = ".txt", 
-            Filter = Strings.Settings_MessageBox_ExportDialog_Filter ?? "Text Files (*.txt)|*.txt|All Files (*.*)|*.*"
+            Filter = Strings.Settings_MessageBox_ExportDialog_Filter
         };
 
         if (dialog.ShowDialog() != true) 
@@ -117,12 +117,11 @@ public partial class Settings : UserControl
             AdbLogger.Instance.LogException("System", ex);
             
             var errorMessage = string.Format(
-                Strings.Settings_MessageBox_ExportError_Message 
-                    ?? "Failed to export log:\n{0}",
+                Strings.Settings_MessageBox_ExportError_Message,
                 ex.Message);
 
             DialogService.Instance.ShowInfoDirect(
-                Strings.Settings_MessageBox_ExportError_Title ?? "Export Error",
+                Strings.Settings_MessageBox_ExportError_Title,
                 errorMessage,
                 Window.GetWindow(this));
         }
@@ -179,7 +178,17 @@ public partial class Settings : UserControl
     
     private void OnResetToDefaultsClick(object sender, RoutedEventArgs e)
     {
-        DialogService.Instance.ShowInfo("Settings_MessageBox_ResetInfo_Message", Window.GetWindow(this), "Settings_MessageBox_ResetInfo_Title");
+        var owner = Window.GetWindow(this);
+        if (!DialogService.Instance.Confirm("Settings_Reset_Confirm_Message", owner, "Settings_Reset_Confirm_Title"))
+            return;
+
+        AiConsent.Reset();
+        TranslationManager.Instance.ResetToDefault();
+        try { File.Delete(AppConfiguration.Paths.CustomDnsMarker); } catch { /* non-fatal */ }
+
+        AiAnalysisToggle.IsChecked = false;
+
+        DialogService.Instance.ShowInfo("Settings_MessageBox_ResetInfo_Message", owner, "Settings_MessageBox_ResetInfo_Title");
     }
 
     private void OnLicenseClick(object sender, RoutedEventArgs e)
